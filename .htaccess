@@ -1,0 +1,7 @@
+RewriteEngine on
+RewriteRule ^index\.php - [L]
+RewriteCond %{REQUEST_URI} !backend/
+RewriteCond %{REQUEST_URI} !ckeditor/ckfinder/
+# dev
+RewriteCond %{REQUEST_URI} !_intellij_phpunit_launcher.php
+RewriteRule !\.(sql|gif|css|jpg|jpeg|png|ico|txt|js|xls|pdf|dtd|fck|csv|doc|rtf|swf|flv|cur|zip|rar|GIF|JPG|JPEG|PNG|XLS|PDF|DOC|xml|ttf|otf|eot|woff|svg|sql|jar)$ /index.php

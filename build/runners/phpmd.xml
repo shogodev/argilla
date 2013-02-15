@@ -1,0 +1,18 @@
+<project name="shogocms_run_phpmd" default = "run">
+	<target name = "run">
+		<if>
+			<isset property = "ci" />
+			<then>
+				<PHPMD rulesets = "build/phpmd/ruleset.xml">
+					<fileset dir = "${checkdir}" excludesfile = "build/phpmd/exclude.patterns" />
+					<formatter type = "xml" outfile = "build/logs/phpmd_${log}.xml" />
+				</PHPMD>
+			</then>
+			<else>
+				<PHPMD rulesets = "build/phpmd/ruleset.xml">
+					<fileset dir = "${checkdir}" excludesfile = "build/phpmd/exclude.patterns" />
+				</PHPMD>
+			</else>
+		</if>
+	</target>
+</project>

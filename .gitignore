@@ -1,0 +1,15 @@
+*~
+*.bak
+*.swp
+.idea/
+.settings/
+.project
+
+/js/.version
+/js/packed.js
+/js/compiled.js
+
+/protected/tests/report/*
+
+/protected/config/db.php
+/protected/config/production.php

@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name = "shogocms_fixAccessRights" basedir = "." default = "fixAccessRights">
+  <target name="fixAccessRights" description="Починить права доступа">
+    <chmod mode="0664" verbose="true">
+      <fileset dir=".">
+        <include name="**/*.php"/>
+        <include name="**/*.xml"/>
+        <include name="**/*.txt"/>
+        <include name="**/*.js"/>
+        <include name="**/*.html"/>
+        <include name="**/*.htm"/>
+        <include name="**/*.css"/>
+        <include name="favicon.ico"/>
+      </fileset>
+    </chmod>
+    <!-- chmod for backend images -->
+    <chmod mode="0664" verbose="true">
+      <fileset dir="backend/i">
+        <type type="file"/>
+      </fileset>
+    </chmod>
+    <!-- ckeditor -->
+    <chmod mode="0775" verbose="false">
+      <fileset dir=".">
+        <type type="dir"/>
+      </fileset>
+    </chmod>
+    <chmod mode="0664" verbose="false">
+      <fileset dir=".">
+        <type type="file"/>
+      </fileset>
+    </chmod>
+    <!-- protected должно быть 0002 -->
+    <chmod mode="0775" verbose="true">
+      <fileset dir=".">
+        <type type="dir"/>
+        <include name="protected/**/*"/>
+        <include name="backend/protected/**/*"/>
+      </fileset>
+    </chmod>
+    <chmod mode="0664" verbose="true">
+      <fileset dir=".">
+        <type type="file"/>
+        <include name="protected/**/*"/>
+        <include name="backend/protected/**/*"/>
+      </fileset>
+    </chmod>
+    <chmod mode="0775" verbose="true">
+      <fileset dir=".">
+        <include name="**/yiic*"/>
+      </fileset>
+    </chmod>
+    <chmod mode="0775" verbose="true">
+      <fileset dir=".">
+        <type type="dir"/>
+      </fileset>
+    </chmod>
+    <!-- git fix -->
+    <chmod mode="0775" verbose="false" failonerror="false">
+      <fileset dir=".git">
+        <type type="dir"/>
+      </fileset>
+    </chmod>
+    <chmod mode="0664" verbose="false" failonerror="false">
+      <fileset dir=".git">
+        <type type="file"/>
+      </fileset>
+    </chmod>
+    <!-- картиночки загружаемые -->
+    <chmod mode="0777" verbose="true">
+      <fileset dir="./f">
+        <type type="dir"/>
+      </fileset>
+    </chmod>
+    <chmod mode="0666" verbose="false">
+      <fileset dir="./f">
+        <type type="file"/>
+      </fileset>
+    </chmod>
+    <chmod mode="0777" verbose="true">
+      <fileset dir="assets">
+        <type type="dir"/>
+      </fileset>
+    </chmod>
+    <chmod mode="0666" verbose="true">
+      <fileset dir="assets">
+        <type type="file"/>
+      </fileset>
+    </chmod>
+    <chmod mode="0777" verbose="true" file="protected/runtime"/>
+    <chmod mode="0777" verbose="true" file="backend/protected/runtime"/>
+    <chown group="www" quiet="true" verbose="false">
+      <!-- ваще наверное это не получится, но где можно хотя бы пусть поправит -->
+      <fileset dir="."/>
+    </chown>
+    <!-- ну а напоследок фиксим всю служебную шелуху -->
+    <chmod mode="0664" verbose="true">
+      <fileset dir="." defaultexcludes="false">
+        <include name="**/*.gitignore"/>
+        <include name=".gitignore"/>
+        <include name="**/*.gitattributes"/>
+        <include name="**/*.htaccess"/>
+        <include name="**/*.gitattributes"/>
+      </fileset>
+    </chmod>
+  </target>
+</project>

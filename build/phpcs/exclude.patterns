@@ -1,0 +1,7 @@
+**/yiiext/**
+**/bootstrap/**
+**/views/**
+**/tests/**
+**/protected/components/web/helpers/**
+**/protected/extensions/phpthumb/**
+**/protected/extensions/yii-debug-toolbar/**

@@ -1,0 +1,103 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="shogocms" basedir="." default="build">
+	<property name = "coverage.database" value = "build/logs/cover.db" />
+  <target name="build" description="Сборка" depends="clearCache, clean, test, phpcs, phpmd, phpcpd, phploc"/>
+  <target name="createSchema" description="Записать схему БД">
+    <phing phingfile="build/db.xml" target="createSchema"/>
+  </target>
+  <target name="applySchema" description="Применить схему БД">
+    <phing phingfile="build/db.xml" target="applySchema"/>
+  </target>
+  <target name="createDump" description="Сделать дамп базы">
+    <phing phingfile="build/db.xml" target="createDump"/>
+  </target>
+  <target name="applyDump" description="Накатить дамп">
+    <phing phingfile="build/db.xml" target="applyDump"/>
+  </target>
+  <target name="changeSchemaPrefix" description="Изменить префикс таблиц в существующей схеме. Префикс берется из конфига">
+    <phing phingFile="build/db.xml" target="changeSchemaPrefix"/>
+  </target>
+  <target name="revertSchema" description="Восстановить оригинальный файл схемы (git)">
+    <phing phingFile="build/db.xml" target="revertSchema"/>
+  </target>
+  <target name="clearCache">
+    <echo>Clear assets folders</echo>
+    <exec command="rm -rf *" dir="assets/"/>
+    <exec command="rm -rf *" dir="backend/assets/"/>
+  </target>
+  <target name = "clean">
+    <exec command = "rm build/logs/*.xml" />
+    <exec command = "rm build/logs/*.csv" />
+    <exec command = "rm -Rf *" dir = "protected/runtime" />
+  </target>
+  <target name = "getCheckingApp">
+    <!-- это используется для того, чтобы можно было говорить phing -Dfrontend или phing -Dbackend, указывая фингу с каким приложением мы работаем -->
+    <if>
+      <and>
+        <isset property = "frontend" />
+        <not>
+          <isset property = "backend" />
+        </not>
+      </and>
+      <then>
+        <property name = "noBackend" value = "1" />
+      </then>
+    </if>
+    <if>
+      <and>
+        <isset property = "backend" />
+        <not>
+          <isset property = "frontend" />
+        </not>
+      </and>
+      <then>
+        <property name = "noFrontend" value = "1" />
+      </then>
+    </if>
+  </target>
+  <target name = "phpcs" description="PHP Codesniffer" depends = "getCheckingApp">
+    <phing phingFile = "build/runners/checker.xml">
+      <property name = "whatToCheck" value = "phpcs" />
+    </phing>
+  </target>
+  <target name = "phpmd" description = "PHP Mess Detector" depends = "getCheckingApp">
+    <phing phingFile = "build/runners/checker.xml">
+      <property name = "whatToCheck" value = "phpmd" />
+    </phing>
+  </target>
+  <target name = "phpcpd" description = "PHP Copy-Paste detector" depends = "getCheckingApp">
+    <phing phingFile = "build/runners/checker.xml">
+      <property name = "whatToCheck" value = "phpcpd" />
+    </phing>
+  </target>
+  <target name = "phploc" depends = "getCheckingApp" description = "Снятие метрик phploc">
+    <phing phingFile = "build/runners/checker.xml">
+      <property name = "whatToCheck" value = "phploc" />
+    </phing>
+  </target>
+  <target name = "phpunit" description = "PHPUnit" depends = "getCheckingApp">
+	  <phing phingFile = "build/runners/checker.xml">
+      <property name = "whatToCheck" value = "phpunit" />
+    </phing>
+  </target>
+  <target name = "test" depends = "phpunit" description = "Запуск тестов" />
+  <target name="fixAccessRights" description="Починить права доступа">
+	  <phing phingFile = "build/chmod.xml" />
+  </target>
+  <target name = "coverage" description = "Собрать code-coverage">
+	  <phing phingFile = "build/coverage.xml" />
+  </target>
+  <target name = "jsPack" description = "Упаковать JS">
+    <phing phingFile = "build/bootstrap.xml" target = "packJS" />
+  </target>
+  <target name = "jsCompile" description = "Склеить JS">
+    <phing phingFile = "build/bootstrap.xml" target = "compileJS" />
+  </target>
+  <target name = "addPassword" description = "Добавить пароль для пользователя">
+    <phing phingFile = "build/passwords.xml" target = "addPassword" />
+  </target>
+  <target name = "bootstrap" description = "Do a bootstrap process">
+    <phing phingFile = "build/bootstrap.xml" />
+  </target>
+
+</project>

@@ -1,0 +1,3 @@
+deny from all
+# dev
+allow from 192.168.

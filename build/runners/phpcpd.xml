@@ -1,0 +1,18 @@
+<project name="shogocms_run_phpcpd" default = "run">
+	<target name = "run">
+		<if>
+			<isset property = "ci" />
+			<then>
+				<PHPCPD>
+					<fileset dir = "${checkdir}" excludesfile = "build/phpcpd/exclude.patterns" />
+					<formatter type = "pmd"  outfile = "build/logs/cpd_${log}.xml" />
+				</PHPCPD>
+			</then>
+			<else>
+				<PHPCPD>
+					<fileset dir = "${checkdir}" excludesfile = "build/phpcpd/exclude.patterns" />
+				</PHPCPD>
+			</else>
+		</if>
+	</target>
+</project>

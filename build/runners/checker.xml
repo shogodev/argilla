@@ -1,0 +1,37 @@
+<project name="shogocms_run_checker" basedir = "." default = "run">
+	<target name = "run">
+		<if>
+			<isset property = "checkdir" />
+			<then>
+				<phing phingFile = "build/runners/${whatToCheck}.xml" />
+			</then>
+			<else>
+				<if>
+					<not>
+						<isset property = "noFrontend" />
+					</not>
+					<then>
+						<echo msg = "Running checker '${whatToCheck}' on FRONTEND" />
+						<phing phingFile = "build/runners/${whatToCheck}.xml">
+							<property name = "checkdir" value = "protected" />
+							<property name = "log" value = "frontend" />
+						</phing>
+					</then>
+				</if>
+				<if>
+					<not>
+						<isset property = "noBackend" />
+					</not>
+					<then>
+						<echo msg = "Running checker '${whatToCheck}' on BACKEND" />
+						<phing phingFile = "build/runners/${whatToCheck}.xml">
+							<property name = "checkdir" value = "backend/protected" />
+							<property name = "log" value = "backend" />
+						</phing>
+					</then>
+				</if>
+			</else>
+		</if>
+	</target>
+</project>
+

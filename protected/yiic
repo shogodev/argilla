@@ -1,0 +1,4 @@
+#!/usr/local/php/5.4.5/bin/php
+<?php
+
+require_once(dirname(__FILE__).'/yiic.php');

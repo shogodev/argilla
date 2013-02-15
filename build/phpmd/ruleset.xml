@@ -1,0 +1,6 @@
+<?xml version="1.0"?>
+<ruleset name="Shogocms PHPMD Ruleset">
+	<description>Custom shogocms ruleset. Используется только в CI, настройки для рабочих проверок забиты в build.xml, там phpmd запускается через Phing.</description>
+	<rule ref="rulesets/unusedcode.xml" />
+	<rule ref="rulesets/codesize.xml" />
+</ruleset>

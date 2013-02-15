@@ -1,0 +1,21 @@
+<?php
+defined('YII_DEBUG') or define('YII_DEBUG', false);
+defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL', 0);
+defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', false);
+
+return array_replace_recursive(
+  require(dirname(__FILE__).'/frontend.php'),
+  array(
+    'components' => array(
+      'db' => array(
+        'schemaCachingDuration' => 3600,
+        'enableProfiling'    => YII_DEBUG,
+        'enableParamLogging' => YII_DEBUG,
+      ),
+      'cache' => array(
+        'class'=>'system.caching.CXCache',
+      )
+    )
+  )
+);
+?>

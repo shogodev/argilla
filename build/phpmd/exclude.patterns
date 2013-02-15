@@ -1,0 +1,11 @@
+**/yiiext/**
+**/bootstrap/**
+**/views/**
+**/tests/**
+**/extensions/yii-debug-toolbar/**
+**/extensions/xupload/**
+**/extensions/ckeditor/**
+**/extensions/EPhpThumb/**
+**/components/web/helpers/CHtml.php
+**/protected/extensions/file/**
+

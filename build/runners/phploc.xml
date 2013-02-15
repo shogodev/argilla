@@ -1,0 +1,5 @@
+<project name="shogocms_run_phploc" default = "run">
+	<target name = "run">
+		<exec command = "phploc --log-csv build/logs/phploc_${log}.csv ${checkdir}" />
+	</target>
+</project>

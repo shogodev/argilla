@@ -1,0 +1,135 @@
+<project name = "shogocms_db" basedir = "." default = "clean">
+
+	<property name = "dbConfigFilePath" value = "protected/config/db.php" /> <!-- путь к файлу настроек -->
+	<property name = "dbSchemaLocation" value = ".sql/schema.sql" /> <!-- где лежит схема -->
+	<property name = "sqlFolder" value = ".sql" /> <!-- путь к дампам -->
+	<property name = "devServerHostName" value = "boojaka.shogo.ru" /> <!-- имя хоста, на котором можно накатывать дампы и схемы -->
+
+	<taskdef name = "parseDbConfig"		classname = "build.tasks.ParseDbConfigTask" />
+
+	<taskdef name = "fixSchema"		classname = "build.tasks.FixSchemaTask" />
+	<taskdef name = "fixDump"		classname = "build.tasks.FixDumpTask" />
+	<taskdef name = "prepareSchema"		classname = "build.tasks.PrepareSchemaTask" />
+	<taskdef name = "prepareDump"		classname = "build.tasks.PrepareSchemaTask" /> <!-- by now these two tasks are the same -->
+	<taskdef name = "changeTablePrefix"	classname = "build.tasks.ChangeTablePrefixTask" />
+
+	<taskdef name = "checkdb"		className = "build.tasks.CheckDbTask" />
+
+<target name = "getDbSettings">
+	<parseDbConfig file = "${dbConfigFilePath}" />
+	<checkDb triggers = "true" views = "true" routines = "true" lockTables = "true" tmpTables = "true" innoDb = "true" />
+</target>
+
+
+<target name = "createDb" depends = "clean, getDbSettings" description = "Создать БД">
+	<copy file = "build/sql/create_db.sql" tofile = "build/tmp/create_db.sql">
+		<filterchain>
+			<expandproperties />
+		</filterchain>
+	</copy>
+	<pdosqlexec url="${db.driver}:host=${db.host}" userid = "${db.username}" password = "${db.password}">
+		<fileset dir = "build/tmp">
+			<include name = "create_db.sql" />
+		</fileset>
+	</pdosqlexec>
+</target>
+
+<target name = "createSchema" depends = "getDbSettings" description = "Залить схему БД">
+	<copy file = "build/db_header.txt" tofile = "${dbSchemaLocation}" overwrite = "true">
+		<filterchain>
+			<expandproperties />
+		</filterchain>
+	</copy>
+
+	<exec command = "mysqldump --dump-date --routines --no-data -u${db.username} -p${db.password} -h${db.host} ${db.dbname} >> ${dbSchemaLocation}" />
+	
+	<fixSchema file = "${dbSchemaLocation}" />
+</target>
+
+<target name = "applySchema" depends = "createDb" description = "Накатить схему на БД">
+	<if>
+		<not>
+			<equals arg1 = "${host.name}" arg2 = "${devServerHostName}" />
+		</not>
+		<then>
+			<fail message = "Накатывать схему можно только на dev-сервере!" />
+		</then>
+	</if>
+	<available file = "${dbSchemaLocation}" property = "schema_exists" value = "1" />
+	<fail unless = "schema_exists" message = "Schema file does not exist in specified location (${dbSchemaLocation})" />
+	
+	<copy file = "${dbSchemaLocation}" tofile = "build/tmp/schemaApplying.sql" />
+	<prepareSchema file = "build/tmp/schemaApplying.sql" />
+	<changeTablePrefix file = "build/tmp/schemaApplying.sql" newPrefix = "${db.prefix}" />
+
+	<exec command = "cat build/tmp/schemaApplying.sql|mysql -u${db.username} -p${db.password} -h${db.host} ${db.dbname}" />
+
+	<phingcall target = "clean" />
+
+</target>
+
+<target name = "applyDump" depends = "createDb" description = "Накатить дамп">
+    <available file = "${sqlFolder}/${db.dbname}.sql" property = "dump_exists" value = "1" />
+    <fail unless = "dump_exists" message = "Dump file does not exists in specified location (${sqlFolder}/${db.dbname}.sql)" />
+    <echo message = "Dealing with dump '${sqlFolder}/${db.dbname}.sql', database '${db.dbname}'..." />
+    <input propertyName = "applySure" defaultValue = "y">Are you sure?</input>
+    <if>
+	<equals arg1 = "${applySure}" arg2 = "y" />
+	<then>
+	    <copy file = "${sqlFolder}/${db.dbname}.sql" tofile = "build/tmp/dumpApplying.sql" />
+
+	    <echo message = "preparing dump file..." />
+	    <prepareDump file = "build/tmp/dumpApplying.sql" />
+
+	    <echo message = "changing dump prefix to '${db.prefix}'.,." />
+	    <changeTablePrefix file = "build/tmp/dumpApplying.sql" newPrefix = "${db.prefix}" />
+
+	    <echo message = "Inserting into mysql..." />
+	    <exec command = "cat build/tmp/dumpApplying.sql|mysql -u${db.username} -p${db.password} -h${db.host} ${db.dbname}" />
+
+	    <phingcall target = "clean" />
+	</then>
+    </if>
+
+</target>
+
+<target name = "createDump" depends = "getDbSettings" description = "Создать дамп">
+	<if>
+		<available file = "${sqlFolder}/${db.dbname}.sql" />
+		<then>
+			<property name = "dumpExists" value = "1" />
+			<input propertyName = "overwrite" defaultValue = "y">File already exists. Overwrite?</input>
+		</then>
+	</if>
+	<if>
+		<or>
+			<not>
+				<isset property = "dumpExists" />
+			</not>
+			<equals arg1 = "${overwrite}" arg2 = "y" />
+		</or>
+		<then>
+			<copy file = "build/db_header.txt" tofile = "${sqlFolder}/${db.dbname}.sql" overwrite = "true">
+				<filterchain>
+					<expandproperties />
+				</filterchain>
+			</copy>
+			<exec command = "mysqldump --dump-date --routines -u${db.username} -p${db.password} -h${db.host} ${db.dbname} >> ${sqlFolder}/${db.dbname}.sql" />
+			<fixDump file = "${sqlFolder}/${db.dbname}.sql" />
+		</then>
+	</if>
+</target>
+
+<target name = "revertSchema" description = "Восстановить схему (ну типа не прокатило)">
+	<echo message = "git checkout -- .sql/schema.sql" />
+	<exec command = "git checkout -- .sql/schema.sql" passthru = "true"/>
+</target>
+
+<target name = "clean">
+	<delete file = "build/tmp/create_db.sql" quiet = "yes" failonerror = "false" />
+	<delete file = "build/tmp/schema.backup.sql" quiet = "yes" failonerror = "false" />
+	<delete file = "build/tmp/schemaPrefixChanging.sql" quiet = "yes" failonerror = "false" />
+	<delete file = "build/tmp/schemaApplying.sql" quiet = "yes" failonerror = "false" />
+	<delete file = "build/tmp/dumpApplying.sql" quiet = "yes" failonerror = "false" />
+</target>
+</project>

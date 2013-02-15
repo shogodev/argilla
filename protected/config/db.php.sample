@@ -1,0 +1,8 @@
+<?php
+return array(
+  'connectionString'   => 'mysql:host=localhost;dbname=DATABASE_NAME',
+  'tablePrefix'        => 'DATABASE_PREFIX',
+  'username'           => 'DATABASE_USER',
+  'password'           => 'DATABASE_PASSWORD',
+  'charset'            => 'utf8',
+);

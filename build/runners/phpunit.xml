@@ -1,0 +1,14 @@
+<project name="shogocms_run_phpunit" default = "run">
+	<property name = "coverage.database" value = "build/tmp/cover.db" /> <!-- это костыль для финга, без этого свойства phpunit не собирает coverage -->
+	<target name = "run">
+		<if>
+			<isset property = "ci" />
+			<then>
+				<exec command = "phpunit -c ${checkdir}/tests/phpunit.xml --coverage-clover build/logs/clover_${log}.xml --log-junit build/logs/junit_${log}.xml ${checkdir}/tests/unit/ " />
+			</then>
+			<else>
+				<exec command = "phpunit -c ${checkdir}/tests/phpunit.xml ${checkdir}/tests/unit/" passthru = "false" checkreturn = "true"/>
+			</else>
+		</if>
+	</target>
+</project>

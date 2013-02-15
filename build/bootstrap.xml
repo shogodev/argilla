@@ -1,0 +1,73 @@
+<!-- Цели phing, которые используются при первоначальном разворачивании приложения. Возможны ссылки сюда и при деплое -->
+<project name = "shogocms_bootstrap" basedir = "." default = "bootstrap">
+  <property name = "shogocms.defaultJsCompiler" value = "closure" />
+  <property name = "shogocms.yiiStorage" value = "/usr/local/yii" />
+  <target name = "bootstrap" depends = "symlinkYii" />
+  <target name = "packJS" description = "Упаковать JS">
+    <exec command = "protected/yiic scripts pack" passthru = "true"/>
+  </target>
+  <target name = "compileJS" description = "Скомпилировать JS" depends = "packJS">
+    <if>
+      <not>
+        <isset property = "jsCompiler" />
+      </not>
+      <then>
+        <property name = "jsCompiler" value = "${shogocms.defaultJsCompiler}" />
+      </then>
+    </if>
+    <echo message = "Компилируем javascript компилятором '${jsCompiler}'..."/>
+    <if>
+      <equals arg1 = "${jsCompiler}" arg2 = "yui" />
+      <then>
+        <exec command = "java -jar build/compilers/yuicompressor.jar js/packed.js>build/tmp/compiled.js" />
+      </then>
+    </if>
+    <if>
+      <equals arg1 = "${jsCompiler}" arg2 = "closure" />
+      <then>
+        <exec command = "java -jar build/compilers/closure.jar --third_party --warning_level QUIET --js js/packed.js --js_output_file build/tmp/compiled.js" />
+      </then>
+    </if>
+
+    <!-- проверка результатов компиляции-->
+    <if>
+      <not>
+        <available file = "build/tmp/compiled.js" />
+      </not>
+      <then>
+        <fail message = "Компиляция javascript не прошла: файл не создан" />
+      </then>
+    </if>
+    <filesize file = "build/tmp/compiled.js" propertyName = "compiledJsFileSize" />
+    <if>
+      <equals arg1 = "${compiledJsFileSize}" arg2 = "0" />
+      <then>
+        <fail message = "Компиляция javascript не прошла: файл имеет нулевой размер" />
+      </then>
+    </if>
+
+    <php expression="floor(${compiledJsFileSize}/1024)" returnProperty="compiledJsFileSize" />
+    <echo message = "Компиляция завершена. Файл build/tmp/compiled.js размером ${compiledJsFileSize}K. Копируем в js/compiled.js..." />
+
+    <copy file = "build/tmp/compiled.js" tofile = "js/compiled.js" overwrite = "true" />
+  </target>
+  <target name = "symlinkYii" depends = "checkYiiAvailability">
+    <exec command = "ln -s ${shogocms.yiiStorage}/${shogocms.yiiVersion} ../yii" />
+  </target>
+
+  <target name = "checkYiiAvailability" depends = "getYiiVersion">
+    <if>
+      <not>
+        <available file = "${shogocms.yiiStorage}/${shogocms.yiiVersion}/framework" type = "dir" />
+      </not>
+      <then>
+        <fail message = "Yii версии '${shogocms.yiiVersion}' не найден по пути '${shogocms.yiiStorage}/${shogocms.yiiVersion}'" />
+      </then>
+    </if>
+  </target>
+  <target name = "getYiiVersion">
+    <php expression = "require('protected/config/version.php');" returnProperty = "shogocms.yiiVersion" />
+  </target>
+
+</project>
+

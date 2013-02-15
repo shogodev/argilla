@@ -1,0 +1,18 @@
+<project name="shogocms_run_phpcs" default = "run">
+	<target name = "run">
+		<if>
+			<isset property = "ci" />
+			<then>
+				<PhpCodeSniffer standard="build/phpcs/Shogocms/ruleset.xml" encoding="utf-8">
+					<fileset dir = "${checkdir}" excludesfile = "build/phpcs/exclude.patterns" />
+					<formatter type = "checkstyle" outfile = "build/logs/checkstyle_${log}.xml" />
+				</PhpCodeSniffer>
+			</then>
+			<else>
+				<PhpCodeSniffer standard="build/phpcs/Shogocms/ruleset.xml" encoding="utf-8">
+					<fileset dir = "${checkdir}" excludesfile = "build/phpcs/exclude.patterns" />
+				</PhpCodeSniffer>
+			</else>
+		</if>
+	</target>
+</project>

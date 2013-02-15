@@ -1,0 +1,11 @@
+<project name = "shogocms_coverage" basedir = "." default = "run">
+	<target name = "mkdir">
+		<mkdir dir = "build/coverage/backend" />
+		<mkdir dir = "build/coverage/frontend" />
+	</target>
+	<target name = "run" depends = "mkdir">
+		<exec dir = "protected/tests/" command = "phpunit --coverage-html=../../build/coverage/frontend unit/" />
+		<exec dir = "backend/protected/tests" command = "phpunit --coverage-html=../../../build/coverage/backend unit/" />
+	</target>	
+</project>
+
