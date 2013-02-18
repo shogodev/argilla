@@ -109,6 +109,20 @@ class FForm extends CForm
   }
 
   /**
+   * Добавление всплывающего окна после отправки формы
+   *
+   * @HINT сообщение добавляется только при отправки формы НЕ через ajax
+   *
+   * @param string $message
+   * @param string $type
+   */
+  public function setFlashMessage($message, $type = 'success')
+  {
+    if( $this->ajaxSubmit == false )
+      Yii::app()->user->setFlash($type, $message);
+  }
+
+  /**
    * @param int    $delay
    * @param string $url
    *
