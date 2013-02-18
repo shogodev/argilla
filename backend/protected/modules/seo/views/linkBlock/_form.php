@@ -1,6 +1,6 @@
 <?php
-/* @var $this BLinksBlockController */
-/* @var $model BLinksBlock */
+/* @var $this BLinkBlockController */
+/* @var $model BLinkBlock */
 /* @var $form BActiveForm */
 ?>
 
