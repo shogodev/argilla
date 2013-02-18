@@ -1,20 +1,33 @@
 <?php
 /**
- * @author Alexander Kolobkov <kolobkov@shogo.ru>
+ * @author Alexander Kolobkov <kolobkov@shogo.ru>, Nikita Melnikov <melnikov@shogo.ru>
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.seo
  *
- * @method static BLinksSection model(string $class = __CLASS__)
+ * @property int $id
+ * @property string $name
+ * @property string $url
+ * @property int $position
+ * @property int $visible
+ * @property BLink[] $links
+ *
+ * @method static BLinkSection model(string $class = __CLASS__)
  */
-class BLinksSection extends BActiveRecord
+class BLinkSection extends BActiveRecord
 {
+  /**
+   * @return string
+   */
   public function tableName()
   {
-    return '{{links_section}}';
+    return '{{seo_link_section}}';
   }
 
+  /**
+   * @return array
+   */
   public function rules()
   {
     return array(
@@ -27,6 +40,9 @@ class BLinksSection extends BActiveRecord
     );
   }
 
+  /**
+   * @return BActiveDataProvider
+   */
   public function search()
   {
     $criteria = new CDbCriteria;
@@ -39,10 +55,13 @@ class BLinksSection extends BActiveRecord
     ));
   }
 
+  /**
+   * @return array
+   */
   public function relations()
   {
     return array(
-      'links' => array(self::HAS_MANY, 'BLinks', 'section'),
+      'links' => array(self::HAS_MANY, 'BLink', 'section_id'),
     );
   }
 }
