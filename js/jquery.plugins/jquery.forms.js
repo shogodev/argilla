@@ -23,10 +23,10 @@
             }
             el.next().click(function() {
               $(this).toggleClass('check_'+el.type);
-              if(!el.is(':checked')) {
-                el.attr('checked', true).trigger('change');
+              if(!el.prop('checked')) {
+                el.prop('checked', true).trigger('change');
               } else {
-                el.attr('checked', false).trigger('change');
+                el.prop('checked', false).trigger('change');
               }
             });
             el.click(function() {
@@ -36,10 +36,10 @@
               e.preventDefault();
               var inp = $('#' + $(this).attr('for'));
               inp.next().toggleClass('check_'+el.type);
-              if(!inp.is(':checked')) {
-                inp.attr('checked', true).trigger('change');
+              if(!inp.prop('checked')) {
+                inp.prop('checked', true).trigger('change');
               } else {
-                inp.attr('checked', false).trigger('change');
+                inp.prop('checked', false).trigger('change');
               }
             });
           break;
