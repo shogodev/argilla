@@ -1,6 +1,6 @@
 <?php
-/* @var $this BLinksSectionController */
-/* @var $model BLinksSection */
+/* @var $this BLinkSectionController */
+/* @var $model BLinkSection */
 /* @var $form BActiveForm */
 ?>
 
