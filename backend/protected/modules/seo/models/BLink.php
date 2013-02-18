@@ -1,23 +1,39 @@
 <?php
 /**
- * @author Alexander Kolobkov <kolobkov@shogo.ru>
+ * @author Alexander Kolobkov <kolobkov@shogo.ru>, Nikita Melnikov <melnikov@shogo.ru>
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.seo
  *
- * @method static BLinks model(string $class = __CLASS__)
+ * @property int $id
+ * @property int $section_id
+ * @property string $title
+ * @property string $content
+ * @property string $email
+ * @property string $region
+ * @property string $url
+ * @property string $date
+ * @property int $page
+ * @property int $visible
+ * @property int $position
+ * @property BLinkSection $section
  *
- * @property string date
+ * @method static BLink model(string $class = __CLASS__)
  */
-class BLinks extends BActiveRecord
+class BLink extends BActiveRecord
 {
-
+  /**
+   * @return string
+   */
   public function tableName()
   {
-    return '{{links}}';
+    return '{{seo_link}}';
   }
 
+  /**
+   * @return array
+   */
   public function rules()
   {
     return array(
@@ -32,31 +48,43 @@ class BLinks extends BActiveRecord
     );
   }
 
+  /**
+   * @return array
+   */
   public function defaultScope()
   {
     $alias = $this->getTableAlias(false, false);
 
     return array(
-      'order' => $alias.'.date DESC',
+      'order' => $alias.'.`date` DESC',
     );
   }
 
+  /**
+   * @return array
+   */
   public function attributeLabels()
   {
-    static $label_array = array('title' => 'Текст ссылки',
+    return CMap::mergeArray(parent::attributeLabels(), array(
+      'title' => 'Текст ссылки',
       'page' => 'Страница',
       'region' => 'Регион',
-    );
-    return CMap::mergeArray(parent::attributeLabels(), $label_array);
+    ));
   }
 
+  /**
+   * @return array
+   */
   public function relations()
   {
     return array(
-      'section' => array(self::BELONGS_TO, 'BLinksSection', 'section_id'),
+      'section' => array(self::BELONGS_TO, 'BLinkSection', 'section_id'),
     );
   }
 
+  /**
+   * @return BActiveDataProvider
+   */
   public function search()
   {
     $criteria = new CDbCriteria;
@@ -70,9 +98,18 @@ class BLinks extends BActiveRecord
     ));
   }
 
+  /**
+   * @return bool
+   */
   protected function beforeSave()
   {
-    return parent::beforeSave() ? $this->date = date('Y-m-d', strtotime(!empty($this->date) ? $this->date : 'now')) : false;
+    if( parent::beforeSave() )
+    {
+      $this->date = date('Y-m-d', strtotime(!empty($this->date) ? $this->date : 'now'));
+      return true;
+    }
+
+    return false;
   }
 
   protected function afterFind()

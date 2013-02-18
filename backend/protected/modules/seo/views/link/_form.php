@@ -1,7 +1,7 @@
 <?php
 /**
- * @var BLinksController $this
- * @var BLinks $model
+ * @var BLinkController $this
+ * @var BLink $model
  * @var BActiveForm $form
  */
 ?>
@@ -21,7 +21,7 @@
 
   <?php echo $form->textFieldRow($model, 'page'); ?>
 
-  <?php echo $form->dropDownListRow($model, 'section_id', CHtml::listData(BLinksSection::model()->findAll(), 'id', 'name')); ?>
+  <?php echo $form->dropDownListRow($model, 'section_id', CHtml::listData(BLinkSection::model()->findAll(), 'id', 'name')); ?>
 
   <?php echo $form->datePickerRow($model, 'date'); ?>
 

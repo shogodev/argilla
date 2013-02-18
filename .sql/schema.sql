@@ -1,5 +1,5 @@
 -- This file was created by ShogoCMS $Id: d6242f0a510ed3000bd17d9bfba8d1ebf0872153 $
--- User: tatarinov	Hostname: boojaka.shogo.ru
+-- User: melnikov	Hostname: boojaka.shogo.ru
 -- PHP: 5.4.5 Phing 2.4.12
 -- Original prefix: shogocms_
 -- MySQL dump 10.13  Distrib 5.1.63, for portbld-freebsd8.2 (amd64)
@@ -353,6 +353,7 @@ CREATE TABLE `shogocms_info` (
   `view` varchar(255) DEFAULT NULL,
   `name` text NOT NULL,
   `url` varchar(255) NOT NULL DEFAULT '',
+  `img` varchar(255) NOT NULL,
   `notice` text,
   `content` text,
   `reference` tinytext,
@@ -386,48 +387,6 @@ CREATE TABLE `shogocms_info_files` (
   `position` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `parent` (`parent`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `shogocms_links`
---
-
-DROP TABLE IF EXISTS `shogocms_links`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_links` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `position` int(11) DEFAULT NULL,
-  `visible` int(1) DEFAULT NULL,
-  `page` int(10) NOT NULL DEFAULT '0',
-  `title` varchar(255) DEFAULT NULL,
-  `content` text,
-  `email` varchar(255) DEFAULT NULL,
-  `region` varchar(255) DEFAULT NULL,
-  `url` varchar(255) DEFAULT NULL,
-  `date` datetime DEFAULT NULL,
-  `section_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`id`),
-  KEY `links_section_id_links_section_id_idx` (`section_id`),
-  CONSTRAINT `links_section_id_links_section_id` FOREIGN KEY (`section_id`) REFERENCES `shogocms_links_section` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `shogocms_links_section`
---
-
-DROP TABLE IF EXISTS `shogocms_links_section`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_links_section` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) DEFAULT NULL,
-  `url` varchar(255) DEFAULT NULL,
-  `position` int(11) DEFAULT NULL,
-  `visible` int(1) DEFAULT NULL,
-  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -496,6 +455,7 @@ CREATE TABLE `shogocms_menu_item` (
   `menu_id` int(11) NOT NULL,
   `item_id` int(11) DEFAULT NULL,
   `type` varchar(255) DEFAULT NULL,
+  `frontend_model` varchar(255) NOT NULL,
   `position` int(11) NOT NULL DEFAULT '10',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -898,6 +858,7 @@ CREATE TABLE `shogocms_product_param_name` (
   `position` int(11) DEFAULT '0',
   `visible` tinyint(1) DEFAULT NULL,
   `name` varchar(1024) NOT NULL,
+  `img` varchar(255) NOT NULL,
   `type` varchar(50) NOT NULL DEFAULT 'text',
   `key` varchar(50) DEFAULT NULL,
   `group` int(11) DEFAULT '0',
@@ -1053,22 +1014,65 @@ CREATE TABLE `shogocms_seo_counters` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_seo_links_block`
+-- Table structure for table `shogocms_seo_link`
 --
 
-DROP TABLE IF EXISTS `shogocms_seo_links_block`;
+DROP TABLE IF EXISTS `shogocms_seo_link`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_seo_links_block` (
+CREATE TABLE `shogocms_seo_link` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `section_id` int(11) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `content` text,
+  `email` varchar(255) DEFAULT NULL,
+  `region` varchar(255) DEFAULT NULL,
+  `url` varchar(255) NOT NULL,
+  `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `page` int(10) NOT NULL DEFAULT '0',
+  `visible` int(1) unsigned DEFAULT '0',
+  `position` int(11) DEFAULT '20',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `link_section_email_index` (`email`),
+  KEY `links_section_id_links_section_id_idx` (`section_id`),
+  CONSTRAINT `links_section_id_links_section_id` FOREIGN KEY (`section_id`) REFERENCES `shogocms_seo_link_section` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `shogocms_seo_link_block`
+--
+
+DROP TABLE IF EXISTS `shogocms_seo_link_block`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `shogocms_seo_link_block` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
-  `position` int(1) NOT NULL DEFAULT '0',
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
   `code` text COLLATE utf8_bin NOT NULL,
   `url` text COLLATE utf8_bin,
   `key` varchar(255) COLLATE utf8_bin NOT NULL,
-  `visible` int(1) NOT NULL,
+  `position` int(1) NOT NULL DEFAULT '20',
+  `visible` int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `shogocms_seo_link_section`
+--
+
+DROP TABLE IF EXISTS `shogocms_seo_link_section`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `shogocms_seo_link_section` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) NOT NULL,
+  `url` varchar(255) NOT NULL,
+  `position` int(11) DEFAULT '20',
+  `visible` int(1) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1220,6 +1224,10 @@ CREATE TABLE `shogocms_vacancy_file` (
   KEY `parent` (`parent`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping routines for database 'shogocms'
+--
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;
@@ -1230,4 +1238,4 @@ CREATE TABLE `shogocms_vacancy_file` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-02-13 13:32:50
+-- Dump completed on 2013-02-18 17:33:48

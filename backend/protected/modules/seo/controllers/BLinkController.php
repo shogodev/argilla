@@ -6,13 +6,13 @@
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.seo
  */
-class BLinksController extends BController
+class BLinkController extends BController
 {
   public $name = 'Каталог ссылок';
 
-  public $modelClass = 'BLinks';
+  public $modelClass = 'BLink';
 
-  public $moduleMenu = 'BLinks';
+  public $moduleMenu = 'BLink';
 
   public $position = 10;
 }
