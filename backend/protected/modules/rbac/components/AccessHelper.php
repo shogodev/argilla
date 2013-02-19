@@ -166,7 +166,7 @@ class AccessHelper
       return true;
 
     $result = false;
-    $tasks = RbacTask::model()->findAll('name LIKE "' . $moduleName . '%"');
+    $tasks = BRbacTask::model()->findAll('name LIKE "' . $moduleName . '%"');
 
     foreach( $tasks as $task )
     {
