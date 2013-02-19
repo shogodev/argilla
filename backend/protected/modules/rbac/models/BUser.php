@@ -54,6 +54,14 @@ class BUser extends BActiveRecord
   }
 
   /**
+   * @param string $value
+   */
+  public function setNewPassword($value)
+  {
+    $this->passwordNew = $value;
+  }
+
+  /**
    * @param array $roles
    */
   public function setRoles(array $roles)
