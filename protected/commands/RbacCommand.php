@@ -1,6 +1,7 @@
 <?php
 
 Yii::import('backend.components.*');
+Yii::import('backend.components.interfaces.*');
 Yii::import('backend.components.auth.*');
 Yii::import('backend.components.db.*');
 Yii::import('backend.controllers.*');
@@ -91,15 +92,15 @@ class RbacCommand extends CConsoleCommand
     $this->username   = $username;
     $this->password   = $password;
 
-    echo "-------------------------------------------------------------\n";
+    echo "-------------------------------------------------------------".PHP_EOL;
     $this->getFiles();
-    echo "-------------------------------------------------------------\n";
+    echo "-------------------------------------------------------------".PHP_EOL;
     $this->getNames();
 
     $this->createUser();
-    echo "-------------------------------------------------------------\n";
+    echo "-------------------------------------------------------------".PHP_EOL;
     $this->createRecords();
-    echo "-------------------------------------------------------------\n";
+    echo "-------------------------------------------------------------".PHP_EOL;
   }
 
   /**
@@ -119,11 +120,11 @@ class RbacCommand extends CConsoleCommand
       $db->truncateTable($this->getAuthManager()->itemChildTable);
       $db->truncateTable($this->getAuthManager()->assignmentTable);
 
-      echo "Выполнено\n";
+      echo "Выполнено".PHP_EOL;
     }
     catch( Exception $e )
     {
-      echo $e->getMessage() . "\n";
+      echo $e->getMessage().PHP_EOL;
     }
   }
 
@@ -186,11 +187,11 @@ class RbacCommand extends CConsoleCommand
         $moduleClass = ucfirst($module) . 'Module';
         $moduleModel = new $moduleClass($module, $module);
 
-        if( $controller instanceof SecureController )
+        if( $controller instanceof BController )
         {
           $this->names[] = array(
             'title' => $moduleModel->name . ' - ' . $controller->name,
-            'name' => $module . ':' . str_replace('Controller', '', $controller->id),
+            'name' => $module . ':' . str_replace('Controller', '',  lcfirst(BApplicationHelper::cutClassPrefix(get_class($controller)))),
           );
         }
       }
@@ -217,11 +218,11 @@ class RbacCommand extends CConsoleCommand
       {
         $task->save();
         $this->getAuthManager()->addItemChild($this->username, $task->id);
-        echo "$task->title ($task->name) успешно создано\n";
+        echo "$task->title ($task->name) успешно создано".PHP_EOL;
       }
       catch( Exception $e )
       {
-        echo "$task->name уже создано\n";
+        echo "$task->name уже создано".PHP_EOL;
       }
     }
   }
@@ -251,16 +252,16 @@ class RbacCommand extends CConsoleCommand
 
   /**
    * Создание учетной записи администратора
-   *
-   * @return void
    */
   protected function createUser()
   {
     Yii::import('backend.modules.rbac.models.*');
 
-    if( BUser::model()->exists('username = :username', array(':username' => $this->username)) )
-      $this->user = BUser::model()->find('username = :username', array(':username' => $this->username));
-    else
+    $criteria = new CDbCriteria();
+    $criteria->compare('username', $this->username);
+    $this->user = BUser::model()->find($criteria);
+
+    if( $this->user === null )
     {
       $this->user = new BUser();
       $this->user->username = $this->username;
@@ -276,24 +277,30 @@ class RbacCommand extends CConsoleCommand
    */
   protected function assignRoot()
   {
-    $role = BRbacRole::model()->find('title = :title AND type = :type AND name = :sysname', array(
-      ':title' => 'Администратор', ':type' => CAuthItem::TYPE_ROLE, ':sysname' => $this->roleSystemName)
-    );
+    $title = 'Администратор';
 
-    if( empty($role) )
+    $criteria = new CDbCriteria();
+    $criteria->compare('title', $title);
+    $criteria->compare('type',CAuthItem::TYPE_ROLE);
+    $criteria->compare('name', $this->roleSystemName);
+
+    $root = BRbacRole::model()->find($criteria);
+
+    if( empty($root) )
     {
       $root = new BRbacRole();
       $root->name = $this->roleSystemName;
-      $root->title = 'Администратор';
+      $root->title = $title;
       $root->type  = CAuthItem::TYPE_ROLE;
       $root->save();
     }
     else
-      $root = clone $role;
+      $root = clone $root;
 
     try
     {
-      $this->getAuthManager()->assign($root->name, $this->user->id);
+      if( !$this->getAuthManager()->isAssigned($root->name, $this->user->id) )
+        $this->getAuthManager()->assign($root->name, $this->user->id);
     }
     catch( Exception $e )
     {
