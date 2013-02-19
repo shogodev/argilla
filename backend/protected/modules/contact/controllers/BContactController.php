@@ -92,10 +92,13 @@ class BContactController extends BController
   }
 
   /**
-   * @param BActiveRecord $model
+   * @param array $models
+   * @param bool $extendedSave
    */
-  protected function saveModel($model)
+  protected function saveModels($models, $extendedSave = true)
   {
+    $model = Arr::reset($models);
+
     Yii::app()->getClientScript()->registerCoreScript( 'jquery.ui' );
 
     $this->performAjaxValidation($model);
@@ -233,6 +236,4 @@ class BContactController extends BController
       }
     }
   }
-
-
 }

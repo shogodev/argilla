@@ -36,9 +36,10 @@ class BInfo extends BActiveRecord implements IBFrontendMenuEntry
 
   public function behaviors()
   {
-    return array('nestedSetBehavior' => array('class' => 'nestedset.NestedSetBehavior'),
-                 'uploadBehavior'    => array('class' => 'UploadBehavior', 'validAttributes' => "info_files")
-                );
+    return array(
+      'nestedSetBehavior' => array('class' => 'nestedset.NestedSetBehavior'),
+      'uploadBehavior'    => array('class' => 'UploadBehavior', 'validAttributes' => "info_files")
+    );
   }
 
   public function rules()
@@ -59,7 +60,16 @@ class BInfo extends BActiveRecord implements IBFrontendMenuEntry
 
   public function attributeLabels()
   {
-    return CMap::mergeArray(parent::attributeLabels(), array('upload' => 'Дополнительные файлы'));
+    return CMap::mergeArray(parent::attributeLabels(), array(
+      'info_files' => 'Дополнительные файлы',
+    ));
+  }
+  public function getImageTypes()
+  {
+    return array(
+      '' => 'Не задано',
+      'notice' => 'Анонс',
+    );
   }
 
   public function getTreeActions()

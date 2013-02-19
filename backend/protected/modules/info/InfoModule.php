@@ -8,13 +8,9 @@
  */
 class InfoModule extends BModule
 {
-  public $defaultController = 'info';
+  public $defaultController = 'BInfo';
 
   public $name = 'Информация';
-
-  public $controllerMap = array(
-    'info' => 'BInfoController',
-  );
 
   public function init()
   {

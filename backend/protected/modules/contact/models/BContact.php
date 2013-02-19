@@ -50,7 +50,6 @@ class BContact extends BActiveRecord
       array('url, name', 'length', 'max' => 255),
       array('address', 'length', 'max' => 255),
       array('notice, map', 'length', 'max' => 1024),
-      array('img_big, img', 'length', 'max' => 512),
       array('name, sysname, url, address, notice, map', 'safe'),
     );
   }
@@ -74,8 +73,8 @@ class BContact extends BActiveRecord
     $labels = array(
       'address' => 'Адрес',
       'notice'  => 'Примечание',
-      'img'     => 'Карта проезда (350x350)',
-      'img_big' => 'Карта проезда (750x750)',
+      'img'     => 'Карта проезда (уменьшенная)',
+      'img_big' => 'Карта проезда (увеличенная)',
       'map'     => 'Карта проезда (код)',
     );
 

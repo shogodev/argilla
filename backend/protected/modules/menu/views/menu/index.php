@@ -12,8 +12,8 @@ $this->widget('BGridView', array(
   'filter' => $model,
   'columns' => array(
     array('name' => 'id', 'htmlOptions' => array('class' => 'center span1'), 'filter' => false),
-    array('name' => 'name', 'htmlOptions' => array('class' => 'center')),
-    array('name' => 'sysname', 'htmlOptions' => array('class' => 'center')),
+    array('name' => 'name'),
+    array('name' => 'sysname'),
     array('name' => 'url', 'htmlOptions' => array('class' => 'center')),
 
     array('class' => 'JToggleColumn', 'name' => 'visible', 'filter' => false),

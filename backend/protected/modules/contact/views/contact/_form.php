@@ -101,7 +101,7 @@ echo $form->renderRequire();
 
   <tr>
     <th>
-      <span data-action="add-textblock" class="btn btn-info action">Добавить тестовое поле</span>
+      <span data-action="add-textblock" class="btn btn-info action">Добавить текстовое поле</span>
     </th>
     <td id="textblock-add-cell"></td>
   </tr>
@@ -145,10 +145,10 @@ echo $form->renderRequire();
     var group_counter = 1;
     $('.action.btn[data-action="group"]').on('click', function(){
       // создание поля с названием поля
-      var name    = $('<input type="text" style="width:250px" name="ContactGroup[' + group_counter + '][name]" placeholder="Название" />');
+      var name    = $('<input type="text" style="width:250px" name="BContactGroup[' + group_counter + '][name]" placeholder="Название" />');
 
       // создание поля с системным именем поля
-      var sysname = $('<input type="text" style="width:250px" name="ContactGroup[' + group_counter + '][sysname]" placeholder="Системное имя" />');
+      var sysname = $('<input type="text" style="width:250px" name="BContactGroup[' + group_counter + '][sysname]" placeholder="Системное имя" />');
 
       // создание кнопки "Удалить"
       var button_delete = $('<a href="#" rel="tooltip" title="Удалить поле" class="btn btn-alone delete" />');
@@ -179,10 +179,10 @@ echo $form->renderRequire();
       var icon = $('<i class="icon-move" style="background:none;"/>');
 
       // создание поля со значением поля
-      var name = $('<input type="text" style="width:250px" name="ContactField[new][' + last_id + '][' + group + '][value]" />');
+      var name = $('<input type="text" style="width:250px" name="BContactField[new][' + last_id + '][' + group + '][value]" />');
 
       // создание поля с описанием поля
-      var description = $('<input type="text" style="width:500px" name="ContactField[new][' + last_id + '][' + group + '][description]" />');
+      var description = $('<input type="text" style="width:500px" name="BContactField[new][' + last_id + '][' + group + '][description]" />');
 
       // создание кнопки "Удалить"
       var button_delete = $('<a href="#" rel="tooltip" title="Удалить поле" style="background:none;content:none;" class="btn btn-alone delete" />');
