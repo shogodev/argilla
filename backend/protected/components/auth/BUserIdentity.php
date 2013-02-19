@@ -70,10 +70,18 @@ class BUserIdentity extends CUserIdentity
    */
   private function devServerAuth()
   {
+    if( !file_exists(self::ALLOW_FREE_AUTH) )
+    {
+      Yii::log('Файл авторизации не существует по пути '.self::ALLOW_FREE_AUTH, CLogger::LEVEL_ERROR, 'UserIdentity');
+      return $this->auth();
+    }
+
     $authFile = fopen(self::ALLOW_FREE_AUTH, 'rt');
 
     $username = trim(fgets($authFile));
     $password = trim(fgets($authFile));
+
+    fclose($authFile);
 
     if( $username !== $this->username )
       $this->errorCode = self::ERROR_USERNAME_INVALID;
@@ -84,8 +92,6 @@ class BUserIdentity extends CUserIdentity
       $this->errorCode = self::ERROR_NONE;
       $this->_id = 1;
     }
-
-    fclose($authFile);
 
     return !$this->errorCode;
   }
