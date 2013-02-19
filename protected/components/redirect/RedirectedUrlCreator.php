@@ -8,6 +8,8 @@
  */
 class RedirectedUrlCreator extends CComponent
 {
+  const CACHE_PREFIX = 'redirect_url_creator::';
+
   /**
    * @var string
    */
@@ -41,6 +43,8 @@ class RedirectedUrlCreator extends CComponent
    */
   public function create()
   {
+    $this->getFromCache();
+
     if( empty($this->target) )
     {
       $seoRedirect = Yii::app()->seoRedirect;
@@ -53,8 +57,47 @@ class RedirectedUrlCreator extends CComponent
 
       if( !empty(Yii::app()->params['collectUrls']) && Yii::app()->params['collectUrls'] === true )
         Yii::app()->urlCollection->push($this->target);
+
+      $this->setToCache();
     }
 
     return $this->target;
+  }
+
+  /**
+   * @return int
+   */
+  protected function getCacheExpire()
+  {
+    return YII_DEBUG ? 0 : 1800;
+  }
+
+  /**
+   * @return string
+   */
+  protected function getCacheId()
+  {
+    return self::CACHE_PREFIX.$this->baseUrl;
+  }
+
+  protected function getFromCache()
+  {
+    if( $this->useCache() && Yii::app()->cache->offsetExists($this->getCacheId()) )
+      $this->target = Yii::app()->cache->offsetGet($this->getCacheId());
+
+  }
+
+  protected function setToCache()
+  {
+    if( $this->useCache() )
+      Yii::app()->cache->offsetSet($this->getCacheId(), $this->target);
+  }
+
+  /**
+   * @return bool
+   */
+  protected function useCache()
+  {
+    return Yii::app()->params['cacheUrls'] === true && Yii::app()->cache !== null;
   }
 }

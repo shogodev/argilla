@@ -144,11 +144,15 @@ return array(
       'options' => array()
     ),
 
+    'cache' => array(
+      'class'=>'system.caching.CDummyCache',
+    ),
   ),
 
   'params' => array(
     'salt'        => 'random_salt',
     'collectUrls' => false,
+    'cacheUrls'   => false,
   ),
 
   'sourceLanguage' => 'ru_ru',
