@@ -3,7 +3,6 @@
 	<property name = "dbConfigFilePath" value = "protected/config/db.php" /> <!-- путь к файлу настроек -->
 	<property name = "dbSchemaLocation" value = ".sql/schema.sql" /> <!-- где лежит схема -->
 	<property name = "sqlFolder" value = ".sql" /> <!-- путь к дампам -->
-	<property name = "devServerHostName" value = "boojaka.shogo.ru" /> <!-- имя хоста, на котором можно накатывать дампы и схемы -->
 
 	<taskdef name = "parseDbConfig"		classname = "build.tasks.ParseDbConfigTask" />
 
@@ -47,14 +46,6 @@
 </target>
 
 <target name = "applySchema" depends = "createDb" description = "Накатить схему на БД">
-	<if>
-		<not>
-			<equals arg1 = "${host.name}" arg2 = "${devServerHostName}" />
-		</not>
-		<then>
-			<fail message = "Накатывать схему можно только на dev-сервере!" />
-		</then>
-	</if>
 	<available file = "${dbSchemaLocation}" property = "schema_exists" value = "1" />
 	<fail unless = "schema_exists" message = "Schema file does not exist in specified location (${dbSchemaLocation})" />
 	
