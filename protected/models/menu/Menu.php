@@ -7,6 +7,8 @@
  * @license http://argilla.ru/LICENSE
  * @package frontend.models.menu
  *
+ * @method static Menu model(string $class = __CLASS__)
+ *
  * @property int $id
  * @property string $name
  * @property string $sysname
@@ -66,12 +68,19 @@ class Menu extends FActiveRecord implements IMenuItem
     {
       foreach( $this->items as $item )
       {
+        /**
+         * @var MenuItem $item
+         */
         $item->setDepth(--$this->depth);
+        $model = preg_replace("/([A-Z][a-z]+)\w*/", "$1", $item->frontend_model);
 
         $data[] = array(
           'label' => $item->getName(),
           'url'   => $item->getMenuLink(),
           'items' => $item->getChildren(),
+          'itemOptions' => array(
+            'class' => 'icn-top-'.strtolower($model).$item->item_id
+          ),
         );
       }
     }

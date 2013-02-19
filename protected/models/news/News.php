@@ -7,6 +7,7 @@
  * @package frontend.models.news
  *
  * @method static News model(string $class = __CLASS__)
+ * @method News main()
  *
  * @property string  $id
  * @property integer $section_id
@@ -60,7 +61,7 @@ class News extends FActiveRecord
   {
     $this->date  = !empty($this->date) ? date('d.m.Y', strtotime($this->date)) : '';
     $this->url   = Yii::app()->controller->createUrl('news/one', array('url' => $this->url));
-    $this->image = new FSingleImage($this->img, 'news');
+    $this->image = $this->img ? new FSingleImage($this->img, 'news') : null;
 
     parent::afterFind();
   }
