@@ -9,17 +9,6 @@
 class HelpModule extends BModule
 {
   public $defaultController = 'BHelp';
-
   public $name = 'Помощь';
-
   public $group = 'help';
-
-	public function init()
-	{
-    $this->setImport(array(
-      'help.models.*',
-      'help.components.*',
-      'help.controllers.*',
-    ));
-	}
 }

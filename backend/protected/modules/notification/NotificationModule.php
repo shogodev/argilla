@@ -9,17 +9,6 @@
 class NotificationModule extends BModule
 {
   public $defaultController = 'BNotification';
-
   public $name = 'Уведомления';
-
   public $group = 'settings';
-
-	public function init()
-	{
-		$this->setImport(array(
-			'notification.models.*',
-			'notification.components.*',
-      'notification.controllers.*',
-		));
-	}
 }

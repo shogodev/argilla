@@ -9,15 +9,5 @@
 class UserModule extends BModule
 {
   public $defaultController = 'BFrontendUser';
-
   public $name = 'Пользователи';
-
-	public function init()
-	{
-		$this->setImport(array(
-			'user.models.*',
-			'user.components.*',
-			'user.controllers.*',
-		));
-	}
 }

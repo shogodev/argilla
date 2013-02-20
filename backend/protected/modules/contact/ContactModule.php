@@ -10,13 +10,4 @@ class ContactModule extends BModule
 {
   public $defaultController = 'BContact';
   public $name = 'Контакты';
-
-  public function init()
-  {
-    $this->setImport(array(
-      'contact.models.*',
-      'contact.components.*',
-      'contact.controllers.*',
-    ));
-  }
 }

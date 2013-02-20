@@ -9,17 +9,7 @@
 class BannerModule extends BModule
 {
   public $defaultController = 'BBanner';
-
   public $name = 'Баннеры';
-
-  public function init()
-  {
-    $this->setImport(array(
-      'banner.models.*',
-      'banner.controllers.*',
-      'banner.components.*',
-    ));
-  }
 
   public function getUploadPath()
   {

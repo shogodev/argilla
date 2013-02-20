@@ -1,6 +1,6 @@
 <?php
-/* @var $this RoleController */
-/* @var $model RbacRole */
+/* @var $this BRbacRoleController */
+/* @var $model BRbacRole */
 /* @var $tasks array */
 /* @var $form BActiveForm */
 ?>
@@ -27,7 +27,7 @@
   <?php echo $form->textAreaRow($model, 'description'); ?>
 
   <?php if( !$model->isNewRecord ):?>
-  <?php echo $form->checkBoxListRow($model, 'tasks', $tasks)?>
+  <?php echo $form->checkBoxListRow($model, 'tasks', BRbacTask::getTasks());?>
   <?php endif;?>
 
 </tbody>

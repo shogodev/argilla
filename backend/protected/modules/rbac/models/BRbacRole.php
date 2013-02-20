@@ -23,7 +23,7 @@ class BRbacRole extends BAuthItem
 
     foreach( $roles as $role )
     {
-      $item = RbacRole::model()->findByPk($role->name);
+      $item = BRbacRole::model()->findByPk($role->name);
 
       $data[$item->name] = $item->title;
     }
@@ -51,7 +51,7 @@ class BRbacRole extends BAuthItem
     $data = array();
     foreach( $children as $child )
     {
-      $task = RbacTask::model()->findByPk($child->name);
+      $task = BRbacTask::model()->findByPk($child->name);
 
       $data[$task->name] = $task->name;
     }

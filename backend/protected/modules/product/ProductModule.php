@@ -9,17 +9,7 @@
 class ProductModule extends BModule
 {
   public $defaultController = 'BProduct';
-
   public $name = 'Каталог продукции';
-
-  public function init()
-  {
-    $this->setImport(array(
-      'product.models.*',
-      'product.components.*',
-      'product.controllers.*',
-    ));
-  }
 
   public function getThumbsSettings()
   {

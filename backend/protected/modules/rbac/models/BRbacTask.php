@@ -28,13 +28,9 @@ class BRbacTask extends BAuthItem
    */
   public static function getTasks()
   {
-    $criteria = new CDbCriteria();
-    $criteria->condition = 'type=:type';
-    $criteria->params = array(':type' => CAuthItem::TYPE_TASK);
-
-    $tasks = self::model()->findAll($criteria);
-
     $data = array();
+    $tasks = self::model()->findAll();
+
     foreach( $tasks as $task )
     {
       $data[$task->name] = $task->title;

@@ -8,7 +8,7 @@
  */
 class RbacModule extends BModule
 {
-  public $defaultController = 'user';
+  public $defaultController = 'BUser';
   public $name = 'Доступ';
   public $group = 'settings';
 

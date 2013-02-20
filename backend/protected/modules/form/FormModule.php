@@ -9,16 +9,15 @@
 class FormModule extends BModule
 {
   public $defaultController = 'BCallback';
-
   public $name = 'Формы';
 
-  public function init()
+  /**
+   * @return array
+   */
+  protected function getExtraDirectoriesToImport()
   {
-    $this->setImport(array(
-      'form.models.*',
-      'form.components.*',
-      'form.controllers.*',
+    return [
       'backend.modules.product.models.*',
-    ));
+    ];
   }
 }

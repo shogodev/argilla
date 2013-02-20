@@ -9,17 +9,7 @@
 class InfoModule extends BModule
 {
   public $defaultController = 'BInfo';
-
   public $name = 'Информация';
-
-  public function init()
-  {
-    $this->setImport(array(
-      'info.models.*',
-      'info.components.*',
-      'info.controllers.*',
-    ));
-  }
 
   public function getThumbsSettings()
   {

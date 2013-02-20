@@ -155,45 +155,33 @@ class RbacCommand extends CConsoleCommand
     if( !file_exists($this->path . $this->modulePath . '/' . $module . '/controllers') )
       return;
 
-    echo "Найден модуль: $module\n";
+    Yii::import('backend.modules.'.$module.'.*');
+    $moduleName = ucfirst($module).'Module';
 
-    $handle = opendir($this->path . $this->modulePath . '/' . $module . '/controllers');
-
-    while( false !== ($entry = readdir($handle)) )
+    if( @class_exists($moduleName) !== false )
     {
-      if( $entry !== '.' && $entry !== '..' )
-      {
-        $this->modules[$module]['controllers'][] = $entry;
-        Yii::import('backend.modules.' . $module . '.controllers.*');
-      }
+      echo "Найден модуль: $module\n";
 
+      $moduleClass = new $moduleName($module, null);
+      $this->modules[$module] = $moduleClass;
     }
   }
 
   /**
-   * Создание названий и имел задач
+   * Создание названий и имен задач
    */
   protected function getNames()
   {
-    foreach( $this->modules as $module => $item )
+    foreach( $this->modules as $moduleName => $module )
     {
-      foreach( $item['controllers'] as $controller )
+      foreach( $module->controllerMap as $id => $controller )
       {
-        Yii::import('backend.modules.' . $module . '.*');
+        $controllerClass = new $controller($id);
 
-        $controllerName = explode('.', $controller);
-        $controller = new $controllerName[0]($controllerName[0]);
-
-        $moduleClass = ucfirst($module) . 'Module';
-        $moduleModel = new $moduleClass($module, $module);
-
-        if( $controller instanceof BController )
-        {
-          $this->names[] = array(
-            'title' => $moduleModel->name . ' - ' . $controller->name,
-            'name' => $module . ':' . str_replace('Controller', '',  lcfirst(BApplicationHelper::cutClassPrefix(get_class($controller)))),
-          );
-        }
+        $this->names[] = [
+          'name' => $moduleName.':'.$controllerClass->getId(),
+          'title' => $module->name.' - '.$controllerClass->name,
+        ];
       }
     }
   }
