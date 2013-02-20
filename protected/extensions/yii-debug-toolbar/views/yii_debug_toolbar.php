@@ -6,6 +6,7 @@
         <ul>
             <li><br />&nbsp;<br /></li>
             <?php foreach ($panels as $panel): ?>
+            <?php if( !is_object($panel) ) continue;?>
             <li class="yii-debug-toolbar-button <?php echo $panel->id ?>">
                 <a class="yii-debug-toolbar-link" href="javascript:;//" id="yii-debug-toolbar-tab-<?php echo $panel->id ?>">
                     <?php echo CHtml::encode($panel->menuTitle); ?>
@@ -28,6 +29,7 @@
     </div>
 
     <?php foreach ($panels as $panel) : ?>
+    <?php if( !is_object($panel) ) continue;?>
     <div id="<?php echo $panel->id ?>" class="yii-debug-toolbar-panel">
         <div class="yii-debug-toolbar-panel-title">
         <a href="javascript:;//" class="yii-debug-toolbar-panel-close"><?php echo YiiDebug::t('Close')?></a>
