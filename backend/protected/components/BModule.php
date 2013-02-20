@@ -129,7 +129,7 @@ class BModule extends CWebModule
    */
   protected function getControllerAlias($controller)
   {
-    return lcfirst(str_replace('Controller', '', BApplicationHelper::cutClassPrefix($controller)));
+    return lcfirst(str_replace('Controller', '', BApplication::cutClassPrefix($controller)));
   }
 
   /**

@@ -328,13 +328,18 @@ class AccessHelper
    */
   private function initProperties($module, $controller, $action)
   {
-    if( $controller === null )
+    if( $module === null || $controller === null )
     {
       if( !empty(Yii::app()->controller->module->id) )
-        $this->module     = Yii::app()->controller->module->id;
+      {
+        $module           = Yii::app()->controller->module;
+        $this->module     = $module->id;
+        $this->controller = array_search(get_class(Yii::app()->controller), $module->controllerMap);
+      }
+      else
+        $this->controller = Yii::app()->controller->id;
 
-      $this->controller = Yii::app()->controller->id;
-      $this->action     = Yii::app()->controller->action->id;
+      $this->action = Yii::app()->controller->action->id;
     }
     else
     {

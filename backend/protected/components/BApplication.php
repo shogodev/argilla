@@ -10,6 +10,18 @@ class BApplication extends CWebApplication
 {
   const CLASS_PREFIX = 'B';
 
+  /**
+   * Удаление префикса класса
+   *
+   * @param string $className
+   *
+   * @return string mixed
+   */
+  public static function cutClassPrefix($className)
+  {
+    return preg_replace('/^'.BApplication::CLASS_PREFIX.'([A-Z])(.*)/', '$1$2', $className);
+  }
+
   public function getFrontendPath()
   {
     return str_replace("/backend/protected", "", $this->getBasePath()).'/';
@@ -78,17 +90,6 @@ class BApplication extends CWebApplication
     {
       parent::end($status, $exit);
     }
-  }
-
-  /**
-   * Вырезает префикс класса
-   *
-   * @param string $className
-   * @return string
-   */
-  public function cutClassPrefix($className)
-  {
-    return BApplicationHelper::cutClassPrefix($className);
   }
 
   /**

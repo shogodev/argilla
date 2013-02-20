@@ -189,10 +189,11 @@ class BMenu extends CComponent
        */
       $module = $this->getCurrentModule();
 
-      $class = basename($controllerClass, '.php');
-      $id    = str_replace('Controller', '', $class);
+      $class    = basename($controllerClass, '.php');
+      $mappedId = array_search($class, $module->controllerMap);
+      $id       = $mappedId ? : BApplication::cutClassPrefix($class);
 
-      if( !preg_match('/^\w+$/', $class) || !AccessHelper::init($module->id, $id)->checkAccess() )
+      if( !AccessHelper::init($module->id, $id)->checkAccess() )
         continue;
 
       $class = new $class($id);
