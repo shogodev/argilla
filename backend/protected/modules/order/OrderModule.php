@@ -9,15 +9,5 @@
 class OrderModule extends BModule
 {
   public $defaultController = 'BOrder';
-
   public $name = 'Заказы';
-
-	public function init()
-	{
-		$this->setImport(array(
-			'order.models.*',
-			'order.components.*',
-			'order.controllers.*',
-		));
-	}
 }

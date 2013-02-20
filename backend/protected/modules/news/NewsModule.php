@@ -9,17 +9,7 @@
 class NewsModule extends BModule
 {
   public $defaultController = 'BNews';
-
   public $name = 'Новости';
-
-  public function init()
-  {
-    $this->setImport(array(
-      'news.models.*',
-      'news.components.*',
-      'news.controllers.*',
-    ));
-  }
 
   public function getThumbsSettings()
   {

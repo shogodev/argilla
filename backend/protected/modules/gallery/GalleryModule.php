@@ -9,7 +9,6 @@
 class GalleryModule extends BModule
 {
   public $defaultController = 'BGallery';
-
   public $name = 'Галерии';
 
   public function getThumbsSettings()

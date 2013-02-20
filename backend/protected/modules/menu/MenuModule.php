@@ -8,7 +8,6 @@
  */
 class MenuModule extends BModule
 {
-  public $defaultController = 'menu';
-
+  public $defaultController = 'BMenu';
   public $name = 'Меню';
 }
