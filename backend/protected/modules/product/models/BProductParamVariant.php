@@ -16,11 +16,6 @@
  */
 class BProductParamVariant extends BActiveRecord
 {
-  public function tableName()
-  {
-    return '{{product_param_variant}}';
-  }
-
   public function rules()
   {
     return array(

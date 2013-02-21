@@ -46,11 +46,6 @@ class BOrder extends BActiveRecord
 
   public $date_create_to;
 
-  public function tableName()
-  {
-    return '{{order}}';
-  }
-
   public function rules()
   {
     return array(

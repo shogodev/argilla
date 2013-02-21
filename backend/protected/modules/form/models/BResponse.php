@@ -23,11 +23,6 @@ class BResponse extends BActiveRecord
 
   public $date_to;
 
-  public function tableName()
-  {
-    return '{{response}}';
-  }
-
   public function rules()
   {
     return array(

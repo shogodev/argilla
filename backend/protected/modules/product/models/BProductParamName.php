@@ -43,11 +43,6 @@ class BProductParamName extends BActiveRecord
     );
   }
 
-  public function tableName()
-  {
-    return '{{product_param_name}}';
-  }
-
   public function rules()
   {
     return array(

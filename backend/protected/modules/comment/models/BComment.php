@@ -18,14 +18,6 @@
 class BComment extends BActiveRecord
 {
   /**
-   * @return string
-   */
-  public function tableName()
-  {
-    return '{{comment}}';
-  }
-
-  /**
    * @return array
    */
   public function rules()

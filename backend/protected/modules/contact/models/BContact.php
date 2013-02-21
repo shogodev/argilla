@@ -24,14 +24,6 @@
 class BContact extends BActiveRecord
 {
   /**
-   * @return string
-   */
-  public function tableName()
-  {
-    return '{{contact}}';
-  }
-
-  /**
    * @return array
    */
   public function behaviors()

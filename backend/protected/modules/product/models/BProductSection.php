@@ -21,11 +21,6 @@
  */
 class BProductSection extends BActiveRecord
 {
-  public function tableName()
-  {
-    return '{{product_section}}';
-  }
-
   public function behaviors()
   {
     return array('uploadBehavior' => array('class' => 'UploadBehavior', 'validAttributes' => "img"));

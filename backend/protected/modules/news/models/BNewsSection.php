@@ -20,11 +20,6 @@
  */
 class BNewsSection extends BActiveRecord
 {
-  public function tableName()
-  {
-    return '{{news_section}}';
-  }
-
   public function rules()
   {
     return array(

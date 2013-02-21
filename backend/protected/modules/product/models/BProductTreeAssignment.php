@@ -76,11 +76,6 @@ class BProductTreeAssignment extends BActiveRecord
     return $assignmentModel;
   }
 
-  public function tableName()
-  {
-    return '{{product_tree_assignment}}';
-  }
-
   public function rules()
   {
     return array(

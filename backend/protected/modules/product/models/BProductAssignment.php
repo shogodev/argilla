@@ -13,11 +13,6 @@
  */
 class BProductAssignment extends BActiveRecord
 {
-  public function tableName()
-  {
-    return '{{product_assignment}}';
-  }
-
   public function getFields()
   {
     $fields = $this->getMetaData()->columns;

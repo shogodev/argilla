@@ -14,7 +14,7 @@
  * @property string $img
  * @property string $articul
  */
-class OrderProductHistory extends BActiveRecord
+class BOrderProductHistory extends BActiveRecord
 {
   public function tableName()
   {

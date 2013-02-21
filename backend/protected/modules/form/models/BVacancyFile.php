@@ -10,8 +10,4 @@
  */
 class BVacancyFile extends BActiveRecord
 {
-  public function tableName()
-  {
-    return '{{vacancy_file}}';
-  }
 }

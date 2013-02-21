@@ -9,11 +9,6 @@
  */
 class BSettings extends BActiveRecord
 {
-  public function tableName()
-  {
-    return '{{settings}}';
-  }
-
   public function rules()
   {
     return array(

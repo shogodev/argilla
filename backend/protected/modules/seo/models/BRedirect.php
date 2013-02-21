@@ -19,14 +19,6 @@
 class BRedirect extends BActiveRecord
 {
   /**
-   * @return string
-   */
-  public function tableName()
-  {
-    return '{{redirect}}';
-  }
-
-  /**
    * @return array
    */
   public function rules()

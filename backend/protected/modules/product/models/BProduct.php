@@ -36,11 +36,6 @@ class BProduct extends BActiveRecord
 
   private $type_id;
 
-  public function tableName()
-  {
-    return '{{product}}';
-  }
-
   public function __get($name)
   {
     $fields = BProductAssignment::model()->getFields();

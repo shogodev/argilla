@@ -19,11 +19,6 @@
  */
 class BNotification extends BActiveRecord
 {
-  public function tableName()
-  {
-    return '{{notification}}';
-  }
-
   public function rules()
   {
     return array(

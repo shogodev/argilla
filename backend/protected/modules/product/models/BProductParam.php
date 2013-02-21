@@ -18,11 +18,6 @@
  */
 class BProductParam extends BActiveRecord
 {
-  public function tableName()
-  {
-    return '{{product_param}}';
-  }
-
   public function rules()
   {
     return array(

@@ -33,14 +33,6 @@ class BContactGroup extends BActiveRecord
   }
 
   /**
-   * @return string
-   */
-  public function tableName()
-  {
-    return '{{contact_group}}';
-  }
-
-  /**
    * @return array
    */
   public function rules()

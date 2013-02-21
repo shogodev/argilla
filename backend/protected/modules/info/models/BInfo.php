@@ -29,11 +29,6 @@ class BInfo extends BActiveRecord implements IBFrontendMenuEntry
 
   public $parent;
 
-  public function tableName()
-  {
-    return '{{info}}';
-  }
-
   public function behaviors()
   {
     return array(

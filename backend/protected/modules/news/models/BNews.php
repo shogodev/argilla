@@ -26,11 +26,6 @@ class BNews extends BActiveRecord
 
   public $date_to;
 
-  public function tableName()
-  {
-    return '{{news}}';
-  }
-
   public function behaviors()
   {
     return array('uploadBehavior' => array('class' => 'UploadBehavior', 'validAttributes' => "img"));

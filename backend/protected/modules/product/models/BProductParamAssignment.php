@@ -17,11 +17,6 @@
  */
 class BProductParamAssignment extends BActiveRecord
 {
-  public function tableName()
-  {
-    return '{{product_param_assignment}}';
-  }
-
   public function rules()
   {
     return array(

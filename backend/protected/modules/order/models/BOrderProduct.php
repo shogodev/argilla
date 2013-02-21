@@ -18,11 +18,6 @@
  */
 class BOrderProduct extends BActiveRecord
 {
-  public function tableName()
-  {
-    return '{{order_product}}';
-  }
-
   public function relations()
   {
     return array('history' => array(self::HAS_ONE, 'OrderProductHistory', 'order_product_id'));

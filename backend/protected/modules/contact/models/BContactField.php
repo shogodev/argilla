@@ -22,14 +22,6 @@
 class BContactField extends BActiveRecord
 {
   /**
-   * @return string
-   */
-  public function tableName()
-  {
-    return '{{contact_field}}';
-  }
-
-  /**
    * @return array
    */
   public function rules()

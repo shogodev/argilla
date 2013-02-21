@@ -14,11 +14,6 @@ class BVacancy extends BActiveRecord
 
   public $date_to;
 
-  public function tableName()
-  {
-    return '{{vacancy}}';
-  }
-
   public function relations()
   {
     return array(

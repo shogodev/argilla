@@ -17,11 +17,6 @@
  */
 class BTextBlock extends BActiveRecord
 {
-  public function tableName()
-  {
-    return '{{text_block}}';
-  }
-
   public function behaviors()
   {
     return array('uploadBehavior' => array('class' => 'UploadBehavior', 'validAttributes' => 'img'));

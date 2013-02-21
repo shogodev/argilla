@@ -19,11 +19,6 @@ class BProductType extends BActiveRecord
 {
   public $section_id;
 
-  public function tableName()
-  {
-    return '{{product_type}}';
-  }
-
   public function rules()
   {
     return array(

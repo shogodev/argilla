@@ -31,14 +31,6 @@
 class BBanner extends BActiveRecord
 {
   /**
-   * @return string the associated database table name
-   */
-  public function tableName()
-  {
-    return '{{banner}}';
-  }
-
-  /**
    * @return array validation rules for model attributes.
    */
   public function rules()

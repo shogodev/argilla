@@ -17,14 +17,6 @@
 class BGallery extends BActiveRecord
 {
   /**
-   * @return string
-   */
-  public function tableName()
-  {
-    return '{{gallery}}';
-  }
-
-  /**
    * @return array
    */
   public function rules()
