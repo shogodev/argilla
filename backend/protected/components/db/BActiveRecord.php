@@ -6,7 +6,7 @@
  * @license http://argilla.ru/LICENSE
  * @package backend.components
  */
-class BActiveRecord extends CActiveRecord
+abstract class BActiveRecord extends CActiveRecord
 {
   /**
    * @param string $className
