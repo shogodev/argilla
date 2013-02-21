@@ -16,7 +16,7 @@
  *
  * @method static BFrontendCustomMenuItem model(string $class = __CLASS__)
  */
-class BFrontendCustomMenuItem extends BActiveRecord implements IBFrontendMenuEntry
+class BFrontendCustomMenuItem extends BAbstractMenuEntry
 {
   /**
    * @return string

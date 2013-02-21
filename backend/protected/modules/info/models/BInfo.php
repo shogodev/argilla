@@ -23,7 +23,7 @@
  * @property string  $menu
  * @property string  $sitemap
  */
-class BInfo extends BActiveRecord implements IBFrontendMenuEntry
+class BInfo extends BAbstractMenuEntry
 {
   const ROOT_ID = 1;
 

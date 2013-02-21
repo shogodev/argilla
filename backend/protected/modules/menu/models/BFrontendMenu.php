@@ -17,7 +17,7 @@
  *
  * @method static BFrontendMenu model(string $class = __CLASS__)
  */
-class BFrontendMenu extends BActiveRecord implements IBFrontendMenuEntry
+class BFrontendMenu extends BAbstractMenuEntry
 {
   /**
    * Массив с доступными для меню классами
