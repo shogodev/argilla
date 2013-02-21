@@ -1,6 +1,6 @@
 <?php
 /**
- * @author Sergey Glagolev <glagolev@shogo.ru>
+ * @author Sergey Glagolev <glagolev@shogo.ru>, Nikita Melnikov <melnikov@shogo.ru>
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
@@ -16,6 +16,16 @@ abstract class BActiveRecord extends CActiveRecord
   public static function model($className = __CLASS__)
   {
     return parent::model(get_called_class());
+  }
+
+  /**
+   * Получение имени таблицы по имени текущей модели в виде {{class_name}}
+   *
+   * @return string
+   */
+  public function tableName()
+  {
+    return Utils::getTableNameFromClass(BApplication::cutClassPrefix(get_class($this)));
   }
 
   /**

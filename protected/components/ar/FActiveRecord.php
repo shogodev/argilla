@@ -18,6 +18,14 @@ class FActiveRecord extends CActiveRecord
     return parent::model(get_called_class());
   }
 
+  /**
+   * @return string
+   */
+  public function tableName()
+  {
+    return Utils::getTableNameFromClass(get_class($this));
+  }
+
   public function attributeLabels()
   {
     return array(

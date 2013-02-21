@@ -198,4 +198,16 @@ class Utils
 
     return $randKey;
   }
+
+  /**
+   * Получение имени таблицы по имени модели в виде {{class_name}}
+   *
+   * @param string $class
+   *
+   * @return string
+   */
+  public static function getTableNameFromClass($class)
+  {
+    return '{{'.strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $class)).'}}';
+  }
 }
