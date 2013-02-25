@@ -144,7 +144,7 @@ class BMenu extends CComponent
 
     return isset($currentModule->id) &&
            $currentModule->id == $id &&
-           (in_array(BApplication::CLASS_PREFIX.$controllerId , $keys) || in_array($controllerId , $keys));
+           in_array(lcfirst(BApplication::cutClassPrefix($controllerId)), $keys);
   }
 
   /**
@@ -208,7 +208,7 @@ class BMenu extends CComponent
       {
         $controllers[$id] = array('label'       => $class->name,
                                   'url'         => $this->buildUrl($module->id, ($id)),
-                                  'active'      => ucfirst($controller->id) === $id || BApplication::CLASS_PREFIX.ucfirst($controller->id) === $id,
+                                  'active'      => $controller->id === $id || ucfirst($controller->id) === BApplication::CLASS_PREFIX.ucfirst($id),
                                   'position'    => $class->position,
                                   'itemOptions' => array('class' => $id),
         );
