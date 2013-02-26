@@ -176,6 +176,6 @@ class BMetaRoute extends BActiveRecord
       if( preg_match('/^frontend.models.(.*)/', $import) )
         Yii::import($import);
 
-    Yii::import('frontend.components.interfaces.*');
+    Yii::import('frontend.components.ar.*');
   }
 }
