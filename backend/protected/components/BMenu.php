@@ -201,7 +201,7 @@ class BMenu extends CComponent
       // Убираем ненужные виртуальные контроллеры, которые уже отобразились в меню
       $fakeControllers = $module->getMenuControllers();
       if( !empty($fakeControllers) )
-        if( !(isset($class->moduleMenu, $controller->moduleMenu) && in_array($class->id, $fakeControllers[$controller->moduleMenu]['menu'])) )
+        if( !(isset($class->moduleMenu, $controller->moduleMenu) && in_array(BApplication::CLASS_PREFIX.ucfirst($class->id), $fakeControllers[$controller->moduleMenu]['menu'])) )
           continue;
 
       if( !isset($class->enabled) || $class->enabled === true )
