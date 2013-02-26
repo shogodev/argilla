@@ -37,9 +37,9 @@ class BUser extends BActiveRecord
     return array(
       array('username', 'required'),
       array('username', 'unique'),
-
+      array('visible', 'numerical', 'integerOnly' => true),
       array('username', 'length', 'max' => 64),
-      array('username, password, passwordNew, roles', 'safe'),
+      array('password, passwordNew, roles', 'safe'),
     );
   }
 
@@ -111,12 +111,27 @@ class BUser extends BActiveRecord
    */
   public function attributeLabels()
   {
-    return array(
+    return CMap::mergeArray(parent::attributeLabels(), array(
       'username'    => 'Имя пользователя',
       'password'    => 'Пароль',
       'roles'       => 'Роли',
       'passwordNew' => 'Пароль',
-    );
+    ));
+  }
+
+  /**
+   * @return BActiveDataProvider
+   */
+  public function search()
+  {
+    $criteria = new CDbCriteria();
+
+    $criteria->compare('visible', $this->visible);
+    $criteria->compare('username', $this->username, true);
+
+    return new BActiveDataProvider($this, [
+      'criteria' => $criteria,
+    ]);
   }
 
   /**
