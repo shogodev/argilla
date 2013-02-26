@@ -23,7 +23,7 @@ class FActiveRecord extends CActiveRecord
    */
   public function tableName()
   {
-    return Utils::getTableNameFromClass(get_class($this));
+    return Utils::camelToSnakeCase(get_class($this));
   }
 
   public function attributeLabels()

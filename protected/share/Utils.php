@@ -206,7 +206,7 @@ class Utils
    *
    * @return string
    */
-  public static function getTableNameFromClass($class)
+  public static function camelToSnakeCase($class)
   {
     return '{{'.strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $class)).'}}';
   }
