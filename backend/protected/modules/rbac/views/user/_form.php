@@ -1,16 +1,23 @@
 <?php
-/* @var $this UserController */
-/* @var $model User */
-/* @var $form BActiveForm */
+/**
+ * @author Nikita Melnikov <melnikov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
+ * @package backend.modules.rbac
+ *
+ * @var BUserController $this
+ * @var BActiveForm $form
+ * @var BUser $model
+ */
+Yii::app()->breadcrumbs->show();
+
+$form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId()));
+
+$this->renderPartial('//_form_buttons', array('model' => $model));
+echo $form->errorSummary($model);
+echo $form->renderRequire();
 ?>
-
-<?php Yii::app()->breadcrumbs->show();?>
-
-<?php $form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId())); ?>
-
-<?php $this->renderPartial('//_form_buttons', array('model' => $model));?>
-<?php echo $form->errorSummary($model); ?>
-<?php echo $form->renderRequire(); ?>
 
 <table class="detail-view table table-striped table-bordered">
 <tbody>
@@ -25,5 +32,6 @@
 </tbody>
 </table>
 
-<?php $this->renderPartial('//_form_buttons', array('model' => $model));?>
-<?php $this->endWidget(); ?>
+<?php
+$this->renderPartial('//_form_buttons', array('model' => $model));
+$this->endWidget();

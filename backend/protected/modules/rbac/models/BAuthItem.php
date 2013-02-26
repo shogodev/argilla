@@ -47,14 +47,18 @@ abstract class BAuthItem extends BActiveRecord
   }
 
   /**
-   * @return array
+   * @return BActiveDataProvider
    */
-  public function relations()
+  public function search()
   {
-    return array(
-        'authAssignments' => array(self::HAS_MANY, 'ShogocmsAuthAssignment', 'itemname'),
-        'AuthItemChildren' => array(self::HAS_MANY, 'ShogocmsAuthItemChild', 'parent'),
-    );
+    $criteria = new CDbCriteria();
+
+    $criteria->compare('title', $this->title, true);
+    $criteria->compare('name', $this->name, true);
+
+    return new BActiveDataProvider($this, [
+      'criteria' => $criteria,
+    ]);
   }
 
   /**
@@ -62,12 +66,12 @@ abstract class BAuthItem extends BActiveRecord
    */
   public function attributeLabels()
   {
-    return array(
+    return CMap::mergeArray(parent::attributeLabels(), array(
         'title'       => 'Название',
         'name'        => 'Системное имя',
         'description' => 'Описание',
         'bizrule'     => 'Бизнес-логика',
         'data'        => 'Данные',
-    );
+    ));
   }
 }
