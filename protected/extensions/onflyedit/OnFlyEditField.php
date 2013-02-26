@@ -55,6 +55,8 @@ class OnFlyEditField extends BDataColumn
    */
   public $dropDown = null;
 
+  public $action = 'onflyedit';
+
   /**
    * Инициализация вывода свойства в столбец
    *
@@ -76,7 +78,7 @@ class OnFlyEditField extends BDataColumn
   protected function renderScript()
   {
     $url_script = Yii::app()->getAssetManager()->publish(dirname(__FILE__).'/js');
-    $url_onfly  = Yii::app()->getController()->createUrl(Yii::app()->getController()->id . '/onflyedit');
+    $url_onfly  = Yii::app()->getController()->createUrl($this->action);
 
     if( empty($this->dropDown) )
       $this->renderTextScript($url_script, $url_onfly);
