@@ -150,6 +150,7 @@ return array(
   ),
 
   'params' => array(
+    'mode'        => 'frontend',
     'salt'        => 'random_salt',
     'collectUrls' => false,
     'cacheUrls'   => false,
