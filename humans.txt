@@ -1,0 +1,28 @@
+/* TEAM */
+	Developer: Alexandr Kolobkov
+	Contact: kolobkov [at] shogo.ru
+	From: Tula, Russia
+
+	Developer: Nikita Melnkov
+	Contact: menlikov [at] shogo.ru
+	From: Tula, Russia
+
+	Developer: Alexey Tatarinov
+	Contact: tatarinov [at] shogo.ru
+	From: Tula, Russia
+
+	UI Developer: Alexandr Rubanov
+	Contact: rubanov [at] shogo.ru
+	From: Tula, Russia
+
+	UI Developer: Grigory Zarubin
+	From: Tula, Russia
+
+	Chef: Fedor Borshev
+	Contact: fedor [at] shogo.ru
+	From: Tula, Russia
+
+	Tech leader: Sergey Glagolev
+	Contact: glagolev [at] shogo.ru
+	From: Tula, Russia
+	
