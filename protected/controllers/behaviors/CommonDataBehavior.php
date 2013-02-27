@@ -45,12 +45,10 @@ class CommonDataBehavior extends CBehavior
    */
   public function getCounters()
   {
-    $main = false;
-    if( $this->owner->action->id === $this->owner->id && $this->owner->id === 'index' )
-      $main = true;
-
     $criteria = new CDbCriteria();
-    $criteria->compare('main', ($main ? '=' : '<>').'1');
+
+    if( !($this->owner->action->id === $this->owner->id && $this->owner->id === 'index') )
+      $criteria->compare('main', '<>1');
 
     return Counter::model()->findAll($criteria);
   }
