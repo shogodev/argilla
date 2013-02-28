@@ -1,14 +1,13 @@
 <?php
+defined('YII_ENABLE_EXCEPTION_HANDLER') or define('YII_ENABLE_EXCEPTION_HANDLER', false);
+defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', false);
+
 $config = array_replace_recursive(
   require(dirname(__FILE__).'/backend.php'),
   array(
     'components' => array(
       'fixture' => array(
-        'class' => 'BFixtureManager',
-      ),
-      'db' => array(
-        'connectionString' => 'mysql:host=localhost;dbname=shogocms_tests',
-        'tablePrefix'      => 'shogocms_',
+        'class' => 'SFixtureManager',
       ),
     ),
     'import' => array(
@@ -19,7 +18,10 @@ $config = array_replace_recursive(
     )
   )
 );
+
 unset($config['preload'][array_search('bootstrap', $config['preload'])]);
 unset($config['components']['log']);
+
+$config['components']['db']['connectionString'] = preg_replace("/dbname=([\w\-_]+)/", "dbname=$1_test", $config['components']['db']['connectionString']);
 
 return $config;

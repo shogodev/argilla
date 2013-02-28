@@ -5,7 +5,7 @@
  * Make sure the URL ends with a slash so that we can use relative URLs in test cases
  */
 if(!defined('TEST_BASE_URL'))
-define('TEST_BASE_URL','http://www.shogocms.dev.shogo.ru/index-test.php/');
+  define('TEST_BASE_URL','http://www.argilla.dev.shogo.ru/index-test.php/');
 
 /**
  * The base class for functional test cases.

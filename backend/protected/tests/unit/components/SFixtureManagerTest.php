@@ -9,7 +9,7 @@ class SFixtureManagerTest extends CTestCase
   {
     $prefix      = Yii::app()->getDb()->tablePrefix;
     $transaction = Yii::app()->db->beginTransaction();
-    $manager     = new BFixtureManager();
+    $manager     = new SFixtureManager();
 
     $manager->init();
     $manager->truncateTable($prefix.'news');

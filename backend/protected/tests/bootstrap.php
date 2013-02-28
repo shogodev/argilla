@@ -10,11 +10,10 @@ Yii::setPathOfAlias('backend', $backend);
 Yii::setPathOfAlias('frontend', $frontend);
 
 $_SERVER['SCRIPT_NAME']     = 'backend/index.php';
-$_SERVER['SCRIPT_FILENAME'] = '/usr/www/shogocms/html/backend/index.php';
-$_SERVER['SERVER_NAME']     = 'shogocms.dev.shogo.ru';
-$_SERVER['HTTP_HOST']       = 'shogocms.dev.shogo.ru';
+$_SERVER['SCRIPT_FILENAME'] = '/usr/www/argilla/html/backend/index.php';
+$_SERVER['SERVER_NAME']     = 'argilla.dev.shogo.ru';
+$_SERVER['HTTP_HOST']       = 'argilla.dev.shogo.ru';
 $_SERVER['REQUEST_URI']     = '/backend/';
 
 $app = new BApplication($config);
 $app->initModules();
-?>

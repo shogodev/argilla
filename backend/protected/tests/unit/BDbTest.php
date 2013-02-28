@@ -1,5 +1,5 @@
 <?php
-class DbTest extends CTestCase
+class BDbTest extends CTestCase
 {
   public function testConnection()
   {
