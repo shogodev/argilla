@@ -80,6 +80,18 @@ class Arr
   }
 
   /**
+   * возвращаем последний эелемент массива
+   * @param mixed $array
+   *
+   * @return mixed $last_value
+   */
+  public static function end(array $array)
+  {
+    $item = end($array);
+    return $item;
+  }
+
+  /**
    *  Провеворка массива на наличие ключей
    * @param mixed $keys
    * @param array $search
