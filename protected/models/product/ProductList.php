@@ -1,7 +1,10 @@
 <?php
 /**
- * User: Sergey Glagolev <glagolev@shogo.ru>
- * Date: 12.10.12
+ * @author Sergey Glagolev <glagolev@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
+ * @package frontend.models.product
  *
  * @property CDbCacheDependency cacheDependency
  */
@@ -18,9 +21,9 @@ class ProductList extends CComponent
   public $pagination;
 
   /**
-   * @var ProductFilter $filter
+   * @var ProductFilter[]|null $filters
    */
-  public $filter;
+  public $filters = null;
 
   /**
    * @var CDbCriteria $criteria
@@ -49,8 +52,6 @@ class ProductList extends CComponent
     'price_down' => 'IF(price=0, 1, 0), price ASC',
     'name_up' => 'name DESC',
     'name_down' => 'name ASC',
-    'weight_up' => 'weight DESC ',
-    'weight_down' => 'weight ASC',
   );
 
   /**
@@ -64,12 +65,13 @@ class ProductList extends CComponent
    * @param bool $pagination
    * @param ProductFilter $filter
    */
-  public function __construct(CDbCriteria $criteria, $sorting = null, $pagination = true, ProductFilter $filter = null)
+  public function __construct(CDbCriteria $criteria, $sorting = null, $pagination = true, $filters = null)
   {
     $this->criteria   = $criteria;
     $this->sorting    = $sorting;
     $this->pagination = $pagination;
-    $this->filter     = $filter;
+    if( !empty($filters) )
+      $this->filters    = is_array($filters) ?  $filters : array($filters);
   }
 
   /**
@@ -82,8 +84,9 @@ class ProductList extends CComponent
     $this->criteria->join  = 'JOIN '.$assignment.' AS a ON a.product_id = t.id';
     $this->criteria->order = Arr::get(self::$sortingRange, $this->sorting, Arr::reset(self::$sortingRange));
 
-    if( $this->filter )
-      $this->criteria = $this->filter->apply($this->criteria);
+    if( $this->filters )
+      foreach($this->filters as $filter)
+        $this->criteria = $filter->apply($this->criteria);
 
     $config = array('criteria' => $this->criteria);
     if( !$this->pagination )
@@ -95,47 +98,18 @@ class ProductList extends CComponent
     return $this->products;
   }
 
-  /**
-   * @param CActiveRecord $model
-   *
-   * @return CActiveRecord
-   */
-  public function getPrevious(CActiveRecord $model)
-  {
-    if( !$this->products )
-      $this->getProducts();
-
-    $keys     = $this->products->getKeys();
-    $previous = array_search($model->id, $keys) - 1;
-    $previous = $previous < 0 ? $previous + count($keys) : $previous;
-
-    return isset($keys[$previous]) ? $model->findByPk($keys[$previous]) : null;
-  }
-
-  /**
-   * @param CActiveRecord $model
-   *
-   * @return CActiveRecord
-   */
-  public function getNext(CActiveRecord $model)
-  {
-    if( !$this->products )
-      $this->getProducts();
-
-    $keys = $this->products->getKeys();
-    $next = array_search($model->id, $keys) + 1;
-    $next = $next > count($keys) - 1 ? $next - count($keys) : $next;
-
-    return isset($keys[$next]) ? $model->findByPk($keys[$next]) : null;
-  }
-
   public function getCacheKey()
   {
-    return sha1(serialize(array(
+    $arrayForSerialize = array(
       $this->criteria->toArray(),
-      $this->filter->getState(),
       $this->sorting,
-    )));
+    );
+
+    if( $this->filters )
+      foreach($this->filters as $filter)
+        $arrayForSerialize[] = $filter->getState();
+
+    return sha1(serialize($arrayForSerialize));
   }
 
   public function getCacheDependency()
