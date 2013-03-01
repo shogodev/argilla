@@ -14,9 +14,6 @@
   <target name="applyDump" description="Накатить дамп">
     <phing phingfile="build/db.xml" target="applyDump"/>
   </target>
-  <target name="changeSchemaPrefix" description="Изменить префикс таблиц в существующей схеме. Префикс берется из конфига">
-    <phing phingFile="build/db.xml" target="changeSchemaPrefix"/>
-  </target>
   <target name="revertSchema" description="Восстановить оригинальный файл схемы (git)">
     <phing phingFile="build/db.xml" target="revertSchema"/>
   </target>
