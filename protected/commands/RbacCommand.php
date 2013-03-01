@@ -70,6 +70,11 @@ class RbacCommand extends CConsoleCommand
   protected $user;
 
   /**
+   * @var CAuthItem
+   */
+  protected $root;
+
+  /**
    * Системное имя для роли администратора
    *
    * @var string
@@ -205,7 +210,7 @@ class RbacCommand extends CConsoleCommand
       try
       {
         $task->save();
-        $this->getAuthManager()->addItemChild($this->username, $task->id);
+        $this->getAuthManager()->addItemChild($this->root->name, $task->id);
         echo "$task->title ($task->name) успешно создано".PHP_EOL;
       }
       catch( Exception $e )
@@ -272,23 +277,23 @@ class RbacCommand extends CConsoleCommand
     $criteria->compare('type',CAuthItem::TYPE_ROLE);
     $criteria->compare('name', $this->roleSystemName);
 
-    $root = BRbacRole::model()->find($criteria);
+    $this->root = BRbacRole::model()->find($criteria);
 
-    if( empty($root) )
+    if( empty($this->root) )
     {
-      $root = new BRbacRole();
-      $root->name = $this->roleSystemName;
-      $root->title = $title;
-      $root->type  = CAuthItem::TYPE_ROLE;
-      $root->save();
+      $this->root = new BRbacRole();
+      $this->root->name = $this->roleSystemName;
+      $this->root->title = $title;
+      $this->root->type  = CAuthItem::TYPE_ROLE;
+      $this->root->save();
     }
     else
-      $root = clone $root;
+      $this->root = clone $root;
 
     try
     {
-      if( !$this->getAuthManager()->isAssigned($root->name, $this->user->id) )
-        $this->getAuthManager()->assign($root->name, $this->user->id);
+      if( !$this->getAuthManager()->isAssigned($this->root->name, $this->user->id) )
+        $this->getAuthManager()->assign($this->root->name, $this->user->id);
     }
     catch( Exception $e )
     {
