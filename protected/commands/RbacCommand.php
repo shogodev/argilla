@@ -288,7 +288,7 @@ class RbacCommand extends CConsoleCommand
       $this->root->save();
     }
     else
-      $this->root = clone $root;
+      $this->root = clone $this->root;
 
     try
     {
