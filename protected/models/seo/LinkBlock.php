@@ -8,11 +8,11 @@
  * @property string  $url
  * @property integer $visible
  */
-class LinksBlock extends FActiveRecord
+class LinkBlock extends FActiveRecord
   {
   public function tableName()
   {
-    return '{{seo_links_block}}';
+    return '{{seo_link_block}}';
   }
 
   public function defaultScope()
@@ -51,7 +51,7 @@ class LinksBlock extends FActiveRecord
     $criteria = new CDbCriteria();
     $criteria->compare('`key`', '='.$key);
 
-    foreach(self::model()->findAll($criteria) as $copyright)
+    foreach($this->findAll($criteria) as $copyright)
       foreach(explode("\r", $copyright->url) as $page)
         $copyrights[trim($page, $charList)][] = $copyright;
 
