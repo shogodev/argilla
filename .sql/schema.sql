@@ -28,8 +28,10 @@ DROP TABLE IF EXISTS `shogocms_association`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `shogocms_association` (
   `src` varchar(50) NOT NULL,
+  `src_frontend` varchar(255) DEFAULT NULL,
   `src_id` int(10) unsigned NOT NULL,
   `dst` varchar(50) NOT NULL,
+  `dst_frontend` varchar(255) DEFAULT NULL,
   `dst_id` int(10) unsigned NOT NULL,
   PRIMARY KEY (`src`,`src_id`,`dst`,`dst_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1238,4 +1240,4 @@ CREATE TABLE `shogocms_vacancy_file` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-02-18 17:33:48
+-- Dump completed on 2013-03-04 14:44:46
