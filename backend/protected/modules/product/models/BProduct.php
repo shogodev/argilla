@@ -30,7 +30,7 @@
  *
  * @property BProductAssignment $assignment
  */
-class BProduct extends BActiveRecord
+class BProduct extends BActiveRecord implements IHasFrontendModel
 {
   private $section_id;
 
@@ -155,5 +155,13 @@ class BProduct extends BActiveRecord
       'product_img' => 'Изображения',
       'bproduct' => 'Продукты',
     ));
+  }
+
+  /**
+   * @return string
+   */
+  public function getFrontendModelName()
+  {
+    return 'Product';
   }
 }

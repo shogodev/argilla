@@ -9,9 +9,11 @@
  * @method static BAssociation model(string $class = __CLASS__)
  *
  * @property string $src
- * @property integer    $src_id
+ * @property string $src_frontend
+ * @property integer $src_id
  * @property string $dst
- * @property integer    $dst_id
+ * @property string $dst_frontend
+ * @property integer $dst_id
  */
 class BAssociation extends BActiveRecord
 {
@@ -42,6 +44,13 @@ class BAssociation extends BActiveRecord
       $association->dst    = $dst;
       $association->dst_id = $id;
 
+      if( $model instanceof IHasFrontendModel )
+        $association->src_frontend = $model->getFrontendModelName();
+
+      $dstModel = new $dst();
+      if( $dstModel instanceof IHasFrontendModel )
+        $association->dst_frontend = $dstModel->getFrontendModelName();
+
       $association->save();
     }
   }
@@ -57,14 +66,14 @@ class BAssociation extends BActiveRecord
     $srcId = $model->getPrimaryKey();
 
     $criteria = new CDbCriteria();
-    $criteria->compare('src', '='.$src);
-    $criteria->compare('src_id', '='.$srcId);
+    $criteria->compare('src', $src);
+    $criteria->compare('src_id', $srcId);
 
     if( $dst )
-      $criteria->compare('dst', '='.$dst);
+      $criteria->compare('dst', $dst);
 
     if( $dstId )
-      $criteria->compare('dst_id', '='.$dstId);
+      $criteria->compare('dst_id', $dstId);
 
     $this->deleteAll($criteria);
   }
@@ -76,6 +85,6 @@ class BAssociation extends BActiveRecord
    */
   public function getSrc(BActiveRecord $model)
   {
-    return strtolower(get_class($model));
+    return get_class($model);
   }
 }
