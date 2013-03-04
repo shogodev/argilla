@@ -122,28 +122,6 @@ class FController extends CController
     return $model;
   }
 
-  public function actionError()
-  {
-    if( $error = Yii::app()->errorHandler->error )
-    {
-      if( Yii::app()->request->isAjaxRequest )
-        echo $error['message'];
-      else
-      {
-        if( $error['code'] == 404 || $error['code'] == 403 || $error['code'] == 402 || !YII_DEBUG )
-        {
-          $this->breadcrumbs[] = 'Ошибка';
-          $this->render('/error'.$error['code'], $error);
-        }
-        else
-        {
-          $this->breadcrumbs[] = 'Ошибка '.$error['code'];
-          $this->render('/error', $error);
-        }
-      }
-    }
-  }
-
   /**
    * @param string $view
    * @param null $data
@@ -206,7 +184,7 @@ class FController extends CController
 
       foreach($rules as $rule)
       {
-        if( $rule[0] == Yii::app()->controller->route )
+        if( Yii::app()->controller->route == Arr::get($rule, 0) )
         {
           if( isset($rule['defaultParams']) )
             $defaultParams = $rule['defaultParams'];
