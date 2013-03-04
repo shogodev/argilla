@@ -68,7 +68,7 @@ class BFrontendUser extends BActiveRecord
         $this->password = $this->_password;
       else
       {
-        Yii::import('frontend.components.FUserIdentity');
+        Yii::import('frontend.components.auth.FUserIdentity');
         $this->password = FUserIdentity::createPassword($this->login, $this->password);
       }
       return true;

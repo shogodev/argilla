@@ -21,7 +21,7 @@ class BAssociationColumn extends BDataColumn
   protected function renderDataCellContent($row, $data)
   {
     $pk         = $data->getPrimaryKey();
-    $parameters = array('popup' => true, 'srcId' => $pk, 'src' => strtolower(get_class($data)), 'dst' => $this->name);
+    $parameters = array('popup' => true, 'srcId' => $pk, 'src' => get_class($data), 'dst' => $this->name);
 
     foreach($this->parameters as $parameter => $value)
       $parameters[ucfirst($this->name)."[".$parameter."]"] = $value;

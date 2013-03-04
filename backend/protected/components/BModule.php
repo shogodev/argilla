@@ -22,7 +22,14 @@ class BModule extends CWebModule
 
   public $defaultUploadDir  = 'f/';
 
-  public $thumbsSettings = array();
+  public $thumbsSettings = [];
+
+  /**
+   * Список других модулей, от которых зависит текущий модуль
+   *
+   * @var array
+   */
+  public $moduleDependencies = [];
 
   /**
    * Поддериктории подуля для загрузки

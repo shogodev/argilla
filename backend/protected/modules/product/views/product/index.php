@@ -31,7 +31,7 @@ $this->widget('BGridView', array(
     ),
 
     array(
-      'name' => 'bproduct',
+      'name' => 'BProduct',
       'class' => 'BAssociationColumn',
       'iframeAction' => 'index',
     ),

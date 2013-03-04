@@ -7,7 +7,7 @@
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.menu
  */
-interface IBFrontendMenuEntry
+interface IBFrontendMenuEntry extends IHasFrontendModel
 {
   /**
    * @return int|string
@@ -23,9 +23,4 @@ interface IBFrontendMenuEntry
    * @return string
    */
   public function getUrl();
-
-  /**
-   * @return string
-   */
-  public function getFrontendModelName();
 }
