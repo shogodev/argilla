@@ -43,3 +43,4 @@ Argilla это CMF, реализованная на [Yii Framework](http://www.y
 	cp protected/config/db.php.sample protected/config/db.php
 	vim protected/config/db.php
 	phing applySchema
+	./protected/yiic migrate
