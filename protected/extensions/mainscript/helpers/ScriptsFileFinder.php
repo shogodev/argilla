@@ -24,17 +24,12 @@ class ScriptsFileFinder
    */
   public $availableScripts = array(
     'jquery' => array(
-      'dir_name' => '/js/jquery/',
+      'dir_name' => '/js/jquery',
       'pattern'  => '/^jquery-([\d\.]+)min\.js/',
       ),
 
-    'jquery_plugins' => array(
-      'dir_name' => '/js/jquery.plugins/',
-      'pattern'  => '/.+\.js/',
-    ),
-
     'base' => array(
-      'dir_name' => '/js/',
+      'dir_name' => '/js',
       'pattern'  => '/.+\.js/'
     ),
   );
@@ -98,7 +93,7 @@ class ScriptsFileFinder
         $fileName = end($filePathParts);
 
         if( preg_match($script['pattern'], $fileName) && !in_array($fileName, ScriptAbstractCreator::$scripts) )
-          $this->files[] = $file;
+          $this->files[$file] = $file;
       }
     }
   }
