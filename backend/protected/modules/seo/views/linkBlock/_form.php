@@ -19,7 +19,7 @@
 
     <?php echo $form->textFieldRow($model, 'name'); ?>
 
-    <?php echo $form->textAreaRow($model, 'code');?>
+    <?php echo $form->textAreaRow($model, 'code', array('rows' => '10'));?>
 
     <?php echo $form->textAreaRow($model, 'url');?>
 

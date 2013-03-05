@@ -525,7 +525,7 @@ DROP TABLE IF EXISTS `shogocms_news`;
 CREATE TABLE `shogocms_news` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `section_id` int(10) unsigned NOT NULL DEFAULT '1',
-  `position` int(11) DEFAULT NULL,
+  `position` int(11) DEFAULT '0',
   `url` varchar(255) NOT NULL,
   `visible` tinyint(1) DEFAULT NULL,
   `main` tinyint(1) DEFAULT '0',
@@ -550,7 +550,7 @@ DROP TABLE IF EXISTS `shogocms_news_section`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `shogocms_news_section` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `position` int(11) DEFAULT NULL,
+  `position` int(11) DEFAULT '0',
   `url` varchar(255) NOT NULL,
   `name` text,
   `notice` text,
@@ -899,7 +899,7 @@ DROP TABLE IF EXISTS `shogocms_product_section`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `shogocms_product_section` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `position` int(11) DEFAULT NULL,
+  `position` int(11) DEFAULT '0',
   `url` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `notice` text,
@@ -949,7 +949,7 @@ DROP TABLE IF EXISTS `shogocms_product_type`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `shogocms_product_type` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `position` int(11) DEFAULT NULL,
+  `position` int(11) DEFAULT '0',
   `url` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `notice` text,
