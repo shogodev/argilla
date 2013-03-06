@@ -48,12 +48,12 @@ return array(
   'productSelection'        => array('product/selection',        'pattern' => 'selection'),
   'productSection'          => array('product/section',          'pattern' => 'section/<section:\w+>/<page:\d+>', 'defaultParams' => array('page' => 1)),
   'productType'             => array('product/type',             'pattern' => 'type/<type:\w+>/<page:\d+>', 'defaultParams' => array('page' => 1)),
-  'productOne'              => array('product/one',              'pattern' => '<url:\w+>.html'),
+  // db routing
+  'productOne'              => array('product/one',              'pattern' => '<url:\w+>', 'models' => array('url' => 'Product'), 'class' => 'DBRule'),
 
-  'productSections'          => array('product/sections',          'pattern' => 'sections'),
+  'productSections'          => array('product/sections',        'pattern' => 'sections'),
 
   // captcha
   'captchaImg' => array('index/captcha', 'pattern' => '<model:\w+>/captcha/v/<code:\w+>'),
   'captchaRef' => array('index/captcha', 'pattern' => '<model:\w+>/captcha/<refresh:refresh>/<code:\w+>'),
 );
-?>

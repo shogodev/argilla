@@ -36,6 +36,7 @@ return array(
     'frontend.components.form.*',
     'frontend.components.auth.*',
     'frontend.components.ar.*',
+    'frontend.components.url.*',
 
     'frontend.controllers.*',
     'frontend.controllers.behaviors.*',

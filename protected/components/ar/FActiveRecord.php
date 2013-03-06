@@ -11,7 +11,7 @@ class FActiveRecord extends CActiveRecord
   /**
    * @param string $className
    *
-   * @return SActiveRecord
+   * @return FActiveRecord
    */
   public static function model($className = __CLASS__)
   {
