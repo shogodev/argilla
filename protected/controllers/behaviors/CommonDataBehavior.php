@@ -56,7 +56,7 @@ class CommonDataBehavior extends CBehavior
   public function getCopyrights($key = 'copyright')
   {
     $url        = Yii::app()->request->requestUri;
-    $copyrights = LinksBlock::model()->getLinks($key, $url);
+    $copyrights = LinkBlock::model()->getLinks($key, $url);
 
     return $copyrights;
   }
