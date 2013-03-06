@@ -28,6 +28,11 @@ class ScriptsFileFinder
       'pattern'  => '/^jquery-([\d\.]+)min\.js/',
       ),
 
+    'plugins' => array(
+      'dir_name' => '/js/jquery.plugins',
+      'pattern'  => '/.+\.js/'
+    ),
+
     'base' => array(
       'dir_name' => '/js',
       'pattern'  => '/.+\.js/'
@@ -114,7 +119,7 @@ class ScriptsFileFinder
     if( !file_exists($path) )
       return array();
 
-    $files = CFileHelper::findFiles($path);
+    $files = CFileHelper::findFiles($path, array('level' => 0));
 
     usort($files, function($a, $b){
       return strcmp(pathinfo($a, PATHINFO_FILENAME), pathinfo($b, PATHINFO_FILENAME));
