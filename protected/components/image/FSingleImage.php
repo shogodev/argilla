@@ -98,15 +98,15 @@ class FSingleImage implements ImageInterface
    */
   public function __get($name)
   {
-    if( file_exists($this->getFullPath($name)) )
-      return $this->getFullPath($name);
-    else
+    if( in_array($name, $this->availableTypes) )
     {
-      if( in_array($name, $this->availableTypes) )
-        return $this->defaultImage;
-      else
-        throw new CException('Запрашиваемое изображение не существует');
+      if( file_exists($this->getFullPath($name)) )
+        return $this->getFullPath($name);
+
+      return $this->defaultImage;
     }
+    else
+      throw new CException('Запрашиваемое изображение не существует');
 
   }
 
