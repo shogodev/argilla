@@ -7,98 +7,58 @@
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.menu
  */
-class BMenuCustomItemController extends CController
+class BMenuCustomItemController extends BController
 {
   /**
-   * Отображать ли контроллер как пункт меню
-   *
    * @var bool
    */
   public $enabled = false;
 
-  public $name = 'MenuCustomItem';
+  /**
+   * @var string
+   */
+  public $name = 'BFrontendMenuCustomItem';
 
   /**
-   * @return array
+   * @var string
    */
-  public function filters()
+  public $modelClass = 'BFrontendCustomMenuItem';
+
+  /**
+   * @param BFrontendCustomMenuItem $model
+   *
+   * @return mixed|void
+   */
+  protected function actionSave($model)
   {
-    return array(
-      'ajaxOnly + getData',
-      'ajaxOnly + save',
-    );
+    $this->saveData($model);
+    parent::actionSave($model);
   }
 
   /**
-   * Получение данных для конкретной записи
+   * @param BFrontendCustomMenuItem $model
    */
-  public function actionGetData()
+  protected function saveData(BFrontendCustomMenuItem $model)
   {
-    $id    = Yii::app()->request->getPost('id');
-    $model = BFrontendCustomMenuItem::model()->findByPk($id);
-
-    if( empty($model) )
-      echo CJSON::encode(array('error' => 'Запись не найдена'));
-    else
+    foreach( $model->data as $entry )
     {
-      echo CJSON::encode(array('model' => $model, 'data' => $model->data));
+      $entry->delete();
     }
-  }
 
-  /**
-   * Сохранение параметров для записи
-   *
-   * Пример входящих данных
-   * @example
-   * $data = array(
-   *  'name'    => '',
-   *  'url'     => '',
-   *  'menu_id' => '',
-   *
-   *  'data' => array(
-   *    array(
-   *      'name'  => '',
-   *      'value' => '',
-   *    )
-   *  ),
-   * );
-   */
-  public function actionSave()
-  {
-    $data = Yii::app()->request->getPost('BFrontendCustomMenuItem');
+    $data = Yii::app()->request->getPost('BFrontendCustomMenuItemData');
 
-    if( empty($data['id']) )
-      $customMenuItem = new BFrontendCustomMenuItem();
-    else
-      $customMenuItem = BFrontendCustomMenuItem::model()->findByPk($data['id']);
-
-    if( !empty($customMenuItem) )
+    if( $data !== null )
     {
-      $customMenuItem->name = $data['name'];
-      $customMenuItem->url  = $data['url'];
-      $customMenuItem->save();
-
-      if( !empty($data['data']) )
+      foreach( $data as $i )
       {
-        $customMenuItem->clearData();
-        $customMenuItem->appendData($data['data']);
+        if( empty($i) ) continue;
+
+        $e         = new BFrontendCustomMenuItemData();
+        $e->parent = $model->getId();
+        $e->name   = $i['name'];
+        $e->value  = $i['value'];
+        $e->save();
       }
-
-      $menu = BFrontendMenu::model()->findByPk($data['menu_id']);
-
-      if( !$menu->hasCustomMenuItem($customMenuItem) )
-      {
-        $menuItem          = new BFrontendMenuItem();
-        $menuItem->menu_id = $menu->id;
-        $menuItem->setModel($customMenuItem);
-        $menuItem->save();
-      }
-
-      echo CJSON::encode(array('model' => $customMenuItem));
-    }
-    else
-    {
-      echo CJSON::encode(array('error' => 'Не возможно загрузить запись'));
     }
   }
 }

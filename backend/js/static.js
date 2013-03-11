@@ -146,6 +146,9 @@ var assigner =
     $('#main-assign .popup_close').on('click', function(e){
       e.preventDefault();
       assigner.close();
+
+      if( options.closeOperation )
+        options.closeOperation();
     });
 
     $('#main-assign .popup_add').on('click', function(e){

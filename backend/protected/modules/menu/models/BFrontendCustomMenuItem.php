@@ -12,7 +12,7 @@
  * @property string $url
  * @property integer $visible
  *
- * @property CustomMenuItemData[] $data
+ * @property BFrontendCustomMenuItemData[] $data
  *
  * @method static BFrontendCustomMenuItem model(string $class = __CLASS__)
  */
@@ -116,5 +116,15 @@ class BFrontendCustomMenuItem extends BAbstractMenuEntry
     }
 
     return $this;
+  }
+
+  /**
+   * @return array
+   */
+  public function attributeLabels()
+  {
+    return CMap::mergeArray(parent::attributeLabels(), array(
+      'data' => 'Данные',
+    ));
   }
 }

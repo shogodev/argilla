@@ -96,7 +96,8 @@ class BFrontendMenuItem extends BActiveRecord
   public function rules()
   {
     return array(
-      array('menu_id, item_id, type', 'safe')
+      array('position', 'numerical', 'integerOnly' => true),
+      array('menu_id, item_id, type, position', 'safe')
     );
   }
 
