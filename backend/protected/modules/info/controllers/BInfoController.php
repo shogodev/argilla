@@ -88,13 +88,14 @@ class BInfoController extends BController
 
       if( $drugModel && $dropModel )
       {
-        if( $drugModel->moveBrunchTo($dropModel) )
+        if( $drugModel->moveAsLast($dropModel))
         {
           $this->renderPartial('_tree', array(
             'model' => BInfo::model(),
             'current' => Yii::app()->request->getPost('current', 0)
           ));
         }
+
         Yii::app()->end();
       }
     }
