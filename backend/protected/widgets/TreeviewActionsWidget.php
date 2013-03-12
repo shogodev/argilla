@@ -86,7 +86,7 @@ var indexUrl    = '{$indexUrl}';
 var ajaxUrl     = '{$ajaxUrl}';
 var deleteUrl   = '{$deleteUrl}';
 
-$('.filetree li a').unifloat({
+$('.filetree li:not(#node_1) a').unifloat({
   rel: '#treeview-actions',
   posTop: { value: 'top - 2', auto: false },
   posLeft: { value: 'after', auto: false },

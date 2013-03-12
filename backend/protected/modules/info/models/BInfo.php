@@ -41,7 +41,7 @@ class BInfo extends BAbstractMenuEntry
   {
     return array(
       array('name, url', 'required'),
-      array('url', 'unique'),
+      array('url', 'unique', 'except' => 'move'),
 
       array('position', 'numerical', 'integerOnly' => true),
       array('template, url', 'length', 'max' => 255),
@@ -59,6 +59,7 @@ class BInfo extends BAbstractMenuEntry
       'info_files' => 'Дополнительные файлы',
     ));
   }
+
   public function getImageTypes()
   {
     return array(
@@ -155,5 +156,68 @@ class BInfo extends BAbstractMenuEntry
   public function getFrontendModelName()
   {
     return 'Info';
+  }
+
+  public function moveBrunchTo(BInfo $where)
+  {
+    $replacementKeys = array();
+
+    Yii::app()->db->beginTransaction();
+
+    $result = $this->copyElement($this, $where, $replacementKeys);
+
+    if( $result )
+      $result = $this->deleteNode();
+
+    if( $result )
+      $result = $this->replaceKeys($replacementKeys);
+
+    if( !$result )
+    {
+      Yii::app()->db->currentTransaction->rollback();
+      return false;
+    }
+
+    Yii::app()->db->currentTransaction->commit();
+    return true;
+  }
+
+  protected function copyElement($what, $where, &$replacementKeys)
+  {
+    $new = new BInfo('move');
+    $new->attributes = $what->attributes;
+    if( !$new->appendTo($where) )
+      return false;
+
+    $new->refresh();
+
+    $replacementKeys[$what->id] = $new->id;
+
+    $children = $what->children()->findAll();
+    foreach($children as $child)
+    {
+      if( !$this->copyElement($child, $new, $replacementKeys) )
+        return false;
+    }
+
+    return true;
+  }
+
+  protected function replaceKeys(array $keys)
+  {
+    foreach($keys as $oldKey => $newKey)
+    {
+      $query = "UPDATE {$this->tableName()} SET id = :oldKey WHERE id = :newKey";
+
+      $result = Yii::app()->db->createCommand($query)->execute(
+        array(':oldKey' => $oldKey,
+              ':newKey' => $newKey)
+      );
+
+      if( !$result )
+        return false;
+    }
+
+    return true;
   }
 }

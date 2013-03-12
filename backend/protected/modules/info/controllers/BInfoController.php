@@ -78,4 +78,25 @@ class BInfoController extends BController
       'dataProvider' => $dataProvider,
     ));
   }
+
+  public function actionDrugAndDrop()
+  {
+    if( Yii::app()->request->isAjaxRequest )
+    {
+      $drugModel = BInfo::model()->findByPk(Yii::app()->request->getPost('drug', null));
+      $dropModel = BInfo::model()->findByPk(Yii::app()->request->getPost('drop', null));
+
+      if( $drugModel && $dropModel )
+      {
+        if( $drugModel->moveBrunchTo($dropModel) )
+        {
+          $this->renderPartial('_tree', array(
+            'model' => BInfo::model(),
+            'current' => Yii::app()->request->getPost('current', 0)
+          ));
+        }
+        Yii::app()->end();
+      }
+    }
+  }
 }

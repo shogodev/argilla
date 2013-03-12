@@ -1,7 +1,7 @@
 <?php
 /**
- * @var CActiveRecord    $model
- * @var BController $this
+ * @var BInfo $model
+ * @var BInfoController $this
  * @var integer $current
  */
 ?>
@@ -12,16 +12,8 @@
     <tbody>
     <tr>
       <td>
-        <?php
-          $this->widget('CTreeView', array('options'     => array('persist'   => 'cookie',
-                                                                  'collapsed' => true,
-                                                                  'animated'  => 'fast'),
-                                           'htmlOptions' => array('id'    => 'tree_'.get_class($model),
-                                                                  'class' => 'filetree'),
-                                           'data'        => $model->getTreeView(null, false, $this->createUrl($this->id.'/update/'), $current),
-                                          ));
-        ?>
-        </td>
+        <?php $this->renderPartial('_tree', $_data_)?>
+      </td>
     </tr>
     </tbody>
   </table>
@@ -37,9 +29,26 @@
 <script>
   $(function()
   {
-    var drugCallback = function(target)
+    $('ul.filetree').on('click', 'li#node_1>a', function(e){
+      e.preventDefault();
+    });
+
+    var drugCallback = function(target, draggableItem)
     {
-      console.log(target);
+      var callback = function callback(resp)
+      {
+        if( $(resp).attr('id') == treeId )
+        {
+          $('#sidebar').find('#'+treeId).html($(resp).html());
+          $('#' + treeId).treeview({'persist':'cookie', 'collapsed':true, 'animated':'fast'});
+          initTreeDrugAndDrop($('#' + treeId));
+        }
+      }
+
+      $.post(drugAndDropUrl, { 'drug' : draggableItem.attr('id').match(/node_(\d+)/)[1],
+                               'drop' : target.attr('id').match(/node_(\d+)/)[1],
+                               'current' : $('#' + treeId + ' li.current').length > 0 ? $('#' + treeId + ' li.current').attr('id').match(/node_(\d+)/)[1] : 0
+      } , callback);
     };
 
     var initTreeDrugAndDrop = function(tree)
@@ -60,15 +69,17 @@
         connectToSortable: '#' + tree.attr('id'),
         revert: true,
         revertDuration: 0,
+        draggableItem: null,
         start: function()
         {
+          this.draggableItem = $(this);
           parentSelector = $(this).parent().parent();
           targetSelector = null;
         },
         stop: function()
         {
           if( targetSelector )
-            drugCallback(targetSelector);
+            drugCallback(targetSelector, this.draggableItem);
 
           if ( targetSelector !== null )
           {
@@ -97,9 +108,10 @@
     };
 
     var treeId = '<?php echo 'tree_'.get_class($model)?>';
+    var drugAndDropUrl = '<?php echo $this->createUrl('info/drugAndDrop')?>';
     var parentSelector;
     var targetSelector;
 
-    //initTreeDrugAndDrop($('#' + treeId));
+    initTreeDrugAndDrop($('#' + treeId));
   });
 </script>

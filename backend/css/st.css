@@ -796,6 +796,11 @@ span.cke_skin_kama table.cke_editor td {
   background-image: url('data:image/gif;base64,R0lGODlhEAAOANUAAP////7+/v39/fz9//v7+/j7//b6//P5//f39+32//T09en1/+Tx/+Hw/9vt/9Hp/9vn99jl9snk/9nh7cPh/8Df/7rd/87T/8bGxsDA/8HBwZS/8re3t5K877a2tpG46o+z5Yyu35Oq0oqo2Yep3JCjy4eh0lWn7YSbyoGVw3+OvH2JtnqDsHSAsnN+sHJ8rm96rHV4o213qGt0pWlwomdtnmVqml5hkP///wAAAAAAAAAAAAAAAAAAAAAAAAAAACH5BAEHADgALAAAAAAQAA4AAAZ/QNyGRCySWrikEtcBAAgEhGLSEi2Tn4DTWYC0TqUrSEAWFAqRlhqzDHELifgl4+IsR4NBPO7ov+xKJgYGcQ0NfQ8wgEkoB4WHDg8PMos4KQsLhogSEjOVKpmQD5wUNJUrDAyIoxQUNZUsoqMSFRY2lTG5urs3GlcaHsHCwb5KQQA7'); }
 .filetree li.current > a {
   font-weight: bolder; }
+.filetree li#node_1 > a {
+  text-decoration: none;
+  cursor: default;
+  color: #000000 !important;}
+
 #treeview-actions {
   display: none;
   position: absolute;
