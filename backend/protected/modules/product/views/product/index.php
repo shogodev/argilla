@@ -30,8 +30,11 @@ $this->widget('BGridView', array(
       'filter' => CHtml::listData(BProductType::model()->findAll(), 'id', 'name')
     ),
 
+    array('name' => 'price', 'class' => 'OnFlyEditField', 'htmlOptions' => array('class' => 'span1'), 'header' => 'Цена', 'filter' => false),
+
     array(
       'name' => 'BProduct',
+      'header' => 'Продукты',
       'class' => 'BAssociationColumn',
       'iframeAction' => 'index',
     ),

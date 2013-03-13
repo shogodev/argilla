@@ -174,16 +174,20 @@ EOD;
    * Возвращает сгенерированную строку, содержащее значение свойства в теге <span>
    * с нужными параметрами для работы скрипта
    *
-   * @param int $fieldID
-   * @param string $value
+   * @param $fieldID
+   * @param $value
+   * @param null|string $name
    *
    * @return string
    */
-  private function prepareFieldData($fieldID, $value)
+  protected function prepareFieldData($fieldID, $value, $name = null)
   {
+    if( $name === null )
+      $name = $this->name;
+
     if( empty($this->dropDown) )
-      return CHtml::tag('span', array('class' => 'onfly-edit', 'data-onflyedit' => $this->name . '-' . $fieldID), $value);
+      return CHtml::tag('span', array('class' => 'onfly-edit', 'data-onflyedit' => $name . '-' . $fieldID), $value);
     else
-      return CHtml::dropDownList('', $value, $this->dropDown, array('class' => 'onfly-edit-dropdown', 'data-onflyedit' => $this->name . '-' . $fieldID));
+      return CHtml::dropDownList('', $value, $this->dropDown, array('class' => 'onfly-edit-dropdown', 'data-onflyedit' => $name . '-' . $fieldID));
   }
 }

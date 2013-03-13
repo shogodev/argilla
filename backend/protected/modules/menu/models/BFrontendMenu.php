@@ -9,7 +9,7 @@
  *
  * @property integer $id
  * @property BFrontendMenuItem[] $entries
- * @property IFrontendMenuEntry[] $availableEntries
+ * @property BAbstractMenuEntry[] $availableEntries
  * @property string $name
  * @property string $sysname
  * @property string $url
@@ -33,7 +33,7 @@ class BFrontendMenu extends BAbstractMenuEntry
   );
 
   /**
-   * @var IFrontendMenuEntry[]
+   * @var BFrontendCustomMenuItem[]
    */
   protected $availableEntries = array();
 
@@ -206,7 +206,28 @@ class BFrontendMenu extends BAbstractMenuEntry
   }
 
   /**
-   * @return IFrontendMenuEntry[]
+   * @return CArrayDataProvider
+   */
+  public function getGridData()
+  {
+    $data = array();
+
+    foreach( $this->entries as $entry )
+    {
+      $item = BFrontendMenuGridAdapter::convertFromMenuEntry($entry);
+      $data[] = new BFrontendMenuGridAdapter($item, true, $entry->position);
+    }
+
+    foreach( $this->getAvailableEntries() as $entry )
+    {
+      $data[] = new BFrontendMenuGridAdapter($entry, false);;
+    }
+
+    return new CArrayDataProvider($data);
+  }
+
+  /**
+   * @return BAbstractMenuEntry[]
    * @throws BFrontendMenuException
    */
   public function getAvailableEntries()
@@ -261,10 +282,10 @@ class BFrontendMenu extends BAbstractMenuEntry
       {
         if( $entry->getModel()->getId() === $item->getId() && $entry->getModelClass() === get_class($item) )
           unset($this->availableEntries[$key]);
-
-        if( $item->id === $this->id && get_class($item) === get_class($this) )
-          unset($this->availableEntries[$key]);
       }
+
+      if( $item->id == $this->id && get_class($item) == get_class($this) )
+        unset($this->availableEntries[$key]);
     }
   }
 }

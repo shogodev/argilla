@@ -10,4 +10,14 @@ class MenuModule extends BModule
 {
   public $defaultController = 'BMenu';
   public $name = 'Меню';
+
+  /**
+   * @return array
+   */
+  public function getExtraDirectoriesToImport()
+  {
+    return array(
+      'backend.modules.menu.components.grid.*'
+    );
+  }
 }

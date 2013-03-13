@@ -300,6 +300,9 @@ abstract class BController extends CController
     return $valid;
   }
 
+  /**
+   * @param BActiveRecord $model
+   */
   protected function redirectAfterSave($model)
   {
     Yii::app()->user->setFlash('success', 'Запись успешно '.($model->isNewRecord ? 'создана' : 'сохранена').'.');
@@ -307,7 +310,12 @@ abstract class BController extends CController
     if( Yii::app()->request->getParam('action') )
       $this->redirect($this->getBackUrl());
     else
-      $this->redirect(array('update', 'id' => $model->id));
+    {
+      $redirectData = CMap::mergeArray(array('id' => $model->getPrimaryKey()), $_GET);
+      $redirectUrl  = $this->createUrl($this->id.'/update', $redirectData);
+
+      $this->redirect($redirectUrl);
+    }
   }
 
   /**
