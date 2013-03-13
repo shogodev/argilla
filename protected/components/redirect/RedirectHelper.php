@@ -247,9 +247,9 @@ class RedirectHelper extends CApplicationComponent
   {
     $currentRedirect = $this->checkRedirectType($r);
 
-    if( stripos($currentRedirect->target, self::REGEXP_START_CHAR) === 0 && @preg_match($currentRedirect->target, $this->currentUrl) )
+    if( stripos($currentRedirect->base, self::REGEXP_START_CHAR) === 0 && @preg_match($currentRedirect->base, $this->currentUrl) )
     {
-      $this->targetUrl  = preg_replace($currentRedirect->target, $this->prepareReplacement($currentRedirect->base), $this->currentUrl);
+      $this->targetUrl  = preg_replace($currentRedirect->base, $this->prepareReplacement($currentRedirect->target), $this->currentUrl);
       $this->redirect   = $currentRedirect;
       $this->isRedirect = true;
     }
