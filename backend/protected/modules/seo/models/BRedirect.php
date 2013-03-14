@@ -19,6 +19,14 @@
 class BRedirect extends BActiveRecord
 {
   /**
+   * @return string
+   */
+  public function tableName()
+  {
+    return '{{seo_redirect}}';
+  }
+
+  /**
    * @return array
    */
   public function rules()
@@ -76,7 +84,7 @@ class BRedirect extends BActiveRecord
     $string = '';
 
     if( !empty($parts['path']) )
-      $string .= $parts['path'];
+      $string .= rtrim($parts['path'], '/');
 
     if( !empty($parts['query']) )
       $string .= '?'.$parts['query'];

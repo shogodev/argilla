@@ -959,24 +959,6 @@ CREATE TABLE `shogocms_product_type` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_redirect`
---
-
-DROP TABLE IF EXISTS `shogocms_redirect`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_redirect` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `base` varchar(255) COLLATE utf8_bin NOT NULL,
-  `target` varchar(255) COLLATE utf8_bin NOT NULL,
-  `type_id` int(11) NOT NULL,
-  `visible` int(11) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id`),
-  KEY `base` (`base`,`target`,`type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `shogocms_response`
 --
 
@@ -1240,4 +1222,4 @@ CREATE TABLE `shogocms_vacancy_file` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-03-04 14:44:46
+-- Dump completed on 2013-03-14  9:41:38
