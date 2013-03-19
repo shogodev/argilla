@@ -26,7 +26,7 @@
  * Для того, чтобы проверить удаленный контроллер
  * @example
  * <code>
- *  $access = new AccessHelper($module, $controlle, $action)
+ *  $access = new AccessHelper($module, $controller, $action)
  * </code>
  *
  * Так же можно получить объект класса через статический метод init()
@@ -56,7 +56,7 @@ class AccessHelper
   /**
    * Модуль
    *
-   * @var type
+   * @var string
    */
   private $module;
 
@@ -126,7 +126,7 @@ class AccessHelper
   }
 
   /**
-   * @return taskName
+   * @return string
    */
   public function getTaskName()
   {
@@ -134,7 +134,7 @@ class AccessHelper
   }
 
   /**
-   * @return operationName
+   * @return string
    */
   public function getOperationName()
   {
@@ -212,7 +212,7 @@ class AccessHelper
    */
   public static function isServerDev()
   {
-    return file_exists(BUserIdentity::ALLOW_FREE_AUTH);
+    return BDevServerAuthConfig::getInstance()->isAvailable();
   }
 
   /**
