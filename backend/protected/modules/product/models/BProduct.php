@@ -84,7 +84,7 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
       array('url, name, articul', 'length', 'max' => 255),
       array('notice, content, video, rating', 'safe'),
       array('section_id', 'required', 'except' => 'convert'),
-      array('url', 'url'),
+      array('url', 'SUriValidator'),
       array('price, price_old', 'numerical'),
 
       array('name, section_id, type_id', 'safe', 'on' => 'search'),
