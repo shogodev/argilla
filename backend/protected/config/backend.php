@@ -43,6 +43,7 @@ return array(
     'backend.modules.menu.components.*',
 
     'share.*',
+    'share.validators.*',
 
     'ext.*',
     'ext.jtogglecolumn.*',

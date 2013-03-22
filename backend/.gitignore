@@ -2,3 +2,4 @@
 /js/packed.js
 
 /protected/tests/report/*
+/protected/config/devAuth.php
