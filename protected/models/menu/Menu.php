@@ -102,7 +102,7 @@ class Menu extends FActiveRecord implements IMenuItem
 
   public function getChildren()
   {
-    $this->build();
+    return $this->build();
   }
 
   /**
