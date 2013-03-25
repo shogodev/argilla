@@ -131,12 +131,3 @@ function show_yii_errors_messages(form, messages)
   if(error.length)
     alert(error.join("\n"));
 }
-
-function scrollTo(selector)
-{
-  var offset = $(selector).offset().top - $('#global-nav').height() - $('#anchor-links-block').height() * 2;
-  if ( $('#anchor-links-block').hasClass('fixed') )
-    offset += $('#anchor-links-block').height();
-
-  $(jQuery.browser.webkit ? document.body : 'html').animate({scrollTop: offset}, 100);
-}

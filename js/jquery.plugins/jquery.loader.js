@@ -24,7 +24,8 @@ $.overlayLoader(bool, options); // необязательный хэш пара�
   }
 
   var path   = 'i/ajax/';
-  var loaders = {'loader': path + 'loader.gif', 'ajax': path + 'ajax.' + ($.browser.msie ? 'gif' : 'png')};
+  var isIE = navigator.userAgent.match(/msie/);
+  var loaders = {'loader': path + 'loader.gif', 'ajax': path + 'ajax.' + (isIE ? 'gif' : 'png')};
   var x = 0,
       y = 0;
 
@@ -141,8 +142,7 @@ $.overlayLoader(bool, options); // необязательный хэш пара�
       // создаем узел, если его нет
       if( !$overlay.length )
       {
-        var ie = $.browser.msie;
-        $overlay = $('<div id="loader_overlay" style="display:none;position:'+(ie ? 'absolute' : 'fixed')+';top:0;left:0;z-index:9998;background:#000000;width:'+(ie ? ssz[2]+'px' : '100%')+';height:'+(ie ? ssz[3]+'px' : '100%')+'" />').css('opacity', 0).on('click', function() {
+        $overlay = $('<div id="loader_overlay" style="display:none;position:'+(isIE ? 'absolute' : 'fixed')+';top:0;left:0;z-index:9998;background:#000000;width:'+(isIE ? ssz[2]+'px' : '100%')+';height:'+(isIE ? ssz[3]+'px' : '100%')+'" />').css('opacity', 0).on('click', function() {
           $.overlayLoader(false, $overlay.data('loader_node'));
         });
         if( !$node.length )

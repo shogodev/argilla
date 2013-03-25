@@ -11,18 +11,18 @@ Author:    Grigory Zarubin, Andrey Sidorov, Sergey Glagolev (Shogo.RU)
 //-----------------------------------------------------------------------------
 // PNG IE6 Fix
 //-----------------------------------------------------------------------------
-var msie6 = !!(jQuery.browser.msie && (jQuery.browser.version && jQuery.browser.version < 7 || /MSIE 6.0/.test(navigator.userAgent)));
+// var msie6 = !!(jQuery.browser.msie && (jQuery.browser.version && jQuery.browser.version < 7 || /MSIE 6.0/.test(navigator.userAgent)));
 var bgFixer = function(el, type) {
   var tmp = el.currentStyle.backgroundImage.match(/url\(['"]?(.+\.png)['"]?\)/i);
-  if(tmp && msie6) {
-    tmp = tmp[1];
-    if(!tmp.match(/http:\/\//) && jQuery('head base').length) tmp = '/' + tmp;
-    if(el.currentStyle.width=='auto') jQuery(el).css('width', jQuery(el).width() + 'px');
-    if(el.currentStyle.height=='auto') jQuery(el).css('height', jQuery(el).height() + 'px');
-    el.runtimeStyle.backgroundImage = 'none';
-    el.runtimeStyle.filter = 'progid:DXImageTransform.Microsoft.AlphaImageLoader(src="' + tmp + '",sizingMethod="' + type + '")';
-    jQuery(el).find('a').css('position', 'relative');
-  }
+  // if(tmp && msie6) {
+  //   tmp = tmp[1];
+  //   if(!tmp.match(/http:\/\//) && jQuery('head base').length) tmp = '/' + tmp;
+  //   if(el.currentStyle.width=='auto') jQuery(el).css('width', jQuery(el).width() + 'px');
+  //   if(el.currentStyle.height=='auto') jQuery(el).css('height', jQuery(el).height() + 'px');
+  //   el.runtimeStyle.backgroundImage = 'none';
+  //   el.runtimeStyle.filter = 'progid:DXImageTransform.Microsoft.AlphaImageLoader(src="' + tmp + '",sizingMethod="' + type + '")';
+  //   jQuery(el).find('a').css('position', 'relative');
+  // }
 };
 function fixBgPNG_c(el) { bgFixer(el, 'crop'); }
 function fixBgPNG_s(el) { bgFixer(el, 'scale'); }
@@ -38,17 +38,17 @@ jQuery(function() {
   };
 
   // Для всех ослов
-  if(jQuery.browser.msie) {
+  if(navigator.userAgent.match(/msie/)) {
     jQuery('img.pngfix_all[src$=".png"], input.pngfix_all[src$=".png"]').each(function() {
       fix(this);
     });
   }
 
-  if(msie6) {
-    jQuery('img.pngfix[src$=".png"], input.pngfix[src$=".png"]').each(function() {
-      fix(this);
-    });
-  }
+  // if(msie6) {
+  //   jQuery('img.pngfix[src$=".png"], input.pngfix[src$=".png"]').each(function() {
+  //     fix(this);
+  //   });
+  // }
 });
 //-----------------------------------------------------------------------------
 // this_url
@@ -305,8 +305,9 @@ String.prototype.find = function(string)
 //-----------------------------------------------------------------------------
 function scroll_to(selector, speed)
 {
+  var isWebkit = navigator.userAgent.match(/(Chrome)|(Safari)/i);
   var destination = jQuery(selector).offset().top;
-  jQuery(jQuery.browser.webkit ? document.body : 'html').animate({scrollTop: destination}, speed ? speed : 0);
+  jQuery(isWebkit ? document.body : 'html').animate({scrollTop: destination}, speed ? speed : 0);
 }
 //-----------------------------------------------------------------------------
 // Backward compatibility
