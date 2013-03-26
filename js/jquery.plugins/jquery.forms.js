@@ -18,28 +18,37 @@
         el.hide();
         switch(el.type) {
           case 'checkbox':
-            if(el.attr('checked')) {
+            if(el.prop('checked')) {
               el.next().addClass('check_'+el.type);
             }
+            if(el.prop('disabled')) {
+              el.next().addClass('disabled_'+el.type);
+            }
             el.next().click(function() {
-              $(this).toggleClass('check_'+el.type);
-              if(!el.prop('checked')) {
-                el.prop('checked', true).trigger('change');
-              } else {
-                el.prop('checked', false).trigger('change');
+              if (!el.prop('disabled')) {
+                $(this).toggleClass('check_'+el.type);
+                if(!el.prop('checked')) {
+                  el.prop('checked', true).trigger('change');
+                } else {
+                  el.prop('checked', false).trigger('change');
+                }
               }
             });
             el.click(function() {
-              el.next().toggleClass('check_'+el.type);
+              if (!el.prop('disabled')) {
+                el.next().toggleClass('check_'+el.type);
+              }
             });
             $('label[for="' + tid + '"]').click(function(e) {
-              e.preventDefault();
-              var inp = $('#' + $(this).attr('for'));
-              inp.next().toggleClass('check_'+el.type);
-              if(!inp.prop('checked')) {
-                inp.prop('checked', true).trigger('change');
-              } else {
-                inp.prop('checked', false).trigger('change');
+              if (!el.prop('disabled')) {
+                e.preventDefault();
+                var inp = $('#' + $(this).attr('for'));
+                inp.next().toggleClass('check_'+el.type);
+                if(!inp.prop('checked')) {
+                  inp.prop('checked', true).trigger('change');
+                } else {
+                  inp.prop('checked', false).trigger('change');
+                }
               }
             });
           break;
@@ -47,18 +56,23 @@
             if(el.prop('checked')) {
               el.next().addClass('check_'+el.type);
             }
+            if(el.prop('disabled')) {
+              el.next().addClass('disabled_'+el.type);
+            }
             el.show().css({'position':'absolute', 'top':'-10000px', 'left':'-10000px', 'visibility':'hidden'});
             el.next().click(function() {
-              if(!el.prop('checked')) {
+              if(!el.prop('checked') && !el.prop('disabled')) {
                 $('.el-name-'+el.name).removeClass('check_'+el.type);
                 el.prop('checked', true).trigger('change');
                 $(this).addClass('check_'+el.type);
               }
             });
             el.click(function() {
-              $('.el-name-'+el.name).removeClass('check_'+el.type);
-              el.prop('checked', true).trigger('change');
-              el.next().addClass('check_'+el.type);
+              if (!el.prop('disabled')) {
+                $('.el-name-'+el.name).removeClass('check_'+el.type);
+                el.prop('checked', true).trigger('change');
+                el.next().addClass('check_'+el.type);
+              }
             });
           break;
           case 'file':
