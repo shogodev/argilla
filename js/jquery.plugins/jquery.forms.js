@@ -44,20 +44,20 @@
             });
           break;
           case 'radio':
-            if(el.attr('checked')) {
+            if(el.prop('checked')) {
               el.next().addClass('check_'+el.type);
             }
             el.show().css({'position':'absolute', 'top':'-10000px', 'left':'-10000px', 'visibility':'hidden'});
             el.next().click(function() {
-              if(!el.is(':checked')) {
+              if(!el.prop('checked')) {
                 $('.el-name-'+el.name).removeClass('check_'+el.type);
-                el.attr('checked', true);
+                el.prop('checked', true).trigger('change');
                 $(this).addClass('check_'+el.type);
               }
             });
             el.click(function() {
               $('.el-name-'+el.name).removeClass('check_'+el.type);
-              el.attr('checked', true);
+              el.prop('checked', true).trigger('change');
               el.next().addClass('check_'+el.type);
             });
           break;
