@@ -1,6 +1,7 @@
 RewriteEngine on
 RewriteRule ^index\.php - [L]
 RewriteCond %{REQUEST_URI} !backend/
+RewriteCond %{REQUEST_URI} !templates/
 RewriteCond %{REQUEST_URI} !ckeditor/ckfinder/
 # dev
 RewriteCond %{REQUEST_URI} !_intellij_phpunit_launcher.php

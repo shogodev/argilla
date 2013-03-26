@@ -1,0 +1,93 @@
+/*
+Project:   Template
+CSS Type:  Semantic
+Version:   1.0 (22.03.2013)
+Authors:   Grigory Zarubin, Alexander Rubanov, Alexey Efimov (Shogo.RU)
+*/
+
+@import "prefixes";
+@import "const";
+@import "resets";
+@import "common_styles";
+@import "inline_classes";
+@import "print";
+
+/*   -=========== HTML5 structure ===========-   */
+#structure {
+  @include border-radius(5px);
+  position: relative;
+  width: $wrapper-width;
+  min-height: 100%;
+  margin: 0 auto; }
+header {}
+#content {
+  padding-bottom: $footer-height + 40px; }
+aside#left {
+  float: left;
+  width: 230px; }
+section#main {
+  float: left;
+  width: 730px;
+  padding-left: 30px; }
+footer {
+  clear: both;
+  background: #FFFFFF;
+  position: relative;
+  width: $wrapper-width;
+  margin: -$footer-height auto 0 auto;
+  height: $footer-height; }
+
+/*   -=========== Blocks ===========-   */
+.breadcrumbs {
+  * {
+    display: inline-block;
+    color: #000000;
+    padding-right: 5px; }
+  span {
+    color: #FFFFFF; }
+}
+.breadcrumbs-separator {}
+
+.pager {
+  ul {
+    overflow: hidden;
+    margin: 0;
+    padding: 0; }
+  .lt-ie8 & ul {
+    zoom: 1; }
+  ul li {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    list-style: none; }
+  .lt-ie8 & ul li {
+    display: inline;
+    zoom: 1; }
+  ul li a {
+    color: #666666;
+    text-decoration: none; }
+  ul li a:hover {
+    text-decoration: underline; }
+  ul li.page.selected a {
+    color: #FFFFFF; }
+  ul li.page.previous a,
+  ul li.page.next a {
+    background: url(forward.png) no-repeat 0 0; }
+  ul li.page.next a {
+    background: url(backward.png) no-repeat 0 0; }
+}
+.pager-header {}
+.pager-footer {}
+
+footer .counters {
+  float: left;
+  width: 200px;
+  padding: 0 85px 0 0; }
+footer .counters img {
+  float: left;
+  margin-right: 10px; }
+footer .copyright {
+  float: left;
+  font-size: 10px;
+  line-height: 120%;
+  color: #788A91; }

@@ -1,0 +1,109 @@
+/*   -=========== Common styles, CSS reset by defaults ===========-   */
+html, body {
+  height: 100%; }
+html {
+  -webkit-text-size-adjust: 100%;
+  -ms-text-size-adjust: 100%; }
+body {
+  font-family: $fonts;
+  font-size: $text-size;
+  line-height: 120%;
+  color: $text-color;
+  background: $body-background; }
+article, aside, details, figcaption, figure, footer, header, hgroup, nav, section, summary {
+  display: block; }
+audio, canvas, video {
+  display: inline-block; }
+.lt-ie8 audio, .lt-ie8 canvas, .lt-ie8 video {
+  display: inline;
+  zoom: 1; }
+audio:not([controls]) {
+  display: none;
+  height: 0; }
+[hidden] {
+  display: none; }
+img {
+  border: 0;
+  -ms-interpolation-mode: bicubic;
+  vertical-align: middle; }
+svg:not(:root) {
+  overflow: hidden; }
+* {
+  font-family: $fonts;
+  font-size: 100%;
+  margin: 0;
+  padding: 0; }
+a {
+  color: $link-color;
+  &:hover {
+    color: $hovered-link-color;
+  }
+}
+a:focus, input:focus {
+  outline: none; }
+.zero {
+  border: 0;
+  border-spacing: 0;
+  border-collapse: collapse;
+  td {
+    padding: 0;
+  }
+}
+ol {
+  margin: 5px 0 20px 25px; }
+ul li {
+  list-style-position: inside;
+  list-style-type: square; }
+ol li {
+  margin: 0 0 10px 0;
+  list-style-position: outside; }
+nav ul, nav ol {
+  margin: 0;
+  padding: 0; }
+nav ul li, nav ol li {
+  list-style: none;
+  list-style-image: none;
+  margin: 0;
+  padding: 0; }
+legend {
+  border: 0;
+  padding: 0;
+  white-space: normal; }
+.lt-ie8 legend {
+  margin-left: -7px; }
+button, input, select, textarea {
+  vertical-align: top; }
+button, input {
+  line-height: normal; }
+button, html input[type="button"], input[type="reset"], input[type="submit"] {
+  -webkit-appearance: button;
+  cursor: pointer; }
+.lt-ie8 button, html.lt-ie8 input[type="button"], .lt-ie8 input[type="reset"], .lt-ie8 input[type="submit"] {
+  overflow: visible; }
+button[disabled], input[disabled] {
+  cursor: default; }
+input[type="checkbox"], input[type="radio"] {
+  box-sizing: border-box; }
+.lt-ie8 input[type="checkbox"], .lt-ie8 input[type="radio"] {
+  width: 13px;
+  height: 13px; }
+button::-moz-focus-inner, input::-moz-focus-inner {
+  border: 0;
+  padding: 0; }
+input[type=search] {
+  -webkit-appearance: textfield;
+  -webkit-box-sizing: content-box;
+     -moz-box-sizing: content-box;
+          box-sizing: content-box; }
+input[type="search"]::-webkit-search-cancel-button,
+input[type="search"]::-webkit-search-decoration {
+  -webkit-appearance: none; }
+textarea {
+  overflow: auto;
+  resize: vertical; }
+select {
+  padding-right: 0; }
+select option {
+  padding: 0 10px; }
+label {
+  cursor: pointer; }
