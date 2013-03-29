@@ -19,7 +19,7 @@ $form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId()));
 
   <?php echo $form->textFieldRow($model, 'position', array('class' => 'span1')); ?>
 
-  <?php echo $form->dropDownListRow($model, 'section_id', CHtml::listData(BNewsSection::model()->findAll(), 'id', 'name')); ?>
+  <?php echo $form->dropDownListDefaultRow($model, 'section_id', CHtml::listData(BNewsSection::model()->findAll(), 'id', 'name')); ?>
 
   <?php echo $form->datePickerRow($model, 'date'); ?>
 
