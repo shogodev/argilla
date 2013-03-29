@@ -103,6 +103,14 @@ abstract class BActiveRecord extends CActiveRecord
     return array();
   }
 
+  public function relations()
+  {
+    return array(
+      'associations' => array(self::HAS_MANY, 'BAssociation', 'src_id', 'on' => 'src="'.get_class($this).'"'),
+    );
+  }
+
+
   public function attributeLabels()
   {
     return array(
