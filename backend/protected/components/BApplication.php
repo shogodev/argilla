@@ -22,6 +22,20 @@ class BApplication extends CWebApplication
     return preg_replace('/^'.BApplication::CLASS_PREFIX.'([A-Z])(.*)/', '$1$2', $className);
   }
 
+  /**
+   * Получение id контроллера из BModule::$controllerMap
+   * если он не находится, то возвращается обычный ID контроллера
+   *
+   * @return string
+   */
+  public static function getMappedControllerId()
+  {
+    $controllerMap = Yii::app()->controller->module->controllerMap;
+    $controllerClass = get_class(Yii::app()->controller);
+    $mappedId = array_search($controllerClass, $controllerMap);
+    return $mappedId ?: Yii::app()->controller->id;
+  }
+
   public function getFrontendPath()
   {
     return str_replace("/backend/protected", "", $this->getBasePath()).'/';

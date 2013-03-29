@@ -253,7 +253,7 @@ class UploadAction extends CAction
     if( method_exists($this->model, 'getThumbsSettings') )
       $settings = array_merge($settings, $this->model->getThumbsSettings());
 
-    $settings = Arr::get($settings, Yii::app()->controller->id, array());
+    $settings = Arr::get($settings, BApplication::getMappedControllerId(), array());
 
     return $settings;
   }
