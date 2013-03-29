@@ -52,7 +52,7 @@ class BProductType extends BActiveRecord
     ));
   }
 
-  public function search()
+  public function getSearchCriteria()
   {
     $criteria = new CDbCriteria;
     $criteria->together = true;
@@ -60,8 +60,6 @@ class BProductType extends BActiveRecord
 
     $criteria->compare('section.id', '='.$this->section_id);
 
-    return new CActiveDataProvider($this, array(
-      'criteria' => $criteria,
-    ));
+    return $criteria;
   }
 }

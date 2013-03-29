@@ -28,16 +28,14 @@ class BMetaMask extends BActiveRecord
     return parent::beforeSave();
   }
 
-  public function search()
+  public function getSearchCriteria()
   {
     $criteria = new CDbCriteria;
 
     $criteria->compare('url_mask', $this->url_mask, true);
     $criteria->compare('visible', $this->visible);
 
-    return new BActiveDataProvider($this, array(
-      'criteria' => $criteria,
-    ));
+    return $criteria;
   }
 
   public function attributeLabels()

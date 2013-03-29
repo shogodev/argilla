@@ -256,9 +256,9 @@ class BFrontendMenu extends BAbstractMenuEntry
   }
 
   /**
-   * @return BActiveDataProvider
+   * @return CDbCriteria
    */
-  public function search()
+  public function getSearchCriteria()
   {
     $criteria = new CDbCriteria;
 
@@ -266,10 +266,9 @@ class BFrontendMenu extends BAbstractMenuEntry
     $criteria->compare('sysname', $this->sysname, true);
     $criteria->compare('url', $this->url, true);
 
-    return new BActiveDataProvider($this, array(
-      'criteria' => $criteria,
-    ));
+    return $criteria;
   }
+
 
   /**
    * Удаление из доступных элементов для добавления уже добавленных

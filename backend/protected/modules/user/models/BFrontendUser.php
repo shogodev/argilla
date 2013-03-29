@@ -100,7 +100,7 @@ class BFrontendUser extends BActiveRecord
     ));
   }
 
-  public function search()
+  public function getSearchCriteria()
   {
     $criteria = new CDbCriteria;
     $criteria->together = true;
@@ -111,12 +111,8 @@ class BFrontendUser extends BActiveRecord
     $criteria->compare('email', $this->email, true);
 
     if( !empty($this->fullName) )
-    {
       $criteria->addSearchCondition('CONCAT(user.last_name, " ", user.name, " ", user.patronymic)', $this->fullName, true);
-    }
 
-    return new BActiveDataProvider($this, array(
-      'criteria' => $criteria,
-    ));
+    return $criteria;
   }
 }

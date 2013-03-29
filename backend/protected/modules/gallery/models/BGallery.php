@@ -49,19 +49,17 @@ class BGallery extends BActiveRecord
   }
 
   /**
-   * @return BActiveDataProvider
+   * @return CDbCriteria
    */
-  public function search()
+  public function getSearchCriteria()
   {
     $criteria = new CDbCriteria();
 
     $criteria->compare('name', $this->name, true);
     $criteria->compare('url', $this->url, true);
     $criteria->compare('type', $this->type, true);
-    $criteria->compare('visible', $this->visible, true);
+    $criteria->compare('visible', $this->visible);
 
-    return new BActiveDataProvider($this, array(
-      'criteria' => $criteria,
-    ));
+    return $criteria;
   }
 }

@@ -100,7 +100,10 @@ class BInfo extends BAbstractMenuEntry
     return '/ '.implode(" / ", array_reverse($path));
   }
 
-  public function search()
+  /**
+   * @return CDbCriteria
+   */
+  public function getSearchCriteria()
   {
     $criteria = new CDbCriteria;
 
@@ -113,9 +116,7 @@ class BInfo extends BAbstractMenuEntry
       $criteria->addInCondition('id', CHtml::listData($parent->descendants()->findAll(), 'id', 'id'));
     }
 
-    return new CActiveDataProvider($this, array(
-      'criteria' => $criteria,
-    ));
+    return $criteria;
   }
 
   protected function beforeSave()

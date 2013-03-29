@@ -110,6 +110,32 @@ abstract class BActiveRecord extends CActiveRecord
     );
   }
 
+  /**
+   * @return BActiveDataProvider
+   */
+  public function search()
+  {
+    $criteria = $this->getSearchCriteria();
+    $params = $this->getSearchParams();
+
+    return new BActiveDataProvider($this, CMap::mergeArray(array('criteria' => $criteria), $params));
+  }
+
+  /**
+   * @return CDbCriteria
+   */
+  public function getSearchCriteria()
+  {
+    return new CDbCriteria();
+  }
+
+  /**
+   * @return array of search params
+   */
+  protected function getSearchParams()
+  {
+    return array();
+  }
 
   public function attributeLabels()
   {

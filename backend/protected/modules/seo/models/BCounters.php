@@ -32,7 +32,7 @@ class BCounters extends BActiveRecord
     ));
   }
 
-  public function search()
+  public function getSearchCriteria()
   {
     $criteria = new CDbCriteria;
 
@@ -40,8 +40,6 @@ class BCounters extends BActiveRecord
     $criteria->compare('main', $this->main);
     $criteria->compare('visible', $this->visible);
 
-    return new BActiveDataProvider($this, array(
-      'criteria' => $criteria,
-    ));
+    return $criteria;
   }
 }

@@ -50,9 +50,9 @@ class BResponse extends BActiveRecord
   }
 
   /**
-   * @return BActiveDataProvider
+   * @return CDbCriteria
    */
-  public function search()
+  public function getSearchCriteria()
   {
     $criteria = new CDbCriteria;
 
@@ -62,8 +62,6 @@ class BResponse extends BActiveRecord
     if( !empty($this->date_from) || !empty($this->date_to) )
       $criteria->addBetweenCondition('date', Utils::dayBegin($this->date_from), Utils::dayEnd($this->date_to));
 
-    return new BActiveDataProvider($this, array(
-      'criteria' => $criteria,
-    ));
+    return $criteria;
   }
 }
