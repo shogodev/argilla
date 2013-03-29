@@ -488,9 +488,6 @@ h4, h4 a, .h4, .h4 a {
     display: none; } }
 /*   -=========== HTML5 structure ===========-   */
 #structure {
-  -webkit-border-radius: 5px;
-  -moz-border-radius: 5px;
-  border-radius: 5px;
   position: relative;
   width: 990px;
   min-height: 100%;
