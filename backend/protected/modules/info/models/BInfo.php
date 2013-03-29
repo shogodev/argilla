@@ -41,7 +41,7 @@ class BInfo extends BAbstractMenuEntry
   {
     return array(
       array('name, url', 'required'),
-      array('url', 'unique', 'except' => 'move'),
+      array('url', 'unique'),
 
       array('position', 'numerical', 'integerOnly' => true),
       array('template, url', 'length', 'max' => 255),
