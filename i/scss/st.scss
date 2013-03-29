@@ -14,7 +14,6 @@ Authors:   Grigory Zarubin, Alexander Rubanov, Alexey Efimov (Shogo.RU)
 
 /*   -=========== HTML5 structure ===========-   */
 #structure {
-  @include border-radius(5px);
   position: relative;
   width: $wrapper-width;
   min-height: 100%;
