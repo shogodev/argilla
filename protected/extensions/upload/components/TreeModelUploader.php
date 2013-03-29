@@ -1,10 +1,13 @@
 <?php
 /**
+ * @author Sergey Glagolev <glagolev@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
+ * @package frontend.extensions.upload
+
  * Класс для работы с загружаемыми файлами на моделях, которые обладают
  * NestedSets поведением.
- *
- * User: Sergey Glagolev <glagolev@shogo.ru>
- * Date: 30.08.12
  */
 class TreeModelUploader extends ModelUploader
 {
@@ -34,5 +37,3 @@ class TreeModelUploader extends ModelUploader
     return $this->behavior->owner->saveNode();
   }
 }
-
-?>

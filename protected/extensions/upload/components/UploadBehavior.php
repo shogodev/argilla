@@ -1,9 +1,12 @@
 <?php
 /**
- * Поведение для добавления файлов в ActiveRecord модель
+ * @author Sergey Glagolev <glagolev@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
+ * @package frontend.extensions.upload
  *
- * User: Sergey Glagolev <glagolev@shogo.ru>
- * Date: 23.08.12
+ * Поведение для добавления файлов в ActiveRecord модель
  */
 class UploadBehavior extends CActiveRecordBehavior
 {
@@ -103,6 +106,18 @@ class UploadBehavior extends CActiveRecordBehavior
     parent::beforeDelete($event);
   }
 
+  public function isResizeable($extension)
+  {
+    $this->init();
+    return in_array($extension, $this->uploader->getResizeableTypes());
+  }
+
+  public function getThumb($fileName)
+  {
+    $this->init();
+    return pathinfo($this->uploader->getThumbPath($fileName), PATHINFO_BASENAME);
+  }
+
   protected function init()
   {
     $prefix = Yii::app()->db->tablePrefix;
@@ -140,5 +155,3 @@ class UploadBehavior extends CActiveRecordBehavior
 
   }
 }
-
-?>

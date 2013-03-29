@@ -1,6 +1,16 @@
 <?php
+/**
+ * @author Sergey Glagolev <glagolev@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
+ * @package frontend.extensions.upload
+ */
 class UploadForm extends CFormModel
 {
+  /**
+   * @var CUploadedFile
+   */
   public $file;
 
   public $mime_type;
@@ -9,17 +19,11 @@ class UploadForm extends CFormModel
 
   public $name;
 
-  /**
-   * Declares the validation rules.
-   * The rules state that username and password are required,
-   * and password needs to be authenticated.
-   */
   public function rules()
   {
     return array(
       array('file', 'file'),
-      //array('file', 'file', 'types' => 'jpg, png, gif, jpeg', 'on'=>'create'),
-      //array('file', 'file', 'allowEmpty' => true, 'types' => 'jpg, png, gif, jpeg', 'on' => 'update'),
+      array('file', 'file', 'types' => 'jpg, png, gif, jpeg, doc, pdf, rar, xls, zip', 'on' => 'create'),
     );
   }
 }

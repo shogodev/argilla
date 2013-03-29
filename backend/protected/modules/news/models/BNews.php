@@ -34,7 +34,7 @@ class BNews extends BActiveRecord
   public function rules()
   {
     return array(
-      array('url', 'required'),
+      array('url, section_id', 'required'),
       array('url', 'unique'),
 
       array('section_id, position, visible', 'numerical', 'integerOnly' => true),

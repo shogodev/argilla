@@ -1,6 +1,10 @@
 <?php
 /**
  * @author Sergey Glagolev <glagolev@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
+ * @package frontend.extensions.upload
  */
 class UploadAction extends CAction
 {
@@ -162,7 +166,7 @@ class UploadAction extends CAction
    */
   private function uploadFile(CUploadedFile $uploadedFile = null)
   {
-    $model       = new UploadForm();
+    $model       = new UploadForm('create');
     $model->file = $uploadedFile? $uploadedFile : CUploadedFile::getInstance($this->model, $this->model->asa('uploadBehavior')->attribute);
 
     if( $model->file !== null )
@@ -180,7 +184,7 @@ class UploadAction extends CAction
                       "mime_type"     => $model->mime_type,
                       "size"          => $model->size,
                       "url"           => $this->publicPath.$model->name,
-                      "thumbnail_url" => $this->createThumbs($model->name),
+                      "thumbnail_url" => $this->createThumbs($model),
                       );
 
         $fileId             = $this->addFileToModel($file);
@@ -258,25 +262,32 @@ class UploadAction extends CAction
     return $settings;
   }
 
-  private function createThumbs($name)
+  private function createThumbs(UploadForm $model)
   {
-    $settings = $this->getThumbsSettings();
-
-    foreach($settings as $pref => $sizes)
+    if( $this->model->isResizeable($model->file->getExtensionName()) )
     {
-      $thumb = Yii::app()->phpThumb->create($this->path.$name);
-      $thumb->resize($sizes[0], $sizes[1]);
+      foreach($this->getThumbsSettings() as $pref => $sizes)
+      {
+        $thumb = Yii::app()->phpThumb->create($this->path.$model->name);
+        $thumb->resize($sizes[0], $sizes[1]);
 
-      if( $pref === 'origin' )
-        $newPath = $this->path.$name;
-      else
-        $newPath = $this->path.$pref.'_'.$name;
+        if( $pref === 'origin' )
+          $newPath = $this->path.$model->name;
+        else
+          $newPath = $this->path.$pref.'_'.$model->name;
 
-      $thumb->save($newPath);
-      chmod($newPath, $this->fileMode);
+        $thumb->save($newPath);
+        chmod($newPath, $this->fileMode);
+      }
+
+      $previewPath = $this->path.$model->name;
+    }
+    else
+    {
+      $previewPath = dirname(__FILE__).'/../assets/img/'.$this->model->getThumb($model->name);
     }
 
-    $thumb = Yii::app()->phpThumb->create($this->path.$name);
+    $thumb = Yii::app()->phpThumb->create($previewPath);
     $thumb->resize($this->previewWidth, $this->previewHeight);
     $preview = 'data:image/png;base64,'.base64_encode($thumb->getImageAsString());
 
@@ -296,4 +307,3 @@ class UploadAction extends CAction
     }
   }
 }
-?>
