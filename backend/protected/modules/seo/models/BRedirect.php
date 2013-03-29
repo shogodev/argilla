@@ -95,7 +95,7 @@ class BRedirect extends BActiveRecord
     return $string;
   }
 
-  public function search()
+  public function getSearchCriteria()
   {
     $criteria = new CDbCriteria;
 
@@ -104,8 +104,6 @@ class BRedirect extends BActiveRecord
     $criteria->compare('type_id', $this->type_id);
     $criteria->compare('visible', $this->visible);
 
-    return new BActiveDataProvider($this, array(
-      'criteria' => $criteria,
-    ));
+    return $criteria;
   }
 }

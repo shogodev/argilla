@@ -41,16 +41,14 @@ class BNewsSection extends BActiveRecord
   }
 
   /**
-   * @return BActiveDataProvider
+   * @return CDbCriteria
    */
-  public function search()
+  public function getSearchCriteria()
   {
     $criteria = new CDbCriteria;
     $criteria->compare('visible', '='.$this->visible);
     $criteria->compare('name', $this->name, true);
 
-    return new BActiveDataProvider($this, array(
-      'criteria' => $criteria,
-    ));
+    return $criteria;
   }
 }

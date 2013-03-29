@@ -78,9 +78,9 @@ class BBanner extends BActiveRecord
   }
 
   /**
-   * @return BActiveDataProvider
+   * @return CDbCriteria
    */
-  public function search()
+  public function getSearchCriteria()
   {
     $criteria = new CDbCriteria;
 
@@ -88,8 +88,6 @@ class BBanner extends BActiveRecord
     $criteria->compare('visible', '='.$this->visible);
     $criteria->compare('location', $this->location, true);
 
-    return new BActiveDataProvider($this, array(
-      'criteria' => $criteria,
-    ));
+    return $criteria;
   }
 }

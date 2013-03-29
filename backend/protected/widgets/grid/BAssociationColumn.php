@@ -16,6 +16,8 @@ class BAssociationColumn extends BDataColumn
 
   public $htmlOptions = array('class' => 'button-column');
 
+  public $assignerOptions = array();
+
   public $parameters = array();
 
   protected function renderDataCellContent($row, $data)
@@ -41,7 +43,7 @@ class BAssociationColumn extends BDataColumn
       'data-iframeurl' => $iframeUrl,
       'data-ajaxurl' => $ajaxUrl,
       'href' => '#'.($count ? $count : ''),
-      'onClick' => 'assigner.ajaxHandler(this)',
+      'onClick' => 'assigner.ajaxHandler(this,'.CJavaScript::encode($this->assignerOptions).')',
     ), '<span>'.$count.'</span>');
   }
 }

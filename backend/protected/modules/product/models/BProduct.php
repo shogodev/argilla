@@ -125,11 +125,14 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
     );
   }
 
-  public function search()
+  public function getSearchCriteria()
   {
     $criteria           = new CDbCriteria;
     $criteria->together = true;
-    $criteria->with     = array('assignment');
+    $criteria->with     = array('assignment' => [
+      'select' => false,
+    ]);
+    $criteria->distinct = true;
 
     $criteria->compare('assignment.section_id', '='.$this->section_id);
     $criteria->compare('assignment.type_id', '='.$this->type_id);
@@ -142,10 +145,9 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
 
     $criteria->compare('name', $this->name, true);
 
-    return new BActiveDataProvider($this, array(
-      'criteria' => $criteria,
-    ));
+    return $criteria;
   }
+
 
   public function attributeLabels()
   {

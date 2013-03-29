@@ -88,7 +88,7 @@ class BInfoController extends BController
 
       if( $drugModel && $dropModel )
       {
-        if( $drugModel->moveAsLast($dropModel))
+        if( $drugModel->moveAsLast($dropModel) )
         {
           $this->renderPartial('_tree', array(
             'model' => BInfo::model(),

@@ -128,9 +128,9 @@ class BOrder extends BActiveRecord
   }
 
   /**
-   * @return BActiveDataProvider
+   * @return CDbCriteria
    */
-  public function search()
+  public function getSearchCriteria()
   {
     $criteria = new CDbCriteria;
 
@@ -145,8 +145,6 @@ class BOrder extends BActiveRecord
     if( !empty($this->date_create_from) || !empty($this->date_create_to) )
       $criteria->addBetweenCondition('date_create', Utils::dayBegin($this->date_create_from), Utils::dayEnd($this->date_create_to));
 
-    return new BActiveDataProvider($this, array(
-      'criteria' => $criteria,
-    ));
+    return $criteria;
   }
 }

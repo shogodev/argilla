@@ -8,6 +8,8 @@
  */
 class BPkColumn extends BDataColumn
 {
+  public $name = false;
+
   public $htmlOptions = array('class' => 'center span1');
 
   public $filter = false;
@@ -40,13 +42,9 @@ class BPkColumn extends BDataColumn
   protected function renderDataCellContent($row, $data)
   {
     if( !$this->popup )
-    {
-      parent::renderDataCellContent($row, $data);
-    }
+      echo $data->getPrimaryKey();
     else
-    {
       $this->renderPkCheckboxContent($data);
-    }
   }
 
   protected function renderPkCheckboxContent(CActiveRecord $data)

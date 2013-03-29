@@ -41,7 +41,7 @@ class BInfo extends BAbstractMenuEntry
   {
     return array(
       array('name, url', 'required'),
-      array('url', 'unique', 'except' => 'move'),
+      array('url', 'unique'),
 
       array('position', 'numerical', 'integerOnly' => true),
       array('template, url', 'length', 'max' => 255),
@@ -100,7 +100,10 @@ class BInfo extends BAbstractMenuEntry
     return '/ '.implode(" / ", array_reverse($path));
   }
 
-  public function search()
+  /**
+   * @return CDbCriteria
+   */
+  public function getSearchCriteria()
   {
     $criteria = new CDbCriteria;
 
@@ -113,9 +116,7 @@ class BInfo extends BAbstractMenuEntry
       $criteria->addInCondition('id', CHtml::listData($parent->descendants()->findAll(), 'id', 'id'));
     }
 
-    return new CActiveDataProvider($this, array(
-      'criteria' => $criteria,
-    ));
+    return $criteria;
   }
 
   protected function beforeSave()
