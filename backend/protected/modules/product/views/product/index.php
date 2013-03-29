@@ -37,6 +37,7 @@ $this->widget('BGridView', array(
       'header' => 'Продукты',
       'class' => 'BAssociationColumn',
       'iframeAction' => 'index',
+      'assignerOptions' => array('closeOperation' => new CJavaScriptExpression('function(){location.reload()}'))
     ),
 
     array('class' => 'JToggleColumn', 'name' => 'visible', 'filter' => CHtml::listData($model->yesNoList(), 'id', 'name')),
