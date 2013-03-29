@@ -18,14 +18,12 @@ class BSettings extends BActiveRecord
     );
   }
 
-  public function search()
+  public function getSearchCriteria()
   {
     $criteria = new CDbCriteria;
     $criteria->compare('param', $this->param, true);
 
-    return new CActiveDataProvider($this, array(
-      'criteria' => $criteria,
-    ));
+    return $criteria;
   }
 
   public function attributeLabels()

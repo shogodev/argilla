@@ -58,7 +58,10 @@ class BNotification extends BActiveRecord
     return $data;
   }
 
-  public function search()
+  /**
+   * @return CDbCriteria
+   */
+  public function getSearchCriteria()
   {
     $criteria = new CDbCriteria;
 
@@ -67,8 +70,6 @@ class BNotification extends BActiveRecord
     $criteria->addSearchCondition('email', $this->email);
     $criteria->compare('visible', '='.$this->visible);
 
-    return new BActiveDataProvider($this, array(
-      'criteria' => $criteria,
-    ));
+    return $criteria;
   }
 }

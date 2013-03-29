@@ -9,7 +9,7 @@ $this->widget('BGridView', array(
   'dataProvider' => $model->search(),
   'filter' => $model,
   'columns' => array(
-    array('name' => 'id', 'class' => 'BPkColumn'),
+    array('class' => 'BPkColumn'),
     array('name' => 'position', 'class' => 'OnFlyEditField', 'htmlOptions' => array('class' => 'span1'), 'header' => 'Позиция', 'filter' => false),
 
     array(

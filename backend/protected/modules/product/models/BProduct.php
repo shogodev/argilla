@@ -125,7 +125,7 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
     );
   }
 
-  public function search()
+  public function getSearchCriteria()
   {
     $criteria           = new CDbCriteria;
     $criteria->together = true;
@@ -145,10 +145,9 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
 
     $criteria->compare('name', $this->name, true);
 
-    return new BActiveDataProvider($this, array(
-      'criteria' => $criteria,
-    ));
+    return $criteria;
   }
+
 
   public function attributeLabels()
   {

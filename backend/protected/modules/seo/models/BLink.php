@@ -82,10 +82,7 @@ class BLink extends BActiveRecord
     );
   }
 
-  /**
-   * @return BActiveDataProvider
-   */
-  public function search()
+  public function getSearchCriteria()
   {
     $criteria = new CDbCriteria;
 
@@ -93,9 +90,7 @@ class BLink extends BActiveRecord
     $criteria->compare('visible', $this->visible);
     $criteria->compare('section_id', $this->section_id);
 
-    return new BActiveDataProvider($this, array(
-      'criteria' => $criteria,
-    ));
+    return $criteria;
   }
 
   /**

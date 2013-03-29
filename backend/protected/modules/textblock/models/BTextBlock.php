@@ -31,14 +31,12 @@ class BTextBlock extends BActiveRecord
     );
   }
 
-  public function search()
+  public function getSearchCriteria()
   {
     $criteria = new CDbCriteria;
     $criteria->compare('location', $this->location, true);
 
-    return new CActiveDataProvider($this, array(
-      'criteria' => $criteria,
-    ));
+    return $criteria;
   }
 
   public function attributeLabels()

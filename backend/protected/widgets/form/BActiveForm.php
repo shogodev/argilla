@@ -114,6 +114,15 @@ class BActiveForm extends TbActiveForm
     return $this->inputRow(TbInput::TYPE_TEXT, $model, $attribute, null, CMap::mergeArray(array('rel' => 'extender', 'data-extender' => 'translit', 'data-source' => 'input[name*="name"]'), $htmlOptions));
   }
 
+  public function dropDownListRow($model, $attribute, $data = array(), $htmlOptions = array())
+  {
+    if( !empty($data) )
+      return parent::dropDownListRow($model, $attribute, $data, $htmlOptions);
+    else
+      return $this->dropDownListDefaultRow($model, $attribute, $data, $htmlOptions);
+  }
+
+
   /**
    * Renders a drop-down list input row.
    * @param CModel $model the data model

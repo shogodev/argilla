@@ -31,7 +31,7 @@ class BMetaRoute extends BActiveRecord
     );
   }
 
-  public function search()
+  public function getSearchCriteria()
   {
     $criteria = new CDbCriteria;
 
@@ -39,9 +39,7 @@ class BMetaRoute extends BActiveRecord
     $criteria->compare('title', $this->title, true);
     $criteria->compare('visible', $this->visible);
 
-    return new BActiveDataProvider($this, array(
-      'criteria' => $criteria,
-    ));
+    return $criteria;
   }
 
   public function afterFind()
