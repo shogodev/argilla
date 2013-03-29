@@ -35,6 +35,11 @@ class EImageColumn extends CGridColumn
   public $height = null;
 
   /**
+   * @var string Image style.
+   */
+  public $style = null;
+
+  /**
    * @var string Text above image preview
    */
   public $aboveText = '';
@@ -64,6 +69,8 @@ class EImageColumn extends CGridColumn
         $options['width'] = $this->width;
       if( $this->height )
         $options['height'] = $this->height;
+      if( $this->style )
+        $options['style'] = $this->style;
 
       $content .= CHtml::tag('img', $options);
       $content .= $this->belowText;

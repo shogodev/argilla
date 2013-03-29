@@ -11,8 +11,9 @@ $columns = array(
     'header'              => 'Изоб.',
     'class'               => 'EImageColumn',
     'imagePathExpression' => '!empty($data["thmb"]) ? $data["thmb"] : $data["path"]',
-    'width'               => 20/*135*/,
     'htmlOptions'         => array('class' => 'center', 'style' => 'width:6.5%'),
+    'style'               => 'max-width: 20px;',
+    //'width'               => 135,
     //'belowText'           => '<a href="#" class="resize-pic">Вырезать превью</a>'
   ),
 );
