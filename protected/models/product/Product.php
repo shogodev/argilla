@@ -61,7 +61,7 @@ class Product extends FActiveRecord
 
       'section'       => array(self::HAS_ONE, 'ProductSection', array('section_id' => 'id'), 'through' => 'assignment'),
       'type'          => array(self::HAS_ONE, 'ProductType', array('type_id' => 'id'), 'through' => 'assignment'),
-      'configuration' => array(self::HAS_ONE, 'ProductConfiguration', array('configuration_id' => 'id'), 'through' => 'assignment'),
+      //'configuration' => array(self::HAS_ONE, 'ProductConfiguration', array('configuration_id' => 'id'), 'through' => 'assignment'),
     );
   }
 

@@ -22,9 +22,9 @@ class ProductAssignment extends FActiveRecord
     return array(
       'section' => array(self::BELONGS_TO, 'ProductSection', 'section_id'),
       'type' => array(self::BELONGS_TO, 'ProductType', 'type_id'),
-      'configuration' => array(self::BELONGS_TO, 'ProductConfiguration', 'configuration_id'),
-      'series' => array(self::BELONGS_TO, 'ProductSeries', 'series_id'),
-      'subseries' => array(self::BELONGS_TO, 'ProductSubseries', 'subseries_id'),
+      //'configuration' => array(self::BELONGS_TO, 'ProductConfiguration', 'configuration_id'),
+      //'series' => array(self::BELONGS_TO, 'ProductSeries', 'series_id'),
+      //'subseries' => array(self::BELONGS_TO, 'ProductSubseries', 'subseries_id'),
     );
   }
 

@@ -199,4 +199,21 @@ class Info extends FActiveRecord implements IMenuItem
   {
 
   }
+
+  public function getBreadcrumbs()
+  {
+    $breadcrumbs = array();
+
+    foreach($this->parents as $parent)
+    {
+      if( $parent->menu_only )
+        $breadcrumbs[] = $parent->name;
+      else
+        $breadcrumbs[$parent->name] = array('info/index', 'url' => $parent->url);
+    }
+
+    $breadcrumbs[$this->name] = array('info/index', 'url' => $this->url);
+
+    return $breadcrumbs;
+  }
 }
