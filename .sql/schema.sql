@@ -1,10 +1,10 @@
 -- This file was created by ShogoCMS $Id: d6242f0a510ed3000bd17d9bfba8d1ebf0872153 $
--- User: melnikov	Hostname: boojaka.shogo.ru
+-- User: tatarinov	Hostname: boojaka.shogo.ru
 -- PHP: 5.4.5 Phing 2.4.12
--- Original prefix: shogocms_
+-- Original prefix: argilla_
 -- MySQL dump 10.13  Distrib 5.1.63, for portbld-freebsd8.2 (amd64)
 --
--- Host: localhost    Database: shogocms
+-- Host: localhost    Database: argilla_tatarinov
 -- ------------------------------------------------------
 -- Server version	5.1.63-log
 
@@ -20,13 +20,13 @@
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `shogocms_association`
+-- Table structure for table `argilla_association`
 --
 
-DROP TABLE IF EXISTS `shogocms_association`;
+DROP TABLE IF EXISTS `argilla_association`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_association` (
+CREATE TABLE `argilla_association` (
   `src` varchar(50) NOT NULL,
   `src_frontend` varchar(255) DEFAULT NULL,
   `src_id` int(10) unsigned NOT NULL,
@@ -38,30 +38,30 @@ CREATE TABLE `shogocms_association` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_auth_assignment`
+-- Table structure for table `argilla_auth_assignment`
 --
 
-DROP TABLE IF EXISTS `shogocms_auth_assignment`;
+DROP TABLE IF EXISTS `argilla_auth_assignment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_auth_assignment` (
+CREATE TABLE `argilla_auth_assignment` (
   `itemname` varchar(64) NOT NULL,
   `userid` varchar(64) NOT NULL,
   `bizrule` text,
   `data` text,
   PRIMARY KEY (`itemname`,`userid`),
-  CONSTRAINT `AuthAssignment_ibfk_1` FOREIGN KEY (`itemname`) REFERENCES `shogocms_auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `AuthAssignment_ibfk_1` FOREIGN KEY (`itemname`) REFERENCES `argilla_auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_auth_item`
+-- Table structure for table `argilla_auth_item`
 --
 
-DROP TABLE IF EXISTS `shogocms_auth_item`;
+DROP TABLE IF EXISTS `argilla_auth_item`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_auth_item` (
+CREATE TABLE `argilla_auth_item` (
   `name` varchar(64) NOT NULL,
   `title` varchar(255) DEFAULT NULL,
   `type` int(11) NOT NULL,
@@ -73,30 +73,30 @@ CREATE TABLE `shogocms_auth_item` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_auth_item_child`
+-- Table structure for table `argilla_auth_item_child`
 --
 
-DROP TABLE IF EXISTS `shogocms_auth_item_child`;
+DROP TABLE IF EXISTS `argilla_auth_item_child`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_auth_item_child` (
+CREATE TABLE `argilla_auth_item_child` (
   `parent` varchar(64) NOT NULL,
   `child` varchar(64) NOT NULL,
   PRIMARY KEY (`parent`,`child`),
   KEY `child` (`child`),
-  CONSTRAINT `AuthItemChild_ibfk_1` FOREIGN KEY (`parent`) REFERENCES `shogocms_auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `AuthItemChild_ibfk_2` FOREIGN KEY (`child`) REFERENCES `shogocms_auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `AuthItemChild_ibfk_1` FOREIGN KEY (`parent`) REFERENCES `argilla_auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `AuthItemChild_ibfk_2` FOREIGN KEY (`child`) REFERENCES `argilla_auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_auth_user`
+-- Table structure for table `argilla_auth_user`
 --
 
-DROP TABLE IF EXISTS `shogocms_auth_user`;
+DROP TABLE IF EXISTS `argilla_auth_user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_auth_user` (
+CREATE TABLE `argilla_auth_user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(128) NOT NULL,
   `password` varchar(32) NOT NULL,
@@ -106,13 +106,13 @@ CREATE TABLE `shogocms_auth_user` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_banner`
+-- Table structure for table `argilla_banner`
 --
 
-DROP TABLE IF EXISTS `shogocms_banner`;
+DROP TABLE IF EXISTS `argilla_banner`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_banner` (
+CREATE TABLE `argilla_banner` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `position` int(11) NOT NULL DEFAULT '10',
   `location` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
@@ -133,13 +133,13 @@ CREATE TABLE `shogocms_banner` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_callbacks`
+-- Table structure for table `argilla_callbacks`
 --
 
-DROP TABLE IF EXISTS `shogocms_callbacks`;
+DROP TABLE IF EXISTS `argilla_callbacks`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_callbacks` (
+CREATE TABLE `argilla_callbacks` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET utf8 NOT NULL,
   `phone` varchar(255) CHARACTER SET utf8 NOT NULL,
@@ -152,13 +152,13 @@ CREATE TABLE `shogocms_callbacks` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_comment`
+-- Table structure for table `argilla_comment`
 --
 
-DROP TABLE IF EXISTS `shogocms_comment`;
+DROP TABLE IF EXISTS `argilla_comment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_comment` (
+CREATE TABLE `argilla_comment` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `model` varchar(255) NOT NULL,
   `item` int(11) DEFAULT NULL,
@@ -172,13 +172,13 @@ CREATE TABLE `shogocms_comment` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_contact`
+-- Table structure for table `argilla_contact`
 --
 
-DROP TABLE IF EXISTS `shogocms_contact`;
+DROP TABLE IF EXISTS `argilla_contact`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_contact` (
+CREATE TABLE `argilla_contact` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `sysname` varchar(255) DEFAULT NULL,
@@ -194,13 +194,13 @@ CREATE TABLE `shogocms_contact` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_contact_field`
+-- Table structure for table `argilla_contact_field`
 --
 
-DROP TABLE IF EXISTS `shogocms_contact_field`;
+DROP TABLE IF EXISTS `argilla_contact_field`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_contact_field` (
+CREATE TABLE `argilla_contact_field` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `group_id` int(11) NOT NULL,
   `value` varchar(511) NOT NULL,
@@ -208,19 +208,19 @@ CREATE TABLE `shogocms_contact_field` (
   `position` int(1) NOT NULL DEFAULT '10',
   `visible` int(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
-  KEY `fk_shogocms_contact_field_gid` (`group_id`),
-  CONSTRAINT `fk_shogocms_contact_field_gid` FOREIGN KEY (`group_id`) REFERENCES `shogocms_contact_group` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `fk_argilla_contact_field_gid` (`group_id`),
+  CONSTRAINT `fk_argilla_contact_field_gid` FOREIGN KEY (`group_id`) REFERENCES `argilla_contact_group` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_contact_group`
+-- Table structure for table `argilla_contact_group`
 --
 
-DROP TABLE IF EXISTS `shogocms_contact_group`;
+DROP TABLE IF EXISTS `argilla_contact_group`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_contact_group` (
+CREATE TABLE `argilla_contact_group` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `sysname` varchar(63) NOT NULL,
   `contact_id` int(11) NOT NULL,
@@ -229,19 +229,19 @@ CREATE TABLE `shogocms_contact_group` (
   `visible` int(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `sysname` (`sysname`),
-  KEY `fk_shogocms_contact_group_cid` (`contact_id`),
-  CONSTRAINT `fk_shogocms_contact_group_cid` FOREIGN KEY (`contact_id`) REFERENCES `shogocms_contact` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  KEY `fk_argilla_contact_group_cid` (`contact_id`),
+  CONSTRAINT `fk_argilla_contact_group_cid` FOREIGN KEY (`contact_id`) REFERENCES `argilla_contact` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Группы полей контактов';
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_contact_textblock`
+-- Table structure for table `argilla_contact_textblock`
 --
 
-DROP TABLE IF EXISTS `shogocms_contact_textblock`;
+DROP TABLE IF EXISTS `argilla_contact_textblock`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_contact_textblock` (
+CREATE TABLE `argilla_contact_textblock` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `contact_id` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
@@ -250,19 +250,19 @@ CREATE TABLE `shogocms_contact_textblock` (
   `position` int(11) DEFAULT NULL,
   `visible` int(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
-  KEY `fk_shogocms_contact_textblock_1` (`contact_id`),
-  CONSTRAINT `fk_shogocms_contact_textblock_1` FOREIGN KEY (`contact_id`) REFERENCES `shogocms_contact` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `fk_argilla_contact_textblock_1` (`contact_id`),
+  CONSTRAINT `fk_argilla_contact_textblock_1` FOREIGN KEY (`contact_id`) REFERENCES `argilla_contact` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_dir_banner_location`
+-- Table structure for table `argilla_dir_banner_location`
 --
 
-DROP TABLE IF EXISTS `shogocms_dir_banner_location`;
+DROP TABLE IF EXISTS `argilla_dir_banner_location`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_dir_banner_location` (
+CREATE TABLE `argilla_dir_banner_location` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(128) CHARACTER SET utf8 NOT NULL,
   `deleted` tinyint(1) NOT NULL,
@@ -272,13 +272,13 @@ CREATE TABLE `shogocms_dir_banner_location` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_dir_countries`
+-- Table structure for table `argilla_dir_countries`
 --
 
-DROP TABLE IF EXISTS `shogocms_dir_countries`;
+DROP TABLE IF EXISTS `argilla_dir_countries`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_dir_countries` (
+CREATE TABLE `argilla_dir_countries` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(128) NOT NULL,
   `deleted` tinyint(1) DEFAULT '0',
@@ -287,13 +287,13 @@ CREATE TABLE `shogocms_dir_countries` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_dir_users`
+-- Table structure for table `argilla_dir_users`
 --
 
-DROP TABLE IF EXISTS `shogocms_dir_users`;
+DROP TABLE IF EXISTS `argilla_dir_users`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_dir_users` (
+CREATE TABLE `argilla_dir_users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(128) NOT NULL,
   PRIMARY KEY (`id`)
@@ -301,13 +301,13 @@ CREATE TABLE `shogocms_dir_users` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_gallery`
+-- Table structure for table `argilla_gallery`
 --
 
-DROP TABLE IF EXISTS `shogocms_gallery`;
+DROP TABLE IF EXISTS `argilla_gallery`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_gallery` (
+CREATE TABLE `argilla_gallery` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `url` varchar(255) NOT NULL,
@@ -318,13 +318,13 @@ CREATE TABLE `shogocms_gallery` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_gallery_image`
+-- Table structure for table `argilla_gallery_image`
 --
 
-DROP TABLE IF EXISTS `shogocms_gallery_image`;
+DROP TABLE IF EXISTS `argilla_gallery_image`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_gallery_image` (
+CREATE TABLE `argilla_gallery_image` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `parent` int(11) NOT NULL,
   `name` varchar(255) NOT NULL,
@@ -334,18 +334,18 @@ CREATE TABLE `shogocms_gallery_image` (
   `position` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `fk_gallery_image_1` (`parent`),
-  CONSTRAINT `fk_gallery_image_1` FOREIGN KEY (`parent`) REFERENCES `shogocms_gallery` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
+  CONSTRAINT `fk_gallery_image_1` FOREIGN KEY (`parent`) REFERENCES `argilla_gallery` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_info`
+-- Table structure for table `argilla_info`
 --
 
-DROP TABLE IF EXISTS `shogocms_info`;
+DROP TABLE IF EXISTS `argilla_info`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_info` (
+CREATE TABLE `argilla_info` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `lft` int(10) unsigned NOT NULL,
   `rgt` int(10) unsigned NOT NULL,
@@ -373,13 +373,13 @@ CREATE TABLE `shogocms_info` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_info_files`
+-- Table structure for table `argilla_info_files`
 --
 
-DROP TABLE IF EXISTS `shogocms_info_files`;
+DROP TABLE IF EXISTS `argilla_info_files`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_info_files` (
+CREATE TABLE `argilla_info_files` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `parent` int(10) unsigned NOT NULL,
   `name` varchar(255) NOT NULL,
@@ -393,13 +393,13 @@ CREATE TABLE `shogocms_info_files` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_menu`
+-- Table structure for table `argilla_menu`
 --
 
-DROP TABLE IF EXISTS `shogocms_menu`;
+DROP TABLE IF EXISTS `argilla_menu`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_menu` (
+CREATE TABLE `argilla_menu` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `sysname` varchar(255) NOT NULL,
@@ -410,13 +410,13 @@ CREATE TABLE `shogocms_menu` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_menu_custom_item`
+-- Table structure for table `argilla_menu_custom_item`
 --
 
-DROP TABLE IF EXISTS `shogocms_menu_custom_item`;
+DROP TABLE IF EXISTS `argilla_menu_custom_item`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_menu_custom_item` (
+CREATE TABLE `argilla_menu_custom_item` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
   `url` varchar(255) COLLATE utf8_bin NOT NULL,
@@ -427,32 +427,32 @@ CREATE TABLE `shogocms_menu_custom_item` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_menu_custom_item_data`
+-- Table structure for table `argilla_menu_custom_item_data`
 --
 
-DROP TABLE IF EXISTS `shogocms_menu_custom_item_data`;
+DROP TABLE IF EXISTS `argilla_menu_custom_item_data`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_menu_custom_item_data` (
+CREATE TABLE `argilla_menu_custom_item_data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `parent` int(11) NOT NULL,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
   `value` varchar(255) COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`id`),
   KEY `parent` (`parent`),
-  KEY `fk_shogocms_menu_custom_item_data_1` (`parent`),
-  CONSTRAINT `fk_shogocms_menu_custom_item_data_1` FOREIGN KEY (`parent`) REFERENCES `shogocms_menu_custom_item` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `fk_argilla_menu_custom_item_data_1` (`parent`),
+  CONSTRAINT `fk_argilla_menu_custom_item_data_1` FOREIGN KEY (`parent`) REFERENCES `argilla_menu_custom_item` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_menu_item`
+-- Table structure for table `argilla_menu_item`
 --
 
-DROP TABLE IF EXISTS `shogocms_menu_item`;
+DROP TABLE IF EXISTS `argilla_menu_item`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_menu_item` (
+CREATE TABLE `argilla_menu_item` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `menu_id` int(11) NOT NULL,
   `item_id` int(11) DEFAULT NULL,
@@ -464,51 +464,51 @@ CREATE TABLE `shogocms_menu_item` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_meta_mask`
+-- Table structure for table `argilla_meta_mask`
 --
 
-DROP TABLE IF EXISTS `shogocms_meta_mask`;
+DROP TABLE IF EXISTS `argilla_meta_mask`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_meta_mask` (
+CREATE TABLE `argilla_meta_mask` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `url_mask` varchar(255) NOT NULL,
   `title` varchar(255) NOT NULL,
   `description` varchar(255) NOT NULL,
   `keywords` varchar(255) NOT NULL,
-  `visible` tinyint(4) NOT NULL,
+  `visible` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_meta_route`
+-- Table structure for table `argilla_meta_route`
 --
 
-DROP TABLE IF EXISTS `shogocms_meta_route`;
+DROP TABLE IF EXISTS `argilla_meta_route`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_meta_route` (
+CREATE TABLE `argilla_meta_route` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `route` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `route` varchar(255) NOT NULL,
   `title` varchar(255) NOT NULL,
   `description` varchar(255) NOT NULL,
   `keywords` varchar(255) NOT NULL,
   `models` text NOT NULL,
   `clips` varchar(512) NOT NULL,
-  `visible` tinyint(4) NOT NULL,
+  `visible` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_migration`
+-- Table structure for table `argilla_migration`
 --
 
-DROP TABLE IF EXISTS `shogocms_migration`;
+DROP TABLE IF EXISTS `argilla_migration`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_migration` (
+CREATE TABLE `argilla_migration` (
   `version` varchar(255) COLLATE utf8_bin NOT NULL,
   `apply_time` int(11) DEFAULT NULL,
   PRIMARY KEY (`version`)
@@ -516,13 +516,13 @@ CREATE TABLE `shogocms_migration` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_news`
+-- Table structure for table `argilla_news`
 --
 
-DROP TABLE IF EXISTS `shogocms_news`;
+DROP TABLE IF EXISTS `argilla_news`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_news` (
+CREATE TABLE `argilla_news` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `section_id` int(10) unsigned NOT NULL DEFAULT '1',
   `position` int(11) DEFAULT '0',
@@ -537,18 +537,18 @@ CREATE TABLE `shogocms_news` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `url` (`url`),
   KEY `section_id` (`section_id`),
-  CONSTRAINT `shogocms_news_ibfk_1` FOREIGN KEY (`section_id`) REFERENCES `shogocms_news_section` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `argilla_news_ibfk_1` FOREIGN KEY (`section_id`) REFERENCES `argilla_news_section` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_news_section`
+-- Table structure for table `argilla_news_section`
 --
 
-DROP TABLE IF EXISTS `shogocms_news_section`;
+DROP TABLE IF EXISTS `argilla_news_section`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_news_section` (
+CREATE TABLE `argilla_news_section` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `position` int(11) DEFAULT '0',
   `url` varchar(255) NOT NULL,
@@ -561,13 +561,13 @@ CREATE TABLE `shogocms_news_section` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_notification`
+-- Table structure for table `argilla_notification`
 --
 
-DROP TABLE IF EXISTS `shogocms_notification`;
+DROP TABLE IF EXISTS `argilla_notification`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_notification` (
+CREATE TABLE `argilla_notification` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `index` varchar(255) CHARACTER SET utf8 NOT NULL,
   `name` varchar(255) CHARACTER SET utf8 NOT NULL,
@@ -582,13 +582,13 @@ CREATE TABLE `shogocms_notification` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_order`
+-- Table structure for table `argilla_order`
 --
 
-DROP TABLE IF EXISTS `shogocms_order`;
+DROP TABLE IF EXISTS `argilla_order`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_order` (
+CREATE TABLE `argilla_order` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned DEFAULT NULL,
   `name` varchar(255) CHARACTER SET utf8 NOT NULL,
@@ -605,18 +605,18 @@ CREATE TABLE `shogocms_order` (
   `deleted` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
-  CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `shogocms_user` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `argilla_user` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_order_product`
+-- Table structure for table `argilla_order_product`
 --
 
-DROP TABLE IF EXISTS `shogocms_order_product`;
+DROP TABLE IF EXISTS `argilla_order_product`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_order_product` (
+CREATE TABLE `argilla_order_product` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `order_id` int(10) unsigned NOT NULL,
   `name` varchar(512) COLLATE utf8_bin NOT NULL,
@@ -626,18 +626,18 @@ CREATE TABLE `shogocms_order_product` (
   `sum` decimal(10,2) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `order` (`order_id`),
-  CONSTRAINT `shogocms_order_product_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `shogocms_order` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `argilla_order_product_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `argilla_order` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_order_product_history`
+-- Table structure for table `argilla_order_product_history`
 --
 
-DROP TABLE IF EXISTS `shogocms_order_product_history`;
+DROP TABLE IF EXISTS `argilla_order_product_history`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_order_product_history` (
+CREATE TABLE `argilla_order_product_history` (
   `order_product_id` int(10) unsigned NOT NULL,
   `product_id` int(10) unsigned NOT NULL,
   `url` varchar(255) CHARACTER SET utf8 NOT NULL,
@@ -645,18 +645,18 @@ CREATE TABLE `shogocms_order_product_history` (
   `articul` varchar(255) CHARACTER SET utf8 NOT NULL,
   UNIQUE KEY `order_product_id` (`order_product_id`),
   KEY `product_id` (`product_id`),
-  CONSTRAINT `id` FOREIGN KEY (`order_product_id`) REFERENCES `shogocms_order_product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `id` FOREIGN KEY (`order_product_id`) REFERENCES `argilla_order_product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_product`
+-- Table structure for table `argilla_product`
 --
 
-DROP TABLE IF EXISTS `shogocms_product`;
+DROP TABLE IF EXISTS `argilla_product`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_product` (
+CREATE TABLE `argilla_product` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `parent` int(11) DEFAULT NULL,
   `position` int(11) DEFAULT '0',
@@ -680,18 +680,18 @@ CREATE TABLE `shogocms_product` (
   UNIQUE KEY `url` (`url`),
   UNIQUE KEY `articul` (`articul`),
   KEY `currency_id` (`currency_id`),
-  CONSTRAINT `shogocms_product_ibfk_1` FOREIGN KEY (`currency_id`) REFERENCES `shogocms_product_currency` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `argilla_product_ibfk_1` FOREIGN KEY (`currency_id`) REFERENCES `argilla_product_currency` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_product_assignment`
+-- Table structure for table `argilla_product_assignment`
 --
 
-DROP TABLE IF EXISTS `shogocms_product_assignment`;
+DROP TABLE IF EXISTS `argilla_product_assignment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_product_assignment` (
+CREATE TABLE `argilla_product_assignment` (
   `product_id` int(10) unsigned NOT NULL,
   `section_id` int(10) unsigned NOT NULL,
   `type_id` int(10) unsigned NOT NULL,
@@ -702,18 +702,18 @@ CREATE TABLE `shogocms_product_assignment` (
   KEY `category_id` (`category_id`),
   KEY `year_id` (`collection_id`),
   KEY `type_id` (`type_id`),
-  CONSTRAINT `shogocms_product_assignment_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `shogocms_product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `argilla_product_assignment_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `argilla_product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_product_category`
+-- Table structure for table `argilla_product_category`
 --
 
-DROP TABLE IF EXISTS `shogocms_product_category`;
+DROP TABLE IF EXISTS `argilla_product_category`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_product_category` (
+CREATE TABLE `argilla_product_category` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `position` int(11) DEFAULT NULL,
   `url` varchar(255) NOT NULL,
@@ -724,19 +724,19 @@ CREATE TABLE `shogocms_product_category` (
   `group_id` int(10) unsigned DEFAULT NULL,
   `visible` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
-  KEY `shogocms_product_category_ibfk_1` (`group_id`),
-  CONSTRAINT `shogocms_product_category_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `shogocms_product_category` (`id`)
+  KEY `argilla_product_category_ibfk_1` (`group_id`),
+  CONSTRAINT `argilla_product_category_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `argilla_product_category` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_product_category_group`
+-- Table structure for table `argilla_product_category_group`
 --
 
-DROP TABLE IF EXISTS `shogocms_product_category_group`;
+DROP TABLE IF EXISTS `argilla_product_category_group`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_product_category_group` (
+CREATE TABLE `argilla_product_category_group` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `position` int(11) DEFAULT NULL,
   `name` varchar(255) NOT NULL,
@@ -746,13 +746,13 @@ CREATE TABLE `shogocms_product_category_group` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_product_collection`
+-- Table structure for table `argilla_product_collection`
 --
 
-DROP TABLE IF EXISTS `shogocms_product_collection`;
+DROP TABLE IF EXISTS `argilla_product_collection`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_product_collection` (
+CREATE TABLE `argilla_product_collection` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `position` int(11) DEFAULT NULL,
   `url` varchar(255) NOT NULL,
@@ -765,13 +765,13 @@ CREATE TABLE `shogocms_product_collection` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_product_currency`
+-- Table structure for table `argilla_product_currency`
 --
 
-DROP TABLE IF EXISTS `shogocms_product_currency`;
+DROP TABLE IF EXISTS `argilla_product_currency`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_product_currency` (
+CREATE TABLE `argilla_product_currency` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET koi8r NOT NULL,
   `display` varchar(255) CHARACTER SET koi8r DEFAULT NULL,
@@ -784,13 +784,13 @@ CREATE TABLE `shogocms_product_currency` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_product_img`
+-- Table structure for table `argilla_product_img`
 --
 
-DROP TABLE IF EXISTS `shogocms_product_img`;
+DROP TABLE IF EXISTS `argilla_product_img`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_product_img` (
+CREATE TABLE `argilla_product_img` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `parent` int(10) unsigned NOT NULL,
   `name` varchar(255) NOT NULL,
@@ -804,13 +804,13 @@ CREATE TABLE `shogocms_product_img` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_product_param`
+-- Table structure for table `argilla_product_param`
 --
 
-DROP TABLE IF EXISTS `shogocms_product_param`;
+DROP TABLE IF EXISTS `argilla_product_param`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_product_param` (
+CREATE TABLE `argilla_product_param` (
   `param_id` int(10) unsigned NOT NULL DEFAULT '0',
   `product_id` int(10) unsigned NOT NULL DEFAULT '0',
   `variant_id` int(10) unsigned DEFAULT NULL,
@@ -819,20 +819,20 @@ CREATE TABLE `shogocms_product_param` (
   KEY `product_id` (`product_id`),
   KEY `param_id` (`param_id`),
   KEY `variant_id` (`variant_id`),
-  CONSTRAINT `shogocms_product_param_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `shogocms_product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `shogocms_product_param_ibfk_2` FOREIGN KEY (`param_id`) REFERENCES `shogocms_product_param_name` (`id`),
-  CONSTRAINT `shogocms_product_param_ibfk_3` FOREIGN KEY (`variant_id`) REFERENCES `shogocms_product_param_variant` (`id`)
+  CONSTRAINT `argilla_product_param_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `argilla_product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `argilla_product_param_ibfk_2` FOREIGN KEY (`param_id`) REFERENCES `argilla_product_param_name` (`id`),
+  CONSTRAINT `argilla_product_param_ibfk_3` FOREIGN KEY (`variant_id`) REFERENCES `argilla_product_param_variant` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_product_param_assignment`
+-- Table structure for table `argilla_product_param_assignment`
 --
 
-DROP TABLE IF EXISTS `shogocms_product_param_assignment`;
+DROP TABLE IF EXISTS `argilla_product_param_assignment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_product_param_assignment` (
+CREATE TABLE `argilla_product_param_assignment` (
   `param_id` int(10) unsigned NOT NULL,
   `section_id` int(10) unsigned NOT NULL,
   `type_id` int(10) unsigned NOT NULL,
@@ -843,18 +843,18 @@ CREATE TABLE `shogocms_product_param_assignment` (
   KEY `category_id` (`category_id`),
   KEY `year_id` (`collection_id`),
   KEY `type_id` (`type_id`),
-  CONSTRAINT `shogocms_product_param_assignment_ibfk_1` FOREIGN KEY (`param_id`) REFERENCES `shogocms_product_param_name` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `argilla_product_param_assignment_ibfk_1` FOREIGN KEY (`param_id`) REFERENCES `argilla_product_param_name` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_product_param_name`
+-- Table structure for table `argilla_product_param_name`
 --
 
-DROP TABLE IF EXISTS `shogocms_product_param_name`;
+DROP TABLE IF EXISTS `argilla_product_param_name`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_product_param_name` (
+CREATE TABLE `argilla_product_param_name` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `parent` int(10) unsigned NOT NULL DEFAULT '1',
   `position` int(11) DEFAULT '0',
@@ -868,36 +868,36 @@ CREATE TABLE `shogocms_product_param_name` (
   `section` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `parent` (`parent`),
-  CONSTRAINT `shogocms_product_param_name_ibfk_2` FOREIGN KEY (`parent`) REFERENCES `shogocms_product_param_name` (`id`)
+  CONSTRAINT `argilla_product_param_name_ibfk_2` FOREIGN KEY (`parent`) REFERENCES `argilla_product_param_name` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_product_param_variant`
+-- Table structure for table `argilla_product_param_variant`
 --
 
-DROP TABLE IF EXISTS `shogocms_product_param_variant`;
+DROP TABLE IF EXISTS `argilla_product_param_variant`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_product_param_variant` (
+CREATE TABLE `argilla_product_param_variant` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `param_id` int(10) unsigned NOT NULL,
   `name` text NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `value` (`param_id`,`name`(64)),
   KEY `param_id` (`param_id`),
-  CONSTRAINT `shogocms_product_param_variants_ibfk_1` FOREIGN KEY (`param_id`) REFERENCES `shogocms_product_param_name` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `argilla_product_param_variants_ibfk_1` FOREIGN KEY (`param_id`) REFERENCES `argilla_product_param_name` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_product_section`
+-- Table structure for table `argilla_product_section`
 --
 
-DROP TABLE IF EXISTS `shogocms_product_section`;
+DROP TABLE IF EXISTS `argilla_product_section`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_product_section` (
+CREATE TABLE `argilla_product_section` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `position` int(11) DEFAULT '0',
   `url` varchar(255) NOT NULL,
@@ -909,29 +909,29 @@ CREATE TABLE `shogocms_product_section` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_product_tag`
+-- Table structure for table `argilla_product_tag`
 --
 
-DROP TABLE IF EXISTS `shogocms_product_tag`;
+DROP TABLE IF EXISTS `argilla_product_tag`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_product_tag` (
+CREATE TABLE `argilla_product_tag` (
   `item_id` int(11) NOT NULL,
   `tag_id` int(11) NOT NULL,
   PRIMARY KEY (`tag_id`,`item_id`),
-  KEY `fk_shogocms_product_tag_tag` (`tag_id`),
-  CONSTRAINT `fk_shogocms_product_tag_tag` FOREIGN KEY (`tag_id`) REFERENCES `shogocms_tag` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `fk_argilla_product_tag_tag` (`tag_id`),
+  CONSTRAINT `fk_argilla_product_tag_tag` FOREIGN KEY (`tag_id`) REFERENCES `argilla_tag` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_product_tree_assignment`
+-- Table structure for table `argilla_product_tree_assignment`
 --
 
-DROP TABLE IF EXISTS `shogocms_product_tree_assignment`;
+DROP TABLE IF EXISTS `argilla_product_tree_assignment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_product_tree_assignment` (
+CREATE TABLE `argilla_product_tree_assignment` (
   `src` varchar(50) NOT NULL,
   `src_id` int(10) unsigned NOT NULL,
   `dst` varchar(50) NOT NULL,
@@ -941,13 +941,13 @@ CREATE TABLE `shogocms_product_tree_assignment` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_product_type`
+-- Table structure for table `argilla_product_type`
 --
 
-DROP TABLE IF EXISTS `shogocms_product_type`;
+DROP TABLE IF EXISTS `argilla_product_type`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_product_type` (
+CREATE TABLE `argilla_product_type` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `position` int(11) DEFAULT '0',
   `url` varchar(255) NOT NULL,
@@ -959,13 +959,31 @@ CREATE TABLE `shogocms_product_type` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_response`
+-- Table structure for table `argilla_redirect`
 --
 
-DROP TABLE IF EXISTS `shogocms_response`;
+DROP TABLE IF EXISTS `argilla_redirect`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_response` (
+CREATE TABLE `argilla_redirect` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `base` varchar(255) COLLATE utf8_bin NOT NULL,
+  `target` varchar(255) COLLATE utf8_bin NOT NULL,
+  `type_id` int(11) NOT NULL,
+  `visible` int(11) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`),
+  KEY `base` (`base`,`target`,`type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `argilla_response`
+--
+
+DROP TABLE IF EXISTS `argilla_response`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `argilla_response` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `product_id` int(10) unsigned DEFAULT NULL,
@@ -975,19 +993,19 @@ CREATE TABLE `shogocms_response` (
   `visible` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `product_id` (`product_id`),
-  CONSTRAINT `shogocms_response_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `shogocms_product` (`id`),
-  CONSTRAINT `shogocms_response_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `shogocms_product` (`id`)
+  CONSTRAINT `argilla_response_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `argilla_product` (`id`),
+  CONSTRAINT `argilla_response_ibfk_2` FOREIGN KEY (`product_id`) REFERENCES `argilla_product` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_seo_counters`
+-- Table structure for table `argilla_seo_counters`
 --
 
-DROP TABLE IF EXISTS `shogocms_seo_counters`;
+DROP TABLE IF EXISTS `argilla_seo_counters`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_seo_counters` (
+CREATE TABLE `argilla_seo_counters` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
   `code` text COLLATE utf8_bin NOT NULL,
@@ -998,13 +1016,13 @@ CREATE TABLE `shogocms_seo_counters` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_seo_link`
+-- Table structure for table `argilla_seo_link`
 --
 
-DROP TABLE IF EXISTS `shogocms_seo_link`;
+DROP TABLE IF EXISTS `argilla_seo_link`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_seo_link` (
+CREATE TABLE `argilla_seo_link` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `section_id` int(11) NOT NULL,
   `title` varchar(255) NOT NULL,
@@ -1019,18 +1037,18 @@ CREATE TABLE `shogocms_seo_link` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `link_section_email_index` (`email`),
   KEY `links_section_id_links_section_id_idx` (`section_id`),
-  CONSTRAINT `links_section_id_links_section_id` FOREIGN KEY (`section_id`) REFERENCES `shogocms_seo_link_section` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `links_section_id_links_section_id` FOREIGN KEY (`section_id`) REFERENCES `argilla_seo_link_section` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_seo_link_block`
+-- Table structure for table `argilla_seo_link_block`
 --
 
-DROP TABLE IF EXISTS `shogocms_seo_link_block`;
+DROP TABLE IF EXISTS `argilla_seo_link_block`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_seo_link_block` (
+CREATE TABLE `argilla_seo_link_block` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) COLLATE utf8_bin NOT NULL,
   `code` text COLLATE utf8_bin NOT NULL,
@@ -1043,13 +1061,13 @@ CREATE TABLE `shogocms_seo_link_block` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_seo_link_section`
+-- Table structure for table `argilla_seo_link_section`
 --
 
-DROP TABLE IF EXISTS `shogocms_seo_link_section`;
+DROP TABLE IF EXISTS `argilla_seo_link_section`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_seo_link_section` (
+CREATE TABLE `argilla_seo_link_section` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   `url` varchar(255) NOT NULL,
@@ -1060,13 +1078,13 @@ CREATE TABLE `shogocms_seo_link_section` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_seo_redirect`
+-- Table structure for table `argilla_seo_redirect`
 --
 
-DROP TABLE IF EXISTS `shogocms_seo_redirect`;
+DROP TABLE IF EXISTS `argilla_seo_redirect`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_seo_redirect` (
+CREATE TABLE `argilla_seo_redirect` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `base` varchar(255) NOT NULL,
   `target` varchar(255) NOT NULL,
@@ -1078,13 +1096,13 @@ CREATE TABLE `shogocms_seo_redirect` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_settings`
+-- Table structure for table `argilla_settings`
 --
 
-DROP TABLE IF EXISTS `shogocms_settings`;
+DROP TABLE IF EXISTS `argilla_settings`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_settings` (
+CREATE TABLE `argilla_settings` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `param` varchar(255) NOT NULL,
   `value` varchar(255) NOT NULL,
@@ -1095,13 +1113,13 @@ CREATE TABLE `shogocms_settings` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_tag`
+-- Table structure for table `argilla_tag`
 --
 
-DROP TABLE IF EXISTS `shogocms_tag`;
+DROP TABLE IF EXISTS `argilla_tag`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_tag` (
+CREATE TABLE `argilla_tag` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
@@ -1110,13 +1128,13 @@ CREATE TABLE `shogocms_tag` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_text_block`
+-- Table structure for table `argilla_text_block`
 --
 
-DROP TABLE IF EXISTS `shogocms_text_block`;
+DROP TABLE IF EXISTS `argilla_text_block`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_text_block` (
+CREATE TABLE `argilla_text_block` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `location` varchar(255) NOT NULL DEFAULT '',
   `name` varchar(255) DEFAULT NULL,
@@ -1130,13 +1148,13 @@ CREATE TABLE `shogocms_text_block` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_user`
+-- Table structure for table `argilla_user`
 --
 
-DROP TABLE IF EXISTS `shogocms_user`;
+DROP TABLE IF EXISTS `argilla_user`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_user` (
+CREATE TABLE `argilla_user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `date_create` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `login` varchar(255) NOT NULL,
@@ -1153,13 +1171,13 @@ CREATE TABLE `shogocms_user` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_user_data_extended`
+-- Table structure for table `argilla_user_data_extended`
 --
 
-DROP TABLE IF EXISTS `shogocms_user_data_extended`;
+DROP TABLE IF EXISTS `argilla_user_data_extended`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_user_data_extended` (
+CREATE TABLE `argilla_user_data_extended` (
   `user_id` int(10) unsigned NOT NULL,
   `name` varchar(255) NOT NULL,
   `last_name` varchar(255) NOT NULL,
@@ -1170,18 +1188,18 @@ CREATE TABLE `shogocms_user_data_extended` (
   `birthday` date DEFAULT NULL,
   `avatar` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`user_id`),
-  CONSTRAINT `shogocms_user_data_extended_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `shogocms_user` (`id`) ON DELETE CASCADE
+  CONSTRAINT `argilla_user_data_extended_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `argilla_user` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_vacancy`
+-- Table structure for table `argilla_vacancy`
 --
 
-DROP TABLE IF EXISTS `shogocms_vacancy`;
+DROP TABLE IF EXISTS `argilla_vacancy`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_vacancy` (
+CREATE TABLE `argilla_vacancy` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `name` varchar(255) NOT NULL,
@@ -1193,13 +1211,13 @@ CREATE TABLE `shogocms_vacancy` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `shogocms_vacancy_file`
+-- Table structure for table `argilla_vacancy_file`
 --
 
-DROP TABLE IF EXISTS `shogocms_vacancy_file`;
+DROP TABLE IF EXISTS `argilla_vacancy_file`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `shogocms_vacancy_file` (
+CREATE TABLE `argilla_vacancy_file` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `parent` int(10) unsigned NOT NULL,
   `name` varchar(255) NOT NULL,
@@ -1210,7 +1228,7 @@ CREATE TABLE `shogocms_vacancy_file` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping routines for database 'shogocms'
+-- Dumping routines for database 'argilla_tatarinov'
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -1222,4 +1240,4 @@ CREATE TABLE `shogocms_vacancy_file` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-03-14  9:41:38
+-- Dump completed on 2013-03-30 15:17:25
