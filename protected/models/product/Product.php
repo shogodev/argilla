@@ -1,6 +1,8 @@
 <?php
 /**
- * @property string $id
+ * @method static Product model(string $class = __CLASS__)
+ *
+ * @property integer $id
  * @property integer $parent
  * @property integer $position
  * @property string $url

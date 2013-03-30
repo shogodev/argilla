@@ -6,7 +6,7 @@
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.product
  *
- * @method static BInfo model(string $class = __CLASS__)
+ * @method static BProduct model(string $class = __CLASS__)
  *
  * @property string $id
  * @property integer $position
