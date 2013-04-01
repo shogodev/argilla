@@ -1,10 +1,10 @@
 -- This file was created by ShogoCMS $Id: d6242f0a510ed3000bd17d9bfba8d1ebf0872153 $
--- User: glagolev	Hostname: boojaka.shogo.ru
+-- User: tatarinov	Hostname: boojaka.shogo.ru
 -- PHP: 5.4.5 Phing 2.4.12
 -- Original prefix: argilla_
 -- MySQL dump 10.13  Distrib 5.1.63, for portbld-freebsd8.2 (amd64)
 --
--- Host: localhost    Database: argilla
+-- Host: localhost    Database: argilla_tatarinov
 -- ------------------------------------------------------
 -- Server version	5.1.63-log
 
@@ -476,7 +476,7 @@ CREATE TABLE `argilla_meta_mask` (
   `title` varchar(255) NOT NULL,
   `description` varchar(255) NOT NULL,
   `keywords` varchar(255) NOT NULL,
-  `visible` tinyint(4) NOT NULL,
+  `visible` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -490,13 +490,13 @@ DROP TABLE IF EXISTS `argilla_meta_route`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `argilla_meta_route` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `route` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `route` varchar(255) NOT NULL,
   `title` varchar(255) NOT NULL,
   `description` varchar(255) NOT NULL,
   `keywords` varchar(255) NOT NULL,
   `models` text NOT NULL,
   `clips` varchar(512) NOT NULL,
-  `visible` tinyint(4) NOT NULL,
+  `visible` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1210,7 +1210,7 @@ CREATE TABLE `argilla_vacancy_file` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping routines for database 'argilla'
+-- Dumping routines for database 'argilla_tatarinov'
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -1222,4 +1222,4 @@ CREATE TABLE `argilla_vacancy_file` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-04-01 13:37:10
+-- Dump completed on 2013-04-01 16:06:23
