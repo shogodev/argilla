@@ -42,9 +42,7 @@ class BProductController extends BController
 
     // привязанное событие будет выполняться в транзакции saveModels
     $model->attachEventHandler('onAfterSave', array($this, 'saveParameters'));
-
     $model->attachEventHandler('onAfterSave', array($this, 'saveProductAssignment'));
-    $model->attachEventHandler('onBeforeValidate', array($this, 'beforeValidate'));
 
     $this->saveModels(array($model));
 
@@ -53,11 +51,6 @@ class BProductController extends BController
       'parameters'      => BProductParam::model()->getParameters($model),
       'assignmentModel' => $assignmentModel,
     ));
-  }
-
-  protected function beforeValidate(CEvent $event)
-  {
-    $event->sender->setScenario('validation');
   }
 
   protected function saveProductAssignment(CEvent $event)
@@ -69,7 +62,6 @@ class BProductController extends BController
 
     if( !empty($assignments) )
       $model->saveAssignments($event->sender, $assignments);
-
   }
 
   protected function saveParameters(CEvent $event)
