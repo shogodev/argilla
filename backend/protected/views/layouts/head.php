@@ -11,7 +11,11 @@
   <script src="/js/html5msie/respond.js"></script>
   <![endif]-->
 
-
-
   <title><?php echo CHtml::encode($this->pageTitle); ?></title>
+
+  <script>
+  //<![CDATA[
+    $('html').removeClass('no-js');
+  //]]>
+  </script>
 </head>

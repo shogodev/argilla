@@ -28,6 +28,16 @@
   <![endif]-->
 
   <?php Yii::app()->clientScript->registerCssFile('/i/st.css') ?>
+
+  <script>
+  //<![CDATA[
+    $('html').removeClass('no-js');
+    var isMobile = navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i) != null;
+    if (isMobile) {
+      $('html').addClass('mobile');
+    }
+  //]]>
+  </script>
 </head>
 
 <body>
