@@ -10,7 +10,7 @@ class UploadBehaviorTest extends CDbTestCase
   public function setUp()
   {
     parent::setUp();
-    Yii::app()->setUnitEnvironment('BInfo', 'BInfo', 'update', array('id' => '3'));
+    Yii::app()->setUnitEnvironment('Info', 'BInfo', 'update', array('id' => '3'));
   }
 
   public function testBeforeDelete()

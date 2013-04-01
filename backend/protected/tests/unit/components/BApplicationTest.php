@@ -1,9 +1,11 @@
 <?php
 /**
- * User: glagolev
- * Date: 09.08.12
+ * @author Sergey Glagolev <glagolev@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
  */
-class BackendApplicationTest extends CTestCase
+class BApplicationTest extends CTestCase
 {
   /**
    * @var BApplication
@@ -38,7 +40,7 @@ class BackendApplicationTest extends CTestCase
     $this->app->setUnitEnvironment('News', 'BNewsSection', 'index');
 
     $this->assertInstanceOf('BNewsSectionController', $this->app->controller);
-    $this->assertEquals('newssection', $this->app->controller->id);
+    $this->assertEquals('bnewssection', $this->app->controller->id);
 
     $this->assertInstanceOf('NewsModule', $this->app->controller->module);
 

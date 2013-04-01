@@ -1,7 +1,9 @@
 <?php
 /**
- * User: Sergey Glagolev <glagolev@shogo.ru>
- * Date: 28.08.12
+ * @author Sergey Glagolev <glagolev@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
  */
 class TableUploaderTest extends CDbTestCase
 {
@@ -10,18 +12,18 @@ class TableUploaderTest extends CDbTestCase
    */
   public $behavior;
 
-  public $fixtures = array('news_section' => 'NewsSection');
+  public $fixtures = array('info' => 'BInfo');
 
   public function setUp()
   {
     parent::setUp();
-    Yii::app()->setUnitEnvironment('News', 'BNewsSection', 'index');
+    Yii::app()->setUnitEnvironment('Info', 'BInfo', 'index');
 
-    $model = BNewsSection::model()->findByPk('1');
+    $model = BInfo::model()->findByPk('3');
     $model->attachBehavior('UploadBehavior', new UploadBehavior);
 
     $this->behavior        = $model->asa('UploadBehavior');
-    $this->behavior->table = Yii::app()->db->tablePrefix.'news_section_img';
+    $this->behavior->table = Yii::app()->db->tablePrefix.'info_files';
   }
 
   public function testSaveFile()
@@ -81,5 +83,3 @@ class TableUploaderTest extends CDbTestCase
     $this->getFixtureManager()->truncateTable($this->behavior->table);
   }
 }
-
-?>

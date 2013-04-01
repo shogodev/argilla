@@ -1,16 +1,18 @@
 <?php
 /**
- * User: glagolev
- * Date: 31.07.12
+ * @author Sergey Glagolev <glagolev@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
  */
-class SecureControllerTest extends CDbTestCase
+class BControllerTest extends CDbTestCase
 {
   /**
    * @var BController
    */
   public $controller;
 
-  public $fixtures = array('news_section' => 'NewsSection', 'news' => 'News', 'currency' => 'ProductCurrency');
+  public $fixtures = array('news_section' => 'BNewsSection', 'news' => 'BNews');
 
   public function setUp()
   {
@@ -67,17 +69,17 @@ class SecureControllerTest extends CDbTestCase
 
   public function testSaveModel()
   {
-    $name             = 'testSaveModel';
-    $productModel     = new BProduct;
-    $_POST['BProduct'] = array('name' => $name, 'url' => 'testUrl1', 'articul' => 'articul1');
+    $name  = 'testSaveModel';
+    $model = new BNews;
+    $_POST['BNews'] = array('name' => $name, 'url' => 'testUrl1', 'section_id' => '1');
 
     $method = new ReflectionMethod('BController', 'saveModel');
     $method->setAccessible(true);
-    $method->invoke($this->controller, $productModel);
+    $method->invoke($this->controller, $model);
 
-    $product = BProduct::model()->find('name=:n', array(':n' => $name));
+    $news = BNews::model()->findByAttributes(array('name' => $name));
 
-    $this->assertEquals($name, $product->name);
+    $this->assertEquals($name, $news->name);
   }
 
   public function testSaveModels()
@@ -86,18 +88,19 @@ class SecureControllerTest extends CDbTestCase
     $productModel    = new BProduct;
     $assignmentModel = new BProductAssignment;
 
-    $_POST['BProduct']           = array('name' => $name, 'url' => 'testUrl2', 'articul' => 'articul2');
-    $_POST['BProductAssignment'] = array_fill_keys($assignmentModel->assignmentFields, '1102');
-    $_SERVER['REQUEST_METHOD']  = 'POST';
+    $_POST['BProduct']           = array('name' => $name, 'url' => 'testUrl2', 'articul' => 'articul2', 'section_id' => '1102');
+    $_POST['BProductAssignment'] = array_fill_keys(array_keys($assignmentModel->getFields()), '1102');
+    $_SERVER['REQUEST_METHOD']   = 'POST';
 
     $method = new ReflectionMethod('BController', 'saveModels');
     $method->setAccessible(true);
     $method->invoke($this->controller, array($productModel, $assignmentModel));
 
-    $product = BProduct::model()->find('name=:n', array(':n' => $name));
+    $product    = BProduct::model()->findByAttributes(array('name' => $name));
+    $assignment = Arr::reset($product->assignment);
 
     $this->assertEquals($name, $product->name);
-    $this->assertEquals('1102', $product->assignment->section_id);
+    $this->assertEquals('1102', $assignment->section_id);
   }
 
   public function testValidateModels()
@@ -109,7 +112,7 @@ class SecureControllerTest extends CDbTestCase
     $method->setAccessible(true);
 
     $_POST['BProduct']           = array('name' => 'testValidateModels', 'url' => 'testUrl3', 'articul' => 'articul3');
-    $_POST['BProductAssignment'] = array_fill_keys($assignmentModel->assignmentFields, '1103');
+    $_POST['BProductAssignment'] = array_fill_keys(array_keys($assignmentModel->getFields()), '1103');
 
     $result = $method->invoke($this->controller, array($productModel, $assignmentModel));
     $this->assertTrue($result);
@@ -126,14 +129,15 @@ class SecureControllerTest extends CDbTestCase
     $productModel    = new BProduct;
     $assignmentModel = new BProductAssignment;
 
-    $_POST['ajax']              = $productModel->getFormId();
-    $_POST['BProduct']           = array('name' => $name, 'url' => 'testUrl4', 'articul' => 'articul4');
-    $_POST['BProductAssignment'] = array_fill_keys($assignmentModel->assignmentFields, '1104');
+    $_POST['ajax']               = $productModel->getFormId();
+    $_POST['BProduct']           = array('name' => $name, 'url' => 'testUrl4', 'articul' => 'articul4', 'section_id' => '1104');
+    $_POST['BProductAssignment'] = array_fill_keys(array_keys($assignmentModel->getFields()), '1104');
 
     $method = new ReflectionMethod('BController', 'performAjaxValidationForSeveralModels');
     $method->setAccessible(true);
 
     $method->invoke($this->controller, array($productModel, $assignmentModel));
+    $o = $this->getActualOutput();
     $this->expectOutputString('[]');
   }
 
@@ -154,10 +158,10 @@ class SecureControllerTest extends CDbTestCase
 
   public function testPerformAjaxValidation()
   {
-    $name             = 'testPerformAjaxValidation';
-    $productModel     = new BProduct;
-    $_POST['ajax']    = $productModel->getFormId();
-    $_POST['BProduct'] = array('name' => $name, 'url' => 'testUrl4', 'articul' => 'articul4');
+    $name              = 'testPerformAjaxValidation';
+    $productModel      = new BProduct;
+    $_POST['ajax']     = $productModel->getFormId();
+    $_POST['BProduct'] = array('name' => $name, 'url' => 'testUrl4', 'articul' => 'articul4', 'section_id' => 1);
 
     $method = new ReflectionMethod('BController', 'performAjaxValidation');
     $method->setAccessible(true);
@@ -168,9 +172,9 @@ class SecureControllerTest extends CDbTestCase
 
   public function testErrorPerformAjaxValidation()
   {
-    $name             = 'testPerformAjaxValidation';
-    $productModel     = new BProduct;
-    $_POST['ajax']    = $productModel->getFormId();
+    $name              = 'testPerformAjaxValidation';
+    $productModel      = new BProduct;
+    $_POST['ajax']     = $productModel->getFormId();
     $_POST['BProduct'] = array('name' => $name);
 
     $method = new ReflectionMethod('BController', 'performAjaxValidation');

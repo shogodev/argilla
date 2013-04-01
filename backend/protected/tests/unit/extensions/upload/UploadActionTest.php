@@ -20,7 +20,7 @@ class UploadActionTest extends CDbTestCase
   public function setUp()
   {
     parent::setUp();
-    Yii::app()->setUnitEnvironment('BInfo', 'BInfo', 'update', array('id' => '2', 'attr' => 'info_files'));
+    Yii::app()->setUnitEnvironment('Info', 'BInfo', 'update', array('id' => '2', 'attr' => 'info_files'));
     Yii::app()->controller->module->id = 'info_test';
 
     $this->actionClass = Yii::app()->controller->createAction('upload');

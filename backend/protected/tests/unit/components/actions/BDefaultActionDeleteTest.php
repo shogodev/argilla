@@ -1,13 +1,17 @@
 <?php
 /**
- * User: Sergey Glagolev <glagolev@shogo.ru>
- * Date: 28.08.12
+ * @author Sergey Glagolev <glagolev@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
  */
-class DefaultActionDeleteTest extends CDbTestCase
-{
-  public $fixtures = array('news_section' => 'NewsSection',
-                           'info'         => 'BInfo');
 
+Yii::import('backend.models.BAssociation');
+
+class BDefaultActionDeleteTest extends CDbTestCase
+{
+  public $fixtures = array('news_section' => 'BNewsSection',
+                           'info'         => 'BInfo');
 
   public function setUp()
   {
@@ -31,7 +35,7 @@ class DefaultActionDeleteTest extends CDbTestCase
 
   public function testDeleteNested()
   {
-    Yii::app()->setUnitEnvironment('BInfo', 'BInfo', 'update', array('id' => '3'));
+    Yii::app()->setUnitEnvironment('Info', 'BInfo', 'update', array('id' => '3'));
     $action = Yii::createComponent(array('class' => 'BDefaultActionDelete',
                                          'model' => Yii::app()->controller->loadModel(Yii::app()->request->getParam('id'))),
                                    Yii::app()->controller, 'delete');
@@ -40,6 +44,4 @@ class DefaultActionDeleteTest extends CDbTestCase
     $model = BInfo::model()->findByPk(3);
     $this->assertNull($model);
   }
-
 }
-?>

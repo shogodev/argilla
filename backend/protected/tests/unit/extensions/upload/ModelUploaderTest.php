@@ -15,7 +15,7 @@ class ModelUploaderTest extends CDbTestCase
    */
   public $behavior;
 
-  public $fixtures = array('news_section' => 'NewsSection');
+  public $fixtures = array('news_section' => 'BNewsSection');
 
   public function setUp()
   {
