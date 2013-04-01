@@ -160,7 +160,7 @@ class BMetaRoute extends BActiveRecord
   {
     $data = array();
 
-    if( preg_match_all('/\@property.*(\$\w+)/', $php_doc, $matches) )
+    if( preg_match_all('/\@property\ +string\ +(\$\w+)/', $php_doc, $matches) )
       $data = $matches[1];
 
     return $data;

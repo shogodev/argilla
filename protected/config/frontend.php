@@ -26,6 +26,7 @@ return array(
     'frontend.models.menu.*',
     'frontend.models.product.*',
     'frontend.models.user.*',
+    'frontend.models.info.*',
 
     'frontend.components.*',
     'frontend.components.interfaces.*',

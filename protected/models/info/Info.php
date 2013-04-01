@@ -8,7 +8,7 @@
  *
  * @method static Info model(string $class = __CLASS__)
  *
- * @property string  $id
+ * @property integer  $id
  * @property string  $date
  * @property integer $position
  * @property string  $template
@@ -17,11 +17,11 @@
  * @property string  $notice
  * @property string  $content
  * @property string  $reference
- * @property string  $visible
- * @property string  $siblings
- * @property string  $children
- * @property string  $menu
- * @property string  $sitemap
+ * @property integer $visible
+ * @property integer $siblings
+ * @property integer $children
+ * @property integer $menu
+ * @property integer $sitemap
  */
 class Info extends FActiveRecord implements IMenuItem
 {
@@ -198,5 +198,22 @@ class Info extends FActiveRecord implements IMenuItem
   public function setDepth($d)
   {
 
+  }
+
+  public function getBreadcrumbs()
+  {
+    $breadcrumbs = array();
+
+    foreach($this->parents as $parent)
+    {
+      if( $parent->menu_only )
+        $breadcrumbs[] = $parent->name;
+      else
+        $breadcrumbs[$parent->name] = array('info/index', 'url' => $parent->url);
+    }
+
+    $breadcrumbs[$this->name] = array('info/index', 'url' => $this->url);
+
+    return $breadcrumbs;
   }
 }

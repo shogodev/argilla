@@ -5,8 +5,8 @@
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
  */
-Yii::import('frontend.components.FUrlManager');
-Yii::$classMap['FUrlRule'] = Yii::getPathOfAlias('frontend.components.FUrlManager').'.php';
+Yii::import('frontend.components.url.FUrlManager');
+Yii::$classMap['FUrlRule'] = Yii::getPathOfAlias('frontend.components.url.FUrlManager').'.php';
 
 class FrontendUrlRuleTest extends CTestCase
 {

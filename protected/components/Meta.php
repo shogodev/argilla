@@ -7,6 +7,11 @@
 class Meta extends CComponent
 {
   public static $VARS_PATTERN = '/{(\w+)}|{(\w+):(\w+)}/';
+
+  public $modelExceptions = array('ProductAssignment', 'ProductParamAssignment');
+
+  public $maxDepthFind = 1;
+
   private $route;
   private $usedModels = array();
   private $usedClips = array();
@@ -42,6 +47,10 @@ class Meta extends CComponent
    */
   public function findModel($data)
   {
+    static $depth;
+
+    $depth++;
+
     if( !isset($data) )
       return;
 
@@ -57,11 +66,15 @@ class Meta extends CComponent
           $modelName = get_class($model);
         }
 
-        $this->usedModels[$modelName] = $model;
+        if( !in_array($modelName, $this->modelExceptions) )
+          $this->usedModels[$modelName] = $model;
 
         $this->title       = $this->replaceVars($this->title, $model);
         $this->description = $this->replaceVars($this->description, $model);
         $this->keywords    = $this->replaceVars($this->keywords, $model);
+
+        if( $depth <= $this->maxDepthFind )
+          $this->findRelations($model);
       }
     }
   }
@@ -107,6 +120,25 @@ class Meta extends CComponent
     $this->title       = strtr($this->title, array("{{$id}}" => $value));
     $this->description = strtr($this->description, array("{{$id}}" => $value));
     $this->keywords    = strtr($this->keywords, array("{{$id}}" => $value));
+  }
+
+  /**
+   * Ищет модели в relations
+   * @param FActiveRecord $model
+   */
+  protected function findRelations($model)
+  {
+    $relations = $model->relations();
+
+    foreach($relations as $relationName => $relation)
+    {
+
+      if( in_array($relation[0], array(FActiveRecord::HAS_ONE, FActiveRecord::BELONGS_TO)) )
+      {
+        if( !isset($this->usedModels[$relation[1]]) )
+          $this->findModel(array($model->{$relationName}));
+      }
+    }
   }
 
   private function initMetaData($meta_data, $default_title)

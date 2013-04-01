@@ -73,12 +73,12 @@ class ProductController extends FController
 
     $this->activeUrl = array(
       'product/type',
-      'type' => $model->type->url
+      //'type' => $model->type->url
     );
 
     $this->breadcrumbs = array(
       'Продукты' => array('product/sections'),
-      $model->type->name => array('product/type', 'type' => $model->type->url),
+      //$model->type->name => array('product/type', 'type' => $model->type->url),
       $model->name,
     );
 

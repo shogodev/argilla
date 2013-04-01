@@ -5,5 +5,5 @@
  */
 
 return array(
-  'product' => array('id' => '1', 'name' => 'Новый товар1', 'url' => 'new_product1'),
+  'product' => array('id' => '1', 'name' => 'Новый товар1', 'url' => 'new_product1', 'visible' => 1),
 );

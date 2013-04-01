@@ -16,4 +16,13 @@
   <script src="js/html5msie/css3-mediaqueries.js"></script>
 <![endif]-->
 <link rel="stylesheet" href="i/st.css" />
+<script>
+//<![CDATA[
+  $('html').removeClass('no-js');
+  var isMobile = navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i) != null;
+  if (isMobile) {
+    $('html').addClass('mobile');
+  }
+//]]>
+</script>
 </head>
