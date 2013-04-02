@@ -1,18 +1,20 @@
 <?php
+/**
+ * @author Nikita Melnikov <melnikov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
+ */
 
+Yii::import('backend.components.auth.*');
 Yii::import('backend.modules.rbac.*');
 Yii::import('backend.modules.rbac.components.*');
 Yii::import('backend.modules.rbac.models.*');
 Yii::import('backend.modules.rbac.controllers.*');
 
-/**
- * @package RBAC
- * @date 04.09.2012
- * @author Nikita Melnikov <melnikov@shogo.ru>
- */
 class AccessHelperTest extends CTestCase
 {
-  public function testAssigment()
+  public function testAssignment()
   {
     $mockSession = $this->getMock('CHttpSession', array('regenerateID'));
     Yii::app()->setComponent('session', $mockSession);

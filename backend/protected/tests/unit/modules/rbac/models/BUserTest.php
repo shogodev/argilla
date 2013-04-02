@@ -1,12 +1,13 @@
 <?php
-
-Yii::import('backend.modules.rbac.models.*');
 /**
- * @package RBAC
- * @date 04.09.2012
  * @author Nikita Melnikov <melnikov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
  */
-class UserTest extends CTestCase
+Yii::import('backend.modules.rbac.models.*');
+
+class BUserTest extends CTestCase
 {
   public function testCreate()
   {
@@ -20,7 +21,7 @@ class UserTest extends CTestCase
 
     $model = BUser::model()->findByPk($id);
 
-    $this->assertInstanceOf('User', $model);
+    $this->assertInstanceOf('BUser', $model);
   }
 
   public function testEdit()
@@ -117,19 +118,6 @@ class UserTest extends CTestCase
     $user->clearRoles();
 
     $this->assertEquals(array(), $user->roles);
-  }
-
-  public function testAttributesLabel()
-  {
-    $attributes = array('username' => 'Имя пользователя',
-                        'password' => 'Пароль',
-                        'roles'    => 'Роли',
-                        'passwordNew' => 'Пароль',
-                       );
-
-    $user = new BUser();
-
-    $this->assertEquals($user->attributeLabels(), $attributes);
   }
 
   public function testValidation()

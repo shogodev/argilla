@@ -1,11 +1,16 @@
 <?php
-
-Yii::import('backend.components.BUserIdentity');
+/**
+ * @author Nikita Melnikov <melnikov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
+ */
+Yii::import('backend.components.auth.*');
 Yii::import('backend.modules.rbac.models.User');
 
 class UserIdentityTest extends CTestCase
 {
-  public function testCreatePassoword()
+  public function testCreatePassword()
   {
     $salt = 'test';
 

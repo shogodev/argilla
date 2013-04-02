@@ -1,10 +1,11 @@
 <?php
 /**
- * @package RBAC
- * @date 04.09.2012
  * @author Nikita Melnikov <melnikov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
  */
-class TaskTest extends CTestCase
+class BRbacTaskTest extends CTestCase
 {
   public function testFindAll()
   {
@@ -12,17 +13,17 @@ class TaskTest extends CTestCase
     $criteria->condition = 'type=:type';
     $criteria->params    = array(':type' => CAuthItem::TYPE_TASK);
 
-    $tasks = RbacRole::model()->findAll($criteria);
+    $tasks = BRbacRole::model()->findAll($criteria);
 
     $authTasks = Yii::app()->authManager->getTasks();
 
     $this->assertEquals(count($tasks), count($authTasks));
-    $this->assertEquals(count(RbacTask::getTasks()), count($tasks));
+    $this->assertEquals(count(BRbacTask::getTasks()), count($tasks));
   }
 
   public function testGetOperations()
   {
-    $task = new RbacTask();
+    $task = new BRbacTask();
     $task->name = 'task' . uniqid();
     $task->save(false);
 
@@ -45,7 +46,7 @@ class TaskTest extends CTestCase
 
   public function testClearOperations()
   {
-    $task = new RbacTask();
+    $task = new BRbacTask();
     $task->name = 'task' . uniqid();
     $task->save(false);
 

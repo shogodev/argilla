@@ -1,30 +1,17 @@
 <?php
-
-Yii::import('backend.modules.rbac.models.*');
 /**
- * @package RBAC
- * @date 04.09.2012
  * @author Nikita Melnikov <melnikov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
  */
-class RoleTest extends CTestCase
+Yii::import('backend.modules.rbac.models.*');
+
+class BRbacRoleTest extends CTestCase
 {
-  public function testAttributelabels()
-  {
-    $role = new RbacRole();
-
-    $labels = array('title'       => 'Название',
-                    'name'        => 'Системное имя',
-                    'description' => 'Описание',
-                    'bizrule'     => 'Бизнес-логика',
-                    'data'        => 'Данные',
-                    'tasks'       => 'Задачи');
-
-    $this->assertEquals($role->attributeLabels(), $labels);
-  }
-
   public function testCreate()
   {
-    $role = new RbacRole();
+    $role = new BRbacRole();
     $role->name = 'testRoleTest' . rand(time(), time() + 36000);
     $this->assertEquals($role->save(false), true);
 
@@ -32,7 +19,7 @@ class RoleTest extends CTestCase
 
     unset($role);
 
-    $role = RbacRole::model()->findByPk($id);
+    $role = BRbacRole::model()->findByPk($id);
 
     $this->assertNotEmpty($role);
   }
@@ -41,7 +28,7 @@ class RoleTest extends CTestCase
   {
     $description = 'testTest';
 
-    $role              = new RbacRole();
+    $role              = new BRbacRole();
     $role->name        = 'testTestTest' . uniqid();
     $role->description = $description;
     $role->save(false);
@@ -50,7 +37,7 @@ class RoleTest extends CTestCase
 
     unset($role);
 
-    $role = RbacRole::model()->findByPk($id);
+    $role = BRbacRole::model()->findByPk($id);
 
     $this->assertEquals($role->description, $description);
 
@@ -61,7 +48,7 @@ class RoleTest extends CTestCase
 
     unset($role);
 
-    $role = RbacRole::model()->findByPk($id);
+    $role = BRbacRole::model()->findByPk($id);
 
     $this->assertEquals($role->description, $description);
   }
@@ -76,7 +63,7 @@ class RoleTest extends CTestCase
       $data[$role->name] = $role->name;
     }
 
-    $roles = RbacRole::getRoles();
+    $roles = BRbacRole::getRoles();
 
     $this->assertEquals($data, $data);
   }
@@ -85,7 +72,7 @@ class RoleTest extends CTestCase
   {
     $task = Yii::app()->authManager->createTask('task' . uniqid());
 
-    $role = new RbacRole();
+    $role = new BRbacRole();
     $name = $role->name  = 'role' . uniqid();
     $role->save(false);
 
@@ -93,7 +80,7 @@ class RoleTest extends CTestCase
 
     unset($role);
 
-    $role = RbacRole::model()->findByPk($name);
+    $role = BRbacRole::model()->findByPk($name);
 
     $this->assertEquals($role->tasks, array($task->name => $task->name));
   }
@@ -109,7 +96,7 @@ class RoleTest extends CTestCase
       $tasks[$task->name] = $task->name;
     }
 
-    $role = new RbacRole();
+    $role = new BRbacRole();
     $role->name = 'role' . uniqid();
     $role->save(false);
 
