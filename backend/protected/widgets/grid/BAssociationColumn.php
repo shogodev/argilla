@@ -12,38 +12,18 @@ class BAssociationColumn extends BDataColumn
 
   public $iframeAction;
 
-  public $ajaxAction = 'association';
-
   public $htmlOptions = array('class' => 'button-column');
-
-  public $assignerOptions = array();
 
   public $parameters = array();
 
   protected function renderDataCellContent($row, $data)
   {
-    $pk         = $data->getPrimaryKey();
-    $parameters = array('popup' => true, 'srcId' => $pk, 'src' => get_class($data), 'dst' => $this->name);
-
-    foreach($this->parameters as $parameter => $value)
-      $parameters[ucfirst($this->name)."[".$parameter."]"] = $value;
-
-    $iframeUrl = Yii::app()->controller->createUrl($this->iframeAction, $parameters);
-    $ajaxUrl   = Yii::app()->controller->createUrl($this->ajaxAction, $parameters);
-
-    $count = 0;
-    foreach($data->associations as $association)
-      if( $association->dst == $this->name )
-        $count++;
-
-    echo CHtml::tag('a', array(
-      'class' => 'btn-assign'.($count ? " active" : ""),
-      'rel' => 'tooltip',
-      'data-original-title' => 'Привязка',
-      'data-iframeurl' => $iframeUrl,
-      'data-ajaxurl' => $ajaxUrl,
-      'href' => '#'.($count ? $count : ''),
-      'onClick' => 'assigner.ajaxHandler(this,'.CJavaScript::encode($this->assignerOptions).')',
-    ), '<span>'.$count.'</span>');
+    Yii::app()->controller->widget('BAssociationButton', array(
+      'name' => $this->name,
+      'parameters' => $this->parameters,
+      'iframeAction' => $this->iframeAction,
+      'model' => $data,
+      'assignerOptions' => array('closeOperation' => new CJavaScriptExpression('function(){location.reload()}'))
+    ));
   }
 }
