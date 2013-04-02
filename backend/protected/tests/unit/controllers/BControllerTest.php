@@ -84,23 +84,24 @@ class BControllerTest extends CDbTestCase
 
   public function testSaveModels()
   {
-    $name            = 'testSaveModels';
-    $productModel    = new BProduct;
-    $assignmentModel = new BProductAssignment;
+    $login = 'testLogin1';
+    $name  = 'testName1';
 
-    $_POST['BProduct']           = array('name' => $name, 'url' => 'testUrl2', 'articul' => 'articul2', 'section_id' => '1102');
-    $_POST['BProductAssignment'] = array_fill_keys(array_keys($assignmentModel->getFields()), '1102');
-    $_SERVER['REQUEST_METHOD']   = 'POST';
+    $userModel = new BFrontendUser();
+    $dataModel = new BUserDataExtended();
+
+    $_POST['BFrontendUser']     = array('email' => '123@123.ru', 'login' => $login);
+    $_POST['BUserDataExtended'] = array('name' => $name);
+    $_SERVER['REQUEST_METHOD']  = 'POST';
 
     $method = new ReflectionMethod('BController', 'saveModels');
     $method->setAccessible(true);
-    $method->invoke($this->controller, array($productModel, $assignmentModel));
+    $method->invoke($this->controller, array($userModel, $dataModel));
 
-    $product    = BProduct::model()->findByAttributes(array('name' => $name));
-    $assignment = Arr::reset($product->assignment);
+    $user = BFrontendUser::model()->findByAttributes(array('login' => $login));
 
-    $this->assertEquals($name, $product->name);
-    $this->assertEquals('1102', $assignment->section_id);
+    $this->assertEquals($login, $user->login);
+    $this->assertEquals($name, $user->user->name);
   }
 
   public function testValidateModels()
@@ -111,7 +112,7 @@ class BControllerTest extends CDbTestCase
     $method = new ReflectionMethod('BController', 'validateModels');
     $method->setAccessible(true);
 
-    $_POST['BProduct']           = array('name' => 'testValidateModels', 'url' => 'testUrl3', 'articul' => 'articul3');
+    $_POST['BProduct']           = array('name' => 'testValidateModels', 'url' => 'testUrl3', 'articul' => 'articul3', 'section_id' => '1103');
     $_POST['BProductAssignment'] = array_fill_keys(array_keys($assignmentModel->getFields()), '1103');
 
     $result = $method->invoke($this->controller, array($productModel, $assignmentModel));
