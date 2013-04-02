@@ -60,16 +60,16 @@ class BInfoController extends BController
     ));
   }
 
-  public function actionDrugAndDrop()
+  public function actionDragAndDrop()
   {
     if( Yii::app()->request->isAjaxRequest )
     {
-      $drugModel = BInfo::model()->findByPk(Yii::app()->request->getPost('drug', null));
+      $dragModel = BInfo::model()->findByPk(Yii::app()->request->getPost('drag', null));
       $dropModel = BInfo::model()->findByPk(Yii::app()->request->getPost('drop', null));
 
-      if( $drugModel && $dropModel )
+      if( $dragModel && $dropModel )
       {
-        if( $drugModel->moveAsLast($dropModel) )
+        if( $dragModel->moveAsLast($dropModel) )
         {
           $this->renderPartial('_tree', array(
             'model' => BInfo::model(),

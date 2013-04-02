@@ -33,7 +33,7 @@
       e.preventDefault();
     });
 
-    var drugCallback = function(target, draggableItem)
+    var dragCallback = function(target, draggableItem)
     {
       var callback = function callback(resp)
       {
@@ -41,17 +41,17 @@
         {
           $('#sidebar').find('#'+treeId).html($(resp).html());
           $('#' + treeId).treeview({'persist':'cookie', 'collapsed':true, 'animated':'fast'});
-          initTreeDrugAndDrop($('#' + treeId));
+          initTreeDragAndDrop($('#' + treeId));
         }
       }
 
-      $.post(drugAndDropUrl, { 'drug' : draggableItem.attr('id').match(/node_(\d+)/)[1],
+      $.post(dragAndDropUrl, { 'drag' : draggableItem.attr('id').match(/node_(\d+)/)[1],
                                'drop' : target.attr('id').match(/node_(\d+)/)[1],
                                'current' : $('#' + treeId + ' li.current').length > 0 ? $('#' + treeId + ' li.current').attr('id').match(/node_(\d+)/)[1] : 0
       } , callback);
     };
 
-    var initTreeDrugAndDrop = function(tree)
+    var initTreeDragAndDrop = function(tree)
     {
       var treeItems = tree.find('li');
 
@@ -79,7 +79,7 @@
         stop: function()
         {
           if( targetSelector )
-            drugCallback(targetSelector, this.draggableItem);
+            dragCallback(targetSelector, this.draggableItem);
 
           if ( targetSelector !== null )
           {
@@ -108,10 +108,10 @@
     };
 
     var treeId = '<?php echo 'tree_'.get_class($model)?>';
-    var drugAndDropUrl = '<?php echo $this->createUrl('info/drugAndDrop')?>';
+    var dragAndDropUrl = '<?php echo $this->createUrl('info/dragAndDrop')?>';
     var parentSelector;
     var targetSelector;
 
-    initTreeDrugAndDrop($('#' + treeId));
+    initTreeDragAndDrop($('#' + treeId));
   });
 </script>
