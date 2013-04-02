@@ -5,6 +5,18 @@
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
  * @package frontend.components
+ *
+ * @property SClientScript $clientScript
+ * @property SAssetManager $assetManager
+ * @property ScriptsFactory $mainscript
+ * @property UrlCollection $urlCollection
+ * @property FWebUser $user
+ * @property FUrlManager $urlManager
+ * @property FFormatter $format
+ * @property Email $email
+ * @property SNotification $notification
+ * @property RedirectHelper $seoRedirect
+ * @property EPhpThumb $phpThumb
  */
 class FApplication extends CWebApplication
 {
