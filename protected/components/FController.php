@@ -233,6 +233,9 @@ class FController extends CController
    */
   protected function normalizeUrl($url)
   {
+    $url = rtrim($url, '/');
+    $url = str_replace('/?', '?', $url);
+
     $components          = parse_url(rtrim($url, '/'));
     $components['path'] .= preg_match("/.+\.\w+$/", $components['path']) ? "" : '/';
 

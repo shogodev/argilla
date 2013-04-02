@@ -94,8 +94,10 @@ class DBRule extends CUrlRule
     if( $this->hasHostInfo )
       $pathInfo = strtolower($request->getHostInfo()).rtrim('/'.$pathInfo, '/');
 
-    // добавляем из маршрута параметры по-умолчанию и проверяем правило с ними
-    $pathInfo .= rtrim('/' . implode("/", $this->defaultParams), '/') . '/';
+    if( !empty($this->defaultParams) && !preg_match($this->pattern.$case, $pathInfo.'/', $matches)  )
+      $pathInfo .= rtrim('/' . implode("/", $this->defaultParams), '/') . '/';
+    else
+      $pathInfo .= '/';
 
     if( preg_match($this->pattern.$case, $pathInfo, $matches) )
     {
