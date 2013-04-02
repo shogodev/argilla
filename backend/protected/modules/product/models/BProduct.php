@@ -27,35 +27,28 @@
  * @property integer $dump
  * @property integer $archive
  * @property integer $xml
+
+ * @property integer $section_id
+ * @property integer $type_id
  *
  * @property BProductAssignment $assignment
  */
 class BProduct extends BActiveRecord implements IHasFrontendModel
 {
-  private $section_id;
-
-  private $type_id;
-
   public function __get($name)
   {
     $fields = BProductAssignment::model()->getFields();
 
     if( isset($fields[$name]) )
     {
-      $value    = $this->$name;
       $relation = str_replace('_id', '', $name);
 
-      if( $value === null )
-      {
-        if( is_array($this->$relation) )
-        {
-          $value = CHtml::listData($this->$relation, 'id', 'id');
-        }
-        else if( isset($this->$relation->id) )
-        {
-          $value = $this->$relation->id;
-        }
-      }
+      if( is_array($this->$relation) )
+        $value = CHtml::listData($this->$relation, 'id', 'id');
+      else if( isset($this->$relation->id) )
+        $value = $this->$relation->id;
+      else
+        $value = null;
     }
     else
     {
@@ -83,11 +76,11 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
       array('parent, position, visible, spec, novelty, main, dump, discount, archive, xml', 'numerical', 'integerOnly' => true),
       array('url, name, articul', 'length', 'max' => 255),
       array('notice, content, video, rating', 'safe'),
-      array('section_id', 'required', 'except' => 'convert'),
       array('url', 'SUriValidator'),
       array('price, price_old', 'numerical'),
 
-      array('name, section_id, type_id', 'safe', 'on' => 'search'),
+      array('section_id', 'required'),
+      array(implode(", ", array_keys(BProductAssignment::model()->getFields())), 'safe'),
     );
   }
 

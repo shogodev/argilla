@@ -17,7 +17,7 @@ class AccessHelperTest extends CTestCase
     $mockSession = $this->getMock('CHttpSession', array('regenerateID'));
     Yii::app()->setComponent('session', $mockSession);
 
-    $role       = new RbacRole();
+    $role       = new BRbacRole();
     $roleName   = $role->name = 'role' . uniqid();
     $role->save(false);
 
