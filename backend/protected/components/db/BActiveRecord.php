@@ -46,6 +46,30 @@ abstract class BActiveRecord extends CActiveRecord
   }
 
   /**
+   * @param bool $runValidation
+   * @param null $attributes
+   * @return bool
+   */
+  public function save($runValidation = true, $attributes = null)
+  {
+    if( $this->isNestedSetModel() )
+    {
+      if( $this->isNewRecord )
+      {
+        $modelName = get_class($this);
+        $parent    = $modelName::model()->findByPk($this->parent);
+        $result    = $this->appendTo($parent);
+      }
+      else
+        $result = $this->saveNode($runValidation, $attributes);
+
+      return $result;
+    }
+
+    return parent::save($runValidation, $attributes);
+  }
+
+  /**
    * Сохраняем данные в моделях, связанных через отношение
    *
    * @param $relationName
@@ -190,5 +214,14 @@ abstract class BActiveRecord extends CActiveRecord
       'type'             => 'Тип',
       'sysname'          => 'Системное имя',
     );
+  }
+
+  /**
+   * Проверка на поддержку моделью nested set
+   * @return bool
+   */
+  private function isNestedSetModel()
+  {
+    return $this->asa('nestedSetBehavior') !== null;
   }
 }

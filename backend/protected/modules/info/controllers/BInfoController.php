@@ -17,24 +17,15 @@ class BInfoController extends BController
   public function actionCreate()
   {
     $model = new BInfo;
-    $this->performAjaxValidation($model);
 
-    $parent     = $this->loadModel(Yii::app()->request->getQuery('parent', BInfo::ROOT_ID));
-    $attributes = Yii::app()->request->getPost('BInfo');
+    $model->parent = Yii::app()->request->getQuery('parent', BInfo::ROOT_ID);
 
-    if( isset($attributes) )
-    {
-      $model->attributes = $attributes;
-      if( $model->appendTo($parent) )
-        $this->redirect(array('update', 'id' => $model->id));
-    }
-
-    $path = $model->getStringPath($parent->id);
+    $this->saveModels(array($model));
 
     $this->render('tree', array(
       'model'   => $model,
-      'path'    => $path,
-      'current' => $parent->id,
+      'path'    => $model->getStringPath($model->parent),
+      'current' => $model->parent,
     ));
   }
 
@@ -44,22 +35,12 @@ class BInfoController extends BController
      * @var BInfo $model
      */
     $model = $this->loadModel($id);
-    $this->performAjaxValidation($model);
 
-    $attributes = Yii::app()->request->getPost('BInfo');
-
-    if( isset($attributes) )
-    {
-      $model->attributes = $attributes;
-      if( $model->saveNode() )
-        $this->redirect(array('update', 'id' => $model->id));
-    }
-
-    $path = $model->getStringPath($model->id);
+    $this->saveModels(array($model));
 
     $this->render('tree', array(
       'model'   => $model,
-      'path'    => $path,
+      'path'    => $model->getStringPath($model->id),
       'current' => $model->id,
     ));
   }
