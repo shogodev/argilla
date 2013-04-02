@@ -52,8 +52,8 @@ abstract class FileUploader
     }
     else
     {
-      $path = dirname(__FILE__).'/../assets/img/'.$this->thumbs[$extension];
-      $path = preg_replace('/^.*(protected.*)/', Yii::app()->getFrontendUrl()."$1", $path);
+      $path = Yii::app()->assetManager->getPublishedPath(Yii::getPathOfAlias('ext').'/upload/assets').'/img/'.$this->thumbs[$extension];
+      $path = preg_replace('/^.*(backend.*)/', Yii::app()->getFrontendUrl()."$1", $path);
     }
 
     return $path;
