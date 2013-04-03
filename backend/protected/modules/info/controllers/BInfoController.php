@@ -62,23 +62,25 @@ class BInfoController extends BController
 
   public function actionDragAndDrop()
   {
-    if( Yii::app()->request->isAjaxRequest )
+    $request = Yii::app()->request;
+
+    if( $request->isAjaxRequest )
     {
-      $dragModel = BInfo::model()->findByPk(Yii::app()->request->getPost('drag', null));
-      $dropModel = BInfo::model()->findByPk(Yii::app()->request->getPost('drop', null));
-
-      if( $dragModel && $dropModel )
+      if( $request->getPost('action') == 'move' )
       {
-        if( $dragModel->moveAsLast($dropModel) )
-        {
-          $this->renderPartial('_tree', array(
-            'model' => BInfo::model(),
-            'current' => Yii::app()->request->getPost('current', 0)
-          ));
-        }
+        $dragModel = BInfo::model()->findByPk($request->getPost('drag'));
+        $dropModel = BInfo::model()->findByPk($request->getPost('drop'));
 
-        Yii::app()->end();
+        if( $dragModel && $dropModel )
+          $dragModel->moveAsLast($dropModel);
       }
+
+      $this->renderPartial('_tree', array(
+        'model' => BInfo::model(),
+        'current' => $request->getPost('current', 0)
+      ));
+
+      Yii::app()->end();
     }
   }
 }

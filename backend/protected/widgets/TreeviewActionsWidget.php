@@ -210,7 +210,7 @@ EOD
       e.preventDefault();
     });
 
-    var dragCallback = function(target, draggableItem)
+    var dropCallback = function(target, draggableItem)
     {
       var callback = function callback(resp)
       {
@@ -223,10 +223,31 @@ EOD
         }
       }
 
-      $.post(dragAndDropUrl, { 'drag' : draggableItem.attr('id').match(/node_(\d+)/)[1],
-                               'drop' : target.attr('id').match(/node_(\d+)/)[1],
-                               'current' : $('#' + treeId + ' li.current').length > 0 ? $('#' + treeId + ' li.current').attr('id').match(/node_(\d+)/)[1] : 0
-      } , callback);
+      var draggableText = draggableItem.children('a').text()
+      var targetText = target.children('a').text()
+      var current = $('#' + treeId + ' li.current').length > 0 ? $('#' + treeId + ' li.current').attr('id').match(/node_(\d+)/)[1] : 0
+
+      var dragId = draggableItem.attr('id').match(/node_(\d+)/)[1];
+      var dropId = target.attr('id').match(/node_(\d+)/)[1];
+      var parentDragId = parentSelector.attr('id').match(/node_(\d+)/)[1];
+
+      if( parentDragId == dropId )
+        return false;
+
+      if( confirm('Вы действительно хотите перенести раздел "' + draggableText + '" в "' + targetText + '"' ) )
+      {
+        $.post(dragAndDropUrl, {
+            'action' : 'move',
+            'drag' : dragId,
+            'drop' : dropId,
+            'current' : current
+          }
+          , callback);
+
+        return true;
+      }
+      else
+       return false;
     };
 
     var initTreeDragAndDrop = function(tree)
@@ -252,10 +273,10 @@ EOD
           parentSelector = $(this).parent().parent();
           targetSelector = null;
         },
-            stop: function()
+        stop: function()
         {
-          if( targetSelector )
-            dragCallback(targetSelector, this.draggableItem);
+          if( targetSelector && !dropCallback(targetSelector, this.draggableItem) )
+            return;
 
           if ( targetSelector !== null )
           {
