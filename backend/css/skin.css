@@ -131,7 +131,10 @@ td.button-column a[disabled],
   padding: 0 2px;
   font-size: 10px;
   background: #4883be;
-  line-height: 12px; }
+  line-height: 12px;
+  font-weight: bold;
+  color: #FFFFFF;
+}
 
 .caret:before {
   content: url('data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAkAAAAJCAYAAADgkQYQAAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAAK8AAACvABQqw0mAAAABx0RVh0U29mdHdhcmUAQWRvYmUgRmlyZXdvcmtzIENTNAay06AAAAAWdEVYdENyZWF0aW9uIFRpbWUAMDgvMTQvMTJoJUeNAAAAT0lEQVQYlWP8//8/AyHARFAFDkULGBgYBFBE/v//j4z7/0PAfGRxZAUB/1FBALoihf///79HU/QeKs7AArU1noGB4QIW98UzMDA0MlItCABaR2RaYz731AAAAABJRU5ErkJggg=='); }
