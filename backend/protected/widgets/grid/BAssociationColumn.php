@@ -16,14 +16,12 @@ class BAssociationColumn extends BDataColumn
 
   public $parameters = array();
 
-  public $gridId = 'yw0';
-
-  public $closeOperation = 'location.reload()';
+  public $closeOperation;
 
   protected function renderDataCellContent($row, $data)
   {
-    if( $this->gridId )
-      $this->closeOperation = '$.fn.yiiGridView.update("'.$this->gridId.'");';
+    if( $this->closeOperation === null )
+      $this->closeOperation = '$.fn.yiiGridView.update("'.$this->grid->id.'");';
 
     Yii::app()->controller->widget('BAssociationButton', array(
       'name' => $this->name,
