@@ -80,80 +80,62 @@ class OnFlyEditField extends BDataColumn
   protected function renderScript()
   {
     $url_script = Yii::app()->getAssetManager()->publish(dirname(__FILE__).'/js');
-    $url_onfly  = Yii::app()->getController()->createUrl($this->action);
+    $url_onfly  = Yii::app()->getController()->createUrl(Yii::app()->getController()->id . '/onflyedit');
+
+    Yii::app()->clientScript->registerScriptFile($url_script.'/jquery.onFlyEdit.js');
 
     if( empty($this->dropDown) )
+    {
       $this->renderTextScript($url_script, $url_onfly);
+    }
     else
-      $this->renderDropDownScript($url_onfly);
-
+    {
+      $this->renderDropDownScript($url_script, $url_onfly);
+    }
   }
 
   /**
    * Вывод скрипта для выпадающего списка
    *
+   * @param $url_script
    * @param string $url_onfly
    */
-  protected function renderDropDownScript($url_onfly)
+  protected function renderDropDownScript($url_script, $url_onfly)
   {
-    $js = <<<EOD
-$(function(){
-  $('select.onfly-edit-dropdown').live('change', function()
-  {
-    var matches = $(this).attr('data-onflyedit').match(/(\w+)-(\d+)/);
-    var data    = {};
+    Yii::app()->clientScript->registerScriptFile($url_script.'/dropDownOnFlyHandler.js', CClientScript::POS_END);
 
-    data.action = 'onflyedit';
-    data.field  = matches[1];
-    data.id     = matches[2];
-    data.value  = $(this).val();
-    data.gridId = '{$this->gridId}';
+    $args = CJavaScript::encode([
+      'urlToPost' => $url_onfly,
+      'gridId' => $this->gridId
+    ]);
 
-    $.post("{$url_onfly}", data, '', 'json');
-  });
-});
-EOD;
+    Yii::app()->clientScript->registerScript('initDropDownOnFlyEdit',
+      "$(function(){bindDropDownOnFlyHandler({$args});})", CClientScript::POS_END);
 
-    Yii::app()->getClientScript()->registerScript('onflyeditDropDownHandler', $js);
+    Yii::app()->clientScript->registerScript('reinstallDropDownOnFlyEdit',
+      "function reinstallDropDownOnFlyEdit(){bindDropDownOnFlyHandler({$args});}", CClientScript::POS_END);
   }
 
   /**
    * Вывод скриптов для текстового поля
    *
-   * @param string $url
+   * @param $url_script
    * @param string $url_onfly
    */
-  protected function renderTextScript($url, $url_onfly)
+  protected function renderTextScript($url_script, $url_onfly)
   {
-    Yii::app()->getClientScript()->registerScriptFile($url.'/jquery.onFlyEdit.js');
+    Yii::app()->clientScript->registerScriptFile($url_script.'/textOnFlyHandler.js', CClientScript::POS_END);
 
-    $onflyHandler = <<<EOD
-$(function(){
-  $('.onfly-edit').onfly({apply : function(elem)
-  {
-    var matches = $(elem).attr('data-onflyedit').match(/(\w+)-(\d+)/);
-    var data    = {};
+    $args = CJavaScript::encode([
+      'urlToPost' => $url_onfly,
+      'gridId' => $this->gridId
+    ]);
 
-    data.action = 'onflyedit';
-    data.field  = matches[1];
-    data.id     = matches[2];
-    data.value  = $(elem).text();
-    data.gridId = '{$this->gridId}';
+    Yii::app()->clientScript->registerScript('initTextOnFlyEdit',
+      "$(function(){bindTextOnFlyHandler({$args});})", CClientScript::POS_END);
 
-    /*function callback( result )
-    {
-      if( result )
-      {
-        if( result == '' )
-          $(elem).html('[не задано]');
-      }
-    }*/
-
-    $.post("{$url_onfly}", data, '', 'json');
-  }});
-});
-EOD;
-    Yii::app()->getClientScript()->registerScript('onflyeditHandler', $onflyHandler);
+    Yii::app()->clientScript->registerScript('reinstallTextOnFlyEdit',
+      "function reinstallTextOnFlyEdit(){bindTextOnFlyHandler({$args});}", CClientScript::POS_END);
   }
 
   /**
