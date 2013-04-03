@@ -61,7 +61,7 @@ class Arr
     if( is_array($keys) )
       foreach($keys as $key)
         $found[$key] = isset($array[$key]) ? $array[$key] : $default;
-    elseif( is_string($keys) )
+    else
       $found = isset($array[$keys]) ? $array[$keys] : $default;
 
     return $found;
@@ -92,13 +92,13 @@ class Arr
   }
 
   /**
-   *  Провеворка массива на наличие ключей
-   * @param mixed $keys
+   * Провеворка массива на наличие ключей
    * @param array $search
+   * @param mixed $keys
    *
    * @return bool
    */
-  public static function keysExists($keys, array $search)
+  public static function keysExists(array $search, $keys)
   {
     $result = true;
 
@@ -145,7 +145,7 @@ class Arr
   public static function isIntersec(array $arr1 = array(), array $arr2 = array())
   {
     $intersec = array_intersect($arr1, $arr2);
-    return empty($intersec);
+    return !empty($intersec);
   }
 
   /**
@@ -163,9 +163,9 @@ class Arr
       foreach($array as $key => $value)
       {
         if( !empty($charlist) )
-          $array[$key] = Arr::trim($value, $charlist);
+          $array[$key] = self::trim($value, $charlist);
         else
-          $array[$key] = Arr::trim($value);
+          $array[$key] = self::trim($value);
       }
     }
     elseif( is_string($array) )
@@ -183,51 +183,19 @@ class Arr
    * @static
    *
    * @param       $glue
-   * @param array $pieces
+   * @param array $array
    *
    * @return mixed
    */
-  public static function implode($glue, array $pieces)
+  public static function implode(array $array, $glue)
   {
-    foreach($pieces as $key => $value)
+    foreach($array as $key => $value)
+    {
       if( empty($value) )
-        unset($pieces[$key]);
-
-    return preg_replace("/\s+/", " ", implode($glue, $pieces));
-  }
-
-  public static function entitiesEncode($array, $params = array())
-  {
-    if( is_array($array) )
-    {
-      foreach($array as $key => $value)
-      {
-        $array[$key] = self::entitiesEncode($value, $params);
-      }
-    }
-    elseif( is_string($array) )
-    {
-      $array = htmlspecialchars($array, ENT_QUOTES, 'cp1251');
+        unset($array[$key]);
     }
 
-    return $array;
-  }
-
-  public static function entitiesDecode($array, $params = array())
-  {
-    if( is_array($array) )
-    {
-      foreach($array as $key => $value)
-      {
-        $array[$key] = self::entitiesDecode($value, $params);
-      }
-    }
-    elseif( is_string($array) )
-    {
-      $array = htmlspecialchars_decode($array, ENT_QUOTES);
-    }
-
-    return $array;
+    return preg_replace("/\s+/", " ", implode($glue, $array));
   }
 
   public static function reflect($array)
@@ -236,11 +204,11 @@ class Arr
   }
 
   /**
-   * @param array $data
+   * @param mixed $data
    *
-   * @return array|mixed
+   * @return mixed
    */
-  public static function reduce(array $data)
+  public static function reduce($data)
   {
     if( is_array($data) )
       return self::reset($data);
@@ -249,25 +217,12 @@ class Arr
   }
 
   /**
-   * @param $array
-   * @param $key
-   * @param $item
-   */
-  public static function push(&$array, $key, $item)
-  {
-    if( !isset($array[$key]) )
-      $array[$key] = array();
-
-    $array[$key][] = $item;
-  }
-
-  /**
    * Ассоциативное объединение массивов
    * @param array $a
    * @param array $b
    * @return array
    */
-  public static function array_merge_assoc(array $a, array $b)
+  public static function mergeAssoc(array $a, array $b)
   {
     return array_diff_key($a, $b) + $b;
   }
@@ -282,11 +237,24 @@ class Arr
 
   /**
    * @param $array
+   * @param $itemKey
+   * @param $item
+   */
+  public static function push(&$array, $itemKey, $item)
+  {
+    if( !isset($array[$itemKey]) )
+      $array[$itemKey] = array();
+
+    $array[$itemKey][] = $item;
+  }
+
+  /**
+   * @param $array
    * @param $after
    * @param $item
    * @param $itemKey
    */
-  public static function insertAfter(&$array, $after, $item, $itemKey)
+  public static function insertAfter(&$array, $itemKey, $item, $after)
   {
     $counter = 1;
     foreach($array as $key => $value)
@@ -297,8 +265,9 @@ class Arr
       $counter++;
     }
 
-    $array_head = array_slice($array, 0, $counter);
-    $array_tail = array_slice($array, $counter);
-    $array      = array_merge($array_head, array($itemKey => $item), $array_tail);
+    $array_head = array_slice($array, 0, $counter, true);
+    $array_tail = array_slice($array, $counter, null, true);
+    $array      = self::mergeAssoc($array_head, array($itemKey => $item));
+    $array      = self::mergeAssoc($array, $array_tail);
   }
 }

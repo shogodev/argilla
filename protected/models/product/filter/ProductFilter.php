@@ -104,7 +104,7 @@ class ProductFilter extends CComponent implements JsonSerializable
     if( $replaceOldState )
       $session = $state;
     else
-      $session = Arr::array_merge_assoc($session, $state);
+      $session = Arr::mergeAssoc($session, $state);
 
     Yii::app()->session[$this->filterKey] = $session;
   }

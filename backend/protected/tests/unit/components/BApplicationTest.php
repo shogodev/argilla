@@ -54,5 +54,3 @@ class BApplicationTest extends CTestCase
     $this->assertEquals('1101', Yii::app()->user->getFlash('end')['status']);
   }
 }
-
-?>

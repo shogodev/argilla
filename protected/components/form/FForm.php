@@ -491,7 +491,7 @@ class FForm extends CForm
   public function insertAfter($after, $element, $key)
   {
     $elements = $this->getElements()->toArray();
-    Arr::insertAfter($elements, $after, $element, $key);
+    Arr::insertAfter($elements, $key, $element, $after);
 
     $this->getElements()->clear();
     $this->getElements()->copyFrom($elements);
