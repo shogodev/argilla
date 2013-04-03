@@ -57,6 +57,10 @@ abstract class BInput extends TbInput
         $this->upload();
         break;
 
+      case 'association':
+        $this->association();
+        break;
+
       default:
         parent::run();
     }

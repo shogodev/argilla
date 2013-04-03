@@ -382,4 +382,14 @@ class BInputHorizontal extends BInput
     echo $this->getError().$this->getHint();
     echo '</td>';
   }
+
+  protected function association()
+  {
+    echo CHtml::openTag('th', array('class' => $this->getContainerCssClass()));
+    echo $this->attribute;
+    echo CHtml::closeTag('th');
+    echo '<td>';
+    echo $this->widget('BAssociationButton', $this->data, true);
+    echo '</td>';
+  }
 }

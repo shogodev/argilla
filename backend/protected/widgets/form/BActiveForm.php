@@ -224,6 +224,24 @@ class BActiveForm extends TbActiveForm
   }
 
   /**
+   * @param $model
+   * @param $label
+   * @param $destinationClassName
+   * @param $iframeAction
+   * @param array $parameters
+   *
+   * @return string
+   */
+  public function associationButtonRow($model, $label, $destinationClassName, $iframeAction,  $parameters = array())
+  {
+    $parameters['model'] = $model;
+    $parameters['name'] = $destinationClassName;
+    $parameters['iframeAction'] = $iframeAction;
+
+    return $this->inputRow('association', $model, $label, $parameters);
+  }
+
+  /**
    * Renders a depended drop-down list rows.
    *
    * @param BProduct $model
