@@ -1,10 +1,10 @@
 -- This file was created by ShogoCMS $Id: d6242f0a510ed3000bd17d9bfba8d1ebf0872153 $
--- User: tatarinov	Hostname: boojaka.shogo.ru
+-- User: utenkov	Hostname: boojaka.shogo.ru
 -- PHP: 5.4.5 Phing 2.4.12
 -- Original prefix: argilla_
 -- MySQL dump 10.13  Distrib 5.1.63, for portbld-freebsd8.2 (amd64)
 --
--- Host: localhost    Database: argilla_tatarinov
+-- Host: localhost    Database: argilla_ut
 -- ------------------------------------------------------
 -- Server version	5.1.63-log
 
@@ -692,12 +692,14 @@ DROP TABLE IF EXISTS `argilla_product_assignment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `argilla_product_assignment` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `product_id` int(10) unsigned NOT NULL,
   `section_id` int(10) unsigned NOT NULL,
   `type_id` int(10) unsigned NOT NULL,
   `category_id` int(10) unsigned NOT NULL,
   `collection_id` int(10) unsigned NOT NULL,
-  PRIMARY KEY (`product_id`),
+  PRIMARY KEY (`id`),
+  KEY `product_id` (`product_id`),
   KEY `section_id` (`section_id`),
   KEY `category_id` (`category_id`),
   KEY `year_id` (`collection_id`),
@@ -959,6 +961,24 @@ CREATE TABLE `argilla_product_type` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `argilla_redirect`
+--
+
+DROP TABLE IF EXISTS `argilla_redirect`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `argilla_redirect` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `base` varchar(255) COLLATE utf8_bin NOT NULL,
+  `target` varchar(255) COLLATE utf8_bin NOT NULL,
+  `type_id` int(11) NOT NULL,
+  `visible` int(11) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`),
+  KEY `base` (`base`,`target`,`type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `argilla_response`
 --
 
@@ -1210,7 +1230,7 @@ CREATE TABLE `argilla_vacancy_file` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping routines for database 'argilla_tatarinov'
+-- Dumping routines for database 'argilla_ut'
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -1222,4 +1242,4 @@ CREATE TABLE `argilla_vacancy_file` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-04-01 16:06:23
+-- Dump completed on 2013-04-03 11:48:33
