@@ -28,31 +28,43 @@ class BAssociationButton extends CWidget
 
   public function init()
   {
-    $pk         = $this->model->getPrimaryKey();
-    $parameters = array('popup' => true, 'srcId' => $pk, 'src' => get_class($this->model), 'dst' => $this->name);
+    $parameters = array(
+      'popup' => true,
+      'srcId' => $this->model->getPrimaryKey(),
+      'src' => get_class($this->model),
+      'dst' => $this->name
+    );
+
+    $this->count = $this->getAssociationsCount($parameters);
 
     foreach($this->parameters as $parameter => $value)
       $parameters[ucfirst($this->name)."[".$parameter."]"] = $value;
 
     $this->iframeUrl = Yii::app()->controller->createUrl($this->iframeAction, $parameters);
     $this->ajaxUrl   = Yii::app()->controller->createUrl($this->ajaxAction, $parameters);
-
-    if( isset($this->model->associations) )
-      foreach($this->model->associations as $association)
-        if( $association->dst == $this->name )
-          $this->count++;
   }
 
   public function run()
   {
     echo CHtml::tag('a', array(
-      'class' => 'btn-assign'.($this->count !== null ? " active" : ""),
+      'class' => 'btn-assign'.($this->count ? " active" : ""),
       'rel' => 'tooltip',
       'data-original-title' => 'Привязка',
       'data-iframeurl' => $this->iframeUrl,
       'data-ajaxurl' => $this->ajaxUrl,
-      'href' => '#'.($this->count !== null ? $this->count : ''),
+      'href' => '#'.($this->count ? $this->count : ''),
       'onClick' => 'assigner.ajaxHandler(this,'.CJavaScript::encode($this->assignerOptions).')',
-    ), '<span>'.$this->count.'</span>');
+    ), $this->count ?  '<span>'.$this->count.'</span>' : '');
+  }
+
+  protected function getAssociationsCount($parameters)
+  {
+    $criteria = new CDbCriteria();
+
+    $criteria->addColumnCondition(array('src' => $parameters['src']));
+    $criteria->addColumnCondition(array('src_id' => $parameters['srcId']));
+    $criteria->addColumnCondition(array('dst' => $parameters['dst']));
+
+    return BAssociation::model()->count($criteria);
   }
 }
