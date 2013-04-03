@@ -1,8 +1,12 @@
 <?php
 /**
+ * @author Alexey Tatarinov <tatarinov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
+ * @package frontend.components
+ *
  * @property string $title
- * @property string $description
- * @property string $keywords
  */
 class Meta extends CComponent
 {
@@ -100,14 +104,13 @@ class Meta extends CComponent
     return $this->clear($this->title);
   }
 
-  public function getDescription()
+  public function registerMetaTags()
   {
-    return $this->clear($this->description);
-  }
+    if( !empty($this->description) )
+      Yii::app()->clientScript->registerMetaTag($this->clear($this->description), 'description', null, array(), 'description');
 
-  public function getKeywords()
-  {
-    return $this->clear($this->keywords);
+    if( !empty($this->keywords) )
+      Yii::app()->clientScript->registerMetaTag($this->clear($this->keywords), 'keywords', null, array(), 'keywords');
   }
 
   public function registerClip($id,  $value)
@@ -204,7 +207,7 @@ class Meta extends CComponent
   {
     $string = preg_replace(self::$VARS_PATTERN, '', $string);
 
-    return $string;
+    return CHtml::encode($string);
   }
 
   private function getPropertyValue($model, $property)
