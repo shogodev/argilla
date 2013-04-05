@@ -205,7 +205,9 @@ class Meta extends CComponent
    */
   private function clear($string)
   {
+    $string = $this->replaceCommands($string);
     $string = preg_replace(self::$VARS_PATTERN, '', $string);
+    $string = preg_replace('/\s+/', ' ', $string);
 
     return CHtml::encode($string);
   }
@@ -221,6 +223,32 @@ class Meta extends CComponent
       return false;
 
     return $property_value;
+  }
+
+  private function replaceCommands($string)
+  {
+    $string = preg_replace_callback('/(ucfirst|upper|lower)([^\s]+)/', function($data) {
+
+      switch($data[1])
+      {
+        case 'ucfirst':
+          return Utils::ucfirst($data[2]);
+          break;
+
+        case 'upper':
+          return mb_strtoupper($data[2]);
+          break;
+
+        case 'lower':
+          return mb_strtolower($data[2]);
+          break;
+      }
+
+      return '';
+
+    }, $string);
+
+    return $string;
   }
 }
 ?>

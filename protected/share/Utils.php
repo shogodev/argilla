@@ -210,4 +210,14 @@ class Utils
   {
     return '{{'.strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $class)).'}}';
   }
+
+  /**
+   * Возводит первый символ строки в верхний регистр
+   * @param $string
+   * @return string
+   */
+  public static function ucfirst($string)
+  {
+    return mb_strlen($string) > 1 ? mb_strtoupper(mb_substr($string, 0, 1)).mb_substr($string, 1) : mb_strtoupper(mb_substr($string, 0, 1));
+  }
 }
