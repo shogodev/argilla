@@ -7,9 +7,12 @@
  * @package backend.widgets.form.BInput
  */
 Yii::import('bootstrap.widgets.input.TbInput');
+Yii::import('backend.modules.settings.models.BHint');
 
 abstract class BInput extends TbInput
 {
+  public $popupHintText;
+
   public function run()
   {
     switch ($this->type)
@@ -64,5 +67,50 @@ abstract class BInput extends TbInput
       default:
         parent::run();
     }
+  }
+
+  protected function processHtmlOptions()
+  {
+    if( $this->hasModel() && !empty($this->attribute) && empty($this->htmlOptions['hint']) )
+      $this->htmlOptions['hint'] = $this->model->getHint($this->attribute);
+
+    if( $this->hasModel() && !empty($this->attribute) && empty($this->htmlOptions['popupHint']) )
+      $this->popupHintText = $this->model->getPopupHint($this->attribute);
+
+    parent::processHtmlOptions();
+
+    if( !empty($this->htmlOptions['popupHint']) )
+      $this->popupHintText = Arr::cut($this->htmlOptions, 'popupHint');
+  }
+
+  protected function getLabel()
+  {
+    if( isset($this->htmlOptions['label']) )
+      $this->labelOptions['label'] = $this->htmlOptions['label'];
+
+    if ($this->label !== false && !in_array($this->type, array('checkbox', 'radio')) && $this->hasModel())
+      return $this->form->labelEx($this->model, $this->attribute, $this->labelOptions);
+    else if ($this->label !== null)
+      return $this->label;
+    else
+      return '';
+  }
+
+  protected function popupHint($label)
+  {
+    if( !empty($this->popupHintText) && preg_match('/<label([^>]*)>(.*)<\/label>/', $label, $matches) )
+      $label = '<label'.$matches[1].'>'.$this->createPopupHint($matches[2], $this->popupHintText).'</label>';
+
+    return $label;
+  }
+
+  protected function createPopupHint($label, $popupHint)
+  {
+    return CHtml::tag('span', array(
+        'rel' => 'tooltip',
+        'title' => $popupHint
+      ),
+      '<i class="icon-comment"></i>&nbsp;'.$label
+    );
   }
 }

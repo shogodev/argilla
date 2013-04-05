@@ -9,7 +9,6 @@
 /* @var $form BActiveForm */
 $form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId()));
 ?>
-
 <?php $this->renderPartial('//_form_buttons', array('model' => $model));?>
 <?php echo $form->errorSummary($model); ?>
 <?php echo $form->renderRequire(); ?>
@@ -17,7 +16,12 @@ $form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId()));
 <table class="detail-view table table-striped table-bordered">
 <tbody>
 
-<?php echo $form->dropDownListRow($model, 'route', CHtml::listData($model->getRoutesList(), 'id', 'name'), $model->getRoutesListOptions()); ?>
+
+<?php if( $this->isUpdate() )
+        echo $form->textRow($model, 'route');
+      else
+        echo $form->dropDownListRow($model, 'route', CHtml::listData($model->getRoutesList(), 'id', 'name'), $model->getRoutesListOptions());
+?>
 
 <tr>
     <th><label class="required">Переменные моделей</label></th>
@@ -32,10 +36,15 @@ $form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId()));
 </tr>
 
 <?php echo $form->textRow($model, 'clips'); ?>
+
 <?php echo $form->textRow($model, 'globalVars'); ?>
+
 <?php echo $form->textFieldRow($model, 'title'); ?>
+
 <?php echo $form->textAreaRow($model, 'description'); ?>
+
 <?php echo $form->textAreaRow($model, 'keywords'); ?>
+
 <?php echo $form->checkBoxRow($model, 'visible'); ?>
 
 </tbody>

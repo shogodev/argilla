@@ -32,7 +32,7 @@ class BInputHorizontal extends BInput
   {
     ob_start();
     echo CHtml::openTag('th', array('class' => $this->getContainerCssClass()));
-    echo parent::getLabel();
+    echo $this->popupHint(parent::getLabel());
     echo '</th>';
 
     return ob_get_clean();
@@ -55,11 +55,7 @@ class BInputHorizontal extends BInput
         break;
     }
 
-    echo '<th>';
-    echo '<label for="'.$this->getAttributeId($attribute).'">';
-    echo $this->model->getAttributeLabel($attribute);
-    echo '</label>';
-    echo '</th>';
+    echo $this->getLabel();
     echo '<td>';
     echo CHtml::tag('div', $this->htmlOptions, $value).PHP_EOL;
     echo '</td>';
@@ -71,14 +67,10 @@ class BInputHorizontal extends BInput
    */
   protected function checkBox()
   {
-    $attribute = $this->attribute;
-    echo '<th>';
-    echo '<label class="checkbox" for="'.$this->getAttributeId($attribute).'">';
-    echo $this->model->getAttributeLabel($attribute);
-    echo '</label>';
-    echo '</th>';
+     $this->label = CHtml::activeLabelEx($this->model, $this->attribute, array('class' => 'checkbox'));
+    echo $this->getLabel();
     echo '<td>';
-    echo $this->form->checkBox($this->model, $attribute, $this->htmlOptions).PHP_EOL;
+    echo $this->form->checkBox($this->model, $this->attribute, $this->htmlOptions).PHP_EOL;
     echo $this->getError().$this->getHint();
     echo '</td>';
   }
@@ -385,9 +377,10 @@ class BInputHorizontal extends BInput
 
   protected function association()
   {
-    echo CHtml::openTag('th', array('class' => $this->getContainerCssClass()));
-    echo $this->attribute;
-    echo CHtml::closeTag('th');
+    if( isset($this->data['label']) )
+      $this->label = Arr::cut($this->data, 'label', '') ;
+
+    echo $this->getLabel();
     echo '<td>';
     echo $this->widget('BAssociationButton', $this->data, true);
     echo '</td>';

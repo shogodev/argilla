@@ -10,6 +10,9 @@ $config = array_replace_recursive(
         'class' => 'SFixtureManager',
       ),
     ),
+    'aliases' => array(
+      'bootstrap' => 'ext.bootstrap'
+    ),
     'import' => array(
       'backend.tests.components.*',
     ),
