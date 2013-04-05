@@ -29,6 +29,7 @@ return array(
     'frontend.models.info.*',
 
     'frontend.components.*',
+    'frontend.components.common.*',
     'frontend.components.interfaces.*',
     'frontend.components.validators.*',
     'frontend.components.alphabets.*',
