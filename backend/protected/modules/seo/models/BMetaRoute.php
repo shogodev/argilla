@@ -15,7 +15,6 @@ class BMetaRoute extends BActiveRecord
   public function rules()
   {
     return array(
-      array('route', 'required'),
       array('route', 'unique'),
       array('route, title, description, keywords', 'length', 'max' => 255),
       array('route, title, description, keywords, visible' , 'safe'),

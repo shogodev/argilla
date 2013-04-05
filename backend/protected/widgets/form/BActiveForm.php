@@ -235,10 +235,11 @@ class BActiveForm extends TbActiveForm
   public function associationButtonRow($model, $label, $destinationClassName, $iframeAction,  $parameters = array())
   {
     $parameters['model'] = $model;
+    $parameters['label'] = $label;
     $parameters['name'] = $destinationClassName;
     $parameters['iframeAction'] = $iframeAction;
 
-    return $this->inputRow('association', $model, $label, $parameters);
+    return $this->inputRow('association', $model, null, $parameters);
   }
 
   /**

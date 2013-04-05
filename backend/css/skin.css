@@ -598,3 +598,8 @@ span.cke_skin_kama table.cke_editor td {
 
 .drop-hover {
   background: #D4D9DD repeat-x !important; }
+
+.help-block {
+  margin-top: 5px;
+  font-size: 10px;
+  line-height: 110%}

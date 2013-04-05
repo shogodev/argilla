@@ -8,6 +8,10 @@
  */
 abstract class BActiveRecord extends CActiveRecord
 {
+  protected $_hints;
+
+  protected $_popupHints;
+
   /**
    * @param string $className
    *
@@ -153,14 +157,6 @@ abstract class BActiveRecord extends CActiveRecord
     return new CDbCriteria();
   }
 
-  /**
-   * @return array of search params
-   */
-  protected function getSearchParams()
-  {
-    return array();
-  }
-
   public function attributeLabels()
   {
     return array(
@@ -213,7 +209,81 @@ abstract class BActiveRecord extends CActiveRecord
       'password_confirm' => 'Подтверждение пароля',
       'type'             => 'Тип',
       'sysname'          => 'Системное имя',
+      'model'            => 'Модель',
+      'attribute'        => 'Атрибут'
     );
+  }
+
+  /**
+   * Задает popup подсказки
+   * @return array
+   */
+  public function getPopupHints()
+  {
+    if( empty($this->_popupHints) )
+    {
+       $items = BHint::model()->findAllByAttributes(
+        array(
+          'model' => get_class($this),
+          'popup' => '1'
+        ));
+
+      $this->_popupHints = CHtml::listData($items, 'attribute', 'content');
+    }
+
+    return $this->_popupHints;
+  }
+
+  /**
+   * Получает popup подсказку для атрибута
+   * @param $attribute
+   * @return null
+   */
+  public function getPopupHint($attribute)
+  {
+    $hints = $this->popupHints;
+
+    return isset($hints[$attribute]) ? $hints[$attribute] : null;
+  }
+
+  /**
+   * Задает подсказки
+   * @return array
+   */
+  public function getHints()
+  {
+    if( empty($this->_hints) )
+    {
+      $items = BHint::model()->findAllByAttributes(
+        array(
+          'model' => get_class($this),
+          'popup' => '0'
+        ));
+
+      $this->_hints = CHtml::listData($items, 'attribute', 'content');
+    }
+
+    return $this->_hints;
+  }
+
+  /**
+   * Получает подсказку для атрибута
+   * @param $attribute
+   * @return null
+   */
+  public function getHint($attribute)
+  {
+    $hints = $this->hints;
+
+    return isset($hints[$attribute]) ? $hints[$attribute] : null;
+  }
+
+  /**
+   * @return array of search params
+   */
+  protected function getSearchParams()
+  {
+    return array();
   }
 
   /**
