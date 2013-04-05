@@ -5,6 +5,27 @@
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
  * @package backend.widgets.RelatedItemsWidget
+ *
+ * Examples:
+ *
+ * echo $form->relatedItemsRow($model, 'steps', array(
+ *   'position' => array('class' => 'span1'),
+ *   'content' => array('class' => 'span8'),
+ * ));
+ *
+ * echo $form->relatedItemsRow($model, 'steps', array(
+ *   'content' => array('tag' => function($model, $options) use($form) {
+ *     $options['class'] = 'span10';
+ *     echo CHtml::textArea(Arr::cut($options, 'name'), Arr::cut($options, 'value'), $options);
+ *   }),
+ * ));
+ *
+ * echo $form->relatedItemsRow($model, 'steps', array(
+ *   'sections' => array('tag' => function($model, $options) use($form) {
+ *     echo CHtml::dropDownList(Arr::cut($options, 'name'), Arr::cut($options, 'value'), CHtml::listData(Section::model()->findAll(), 'id', 'name'), $options);
+ *   }),
+ * ));
+ *
  */
 class RelatedItemsWidget extends CWidget
 {
@@ -28,12 +49,12 @@ class RelatedItemsWidget extends CWidget
 
     $this->className = $this->model->getActiveRelation($this->relation)->className;
 
-    $this->getLabel();
-    $this->getElements();
-    $this->getScript();
+    $this->renderLabel();
+    $this->renderElements();
+    $this->renderCloneScript();
   }
 
-  protected function getLabel()
+  protected function renderLabel()
   {
     echo CHtml::openTag('th', array('class' => 'multi-list'));
     echo CHtml::tag('label', array(), $this->model->getAttributeLabel($this->relation));
@@ -41,42 +62,66 @@ class RelatedItemsWidget extends CWidget
     echo CHtml::closeTag('th');
   }
 
-  protected function getElements()
+  protected function renderElements()
   {
     echo CHtml::openTag('td', array('class' => 'multi-list'));
     echo CHtml::openTag('ul');
 
+    $this->renderElement(new $this->className, array('id' => 'template', 'style' => 'display: none;'));
+
     foreach($this->model->{$this->relation} as $element)
-    {
-      $id = $element->getPrimaryKey();
+      $this->renderElement($element);
 
-      echo CHtml::tag('li', array('id' => get_class($element).'-'.$id), false, false);
-
-      foreach($this->attributes as $key => $attribute)
-      {
-        $name  = is_array($attribute) ? $key : $attribute;
-        $type  = Arr::get($attribute, 'type', 'text');
-        $class = Arr::get($attribute, 'class', 'span4');
-
-        echo CHtml::tag('input', array(
-          'type' => $type,
-          'name' => "{$this->className}[{$id}][{$name}]",
-          'data-id' => $id,
-          'value' => $element->$name,
-          'class' => $class,
-        ));
-        echo '&nbsp;';
-      }
-
-      $this->getAjaxButton($id);
-    }
-
-    echo CHtml::closeTag('li');
     echo CHtml::closeTag('ul');
     echo CHtml::closeTag('td');
   }
 
-  protected function getAjaxButton($id)
+  /**
+   * @param BActiveRecord $element
+   * @param array $htmlOptions
+   *
+   * @internal param null $id
+   */
+  protected function renderElement(BActiveRecord $element, $htmlOptions = array())
+  {
+    $id = Arr::get($htmlOptions, 'id', $element->getPrimaryKey());
+    $htmlOptions['id'] = get_class($element).'-'.$id;
+
+    echo CHtml::tag('li', $htmlOptions, false, false);
+
+    foreach($this->attributes as $key => $attribute)
+    {
+      $name = is_array($attribute) ? $key : $attribute;
+      $tag  = Arr::get($attribute, 'tag', 'input');
+
+      $options = Arr::get($attribute, 'htmlOptions', array('class' => 'span4'));
+
+      if( isset($attribute['class']) )
+        $options['class'] = $attribute['class'];
+
+      $options['name']    = "{$this->className}[{$id}][{$name}]";
+      $options['value']   = $element->$name;
+
+      if( is_string($tag) )
+      {
+        if( $tag === 'input' )
+          $options['type'] = Arr::get($options, 'type', 'text');
+
+        echo CHtml::tag($tag, $options);
+      }
+      elseif( is_callable($tag) )
+      {
+        call_user_func_array($tag, array($element, $options));
+      }
+
+      echo '&nbsp;';
+    }
+
+    $this->renderAjaxButton($id);
+    echo CHtml::closeTag('li');
+  }
+
+  protected function renderAjaxButton($id)
   {
     echo CHtml::ajaxLink('', $this->controller->createUrl('deleteRelated'),
       array(
@@ -93,38 +138,35 @@ class RelatedItemsWidget extends CWidget
     );
   }
 
-  protected function getScript()
+  protected function renderCloneScript()
   {
-    $attributes = json_encode($this->attributes);
     Yii::app()->clientScript->registerScript(__CLASS__.$this->relation, <<<EOD
-$('#add-item-btn-{$this->relation}').on('click', function()
-  {
-    var attrs = {$attributes};
-    var cl = '{$this->className}';
-    var ul = $(this).parents('tr').find('td ul');
-    var li = $('<li>');
-    var j  = $(ul).find('li').length;
+var className = '{$this->className}';
+var button    = $('#add-item-btn-{$this->relation}');
+var itemsExp  = '[name*=' + className + '\\\\[template\\\\]]';
 
-    for(var i in attrs)
-    {
-      if(attrs.hasOwnProperty(i))
-      {
-        var name = typeof (attrs[i]) == 'object' ? i : attrs[i];
-        var type = attrs[i] && attrs[i].type ? attrs[i].type : 'text';
-        var cls  = attrs[i] && attrs[i].class ? attrs[i].class : 'span4';
-        var inp  = $('<input type="'+ type +'">');
+button.parents('tr').find(itemsExp).attr('disabled', 'disabled');
 
-        $(li).append(inp);
-        $(li).append('&nbsp;');
-        $(inp).attr('name', cl + '[new' + j + ']['+ name +']');
-        $(inp).addClass(cls);
-      }
-    }
+$(button).on('click', function()
+{
+  var tr        = $(this).parents('tr');
+  var template  = tr.find('#' + className + '-template');
+  var ul        = tr.find('td ul');
+  var count     = $(ul).find('li').length;
+  var li        = template.clone();
+  var re        = /(\w+)\[(\w+)\]\[(\w+)\]/;
 
-    li.append('<a class="btn btn-alone delete" rel="tooltip" href="#" data-original-title="Удалить вариант">');
-    $(li).find('a').on('click', function(e){e.preventDefault();$(this).parents('li').remove()});
-    $(ul).append(li);
+  $(li).find(itemsExp).each(function(){
+    var name = $(this).attr('name').replace(re, '$1[new' + String(count) + '][$3]');
+    $(this).attr('name', name);
+    $(this).removeAttr('disabled');
   });
+
+  li.show().removeAttr('id').find('.delete').remove();
+  li.append('<a class="btn btn-alone delete" rel="tooltip" href="#" data-original-title="Удалить вариант">');
+  $(li).find('a').on('click', function(e){e.preventDefault();$(this).parents('li').remove()});
+  $(ul).append(li);
+});
 EOD
     ,CClientScript::POS_READY);
   }

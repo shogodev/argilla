@@ -816,6 +816,9 @@ span.cke_skin_kama table.cke_editor td {
   margin-bottom: 10px; }
 .detail-view .multi-list ul li {
   margin-bottom: 5px; }
+.detail-view .multi-list ul li a.delete {
+  margin-top: 2px;
+  vertical-align: top; }
 
 .ac_results {
   -webkit-border-radius: 3px;
