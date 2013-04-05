@@ -5,7 +5,7 @@
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.info
-
+ *
  * @method static BInfo model(string $class = __CLASS__)
  *
  * @property string  $id
