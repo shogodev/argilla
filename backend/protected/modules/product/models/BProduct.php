@@ -105,6 +105,19 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
     );
   }
 
+  public function beforeSave()
+  {
+    if( parent::beforeSave() )
+    {
+      if( empty($this->articul) )
+        $this->articul = null;
+
+      return true;
+    }
+
+    return false;
+  }
+
   public function getImageTypes()
   {
     return array(
