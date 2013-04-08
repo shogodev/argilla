@@ -139,8 +139,18 @@ class BActiveDataProvider extends CActiveDataProvider
     $this->pageSizeForm = $form;
 
     $formChangeHandler = <<<EOD
-  $('.{$formProperties['class']} select').live('change', function(){
-    $(this).parents('.{$formProperties['class']}').submit();
+  $('body').on('change', '.{$formProperties['class']} select', function(){
+    if( window.History.enabled )
+    {
+      var url = $(this).parents('form').attr('action').split('?');
+      var params = $.deparam.querystring('?'+url[1]);
+      params[$(this).attr('id')] = $(this).val();
+      window.History.pushState(null, document.title, decodeURIComponent($.param.querystring(url[0], params)));
+    }
+    else
+    {
+      $(this).parents('.{$formProperties['class']}').submit();
+    }
   });
 EOD;
 
