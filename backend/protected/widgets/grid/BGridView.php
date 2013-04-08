@@ -24,6 +24,8 @@ class BGridView extends TbGridView
 
   public $afterAjaxUpdate = 'reinstallAfterAjax';
 
+  public $ajaxUpdateError = 'function(xhr, ts, et, err){xhr.status === 401 ? document.location.reload() : alert(err);}';
+
   /**
    * @var BActiveDataProvider
    */

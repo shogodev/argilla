@@ -49,6 +49,9 @@ abstract class BController extends CController
         throw new CHttpException(403, 'Доступ запрещен.');
       else
       {
+        if( Yii::app()->request->isAjaxRequest )
+          throw new CHttpException(401, 'Требуется авторизация');
+
         Yii::app()->user->setReturnUrl(Yii::app()->request->requestUri);
         $this->redirect(Yii::app()->baseUrl . '/base');
       }
@@ -244,7 +247,7 @@ abstract class BController extends CController
    * Проводим валидацию и сохраняем несколько связанных моделей
    * Все модели должны быть связаны по первичному ключу
    *
-   * @param BActiveRecord[] $models
+   * @param $models
    * @param bool $extendedSave пытаемся сохранить все данные post, вызывая соответствующие методы контроллера
    *
    * @throws CHttpException
