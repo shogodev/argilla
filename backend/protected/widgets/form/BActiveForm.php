@@ -24,6 +24,20 @@ class BActiveForm extends TbActiveForm
     parent::init();
   }
 
+  public function run()
+  {
+    parent::run();
+
+    Yii::app()->clientScript->registerScript(__CLASS__.'AjaxError#'.$this->id,"
+      $(document).ajaxError(function(event, jqxhr, settings, exception) {
+        var err;
+        err = jqxhr.status ? 'Error ' + jqxhr.status : 'Error';
+        err = jqxhr.responseText ? err + ': ' + jqxhr.responseText : err;
+        alert(err);
+      });"
+    );
+  }
+
   /**
    * Renders require form caption
    */
