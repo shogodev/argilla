@@ -8,8 +8,6 @@
  */
 class BEditColumn extends BDataColumn
 {
-  public $htmlOptions = array('class' => 'span3');
-
   public $type = 'html';
 
   protected $popup = false;
