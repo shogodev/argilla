@@ -15,7 +15,7 @@ $this->widget('BGridView', array(
 
     array('name' => 'type_id', 'value' => 'BRedirectType::getList()[$data->type_id]', 'filter' => BRedirectType::getList()),
 
-    array('class' => 'JToggleColumn', 'name' => 'visible', 'filter' => CHtml::listData($model->yesNoList(), 'id', 'name')),
+    array('class' => 'JToggleColumn', 'name' => 'visible'),
     array('class' => 'BButtonColumn'),
   ),
 ));
