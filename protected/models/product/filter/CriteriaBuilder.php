@@ -1,49 +1,53 @@
 <?php
 /**
- * User: Sergey Glagolev <glagolev@shogo.ru>
- * Date: 10.12.12
+ * @author Sergey Glagolev <glagolev@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
+ * @package frontend.models.product.filter
  */
 class CriteriaBuilder
 {
   /**
-   * @var $propertyCriteria CDbCriteria
+   * @var CDbCriteria $propertyCriteria
    */
-  protected $propertyCriteria;
+  protected $mainCriteria;
 
   /**
-   * @var $parametersCriteria CDbCriteria
+   * @var CDbCriteria[] $parametersCriteria
    */
-  protected $parametersCriteria;
+  protected $parameterCriteria;
 
   public function __construct($actionCriteria)
   {
-    $this->propertyCriteria   = clone $actionCriteria;
-    $this->parametersCriteria = new CDbCriteria();
+    $this->mainCriteria = clone $actionCriteria;
   }
 
   public function addCondition(ProductFilterElement $element)
   {
     if( $element->isProperty() )
-      $element->addPropertyCondition($this->propertyCriteria);
+      $element->addPropertyCondition($this->mainCriteria);
     else
-      $element->addParameterCondition($this->parametersCriteria);
+      $this->parameterCriteria[$element->id] = $element->getParameterCondition();
   }
 
   public function getFilteredCriteria()
   {
-    $this->mergeParamCriteria($this->propertyCriteria, $this->parametersCriteria);
+    if( !empty($this->parameterCriteria) )
+      $this->mainCriteria->addInCondition('t.id', $this->getProductIdsByParameterCriteria($this->parameterCriteria));
 
-    return $this->propertyCriteria;
+    return $this->mainCriteria;
   }
 
   public function getAvailableValuesCriteria(array $elements)
   {
     $properties = array();
+
     foreach($elements as $element)
       if( $element->isProperty() )
         $properties[] = $element->id;
 
-    $criteria = $this->propertyCriteria;
+    $criteria = $this->mainCriteria;
     $criteria->select = implode(',', CMap::mergeArray($properties, array('p.param_id', 'p.variant_id')));
     $criteria->compare('visible', '=1');
 
@@ -61,19 +65,34 @@ class CriteriaBuilder
     return $criteria;
   }
 
-  protected function mergeParamCriteria(CDbCriteria $propertyCriteria, CDbCriteria $paramCriteria)
+  /**
+   * @param CDbCriteria[] $parameterCriteria
+   */
+  protected function getProductIdsByParameterCriteria($parameterCriteria)
   {
-    if( !empty($paramCriteria->condition) )
+    $productIds = array();
+
+    foreach($parameterCriteria as $criteria)
     {
-      $paramCriteria->select = 'product_id, count( param_id ) AS count';
-      $paramCriteria->group  = 'product_id';
-      $paramCriteria->having = 'count = '.substr_count($paramCriteria->condition, 'param_id');
+      if( empty($criteria->condition) )
+        continue;
 
-      $builder    = new CDbCommandBuilder(Yii::app()->db->getSchema());
-      $command    = $builder->createFindCommand(ProductParam::model()->tableName(), $paramCriteria);
-      $productIds = $command->queryColumn();
+      $criteria->distinct = true;
+      $criteria->select = 'product_id';
 
-      $propertyCriteria->addInCondition('t.id', $productIds);
+      if( $result = $this->queryExecute($criteria) )
+        $productIds = empty($productIds) ? $result : array_intersect($productIds, $result);
+      else
+        return null;
     }
+
+    return $productIds;
+  }
+
+  protected function queryExecute(CDbCriteria $criteria)
+  {
+    $builder = new CDbCommandBuilder(Yii::app()->db->getSchema());
+    $command = $builder->createFindCommand(ProductParam::model()->tableName(), $criteria);
+    return $command->queryColumn();
   }
 }

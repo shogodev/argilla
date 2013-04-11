@@ -1,10 +1,16 @@
 <?php
 /**
- * @property string filterKey
- * @property array state
+ * @author Sergey Glagolev <glagolev@shogo.ru>, Alexey Tatarinov <tatarinov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
+ * @package frontend.models.product.filter
+
+ * @property string $filterKey
+ * @property array $state
  * @property ProductFilterElement[] elements
  */
-class ProductFilter extends CComponent implements JsonSerializable
+class ProductFilter extends CComponent
 {
   public $emptyElementValue = array('' => 'Не задано');
 
@@ -137,16 +143,6 @@ class ProductFilter extends CComponent implements JsonSerializable
     return null;
   }
 
-  public function jsonSerialize()
-  {
-    $data = array();
-
-    foreach($this->elements as $element)
-      $data[$element->id] = $element->jsonSerialize();
-
-    return $data;
-  }
-
   protected function createFilteredCriteria(CDbCriteria $actionCriteria, array $availableValues)
   {
     $builder = new CriteriaBuilder($actionCriteria);
@@ -217,7 +213,6 @@ class ProductFilter extends CComponent implements JsonSerializable
         $selectedStates[$id] = $value;
       }
     }
-
 
     // возможно потребуется рекурсия
     $this->checkOldState($actionCriteria, $selectedStates, $availableValues);

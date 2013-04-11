@@ -1,5 +1,11 @@
 <?php
 /**
+ * @author Sergey Glagolev <glagolev@shogo.ru>, Alexey Tatarinov <tatarinov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
+ * @package frontend.models.product.filter
+ *
  * @property string $name
  */
 abstract class ProductFilterElement extends CComponent
@@ -32,7 +38,7 @@ abstract class ProductFilterElement extends CComponent
 
   abstract public function addPropertyCondition(CDbCriteria $criteria);
 
-  abstract public function addParameterCondition(CDbCriteria $criteria);
+  abstract public function getParameterCondition();
 
   /**
    * @param $availableValues
@@ -132,28 +138,6 @@ abstract class ProductFilterElement extends CComponent
   public function prepareAvailableValues($value, $filtered)
   {
     return $value;
-  }
-
-  public function jsonSerialize()
-  {
-    $items = array();
-
-    if( isset($this->items) )
-    {
-      foreach($this->items as $item)
-      {
-        $items[$item->id] = array(
-          'name'     => $item->getName(),
-          'disabled' => $item->isDisabled() ? 'true' : 'false'
-        );
-      }
-    }
-
-    return array(
-      'name'  => $this->name,
-      'type'  => $this->type,
-      'items' => $items,
-    );
   }
 
   protected function sortItems($items)
