@@ -3,7 +3,7 @@
 
 <section class="s-form-auth row-fluid">
   <div class="span4"></div>
-  <div class="span4">
+  <div class="<?php echo $this->popup ? 'fixed' : 'span4'?>">
 
     <h1>Авторизация</h1>
 

@@ -39,7 +39,7 @@ class BGridView extends TbGridView
         if( xhr.status === 401 )
           assigner.open(
             "'.Yii::app()->controller->createUrl("/base/index", array('popup' => true)).'",
-            {width : "800", height : "500"}
+            {width : "800", height : "400", left : "50%", top : "50%", marginTop : "-250px", marginLeft: "-400px"}
           );
         else
           alert(err);
