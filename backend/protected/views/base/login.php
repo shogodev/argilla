@@ -1,13 +1,6 @@
 <?php Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl.'/i/reject/jquery.reject.css') ?>
 <?php Yii::app()->clientScript->registerScriptFile(Yii::app()->request->baseUrl.'/js/jquery.plugins/jquery.reject.min.js') ?>
 
-<?php
-$this->pageTitle   = Yii::app()->name.' - Авторизация';
-$this->breadcrumbs = array(
-  'Авторизация',
-);
-?>
-
 <section class="s-form-auth row-fluid">
   <div class="span4"></div>
   <div class="span4">

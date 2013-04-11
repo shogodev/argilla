@@ -63,9 +63,12 @@ abstract class BController extends CController
       Yii::app()->user->setState($this->uniqueId, $url);
     }
 
-    $this->popup = Yii::app()->request->getQuery('popup', false);
-    if( $this->popup )
+    if( Yii::app()->request->getQuery('popup', false) )
+    {
+      $this->popup  = true;
       $this->layout = '//layouts/popup';
+    }
+
     return parent::beforeAction($action);
   }
 

@@ -24,12 +24,31 @@ class BGridView extends TbGridView
 
   public $afterAjaxUpdate = 'reinstallAfterAjax';
 
-  public $ajaxUpdateError = 'function(xhr, ts, et, err){xhr.status === 401 ? document.location.reload() : alert(err);}';
+  public $ajaxUpdateError;
 
   /**
    * @var BActiveDataProvider
    */
   public $dataProvider;
+
+  public function init()
+  {
+    if( !isset($this->ajaxUpdateError) )
+    {
+      $this->ajaxUpdateError = 'function(xhr, ts, et, err){
+        if( xhr.status === 401 )
+          assigner.open(
+            "'.Yii::app()->controller->createUrl("/base/index", array('popup' => true)).'",
+            {width : "800", height : "500"}
+          );
+        else
+          alert(err);
+      }';
+    }
+
+    parent::init();
+  }
+
 
   public function renderFilters()
   {
