@@ -68,7 +68,11 @@ abstract class BController extends CController
 
   public function getBackUrl()
   {
-    return Utils::cutQueryParams(Yii::app()->user->getState($this->uniqueId), array('ajax'));
+    $url = Yii::app()->user->getState($this->uniqueId);
+    if( !$url )
+      $url = Yii::app()->createUrl($this->module->id.'/'.$this->id);
+
+    return Utils::cutQueryParams($url, array('ajax'));
   }
 
   public function actions()
