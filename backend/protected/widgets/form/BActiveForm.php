@@ -29,19 +29,8 @@ class BActiveForm extends TbActiveForm
     parent::run();
 
     Yii::app()->clientScript->registerScript(__CLASS__.'AjaxError#'.$this->id,'
-      $(document).ajaxError(function(event, xhr, settings, exception) {
-        if( xhr.status === 401 )
-          assigner.open(
-            "'.Yii::app()->controller->createUrl("/base/index", array('popup' => true)).'",
-            {width : "800", height : "400", left : "50%", top : "50%", marginTop : "-250px", marginLeft: "-400px"}
-          );
-        else
-        {
-          var err;
-          err = xhr.status ? "Error " + xhr.status : "Error";
-          err = xhr.responseText ? err + ": " + xhr.responseText : err;
-          alert(err);
-        }
+      $(document).ajaxError(function(event, xhr){
+        ajaxUpdateError(xhr);
       });'
     );
   }

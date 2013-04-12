@@ -69,6 +69,8 @@ abstract class BController extends CController
       $this->layout = '//layouts/popup';
     }
 
+    Yii::app()->registerAjaxUpdateError();
+
     return parent::beforeAction($action);
   }
 

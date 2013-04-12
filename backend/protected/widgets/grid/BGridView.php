@@ -35,14 +35,8 @@ class BGridView extends TbGridView
   {
     if( !isset($this->ajaxUpdateError) )
     {
-      $this->ajaxUpdateError = 'function(xhr, ts, et, err){
-        if( xhr.status === 401 )
-          assigner.open(
-            "'.Yii::app()->controller->createUrl("/base/index", array('popup' => true)).'",
-            {width : "800", height : "400", left : "50%", top : "50%", marginTop : "-250px", marginLeft: "-400px"}
-          );
-        else
-          alert(err);
+      $this->ajaxUpdateError = 'function(xhr, textStatus, errorThrown, err){
+        ajaxUpdateError(xhr, err);
       }';
     }
 

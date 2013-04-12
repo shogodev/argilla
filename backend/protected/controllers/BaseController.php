@@ -73,7 +73,7 @@ class BaseController extends BController
       }
     }
 
-    $this->pageTitle = Yii::app()->name.' - Авторизация';
+    $this->pageTitle = Yii::app()->params->project.' - Авторизация';
     $this->render('login', array('model' => $model));
   }
 
