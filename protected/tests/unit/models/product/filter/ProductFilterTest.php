@@ -220,6 +220,136 @@ class ProductFilterTest extends CDbTestCase
     $this->assertCount(10, $data);
   }
 
+  public function testFilterSaveStateInSession()
+  {
+    if( isset($_SESSION['pf']) )
+      unset($_SESSION['pf']);
+
+    $state = array(
+      'section_id' => 2,
+      'type_id' => 4,
+      '2' => array(
+        '1' => '1',
+        '3' => '2'
+      )
+     );
+
+    $filter = new ProductFilter('pf', true);
+    $filter->state = $state;
+    $filter->addElement($this->filterElements[self::ELEMENT_SECTION], false);
+
+    if( $this->assertTrue(isset($_SESSION['pf'])) )
+      $this->assertEquals($state, $_SESSION['pf']);
+
+    if( isset($_SESSION['pf']) )
+      unset($_SESSION['pf']);
+
+    $filter = new ProductFilter('pf', false);
+    $filter->state = $state;
+    $filter->addElement($this->filterElements[self::ELEMENT_SECTION], false);
+
+    $this->assertFalse(isset($_SESSION['pf']));
+
+    if( isset($_SESSION['pf']) )
+      unset($_SESSION['pf']);
+  }
+
+  public function testFilterLoadStateFromSession()
+  {
+    $sessionState = array(
+      'section_id' => 3,
+      '1' => 2
+    );
+
+    $_SESSION['pf'] = $sessionState;
+
+    $filter = new ProductFilter('pf', true);
+    $filter->addElement($this->filterElements[self::ELEMENT_SECTION], false);
+    $this->assertEquals($sessionState, $filter->state);
+
+
+    $filter = new ProductFilter('pf', false);
+    $filter->addElement($this->filterElements[self::ELEMENT_SECTION], false);
+    $this->assertNotEquals($sessionState, $filter->state);
+
+    if( isset($_SESSION['pf']) )
+      unset($_SESSION['pf']);
+  }
+
+  public function testFilterSetStatePartial()
+  {
+    $firstState = array(
+      'section_id' => 3,
+      '1' => 2,
+    );
+
+    $newState1 = array(
+      '2' => array(
+        '4' => '4',
+        '2' => '2',
+        '3' => '3'
+      ),
+      'type_id' => 1
+    );
+
+    $newState2 = array(
+      '1' => '',
+      'type_id' => null,
+      '3' => '4',
+      'section_id' => array()
+    );
+
+    $filter = new ProductFilter('pf', false);
+    $filter->setState($firstState);
+    $filter->setStatePartial($newState1);
+
+    $this->assertEquals(Arr::mergeAssoc($firstState, $newState1), $filter->state);
+
+    $filter->setStatePartial($newState2);
+
+    $this->assertEquals(
+      array(
+        '2' => array(
+        '4' => '4',
+        '2' => '2',
+        '3' => '3'
+      ),
+      '3' => '4'
+    ), $filter->state);
+  }
+
+  public function testFilterSetStateAuto()
+  {
+    $state1 = array(
+      'section_id' => '2',
+      '3' => array(
+        '5'=> '5',
+        '2' => '2',
+        '3' => '3'
+      )
+    );
+
+    $state2 = array(
+      'section_id' => '1',
+      'type_id' => '2',
+      '5' => '2'
+    );
+
+    $_POST['pf1'] = $state1;
+    $filter1 = new ProductFilter('pf1', false, true);
+    $this->assertEquals($state1, $filter1->state);
+
+    $_GET['pf2'] = $state2;
+    $filter2 = new ProductFilter('pf2', false);
+    $this->assertEquals($state2, $filter2->state);
+
+
+    $_POST['pf3'] = $state1;
+    $_GET['pf3'] = $state2;
+    $filter3 = new ProductFilter('pf3', false, false);
+    $this->assertEmpty($filter3->state);
+  }
+
   private function checkFilterForData($filter, $state, $assertProductIds)
   {
     $products = $this->getFilteredData($filter, $state);

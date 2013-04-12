@@ -10,7 +10,7 @@
  * @property array $state
  * @property ProductFilterElement[] elements
  */
-class ProductFilter extends CComponent
+class ProductFilter extends AbstractProductFilter
 {
   public $emptyElementValue = array('' => 'Не задано');
 
@@ -19,23 +19,10 @@ class ProductFilter extends CComponent
   */
   public $defaultElementType = 'list';
 
-  protected $filterKey;
-
   /**
    * @var ProductFilterElement[]
    */
   protected $elements = array();
-
-  /**
-   * @var array Текущее состояние фильтра
-   */
-  protected $state = array();
-
-  public function __construct($filterKey = 'productFilter')
-  {
-    $this->filterKey = $filterKey;
-    $this->setState();
-  }
 
   public function addElement(array $filterElement, $emptyValue = null)
   {
@@ -82,37 +69,15 @@ class ProductFilter extends CComponent
     return $this->elements;
   }
 
-  public function getFilterKey()
+  public function getElementByKey($key)
   {
-    return $this->filterKey;
-  }
+    foreach($this->elements as $element)
+    {
+      if( $element->key == $key )
+        return $element;
+    }
 
-  public function getState()
-  {
-    return $this->state;
-  }
-
-  public function setState($state = null)
-  {
-    if( !$state )
-      $state = Arr::get(Yii::app()->session, $this->filterKey, array());
-
-    $this->state = $state;
-  }
-
-  public function saveState($state = null, $replaceOldState = false)
-  {
-    if( !$state )
-      $state = Yii::app()->request->getPost($this->filterKey, array());
-
-    $session = isset(Yii::app()->session[$this->filterKey]) ? Yii::app()->session[$this->filterKey] : array();
-
-    if( $replaceOldState )
-      $session = $state;
-    else
-      $session = Arr::mergeAssoc($session, $state);
-
-    Yii::app()->session[$this->filterKey] = $session;
+    return null;
   }
 
   /**
@@ -130,17 +95,6 @@ class ProductFilter extends CComponent
     $this->removeEmptyItems();
 
     return $filteredCriteria;
-  }
-
-  public function getElementByKey($key)
-  {
-    foreach($this->elements as $element)
-    {
-      if( $element->key == $key )
-        return $element;
-    }
-
-    return null;
   }
 
   protected function createFilteredCriteria(CDbCriteria $actionCriteria, array $availableValues)
