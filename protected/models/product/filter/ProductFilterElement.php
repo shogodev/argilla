@@ -101,6 +101,15 @@ abstract class ProductFilterElement extends CComponent
     return false;
   }
 
+  public function isSelected()
+  {
+    foreach($this->items as $item)
+      if( $item->isSelected() )
+        return true;
+
+    return false;
+  }
+
   public function isParameter()
   {
     return is_numeric($this->id);

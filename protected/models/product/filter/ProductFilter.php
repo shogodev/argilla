@@ -92,6 +92,11 @@ class ProductFilter extends AbstractProductFilter
     $filteredCriteria = $this->createFilteredCriteria($actionCriteria, $availableValues);
 
     $this->disablingFilterElements($actionCriteria, $filteredCriteria, $availableValues);
+
+    $this->countAmount($filteredCriteria);
+    // только по для выбранных элемнтов
+    $this->countAmount($actionCriteria, true);
+
     $this->removeEmptyItems();
 
     return $filteredCriteria;
@@ -119,15 +124,15 @@ class ProductFilter extends AbstractProductFilter
     $builder                 = new CriteriaBuilder($criteria);
     $availableValuesCriteria = $builder->getAvailableValuesCriteria($this->elements);
 
-    $builder = new CDbCommandBuilder(Yii::app()->db->getSchema());
-    $command = $builder->createFindCommand(Product::model()->tableName(), $availableValuesCriteria);
-    $data    = $command->query();
+    $commandBuilder = new CDbCommandBuilder(Yii::app()->db->getSchema());
+    $command = $commandBuilder->createFindCommand(Product::model()->tableName(), $availableValuesCriteria);
+    $data    = $command->queryAll();
 
     $propertyValues = array();
 
-    foreach($data as $row)
+    foreach($this->elements as $element)
     {
-      foreach($this->elements as $element)
+      foreach($data as $row)
       {
         $itemId = $element->isProperty() ? $element->id : 'variant_id';
 
@@ -135,14 +140,71 @@ class ProductFilter extends AbstractProductFilter
         {
           $availableValue = $element->prepareAvailableValues($row[$itemId], $filtered);
           $propertyValues[$element->id][$availableValue] = $availableValue;
-
-          if( isset($element->items[$availableValue]) )
-            $element->items[$availableValue]->amount = $row['count'];
         }
       }
     }
 
     return $propertyValues;
+  }
+
+  protected function countAmount($criteria, $onlySelected = false)
+  {
+    $cb = new CriteriaBuilder($criteria);
+
+    foreach($this->elements as $element)
+      if( $element->isProperty() && (!$onlySelected || $onlySelected && $element->isSelected()) )
+        $this->countAmountProperties($element->id, $cb);
+
+    $this->countAmountParameters($cb, $onlySelected);
+  }
+
+  /**
+   * @param $elementId
+   * @param CriteriaBuilder $builder
+   */
+  protected function countAmountProperties($elementId, $builder)
+  {
+    $criteria = $builder->getPropertyAmountCriteria($elementId);
+
+    $commandBuilder = new CDbCommandBuilder(Yii::app()->db->getSchema());
+    $command = $commandBuilder->createFindCommand(Product::model()->tableName(), $criteria);
+    $data    = $command->queryAll();
+
+    foreach($data as $row)
+    {
+      if( isset($row[$elementId]) && isset($this->elements[$elementId]->items[$row[$elementId]]) )
+        $this->elements[$elementId]->items[$row[$elementId]]->amount = $row['count'];
+    }
+  }
+
+  /**
+   * @param CriteriaBuilder $builder
+   * @param $onlySelected
+   */
+  protected function countAmountParameters($builder, $onlySelected)
+  {
+    $criteria = $builder->getParameterAmountCriteria();
+
+    $commandBuilder = new CDbCommandBuilder(Yii::app()->db->getSchema());
+    $command = $commandBuilder->createFindCommand(Product::model()->tableName(), $criteria);
+    $data    = $command->queryAll();
+
+    foreach($this->elements as $element)
+    {
+      if( $element->isProperty() )
+        continue;
+
+      if( $onlySelected && !$element->isSelected() )
+        continue;
+
+      foreach($data as $row)
+      {
+        if( $element->id == $row['param_id'] && isset($element->items[$row['variant_id']]) )
+        {
+          $element->items[$row['variant_id']]->amount = $row['count'];
+        }
+      }
+    }
   }
 
   protected function disablingFilterElements($actionCriteria, &$filteredCriteria, $availableValues)
@@ -160,7 +222,7 @@ class ProductFilter extends AbstractProductFilter
       else
       {
         // Пропускаем отмеченные параметры (присутствуют в сессии),
-        // но отсутствуют в ниличии (были проставлены на других страницах каталога)
+        // но отсутствуют в наличии (были проставлены на других страницах каталога)
         if( !$element->inAvailableValues($availableValues)  )
           continue;
 
@@ -248,7 +310,7 @@ class ProductFilter extends AbstractProductFilter
       foreach($elements as $id => $item)
         $intersects[$id] = empty($intersects[$id]) ? $item : array_intersect($intersects[$id], $item);
 
-    // Отключаем значения для заполненных элеметров фильтра
+    // Отключаем значения для заполненных элементов фильтра
     $this->disablingUnavailableValues($selectedStates, $availableValues, $intersects);
   }
 
@@ -271,7 +333,7 @@ class ProductFilter extends AbstractProductFilter
   }
 
   /**
-   * Удаляем пыстые или полностью отключенные элементы из фильра
+   * Удаление пустых или полностью отключенных элементов из фильтра
    */
   protected function removeEmptyItems()
   {

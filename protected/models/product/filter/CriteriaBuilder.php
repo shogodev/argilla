@@ -47,12 +47,11 @@ class CriteriaBuilder
       if( $element->isProperty() )
         $properties[] = $element->id;
 
-    $criteria = $this->mainCriteria;
+    $criteria = clone $this->mainCriteria;
+    $criteria->distinct = true;
     $criteria->select = implode(',', CMap::mergeArray($properties, array('p.param_id', 'p.variant_id')));
     $criteria->compare('visible', '=1');
-
     $criteria->group   = $criteria->select;
-    $criteria->select .= ', COUNT(t.id) AS count';
 
     $assignment = ProductAssignment::model()->tableName();
     $parameters = ProductParam::model()->tableName();
@@ -60,7 +59,41 @@ class CriteriaBuilder
     $criteria->join  = 'JOIN '.$assignment.' AS a ON a.product_id = t.id';
     $criteria->join .= ' LEFT JOIN '.$parameters.' AS p ON p.product_id = t.id';
 
+    return $criteria;
+  }
+
+  /**
+   * @param $property
+   * @return CDbCriteria
+   */
+  public function getPropertyAmountCriteria($property)
+  {
+    $criteria = clone $this->mainCriteria;
     $criteria->distinct = true;
+    $criteria->select = $property;
+    $criteria->group  = $property;
+    $criteria->select .= ', COUNT(t.id) AS count';
+
+    $assignment = ProductAssignment::model()->tableName();
+    $criteria->join  = 'JOIN '.$assignment.' AS a ON a.product_id = t.id';
+
+    return $criteria;
+  }
+
+  /**
+   * @param $parameter
+   * @return CDbCriteria
+   */
+  public function getParameterAmountCriteria()
+  {
+    $criteria = clone $this->mainCriteria;
+    $criteria->distinct = true;
+    $criteria->select = implode(',', array('p.param_id', 'p.variant_id'));
+    $criteria->group  = $criteria->select;
+    $criteria->select .= ', COUNT(t.id) AS count';
+
+    $parameters = ProductParam::model()->tableName();
+    $criteria->join .= ' LEFT JOIN '.$parameters.' AS p ON p.product_id = t.id';
 
     return $criteria;
   }
@@ -80,7 +113,7 @@ class CriteriaBuilder
       $criteria->distinct = true;
       $criteria->select = 'product_id';
 
-      if( $result = $this->queryExecute($criteria) )
+      if( $result = $this->getQueryColumn($criteria) )
         $productIds = empty($productIds) ? $result : array_intersect($productIds, $result);
       else
         return null;
@@ -89,7 +122,7 @@ class CriteriaBuilder
     return $productIds;
   }
 
-  protected function queryExecute(CDbCriteria $criteria)
+  protected function getQueryColumn(CDbCriteria $criteria)
   {
     $builder = new CDbCommandBuilder(Yii::app()->db->getSchema());
     $command = $builder->createFindCommand(ProductParam::model()->tableName(), $criteria);

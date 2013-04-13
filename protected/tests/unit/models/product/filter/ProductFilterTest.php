@@ -6,13 +6,15 @@
  * @license http://argilla.ru/LICENSE
  * @package frontend.tests.unit.models.product.filter
  */
+Yii::import('frontend.tests.components.FilterTestHelper');
+
 class ProductFilterTest extends CDbTestCase
 {
-  const ELEMENT_SECTION = 'section';
-  const ELEMENT_TYPE = 'type';
-  const ELEMENT_SIZE = 'size';
-  const ELEMENT_COLOR = 'color';
-  const ELEMENT_LENGTH = 'length';
+  const ELEMENT_SECTION = 'section_id';
+  const ELEMENT_TYPE = 'type_id';
+  const ELEMENT_SIZE = 'param_1';
+  const ELEMENT_COLOR = 'param_2';
+  const ELEMENT_LENGTH = 'param_3';
 
   /**
    * @var FilterTestHelper $filterTestHelper
@@ -33,7 +35,7 @@ class ProductFilterTest extends CDbTestCase
 
   public function setUp()
   {
-    Yii::import('frontend.tests.components.FilterTestHelper');
+    Yii::app()->setUnitEnvironment('Product', 'one', array('url' => 'new_product1'));
 
     $this->filterTestHelper = new FilterTestHelper();
 
@@ -350,6 +352,282 @@ class ProductFilterTest extends CDbTestCase
     $this->assertEmpty($filter3->state);
   }
 
+  public function testFilterCountAmountNoSelected()
+  {
+    $this->setUp();
+
+    $filter = $this->createFilter(array(
+      self::ELEMENT_SECTION,
+      self::ELEMENT_TYPE,
+      self::ELEMENT_COLOR,
+      self::ELEMENT_SIZE,
+      self::ELEMENT_LENGTH,
+    ));
+
+    $products = $this->getFilteredData($filter, array());
+
+    $this->assertEquals(10, count($products));
+
+    /** всего 10
+     * section_id
+     * 1 Одежда 5
+     * 2 Обувь 4
+     * 3 Оборудование 1
+     * type_id
+     * 1 Теплая 2
+     * 2 Летняя 3
+     * 3 Кроссовки 2
+     * 4 Ботинки 1
+     * 5 Сапоги 1
+     * 6 Палатки 1
+     * 1
+     * 1 Размер 10 3
+     * 2 Размер 20 2
+     * 3 Размер 30 1
+     * 4 Размер 40 1
+     * 2
+     * 5 Цвет зеленый 2
+     * 6 Цвет синий 2
+     * 7 Цвет красный 2
+     * 3
+     * 8 Длинна 100 2
+     * 9 Длинна 135 2
+     * 10 Длинна 180 2
+    */
+
+    $section = $filter->elements[self::ELEMENT_SECTION]->items;
+    $this->assertEquals($section[1]->amount, 5);
+    $this->assertEquals($section[2]->amount, 4);
+    $this->assertEquals($section[3]->amount, 1);
+
+    $type = $filter->elements[self::ELEMENT_TYPE]->items;
+    $this->assertEquals($type[1]->amount, 2);
+    $this->assertEquals($type[2]->amount, 3);
+    $this->assertEquals($type[3]->amount, 2);
+    $this->assertEquals($type[4]->amount, 1);
+    $this->assertEquals($type[5]->amount, 1);
+    $this->assertEquals($type[6]->amount, 1);
+
+    $size = $filter->elements[$this->getParameterId(self::ELEMENT_SIZE)]->items;
+    $this->assertEquals($size[1]->amount, 3);
+    $this->assertEquals($size[2]->amount, 2);
+    $this->assertEquals($size[3]->amount, 1);
+    $this->assertEquals($size[4]->amount, 1);
+
+    $color = $filter->elements[$this->getParameterId(self::ELEMENT_COLOR)]->items;
+    $this->assertEquals($color[5]->amount, 2);
+    $this->assertEquals($color[6]->amount, 2);
+    $this->assertEquals($color[7]->amount, 2);
+
+    $length = $filter->elements[$this->getParameterId(self::ELEMENT_LENGTH)]->items;
+    $this->assertEquals($length[8]->amount, 2);
+    $this->assertEquals($length[9]->amount, 2);
+    $this->assertEquals($length[10]->amount, 2);
+  }
+
+  public function testFilterCountAmountSelected()
+  {
+    $this->setUp();
+
+    $filter = $this->createFilter(array(
+      self::ELEMENT_SECTION,
+      self::ELEMENT_TYPE,
+      self::ELEMENT_COLOR,
+      self::ELEMENT_SIZE,
+      self::ELEMENT_LENGTH,
+    ));
+
+    $state = $this->filterTestHelper->createStateByName(array(
+      'section_id' => 'Одежда'
+    ));
+
+    $products = $this->getFilteredData($filter, $state);
+
+    $this->assertEquals(5, count($products));
+
+    $section = $filter->elements[self::ELEMENT_SECTION]->items;
+    $this->assertEquals($section[1]->amount, 5);
+    $this->assertEquals($section[2]->amount, 4);
+    $this->assertEquals($section[3]->amount, 1);
+
+    $type = $filter->elements[self::ELEMENT_TYPE]->items;
+    $this->assertEquals($type[1]->amount, 2);
+    $this->assertEquals($type[2]->amount, 3);
+    $this->assertEquals($type[3]->amount, 0);
+    $this->assertEquals($type[4]->amount, 0);
+    $this->assertEquals($type[5]->amount, 0);
+    $this->assertEquals($type[6]->amount, 0);
+
+    $size = $filter->elements[$this->getParameterId(self::ELEMENT_SIZE)]->items;
+    $this->assertEquals($size[1]->amount, 3); // 10
+    $this->assertEquals($size[2]->amount, 2); // 20
+    $this->assertEquals($size[3]->amount, 1); // 30
+    $this->assertEquals($size[4]->amount, 1); // 40
+
+    $color = $filter->elements[$this->getParameterId(self::ELEMENT_COLOR)]->items;
+    $this->assertEquals($color[5]->amount, 2); // зел
+    $this->assertEquals($color[6]->amount, 2); // синий
+    $this->assertEquals($color[7]->amount, 1); // красный
+
+    $length = $filter->elements[$this->getParameterId(self::ELEMENT_LENGTH)]->items;
+    $this->assertEquals($length[8]->amount, 2);  // 100
+    $this->assertEquals($length[9]->amount, 2);  // 135
+    $this->assertEquals($length[10]->amount, 1); // 180
+  }
+
+  public function testFilterCountAmountSelected2()
+  {
+    $this->setUp();
+
+    $filter = $this->createFilter(array(
+      self::ELEMENT_SECTION,
+      self::ELEMENT_TYPE,
+      self::ELEMENT_COLOR,
+      self::ELEMENT_SIZE,
+      self::ELEMENT_LENGTH,
+    ));
+
+    $state = $this->filterTestHelper->createStateByName(array(
+      'section_id' => 'Одежда',
+      'Размер' => '10'
+    ));
+
+    $products = $this->getFilteredData($filter, $state);
+
+    $this->assertEquals(3, count($products));
+
+    $section = $filter->elements[self::ELEMENT_SECTION]->items;
+    $this->assertEquals($section[1]->amount, 5);
+    $this->assertEquals($section[2]->amount, 4);
+    $this->assertEquals($section[3]->amount, 1);
+
+    $type = $filter->elements[self::ELEMENT_TYPE]->items;
+    $this->assertEquals($type[1]->amount, 2);
+    $this->assertEquals($type[2]->amount, 1);
+    $this->assertEquals($type[3]->amount, 0);
+    $this->assertEquals($type[4]->amount, 0);
+    $this->assertEquals($type[5]->amount, 0);
+    $this->assertEquals($type[6]->amount, 0);
+
+    $size = $filter->elements[$this->getParameterId(self::ELEMENT_SIZE)]->items;
+    $this->assertEquals($size[1]->amount, 3); // 10
+    $this->assertEquals($size[2]->amount, 2); // 20
+    $this->assertEquals($size[3]->amount, 1); // 30
+    $this->assertEquals($size[4]->amount, 1); // 40
+
+    $color = $filter->elements[$this->getParameterId(self::ELEMENT_COLOR)]->items;
+    $this->assertEquals($color[5]->amount, 1); // зел
+    $this->assertEquals($color[6]->amount, 1); // синий
+    $this->assertEquals($color[7]->amount, 1); // красный
+
+    $length = $filter->elements[$this->getParameterId(self::ELEMENT_LENGTH)]->items;
+    $this->assertEquals($length[8]->amount, 1);   // 100
+    $this->assertEquals($length[9]->amount, 1);   // 135
+    $this->assertEquals($length[10]->amount, 1);  // 180
+  }
+
+  public function testFilterCountAmountSelected3()
+  {
+    $this->setUp();
+
+    $filter = $this->createFilter(array(
+      self::ELEMENT_SECTION,
+      self::ELEMENT_TYPE,
+      self::ELEMENT_COLOR => array('type' => 'multipleOr'),
+      self::ELEMENT_SIZE,
+      self::ELEMENT_LENGTH,
+    ));
+
+    $state = $this->filterTestHelper->createStateByName(array(
+      'section_id' => 'Одежда',
+      'Цвет' => array('зеленый')
+    ));
+
+    $products = $this->getFilteredData($filter, $state);
+
+    $this->assertEquals(2, count($products));
+
+    $section = $filter->elements[self::ELEMENT_SECTION]->items;
+    $this->assertEquals($section[1]->amount, 5);
+    $this->assertEquals($section[2]->amount, 4);
+    $this->assertEquals($section[3]->amount, 1);
+
+    $type = $filter->elements[self::ELEMENT_TYPE]->items;
+    $this->assertEquals($type[1]->amount, 1);
+    $this->assertEquals($type[2]->amount, 1);
+    $this->assertEquals($type[3]->amount, 0);
+    $this->assertEquals($type[4]->amount, 0);
+    $this->assertEquals($type[5]->amount, 0);
+    $this->assertEquals($type[6]->amount, 0);
+
+    $size = $filter->elements[$this->getParameterId(self::ELEMENT_SIZE)]->items;
+    $this->assertEquals($size[1]->amount, 1); // 10
+    $this->assertEquals($size[2]->amount, 0); // 20
+    $this->assertEquals($size[3]->amount, 1); // 30
+    $this->assertEquals($size[4]->amount, 0); // 40
+
+    $color = $filter->elements[$this->getParameterId(self::ELEMENT_COLOR)]->items;
+    $this->assertEquals($color[5]->amount, 2); // зел
+    $this->assertEquals($color[6]->amount, 2); // синий
+    $this->assertEquals($color[7]->amount, 2); // красный
+
+    $length = $filter->elements[$this->getParameterId(self::ELEMENT_LENGTH)]->items;
+    $this->assertEquals($length[8]->amount, 2);  // 100
+    $this->assertEquals($length[9]->amount, 0);  // 135
+    $this->assertEquals($length[10]->amount, 0); // 180
+  }
+
+  public function testFilterCountAmountSelected4()
+  {
+    $this->setUp();
+
+    $filter = $this->createFilter(array(
+      self::ELEMENT_SECTION,
+      self::ELEMENT_TYPE,
+      self::ELEMENT_COLOR => array('type' => 'multipleOr'),
+      self::ELEMENT_SIZE,
+      self::ELEMENT_LENGTH,
+    ));
+
+    $state = $this->filterTestHelper->createStateByName(array(
+      'section_id' => 'Одежда',
+      'Цвет' => array('зеленый', 'синий')
+    ));
+
+    $products = $this->getFilteredData($filter, $state);
+
+    $this->assertEquals(4, count($products));
+
+    $section = $filter->elements[self::ELEMENT_SECTION]->items;
+    $this->assertEquals($section[1]->amount, 5);
+    $this->assertEquals($section[2]->amount, 4);
+    $this->assertEquals($section[3]->amount, 1);
+
+    $type = $filter->elements[self::ELEMENT_TYPE]->items;
+    $this->assertEquals($type[1]->amount, 2);
+    $this->assertEquals($type[2]->amount, 2);
+    $this->assertEquals($type[3]->amount, 0);
+    $this->assertEquals($type[4]->amount, 0);
+    $this->assertEquals($type[5]->amount, 0);
+    $this->assertEquals($type[6]->amount, 0);
+
+    $size = $filter->elements[$this->getParameterId(self::ELEMENT_SIZE)]->items;
+    $this->assertEquals($size[1]->amount, 2); // 10
+    $this->assertEquals($size[2]->amount, 1); // 20
+    $this->assertEquals($size[3]->amount, 1); // 30
+    $this->assertEquals($size[4]->amount, 1); // 40
+
+    $color = $filter->elements[$this->getParameterId(self::ELEMENT_COLOR)]->items;
+    $this->assertEquals($color[5]->amount, 2); // зел
+    $this->assertEquals($color[6]->amount, 2); // синий
+    $this->assertEquals($color[7]->amount, 2); // красный
+
+    $length = $filter->elements[$this->getParameterId(self::ELEMENT_LENGTH)]->items;
+    $this->assertEquals($length[8]->amount, 2);  // 100
+    $this->assertEquals($length[9]->amount, 2);  // 135
+    $this->assertEquals($length[10]->amount, 0); // 180
+  }
+
   private function checkFilterForData($filter, $state, $assertProductIds)
   {
     $products = $this->getFilteredData($filter, $state);
@@ -427,5 +705,10 @@ class ProductFilterTest extends CDbTestCase
     }
 
     $this->assertNotEmpty($productFilter->getElementByKey($elementId));
+  }
+
+  private function getParameterId($index)
+  {
+    return str_replace('param_', '', $index);
   }
 }
