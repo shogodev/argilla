@@ -63,16 +63,12 @@ class CriteriaBuilder
   }
 
   /**
-   * @param $property
+   * @param ProductFilterElement $element
    * @return CDbCriteria
    */
-  public function getPropertyAmountCriteria($property)
+  public function getPropertyAmountCriteria($element)
   {
-    $criteria = clone $this->mainCriteria;
-    $criteria->distinct = true;
-    $criteria->select = $property;
-    $criteria->group  = $property;
-    $criteria->select .= ', COUNT(t.id) AS count';
+    $criteria = $element->buildPropertyAmountCriteria(clone $this->mainCriteria);
 
     $assignment = ProductAssignment::model()->tableName();
     $criteria->join  = 'JOIN '.$assignment.' AS a ON a.product_id = t.id';

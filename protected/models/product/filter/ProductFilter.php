@@ -153,18 +153,18 @@ class ProductFilter extends AbstractProductFilter
 
     foreach($this->elements as $element)
       if( $element->isProperty() && (!$onlySelected || $onlySelected && $element->isSelected()) )
-        $this->countAmountProperties($element->id, $cb);
+        $this->countAmountProperties($element, $cb);
 
     $this->countAmountParameters($cb, $onlySelected);
   }
 
   /**
-   * @param $elementId
+   * @param ProductFilterElement $element
    * @param CriteriaBuilder $builder
    */
-  protected function countAmountProperties($elementId, $builder)
+  protected function countAmountProperties($element, $builder)
   {
-    $criteria = $builder->getPropertyAmountCriteria($elementId);
+    $criteria = $builder->getPropertyAmountCriteria($element);
 
     $commandBuilder = new CDbCommandBuilder(Yii::app()->db->getSchema());
     $command = $commandBuilder->createFindCommand(Product::model()->tableName(), $criteria);
@@ -172,8 +172,8 @@ class ProductFilter extends AbstractProductFilter
 
     foreach($data as $row)
     {
-      if( isset($row[$elementId]) && isset($this->elements[$elementId]->items[$row[$elementId]]) )
-        $this->elements[$elementId]->items[$row[$elementId]]->amount = $row['count'];
+      if( isset($row[$element->id]) && isset($element->items[$row[$element->id]]) )
+        $element->items[$row[$element->id]]->amount = $row['count'];
     }
   }
 

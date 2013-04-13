@@ -149,14 +149,39 @@ abstract class ProductFilterElement extends CComponent
     return $value;
   }
 
+  /**
+   * @param CDbCriteria $criteria
+   * @return CDbCriteria
+   */
+  public function buildPropertyAmountCriteria(CDbCriteria $criteria)
+  {
+    $criteria->distinct = true;
+    $criteria->select = $this->id.', COUNT(t.id) AS count';
+    $criteria->group  = $this->id;
+
+    return $criteria;
+  }
+
   protected function sortItems($items)
   {
     if( empty($items) )
       return $items;
 
-    uasort($items, function($a, $b){
-      return strnatcmp($a->label, $b->label);
-    });
+    if( !empty($this->itemLabels) )
+    {
+      $sortedItems = array();
+      foreach($this->itemLabels as $key => $label)
+        if( isset($items[$key]) )
+          $sortedItems[$key] = $items[$key];
+
+      $items = $sortedItems;
+    }
+    else
+    {
+      uasort($items, function($a, $b){
+        return strnatcmp($a->label, $b->label);
+      });
+    }
 
     return $items;
   }

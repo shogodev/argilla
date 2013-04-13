@@ -15,6 +15,8 @@ class ProductFilterTest extends CDbTestCase
   const ELEMENT_SIZE = 'param_1';
   const ELEMENT_COLOR = 'param_2';
   const ELEMENT_LENGTH = 'param_3';
+  const ELEMENT_TEXT = 'param_4';
+  const ELEMENT_PRICE = 'price';
 
   /**
    * @var FilterTestHelper $filterTestHelper
@@ -78,6 +80,25 @@ class ProductFilterTest extends CDbTestCase
       'label' => $length->name,
       'type' => 'list',
       'itemLabels' => CHtml::listData($length->variants , 'id', 'name'),
+    );
+
+    $text = ProductParamName::model()->findByAttributes(array('key' => 'text'));
+    $this->filterElements[self::ELEMENT_TEXT] = array(
+      'id' => $text->id,
+      'label' => $text->name,
+      'type' => 'text',
+    );
+
+    $this->filterElements[self::ELEMENT_PRICE] = array(
+      'id' => 'price',
+      'label' => 'Цена',
+      'type' => 'range',
+      'itemLabels' => array(
+        '0-1000' => '< 1000',
+        '1001-3000' => 'от 1000 до 3000',
+        '3001-5000' => 'от 3000 до 5000',
+        '5001-999999' => ' > 5000',
+      ),
     );
 
     parent::setUp();
@@ -178,6 +199,46 @@ class ProductFilterTest extends CDbTestCase
       )),
       array(1, 4)
     ));
+
+
+    $this->assertTrue($this->checkFilterForData(
+    $this->createFilter(array(
+      self::ELEMENT_PRICE,
+      self::ELEMENT_COLOR,
+      self::ELEMENT_LENGTH
+    )),
+    array('price' => '0-1000'),
+    array(3, 5)
+  ));
+
+  $this->assertTrue($this->checkFilterForData(
+    $this->createFilter(array(
+      self::ELEMENT_PRICE,
+      self::ELEMENT_SECTION,
+      self::ELEMENT_LENGTH
+    )),
+    Arr::mergeAssoc(
+      array('price' => '1001-3000'),
+      $this->filterTestHelper->createStateByName(array(
+        'section_id' => 'Одежда'
+      ))
+    ),
+    array(1, 4)
+  ));
+
+/* Пока нет реализации фильтрации по полю текст
+$this->assertTrue($this->checkFilterForData(
+      $this->createFilter(array(
+        self::ELEMENT_COLOR,
+        self::ELEMENT_SIZE => array('type' => 'multipleOr'),
+        self::ELEMENT_LENGTH,
+        self::ELEMENT_TEXT,
+      )),
+      array(
+        '4' => '111'
+      ),
+      array(1, 4, 8)
+    ));*/
 
   }
 
@@ -362,6 +423,7 @@ class ProductFilterTest extends CDbTestCase
       self::ELEMENT_COLOR,
       self::ELEMENT_SIZE,
       self::ELEMENT_LENGTH,
+      self::ELEMENT_PRICE
     ));
 
     $products = $this->getFilteredData($filter, array());
@@ -423,6 +485,12 @@ class ProductFilterTest extends CDbTestCase
     $this->assertEquals($length[8]->amount, 2);
     $this->assertEquals($length[9]->amount, 2);
     $this->assertEquals($length[10]->amount, 2);
+
+    $price = $filter->elements[self::ELEMENT_PRICE]->items;
+    $this->assertEquals($price['0-1000']->amount, 2);
+    $this->assertEquals($price['1001-3000']->amount, 5);
+    $this->assertEquals($price['3001-5000']->amount, 1);
+    $this->assertEquals($price['5001-999999']->amount, 2);
   }
 
   public function testFilterCountAmountSelected()
@@ -435,6 +503,7 @@ class ProductFilterTest extends CDbTestCase
       self::ELEMENT_COLOR,
       self::ELEMENT_SIZE,
       self::ELEMENT_LENGTH,
+      self::ELEMENT_PRICE
     ));
 
     $state = $this->filterTestHelper->createStateByName(array(
@@ -473,6 +542,12 @@ class ProductFilterTest extends CDbTestCase
     $this->assertEquals($length[8]->amount, 2);  // 100
     $this->assertEquals($length[9]->amount, 2);  // 135
     $this->assertEquals($length[10]->amount, 1); // 180
+
+    $price = $filter->elements[self::ELEMENT_PRICE]->items;
+    $this->assertEquals($price['0-1000']->amount, 2);
+    $this->assertEquals($price['1001-3000']->amount, 2);
+    $this->assertEquals($price['3001-5000']->amount, 1);
+    $this->assertEquals($price['5001-999999']->amount, 0);
   }
 
   public function testFilterCountAmountSelected2()
@@ -485,6 +560,7 @@ class ProductFilterTest extends CDbTestCase
       self::ELEMENT_COLOR,
       self::ELEMENT_SIZE,
       self::ELEMENT_LENGTH,
+      self::ELEMENT_PRICE
     ));
 
     $state = $this->filterTestHelper->createStateByName(array(
@@ -524,6 +600,12 @@ class ProductFilterTest extends CDbTestCase
     $this->assertEquals($length[8]->amount, 1);   // 100
     $this->assertEquals($length[9]->amount, 1);   // 135
     $this->assertEquals($length[10]->amount, 1);  // 180
+
+    $price = $filter->elements[self::ELEMENT_PRICE]->items;
+    $this->assertEquals($price['0-1000']->amount, 1);
+    $this->assertEquals($price['1001-3000']->amount, 1);
+    $this->assertEquals($price['3001-5000']->amount, 1);
+    $this->assertEquals($price['5001-999999']->amount, 0);
   }
 
   public function testFilterCountAmountSelected3()
@@ -587,6 +669,7 @@ class ProductFilterTest extends CDbTestCase
       self::ELEMENT_COLOR => array('type' => 'multipleOr'),
       self::ELEMENT_SIZE,
       self::ELEMENT_LENGTH,
+      self::ELEMENT_PRICE
     ));
 
     $state = $this->filterTestHelper->createStateByName(array(
@@ -626,6 +709,71 @@ class ProductFilterTest extends CDbTestCase
     $this->assertEquals($length[8]->amount, 2);  // 100
     $this->assertEquals($length[9]->amount, 2);  // 135
     $this->assertEquals($length[10]->amount, 0); // 180
+
+    $price = $filter->elements[self::ELEMENT_PRICE]->items;
+    $this->assertEquals($price['0-1000']->amount, 1);
+    $this->assertEquals($price['1001-3000']->amount, 2);
+    $this->assertEquals($price['3001-5000']->amount, 1);
+    $this->assertEquals($price['5001-999999']->amount, 0);
+  }
+
+  public function testFilterCountAmountForRangePrice()
+  {
+    $this->setUp();
+
+    $filter = $this->createFilter(array(
+      self::ELEMENT_SECTION => array('type' => 'multipleOr'),
+      self::ELEMENT_TYPE,
+      self::ELEMENT_COLOR,
+      self::ELEMENT_SIZE,
+      self::ELEMENT_LENGTH,
+      self::ELEMENT_PRICE
+    ));
+
+    $state = $this->filterTestHelper->createStateByName(array(
+      'section_id' => array('Одежда', 'Обувь'),
+    ));
+
+    $state = Arr::mergeAssoc($state, array('price' => '1001-3000'));
+
+    $products = $this->getFilteredData($filter, $state);
+
+    $this->assertEquals(5, count($products));
+
+    $section = $filter->elements[self::ELEMENT_SECTION]->items;
+    $this->assertEquals($section[1]->amount, 5);
+    $this->assertEquals($section[2]->amount, 4);
+    $this->assertEquals($section[3]->amount, 1);
+
+    $type = $filter->elements[self::ELEMENT_TYPE]->items;
+    $this->assertEquals($type[1]->amount, 1);
+    $this->assertEquals($type[2]->amount, 1);
+    $this->assertEquals($type[3]->amount, 1);
+    $this->assertEquals($type[4]->amount, 1);
+    $this->assertEquals($type[5]->amount, 1);
+    $this->assertEquals($type[6]->amount, 0);
+
+    $size = $filter->elements[$this->getParameterId(self::ELEMENT_SIZE)]->items;
+    $this->assertEquals($size[1]->amount, 1); // 10
+    $this->assertEquals($size[2]->amount, 0); // 20
+    $this->assertEquals($size[3]->amount, 1); // 30
+    $this->assertEquals($size[4]->amount, 0); // 40
+
+    $color = $filter->elements[$this->getParameterId(self::ELEMENT_COLOR)]->items;
+    $this->assertEquals($color[5]->amount, 2); // зел
+    $this->assertEquals($color[6]->amount, 0); // синий
+    $this->assertEquals($color[7]->amount, 1); // красный
+
+    $length = $filter->elements[$this->getParameterId(self::ELEMENT_LENGTH)]->items;
+    $this->assertEquals($length[8]->amount, 2);  // 100
+    $this->assertEquals($length[9]->amount, 0);  // 135
+    $this->assertEquals($length[10]->amount, 1); // 180
+
+    $price = $filter->elements[self::ELEMENT_PRICE]->items;
+    $this->assertEquals($price['0-1000']->amount, 2);
+    $this->assertEquals($price['1001-3000']->amount, 5);
+    $this->assertEquals($price['3001-5000']->amount, 1);
+    $this->assertEquals($price['5001-999999']->amount, 2);
   }
 
   private function checkFilterForData($filter, $state, $assertProductIds)

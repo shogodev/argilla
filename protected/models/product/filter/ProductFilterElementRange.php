@@ -48,6 +48,32 @@ class ProductFilterElementRange extends ProductFilterElement
     return $criteria;
   }
 
+  /**
+   * @param CDbCriteria $criteria
+   * @return CDbCriteria
+   */
+  public function buildPropertyAmountCriteria(CDbCriteria $criteria)
+  {
+    $criteria->distinct = true;
+
+    $select = "(CASE \n";
+
+    foreach($this->itemLabels as $key => $value)
+    {
+      $min = explode("-", $key)[0];
+      $max = explode("-", $key)[1];
+      $select .= "WHEN {$this->id} >= {$min} AND {$this->id} <= {$max} THEN '{$key}'\n";
+    }
+
+    $select .= "ELSE 0 END)";
+
+    // Пока единственное рабочее решение, GROUP по {$this->id} работает не корректно
+    $criteria->select = "{$select} AS {$this->id}_key_for_group \n, {$select} AS {$this->id} \n , COUNT(t.id) AS count";
+    $criteria->group  = "{$this->id}_key_for_group";
+
+    return $criteria;
+  }
+
   protected function getRangeAvailableValue($item)
   {
     foreach($this->itemLabels as $id => $itemLabel)
