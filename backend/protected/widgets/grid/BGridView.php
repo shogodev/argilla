@@ -22,7 +22,7 @@ class BGridView extends TbGridView
 
   public $filterPosition = 'separate';
 
-  public $afterAjaxUpdate = 'reinstallAfterAjax';
+  public $afterAjaxUpdate = 'notifyGridObservers';
 
   public $ajaxUpdateError;
 
@@ -94,10 +94,31 @@ class BGridView extends TbGridView
 
   public function renderScripts()
   {
-    Yii::app()->clientScript->registerScript('reinstallAfterAjax', "function reinstallAfterAjax(id, data) {
-      if( window.reinstallDatePicker )
-        window.reinstallDatePicker(id, data);
+    Yii::app()->clientScript->registerScript('notifyGridObservers', "function notifyGridObservers(id, data) {
+      if( jQuery.fn.yiiGridView.observers )
+        jQuery.fn.yiiGridView.notifyObservers(id);
     }");
+
+    $this->reinstallTooltips();
+  }
+
+  protected function reinstallTooltips()
+  {
+    $popover = Yii::app()->bootstrap->popoverSelector;
+    $tooltip = Yii::app()->bootstrap->tooltipSelector;
+
+    $afterAjaxUpdate = "function(id) {
+      jQuery('.popover').remove();
+      jQuery('{$popover}').popover();
+      jQuery('.tooltip').remove();
+      jQuery('{$tooltip}').tooltip();
+    }";
+
+    Yii::app()->clientScript->registerScript(
+      'reinstallTooltips',
+      "jQuery.fn.yiiGridView.addObserver('".$this->id."', $afterAjaxUpdate)",
+      CClientScript::POS_READY
+    );
   }
 
   protected function initColumns()
