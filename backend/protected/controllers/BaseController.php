@@ -79,7 +79,6 @@ class BaseController extends BController
 
   private function popupLoginFinish()
   {
-    $this->layout = 'popup';
     $this->render('popup_login_finish');
     Yii::app()->end();
   }
