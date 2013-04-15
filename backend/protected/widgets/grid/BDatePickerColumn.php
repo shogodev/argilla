@@ -36,9 +36,16 @@ class BDatePickerColumn extends BDataColumn
         'htmlOptions' => $htmlOptionsTo,
       ));
 
-      Yii::app()->clientScript->registerScript('re-install-date-picker', "function reinstallDatePicker(id, data) {
-        $('#".$htmlOptionsFrom['id'].", #".$htmlOptionsTo['id']."').datepicker(jQuery.extend({showMonthAfterYear:false}, jQuery.datepicker.regional['ru'], {'showAnim':'fold'}));
-      }", CClientScript::POS_END);
+      Yii::app()->clientScript->registerScript('reinstallDatePicker', "jQuery.fn.yiiGridView.addObserver('".$this->grid->id."', function(id){
+        $('#".$htmlOptionsFrom['id'].", #".$htmlOptionsTo['id']."').datepicker(
+          jQuery.extend(
+            {showMonthAfterYear:false},
+            jQuery.datepicker.regional['ru'],
+            {'showAnim':'fold'}
+          )
+        )})",
+        CClientScript::POS_READY
+      );
     }
   }
 }
