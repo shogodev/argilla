@@ -25,6 +25,7 @@ return array(
     'frontend.models.contact.*',
     'frontend.models.menu.*',
     'frontend.models.product.*',
+    'frontend.models.product.filter.*',
     'frontend.models.user.*',
     'frontend.models.info.*',
 

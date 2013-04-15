@@ -1,8 +1,12 @@
 <?php
 /**
- * User: tatarinov
- * Date: 11.12.12
+ * @author Alexey Tatarinov <tatarinov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
+ * @package frontend.models.product.filter
  */
+
 class ProductFilterElementRange extends ProductFilterElement
 {
   public $minValue = null;
@@ -28,7 +32,7 @@ class ProductFilterElementRange extends ProductFilterElement
     }
   }
 
-  public function addParameterCondition(CDbCriteria $parameterCriteria)
+  public function getParameterCondition()
   {
     $criteria = new CDbCriteria();
     $criteria->compare('param_id', '='.$this->id);
@@ -41,7 +45,33 @@ class ProductFilterElementRange extends ProductFilterElement
     else if( !empty($param[1]) )
       $criteria->compare('(value + 0)', '<'.$param[1]);
 
-    $parameterCriteria->mergeWith($criteria, false);
+    return $criteria;
+  }
+
+  /**
+   * @param CDbCriteria $criteria
+   * @return CDbCriteria
+   */
+  public function buildPropertyAmountCriteria(CDbCriteria $criteria)
+  {
+    $criteria->distinct = true;
+
+    $select = "(CASE \n";
+
+    foreach($this->itemLabels as $key => $value)
+    {
+      $min = explode("-", $key)[0];
+      $max = explode("-", $key)[1];
+      $select .= "WHEN {$this->id} >= {$min} AND {$this->id} <= {$max} THEN '{$key}'\n";
+    }
+
+    $select .= "ELSE 0 END)";
+
+    // Пока единственное рабочее решение, GROUP по {$this->id} работает не корректно
+    $criteria->select = "{$select} AS {$this->id}_key_for_group \n, {$select} AS {$this->id} \n , COUNT(t.id) AS count";
+    $criteria->group  = "{$this->id}_key_for_group";
+
+    return $criteria;
   }
 
   protected function getRangeAvailableValue($item)
@@ -81,4 +111,3 @@ class ProductFilterElementRange extends ProductFilterElement
     $this->maxValue = $this->maxValue >= $value ? $this->maxValue : $value;
   }
 }
-?>

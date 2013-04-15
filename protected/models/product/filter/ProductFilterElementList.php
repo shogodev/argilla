@@ -1,8 +1,12 @@
 <?php
 /**
- * User: tatarinov
- * Date: 11.12.12
+ * @author Sergey Glagolev <glagolev@shogo.ru>, Alexey Tatarinov <tatarinov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
+ * @package frontend.models.product.filter
  */
+
 class ProductFilterElementList extends ProductFilterElement
 {
   public function addPropertyCondition(CDbCriteria $criteria)
@@ -10,21 +14,18 @@ class ProductFilterElementList extends ProductFilterElement
     $criteria->compare($this->id, '='.$this->selected);
   }
 
-  public function addParameterCondition(CDbCriteria $parameterCriteria)
+  public function getParameterCondition()
   {
     $criteria = new CDbCriteria();
     $criteria->compare('param_id', '='.$this->id);
 
-    $param = $this->selected;
+    if( !is_array($this->selected) )
+      $variants = array($this->selected => $this->selected);
+    else
+      $variants = array_keys($this->selected);
 
-    if( !is_array($param) )
-      $param = array($param => 'on');
+    $criteria->addInCondition('variant_id', $variants);
 
-    foreach($param as $variant => $value)
-      if( $value )
-        $criteria->compare('variant_id', '='.$variant);
-
-    $parameterCriteria->mergeWith($criteria, false);
+    return $criteria;
   }
 }
-?>

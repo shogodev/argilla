@@ -1,8 +1,12 @@
 <?php
 /**
- * User: tatarinov
- * Date: 12.12.12
+ * @author Sergey Glagolev <glagolev@shogo.ru>, Alexey Tatarinov <tatarinov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
+ * @package frontend.models.product.filter
  */
+
 class ProductFilterElementMultipleOr extends ProductFilterElement
 {
   public function inAvailableValues($availableValues)
@@ -26,24 +30,19 @@ class ProductFilterElementMultipleOr extends ProductFilterElement
     $criteria->addInCondition($this->id, array_keys($this->selected));
   }
 
-  public function addParameterCondition(CDbCriteria $parameterCriteria)
+  public function getParameterCondition()
   {
     $criteria = new CDbCriteria();
     $criteria->compare('param_id', '='.$this->id);
 
-    $param = $this->selected;
+    if( !is_array($this->selected) )
+      $variants = array($this->selected => $this->selected);
+    else
+      $variants = array_keys($this->selected);
 
-    if( !is_array($param) )
-      $param = array($param => 'on');
+    $criteria->addInCondition('variant_id', $variants);
 
-    $innerCriteria = new CDbCriteria();
-    foreach($param as $variant => $value)
-      if( $value )
-        $innerCriteria->compare('variant_id', '='.$variant, false, 'OR');
-
-    $criteria->mergeWith($innerCriteria, true);
-
-    $parameterCriteria->mergeWith($criteria, false);
+    return $criteria;
   }
 
   public function isSelectedItems($itemId)
