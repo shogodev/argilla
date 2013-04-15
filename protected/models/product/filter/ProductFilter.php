@@ -94,7 +94,7 @@ class ProductFilter extends AbstractProductFilter
     $this->disablingFilterElements($actionCriteria, $filteredCriteria, $availableValues);
 
     $this->countAmount($filteredCriteria);
-    // только по для выбранных элемнтов
+    // только для выбранных элементов
     $this->countAmount($actionCriteria, true);
 
     $this->removeEmptyItems();

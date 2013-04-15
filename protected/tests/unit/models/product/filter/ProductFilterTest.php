@@ -776,6 +776,31 @@ $this->assertTrue($this->checkFilterForData(
     $this->assertEquals($price['5001-999999']->amount, 2);
   }
 
+  public function testFilterCheckOldState()
+  {
+    $filter = $this->createFilter(array(
+       self::ELEMENT_SECTION,
+       self::ELEMENT_TYPE,
+       self::ELEMENT_COLOR,
+       self::ELEMENT_SIZE,
+       self::ELEMENT_PRICE
+     ));
+
+    $state = $this->filterTestHelper->createStateByName(array(
+      'section_id' => 'Обувь',
+      'type_id' => 'Теплая',
+      'Цвет' => 'синий',
+      'Длинна' => '100',
+    ));
+
+    $state = Arr::mergeAssoc($state, array('price' => '1001-3000'));
+
+    $products = $this->getFilteredData($filter, $state);
+
+    $this->assertNotEmpty($products);
+    // Добавить еще варианты тестирования
+  }
+
   private function checkFilterForData($filter, $state, $assertProductIds)
   {
     $products = $this->getFilteredData($filter, $state);
