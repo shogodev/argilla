@@ -166,6 +166,12 @@ td.button-column a:hover {
   margin-bottom: 10px; }
 
 
+/*   -=========== Login form ===========-   */
+.s-form-auth .fixed {
+  width: 400px;
+  margin: 0 auto; }
+
+
 /*   -=========== Tables and Pagination ===========-   */
 .table {
   text-shadow: 0 1px 0 rgba(255, 255, 255, 0.5);

@@ -24,10 +24,25 @@ class BGridView extends TbGridView
 
   public $afterAjaxUpdate = 'reinstallAfterAjax';
 
+  public $ajaxUpdateError;
+
   /**
    * @var BActiveDataProvider
    */
   public $dataProvider;
+
+  public function init()
+  {
+    if( !isset($this->ajaxUpdateError) )
+    {
+      $this->ajaxUpdateError = 'function(xhr, textStatus, errorThrown, err){
+        ajaxUpdateError(xhr, err);
+      }';
+    }
+
+    parent::init();
+  }
+
 
   public function renderFilters()
   {

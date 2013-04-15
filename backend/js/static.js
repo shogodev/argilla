@@ -116,13 +116,15 @@ var assigner =
 
     $('#main-assign').show();
     $('#main-assign').css({
-      'width'    : options.width  ? options.width : (szs[0] - 24) + 'px',
-      'height'   : options.height ? options.height: (szs[1] - 24) + 'px',
-      'position' : (ie ? 'absolute' : 'fixed'),
-      'text-align' : 'center',
-      'top'      : 10,
-      'left'     : 10,
-      'z-index'  : 2000
+      'width'       : options.width  ? options.width : (szs[0] - 24) + 'px',
+      'height'      : options.height ? options.height: (szs[1] - 24) + 'px',
+      'position'    : (ie ? 'absolute' : 'fixed'),
+      'text-align'  : 'center',
+      'top'         : options.top ? options.top : 10,
+      'left'        : options.left ? options.left : 10,
+      'margin-top'  : options.marginTop ? options.marginTop : 'auto',
+      'margin-left' : options.marginLeft ? options.marginLeft : 'auto',
+      'z-index'     : 2000
     });
 
     // Фиксим размеры при ресайзе окна
