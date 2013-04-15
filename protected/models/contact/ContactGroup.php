@@ -25,6 +25,15 @@ class ContactGroup extends FActiveRecord
     return '{{contact_group}}';
   }
 
+  public function defaultScope()
+  {
+    $alias = $this->getTableAlias(false, false);
+
+    return array(
+      'condition' => $alias.'.visible = 1'
+    );
+  }
+
   public function relations()
   {
     return array(
