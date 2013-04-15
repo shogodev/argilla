@@ -1,5 +1,11 @@
 <?php
 /**
+ * @author Sergey Glagolev <glagolev@shogo.ru>, Alexey Tatarinov <tatarinov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
+ * @package frontend.models.product.filter
+ *
  * @property string $name
  */
 abstract class ProductFilterElement extends CComponent
@@ -32,7 +38,7 @@ abstract class ProductFilterElement extends CComponent
 
   abstract public function addPropertyCondition(CDbCriteria $criteria);
 
-  abstract public function addParameterCondition(CDbCriteria $criteria);
+  abstract public function getParameterCondition();
 
   /**
    * @param $availableValues
@@ -95,6 +101,15 @@ abstract class ProductFilterElement extends CComponent
     return false;
   }
 
+  public function isSelected()
+  {
+    foreach($this->items as $item)
+      if( $item->isSelected() )
+        return true;
+
+    return false;
+  }
+
   public function isParameter()
   {
     return is_numeric($this->id);
@@ -134,26 +149,17 @@ abstract class ProductFilterElement extends CComponent
     return $value;
   }
 
-  public function jsonSerialize()
+  /**
+   * @param CDbCriteria $criteria
+   * @return CDbCriteria
+   */
+  public function buildPropertyAmountCriteria(CDbCriteria $criteria)
   {
-    $items = array();
+    $criteria->distinct = true;
+    $criteria->select = $this->id.', COUNT(t.id) AS count';
+    $criteria->group  = $this->id;
 
-    if( isset($this->items) )
-    {
-      foreach($this->items as $item)
-      {
-        $items[$item->id] = array(
-          'name'     => $item->getName(),
-          'disabled' => $item->isDisabled() ? 'true' : 'false'
-        );
-      }
-    }
-
-    return array(
-      'name'  => $this->name,
-      'type'  => $this->type,
-      'items' => $items,
-    );
+    return $criteria;
   }
 
   protected function sortItems($items)
@@ -161,9 +167,21 @@ abstract class ProductFilterElement extends CComponent
     if( empty($items) )
       return $items;
 
-    uasort($items, function($a, $b){
-      return strnatcmp($a->label, $b->label);
-    });
+    if( !empty($this->itemLabels) )
+    {
+      $sortedItems = array();
+      foreach($this->itemLabels as $key => $label)
+        if( isset($items[$key]) )
+          $sortedItems[$key] = $items[$key];
+
+      $items = $sortedItems;
+    }
+    else
+    {
+      uasort($items, function($a, $b){
+        return strnatcmp($a->label, $b->label);
+      });
+    }
 
     return $items;
   }

@@ -1,10 +1,16 @@
 <?php
 /**
- * @property string filterKey
- * @property array state
+ * @author Sergey Glagolev <glagolev@shogo.ru>, Alexey Tatarinov <tatarinov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
+ * @package frontend.models.product.filter
+
+ * @property string $filterKey
+ * @property array $state
  * @property ProductFilterElement[] elements
  */
-class ProductFilter extends CComponent implements JsonSerializable
+class ProductFilter extends AbstractProductFilter
 {
   public $emptyElementValue = array('' => 'Не задано');
 
@@ -13,23 +19,10 @@ class ProductFilter extends CComponent implements JsonSerializable
   */
   public $defaultElementType = 'list';
 
-  protected $filterKey;
-
   /**
    * @var ProductFilterElement[]
    */
   protected $elements = array();
-
-  /**
-   * @var array Текущее состояние фильтра
-   */
-  protected $state = array();
-
-  public function __construct($filterKey = 'productFilter')
-  {
-    $this->filterKey = $filterKey;
-    $this->setState();
-  }
 
   public function addElement(array $filterElement, $emptyValue = null)
   {
@@ -76,37 +69,15 @@ class ProductFilter extends CComponent implements JsonSerializable
     return $this->elements;
   }
 
-  public function getFilterKey()
+  public function getElementByKey($key)
   {
-    return $this->filterKey;
-  }
+    foreach($this->elements as $element)
+    {
+      if( $element->key == $key )
+        return $element;
+    }
 
-  public function getState()
-  {
-    return $this->state;
-  }
-
-  public function setState($state = null)
-  {
-    if( !$state )
-      $state = Arr::get(Yii::app()->session, $this->filterKey, array());
-
-    $this->state = $state;
-  }
-
-  public function saveState($state = null, $replaceOldState = false)
-  {
-    if( !$state )
-      $state = Yii::app()->request->getPost($this->filterKey, array());
-
-    $session = isset(Yii::app()->session[$this->filterKey]) ? Yii::app()->session[$this->filterKey] : array();
-
-    if( $replaceOldState )
-      $session = $state;
-    else
-      $session = Arr::mergeAssoc($session, $state);
-
-    Yii::app()->session[$this->filterKey] = $session;
+    return null;
   }
 
   /**
@@ -121,30 +92,14 @@ class ProductFilter extends CComponent implements JsonSerializable
     $filteredCriteria = $this->createFilteredCriteria($actionCriteria, $availableValues);
 
     $this->disablingFilterElements($actionCriteria, $filteredCriteria, $availableValues);
+
+    $this->countAmount($filteredCriteria);
+    // только для выбранных элементов
+    $this->countAmount($actionCriteria, true);
+
     $this->removeEmptyItems();
 
     return $filteredCriteria;
-  }
-
-  public function getElementByKey($key)
-  {
-    foreach($this->elements as $element)
-    {
-      if( $element->key == $key )
-        return $element;
-    }
-
-    return null;
-  }
-
-  public function jsonSerialize()
-  {
-    $data = array();
-
-    foreach($this->elements as $element)
-      $data[$element->id] = $element->jsonSerialize();
-
-    return $data;
   }
 
   protected function createFilteredCriteria(CDbCriteria $actionCriteria, array $availableValues)
@@ -169,15 +124,15 @@ class ProductFilter extends CComponent implements JsonSerializable
     $builder                 = new CriteriaBuilder($criteria);
     $availableValuesCriteria = $builder->getAvailableValuesCriteria($this->elements);
 
-    $builder = new CDbCommandBuilder(Yii::app()->db->getSchema());
-    $command = $builder->createFindCommand(Product::model()->tableName(), $availableValuesCriteria);
-    $data    = $command->query();
+    $commandBuilder = new CDbCommandBuilder(Yii::app()->db->getSchema());
+    $command = $commandBuilder->createFindCommand(Product::model()->tableName(), $availableValuesCriteria);
+    $data    = $command->queryAll();
 
     $propertyValues = array();
 
-    foreach($data as $row)
+    foreach($this->elements as $element)
     {
-      foreach($this->elements as $element)
+      foreach($data as $row)
       {
         $itemId = $element->isProperty() ? $element->id : 'variant_id';
 
@@ -185,14 +140,71 @@ class ProductFilter extends CComponent implements JsonSerializable
         {
           $availableValue = $element->prepareAvailableValues($row[$itemId], $filtered);
           $propertyValues[$element->id][$availableValue] = $availableValue;
-
-          if( isset($element->items[$availableValue]) )
-            $element->items[$availableValue]->amount = $row['count'];
         }
       }
     }
 
     return $propertyValues;
+  }
+
+  protected function countAmount($criteria, $onlySelected = false)
+  {
+    $cb = new CriteriaBuilder($criteria);
+
+    foreach($this->elements as $element)
+      if( $element->isProperty() && (!$onlySelected || $onlySelected && $element->isSelected()) )
+        $this->countAmountProperties($element, $cb);
+
+    $this->countAmountParameters($cb, $onlySelected);
+  }
+
+  /**
+   * @param ProductFilterElement $element
+   * @param CriteriaBuilder $builder
+   */
+  protected function countAmountProperties($element, $builder)
+  {
+    $criteria = $builder->getPropertyAmountCriteria($element);
+
+    $commandBuilder = new CDbCommandBuilder(Yii::app()->db->getSchema());
+    $command = $commandBuilder->createFindCommand(Product::model()->tableName(), $criteria);
+    $data    = $command->queryAll();
+
+    foreach($data as $row)
+    {
+      if( isset($row[$element->id]) && isset($element->items[$row[$element->id]]) )
+        $element->items[$row[$element->id]]->amount = $row['count'];
+    }
+  }
+
+  /**
+   * @param CriteriaBuilder $builder
+   * @param $onlySelected
+   */
+  protected function countAmountParameters($builder, $onlySelected)
+  {
+    $criteria = $builder->getParameterAmountCriteria();
+
+    $commandBuilder = new CDbCommandBuilder(Yii::app()->db->getSchema());
+    $command = $commandBuilder->createFindCommand(Product::model()->tableName(), $criteria);
+    $data    = $command->queryAll();
+
+    foreach($this->elements as $element)
+    {
+      if( $element->isProperty() )
+        continue;
+
+      if( $onlySelected && !$element->isSelected() )
+        continue;
+
+      foreach($data as $row)
+      {
+        if( $element->id == $row['param_id'] && isset($element->items[$row['variant_id']]) )
+        {
+          $element->items[$row['variant_id']]->amount = $row['count'];
+        }
+      }
+    }
   }
 
   protected function disablingFilterElements($actionCriteria, &$filteredCriteria, $availableValues)
@@ -210,14 +222,13 @@ class ProductFilter extends CComponent implements JsonSerializable
       else
       {
         // Пропускаем отмеченные параметры (присутствуют в сессии),
-        // но отсутствуют в ниличии (были проставлены на других страницах каталога)
+        // но отсутствуют в наличии (были проставлены на других страницах каталога)
         if( !$element->inAvailableValues($availableValues)  )
           continue;
 
         $selectedStates[$id] = $value;
       }
     }
-
 
     // возможно потребуется рекурсия
     $this->checkOldState($actionCriteria, $selectedStates, $availableValues);
@@ -299,7 +310,7 @@ class ProductFilter extends CComponent implements JsonSerializable
       foreach($elements as $id => $item)
         $intersects[$id] = empty($intersects[$id]) ? $item : array_intersect($intersects[$id], $item);
 
-    // Отключаем значения для заполненных элеметров фильтра
+    // Отключаем значения для заполненных элементов фильтра
     $this->disablingUnavailableValues($selectedStates, $availableValues, $intersects);
   }
 
@@ -322,7 +333,7 @@ class ProductFilter extends CComponent implements JsonSerializable
   }
 
   /**
-   * Удаляем пыстые или полностью отключенные элементы из фильра
+   * Удаление пустых или полностью отключенных элементов из фильтра
    */
   protected function removeEmptyItems()
   {

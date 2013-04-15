@@ -16,14 +16,14 @@ class MetaTest extends CDbTestCase
 
   public function setUp()
   {
+    Yii::app()->setUnitEnvironment('Product', 'one', array('url' => 'new_product1'));
+
     parent::setUp();
   }
 
   public function testFindModel()
   {
     $route = 'product/one';
-
-    Yii::app()->setUnitEnvironment('Product', 'one', array('url' => 'new_product1'));
 
     $productModel = Product::model()->findByPk(1);
 
