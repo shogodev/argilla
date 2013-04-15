@@ -98,6 +98,27 @@ class BGridView extends TbGridView
       if( jQuery.fn.yiiGridView.observers )
         jQuery.fn.yiiGridView.notifyObservers(id);
     }");
+
+    $this->reinstallTooltips();
+  }
+
+  protected function reinstallTooltips()
+  {
+    $popover = Yii::app()->bootstrap->popoverSelector;
+    $tooltip = Yii::app()->bootstrap->tooltipSelector;
+
+    $afterAjaxUpdate = "function(id) {
+      jQuery('.popover').remove();
+      jQuery('{$popover}').popover();
+      jQuery('.tooltip').remove();
+      jQuery('{$tooltip}').tooltip();
+    }";
+
+    Yii::app()->clientScript->registerScript(
+      'reinstallTooltips',
+      "jQuery.fn.yiiGridView.addObserver('".$this->id."', $afterAjaxUpdate)",
+      CClientScript::POS_READY
+    );
   }
 
   protected function initColumns()
