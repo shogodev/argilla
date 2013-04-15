@@ -19,7 +19,7 @@ $this->widget('BGridView', array(
   'columns' => array(
     array('name' => 'username'),
 
-    array('class' => 'JToggleColumn', 'name' => 'visible', 'filter' => CHtml::listData($model->yesNoList(), 'id', 'name')),
+    array('class' => 'JToggleColumn', 'name' => 'visible'),
     array('class' => 'BButtonColumn'),
   ),
 ));

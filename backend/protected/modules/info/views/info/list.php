@@ -12,7 +12,7 @@ $this->widget('BGridView', array(
     array('name' => 'id', 'class' => 'BPkColumn'),
 
     array('name' => 'name'),
-    array('class' => 'JToggleColumn', 'name' => 'visible', 'filter' => CHtml::listData($model->yesNoList(), 'id', 'name')),
+    array('class' => 'JToggleColumn', 'name' => 'visible'),
     array('class' => 'BButtonColumn'),
   ),
 ));

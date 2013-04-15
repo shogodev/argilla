@@ -14,6 +14,8 @@ class BPkColumn extends BDataColumn
 
   public $filter = false;
 
+  public $header = '#';
+
   protected $popup = false;
 
   protected $assocSrcId;

@@ -56,7 +56,7 @@ return array(
 
   'modules' => array(
     'gii' => array(
-      'generatorPaths' => array('bootstrap.gii'),
+      'generatorPaths' => array('bootstrap.gii', 'backend.gii.generators'),
       'class' => 'system.gii.GiiModule',
       'password' => '123',
       'ipFilters' => array('192.168.*', '::1'),

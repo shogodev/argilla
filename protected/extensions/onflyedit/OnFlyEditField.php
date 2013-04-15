@@ -55,6 +55,8 @@ class OnFlyEditField extends BDataColumn
    */
   public $dropDown = null;
 
+  public $htmlOptions = array('class' => 'span1');
+
   public $action = 'onflyedit';
 
   /**

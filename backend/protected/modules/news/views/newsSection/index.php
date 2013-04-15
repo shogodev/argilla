@@ -14,7 +14,7 @@
     array('name' => 'name', 'htmlOptions' => array()),
     array('name' => 'notice', 'type' => 'html', 'htmlOptions' => array(), 'filter' => false),
 
-    array('class' => 'JToggleColumn', 'name' => 'visible', 'filter' => CHtml::listData($model->yesNoList(), 'id', 'name')),
+    array('class' => 'JToggleColumn', 'name' => 'visible'),
     array('class' => 'BButtonColumn'),
   ),
 )); ?>

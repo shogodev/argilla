@@ -1,5 +1,4 @@
 <?php
-
 /**
  * CToggleColumn class file.
  * @author Nikola Trifunovic <johonunu@gmail.com>
@@ -7,11 +6,9 @@
  * @copyright Copyright &copy; 2012 Nikola Trifunovic
  * @license http://www.yiiframework.com/license/
  */
-Yii::import('zii.widgets.grid.CGridColumn');
 
-class JToggleColumn extends CGridColumn
+class JToggleColumn extends BDataColumn
 {
-
   /**
    * @var string the attribute name of the data model. Used for column sorting, filtering and to render the corresponding
    * attribute value in each data cell. If {@link value} is specified it will be used to rendered the data cell instead of the attribute value.
@@ -185,7 +182,7 @@ EOD;
     $js[]     = "jQuery('body').on('click', '#{$this->grid->id} a.{$class}', $function);";
 
     if( $js !== array() )
-      Yii::app()->getClientScript()->registerScript(__CLASS__.'#'.$this->id, implode("\n", $js));
+      Yii::app()->clientScript->registerScript(__CLASS__.'#'.$this->id, implode("\n", $js));
   }
 
   /**
@@ -227,11 +224,11 @@ EOD;
   /**
    * Renders a toggle button.
    *
-   * @param string  $id the ID of the button
-   * @param array   $button the button configuration which may contain 'label', 'url', 'imageUrl' and 'options' elements.
-   * See {@link buttons} for more details.
+   * @param array $button the button configuration which may contain 'label', 'url', 'imageUrl' and 'options' elements.
    * @param integer $row the row number (zero-based)
-   * @param mixed   $data the data object associated with the row
+   * @param mixed $data the data object associated with the row
+   *
+   * @internal param string $id the ID of the button
    */
   protected function renderButton($button, $row, $data)
   {
@@ -276,6 +273,17 @@ EOD;
       }
       else
         parent::renderFilterCellContent();
+    }
+  }
+
+  protected function renderFilterDivContent()
+  {
+    if( is_string($this->filter) )
+      echo $this->filter;
+    else if( $this->filter !== false && $this->grid->filter !== null && $this->name !== null && strpos($this->name, '.') === false )
+    {
+      echo CHtml::activeLabel($this->grid->filter, $this->name, array('id' => false));
+      echo CHtml::activeDropDownList($this->grid->filter, $this->name, CHtml::listData($this->grid->filter->yesNoList(), 'id', 'name'), array('id' => false, 'prompt' => ''));
     }
   }
 }

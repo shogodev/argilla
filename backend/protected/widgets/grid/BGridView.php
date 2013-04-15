@@ -63,6 +63,9 @@ class BGridView extends TbGridView
       foreach($this->columns as $column)
       {
         echo '<div class="filter-container">';
+        /**
+         * @var BDataColumn $column
+         */
         $column->renderFilterCell();
         echo '</div>';
       }
@@ -99,9 +102,9 @@ class BGridView extends TbGridView
 
   protected function initColumns()
   {
-    foreach ($this->columns as $i => $column)
+    foreach($this->columns as $i => $column)
     {
-      if (is_array($column) && !isset($column['class']))
+      if( is_array($column) && !isset($column['class']) )
         $this->columns[$i]['class'] = 'BDataColumn';
       else if( Yii::app()->controller->popup )
       {
@@ -121,16 +124,16 @@ class BGridView extends TbGridView
    */
   protected function createDataColumn($text)
   {
-    if (!preg_match('/^([\w\.]+)(:(\w*))?(:(.*))?$/', $text, $matches))
+    if( !preg_match('/^([\w\.]+)(:(\w*))?(:(.*))?$/', $text, $matches) )
       throw new CException(Yii::t('zii', 'The column must be specified in the format of "Name:Type:Label", where "Type" and "Label" are optional.'));
 
-    $column = new BDataColumn($this);
+    $column       = new BDataColumn($this);
     $column->name = $matches[1];
 
-    if (isset($matches[3]) && $matches[3] !== '')
+    if( isset($matches[3]) && $matches[3] !== '' )
       $column->type = $matches[3];
 
-    if (isset($matches[5]))
+    if( isset($matches[5]) )
       $column->header = $matches[5];
 
     return $column;

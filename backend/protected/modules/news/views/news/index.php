@@ -22,8 +22,8 @@ $this->widget('BGridView', array(
     array('name' => 'name', 'htmlOptions' => array('class' => 'span3')),
     array('name' => 'notice', 'type' => 'html', 'htmlOptions' => array('class' => 'span4'), 'filter' => false),
 
-    array('class' => 'JToggleColumn', 'name' => 'main', 'filter' => CHtml::listData($model->yesNoList(), 'id', 'name')),
-    array('class' => 'JToggleColumn', 'name' => 'visible', 'filter' => CHtml::listData($model->yesNoList(), 'id', 'name')),
+    array('class' => 'JToggleColumn', 'name' => 'main'),
+    array('class' => 'JToggleColumn', 'name' => 'visible'),
 
     array('class' => 'BButtonColumn'),
   ),
