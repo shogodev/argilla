@@ -1,10 +1,10 @@
 -- This file was created by ShogoCMS $Id: d6242f0a510ed3000bd17d9bfba8d1ebf0872153 $
--- User: tatarinov	Hostname: boojaka.shogo.ru
+-- User: glagolev	Hostname: boojaka.shogo.ru
 -- PHP: 5.4.5 Phing 2.4.12
 -- Original prefix: argilla_
 -- MySQL dump 10.13  Distrib 5.1.63, for portbld-freebsd8.2 (amd64)
 --
--- Host: localhost    Database: argilla_tatarinov
+-- Host: localhost    Database: argilla
 -- ------------------------------------------------------
 -- Server version	5.1.63-log
 
@@ -1133,6 +1133,26 @@ CREATE TABLE `argilla_settings` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `argilla_settings_grid`
+--
+
+DROP TABLE IF EXISTS `argilla_settings_grid`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `argilla_settings_grid` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `position` int(11) DEFAULT '0',
+  `name` varchar(255) NOT NULL,
+  `header` varchar(255) DEFAULT NULL,
+  `class` varchar(255) DEFAULT NULL,
+  `type` varchar(255) DEFAULT NULL,
+  `filter` tinyint(1) DEFAULT '0',
+  `visible` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `argilla_tag`
 --
 
@@ -1248,7 +1268,7 @@ CREATE TABLE `argilla_vacancy_file` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping routines for database 'argilla_tatarinov'
+-- Dumping routines for database 'argilla'
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -1260,4 +1280,4 @@ CREATE TABLE `argilla_vacancy_file` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-04-05 14:22:15
+-- Dump completed on 2013-04-09 15:05:36

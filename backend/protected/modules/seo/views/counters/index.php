@@ -10,8 +10,8 @@ $this->widget('BGridView', array(
   'columns' => array(
     array('name' => 'id', 'htmlOptions' => array('class' => 'center span1'), 'filter' => false),
     array('name' => 'name', 'htmlOptions' => array()),
-    array('class' => 'JToggleColumn', 'name' => 'main', 'filter' => CHtml::listData($model->yesNoList(), 'id', 'name')),
-    array('class' => 'JToggleColumn', 'name' => 'visible', 'filter' => CHtml::listData($model->yesNoList(), 'id', 'name')),
+    array('class' => 'JToggleColumn', 'name' => 'main'),
+    array('class' => 'JToggleColumn', 'name' => 'visible'),
     array('class' => 'BButtonColumn'),
   ),
 ));

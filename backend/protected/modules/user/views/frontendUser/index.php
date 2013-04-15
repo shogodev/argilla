@@ -1,7 +1,7 @@
 <?php
 /* @var $this UserController */
 /* @var $dataProvider CActiveDataProvider */
-/* @var $model CActiveRecord */
+/* @var $model BActiveRecord */
 
 Yii::app()->breadcrumbs->show();
 ?>
@@ -15,7 +15,7 @@ Yii::app()->breadcrumbs->show();
     array('name' => 'login'),
     array('name' => 'fullName', 'value' => '$data->getFullName()', 'header' => 'Имя'),
     array('name' => 'email'),
-    array('class' => 'JToggleColumn', 'name' => 'visible', 'filter' => CHtml::listData($model->yesNoList(), 'id', 'name')),
+    array('class' => 'JToggleColumn', 'name' => 'visible'),
     array('class' => 'BButtonUpdateColumn'),
   ),
 )); ?>

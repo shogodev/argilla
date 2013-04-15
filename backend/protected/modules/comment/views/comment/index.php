@@ -4,11 +4,13 @@
  * Date: 1/6/13
  *
  * @var BCommentController $this
- * @var Comment $model
- * @var SActiveDataProvider $dataProvider
+ * @var BComment $model
+ * @var BActiveDataProvider $dataProvider
  */
 ?>
+
 <?php Yii::app()->breadcrumbs->show();?>
+
 <?php $this->widget('BGridView', array(
   'filter' => $model,
   'dataProvider' => $model->search(),
@@ -25,7 +27,7 @@
     ),
     array('name' => 'message', 'value' => 'CHtml::encode($data->message);'),
 
-    array('class' => 'JToggleColumn', 'name' => 'visible', 'filter' => CHtml::listData($model->yesNoList(), 'id', 'name')),
+    array('class' => 'JToggleColumn', 'name' => 'visible'),
     array('class' => 'BButtonColumn'),
   ),
 )); ?>

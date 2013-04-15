@@ -144,11 +144,12 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
     $criteria->compare('assignment.section_id', '='.$this->section_id);
     $criteria->compare('assignment.type_id', '='.$this->type_id);
 
-    $criteria->compare('visible', '='.$this->visible);
-    $criteria->compare('discount', '='.$this->discount);
-    $criteria->compare('spec', '='.$this->spec);
-    $criteria->compare('novelty', '='.$this->novelty);
-    $criteria->compare('main', '='.$this->main);
+    $criteria->compare('position', $this->position);
+    $criteria->compare('visible', $this->visible);
+    $criteria->compare('discount', $this->discount);
+    $criteria->compare('spec', $this->spec);
+    $criteria->compare('novelty', $this->novelty);
+    $criteria->compare('main', $this->main);
 
     $criteria->compare('name', $this->name, true);
 
@@ -158,10 +159,8 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
   public function attributeLabels()
   {
     return CMap::mergeArray(parent::attributeLabels(), array(
-      'content' => 'Описание модели',
-      'notice' => 'Геометрия',
       'product_img' => 'Изображения',
-      'bproduct' => 'Продукты',
+      'BProduct' => 'Продукты',
     ));
   }
 
