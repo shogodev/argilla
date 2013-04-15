@@ -106,11 +106,39 @@ class BApplication extends CWebApplication
     }
   }
 
-  /**
-   * Подгружаем модули в приложение
-   */
+  public function registerAjaxUpdateError()
+  {
+    Yii::app()->clientScript->registerScript('ajaxUpdateError', '
+      function ajaxUpdateError(xhr, err)
+      {
+        if( xhr.status === 401 )
+          assigner.open(
+            "'.Yii::app()->controller->createUrl("/base/index", array('popup' => true)).'",
+            {width : "800", height : "400", left : "50%", top : "50%", marginTop : "-250px", marginLeft: "-400px"}
+          );
+        else
+        {
+          if( !err )
+          {
+            if( xhr.status && !/^\s*$/.test(xhr.status) )
+              err = "Error " + xhr.status;
+            else
+              err = "Error";
+            if( xhr.responseText && !/^\s*$/.test(xhr.responseText) )
+              err = err + ": " + xhr.responseText;
+          }
+
+          alert(err);
+        }
+      }'
+    );
+  }
+
   protected function init()
   {
+    /**
+     * Подгружаем модули в приложение
+     */
     foreach(glob(dirname(__FILE__).'/../modules/*', GLOB_ONLYDIR) as $moduleDirectory)
       if( preg_match("/\w+/", basename($moduleDirectory)) )
         $this->setModules(array(basename($moduleDirectory) => array('autoloaded' => true)));

@@ -49,6 +49,9 @@ abstract class BController extends CController
         throw new CHttpException(403, 'Доступ запрещен.');
       else
       {
+        if( Yii::app()->request->isAjaxRequest )
+          throw new CHttpException(401, 'Требуется авторизация');
+
         Yii::app()->user->setReturnUrl(Yii::app()->request->requestUri);
         $this->redirect(Yii::app()->baseUrl . '/base');
       }
@@ -60,9 +63,14 @@ abstract class BController extends CController
       Yii::app()->user->setState($this->uniqueId, $url);
     }
 
-    $this->popup = Yii::app()->request->getQuery('popup', false);
-    if( $this->popup )
+    if( Yii::app()->request->getQuery('popup', false) )
+    {
+      $this->popup  = true;
       $this->layout = '//layouts/popup';
+    }
+
+    Yii::app()->registerAjaxUpdateError();
+
     return parent::beforeAction($action);
   }
 
@@ -248,7 +256,7 @@ abstract class BController extends CController
    * Проводим валидацию и сохраняем несколько связанных моделей
    * Все модели должны быть связаны по первичному ключу
    *
-   * @param BActiveRecord[] $models
+   * @param $models
    * @param bool $extendedSave пытаемся сохранить все данные post, вызывая соответствующие методы контроллера
    *
    * @throws CHttpException

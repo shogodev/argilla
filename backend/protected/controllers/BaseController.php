@@ -43,6 +43,11 @@ class BaseController extends BController
     $this->redirect(Yii::app()->homeUrl);
   }
 
+  public function loadModel($id, $modelClass = null)
+  {
+    return null;
+  }
+
   private function actionLogin()
   {
     $model = new LoginForm();
@@ -60,14 +65,21 @@ class BaseController extends BController
       $model->attributes = $loginForm;
 
       if( $model->validate() && $model->login() )
-        $this->redirect(Yii::app()->user->returnUrl);
+      {
+        if( $this->popup )
+          $this->popupLoginFinish();
+        else
+          $this->redirect(Yii::app()->user->returnUrl);
+      }
     }
 
+    $this->pageTitle = Yii::app()->params->project.' - Авторизация';
     $this->render('login', array('model' => $model));
   }
 
-  public function loadModel($id, $modelClass = null)
+  private function popupLoginFinish()
   {
-    return null;
+    $this->render('popup_login_finish');
+    Yii::app()->end();
   }
 }
