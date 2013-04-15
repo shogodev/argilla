@@ -20,7 +20,7 @@ class BEditColumn extends BDataColumn
     }
     else
     {
-      echo CHtml::link($data->name, Yii::app()->controller->createUrl('update', array('id' => $data->id)));
+      echo CHtml::link($data->{$this->name}, Yii::app()->controller->createUrl('update', array('id' => $data->id)));
     }
   }
 }
