@@ -87,8 +87,8 @@ abstract class BInput extends TbInput
 
   protected function getLabel()
   {
-    if( isset($this->htmlOptions['label']) )
-      $this->labelOptions['label'] = $this->htmlOptions['label'];
+    if( isset($this->label) )
+      $this->labelOptions['label'] = $this->label;
 
     if ($this->label !== false && !in_array($this->type, array('checkbox', 'radio')) && $this->hasModel())
       return $this->form->labelEx($this->model, $this->attribute, $this->labelOptions);
@@ -108,7 +108,8 @@ abstract class BInput extends TbInput
 
   protected function createPopupHint($label, $popupHint)
   {
-    return CHtml::tag('span', array(
+    return CHtml::tag('span',
+      array(
         'rel' => 'tooltip',
         'title' => $popupHint
       ),
