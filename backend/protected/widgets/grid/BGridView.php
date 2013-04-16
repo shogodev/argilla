@@ -104,14 +104,8 @@ class BGridView extends TbGridView
 
   protected function reinstallTooltips()
   {
-    $popover = Yii::app()->bootstrap->popoverSelector;
-    $tooltip = Yii::app()->bootstrap->tooltipSelector;
-
     $afterAjaxUpdate = "function(id) {
-      jQuery('.popover').remove();
-      jQuery('{$popover}').popover();
       jQuery('.tooltip').remove();
-      jQuery('{$tooltip}').tooltip();
     }";
 
     Yii::app()->clientScript->registerScript(

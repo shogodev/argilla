@@ -28,27 +28,4 @@ class TbListView extends CListView
 	 * Defaults to false, meaning that no CSS will be included.
 	 */
 	public $cssFile = false;
-
-	/**
-	 * Initializes the widget.
-	 */
-	public function init()
-	{
-		parent::init();
-
-		$popover = Yii::app()->bootstrap->popoverSelector;
-		$tooltip = Yii::app()->bootstrap->tooltipSelector;
-
-		$afterAjaxUpdate = "js:function() {
-			jQuery('.popover').remove();
-			jQuery('{$popover}').popover();
-			jQuery('.tooltip').remove();
-			jQuery('{$tooltip}').tooltip();
-		}";
-
-		if (!isset($this->afterAjaxUpdate))
-			$this->afterAjaxUpdate = $afterAjaxUpdate;
-	}
-
-
 }

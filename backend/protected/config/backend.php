@@ -19,11 +19,11 @@ return array(
     'nestedset' => 'ext.nested-set-behavior',
     'upload' => 'ext.upload',
     'share' => 'frontend.share',
+    'bootstrap' => 'ext.bootstrap',
   ),
 
   'preload' => array(
     'log',
-    'bootstrap',
   ),
 
   'import' => array(
@@ -114,7 +114,6 @@ return array(
 
     'bootstrap' => array(
       'class' => 'ext.bootstrap.components.Bootstrap',
-      'responsiveCss' => true,
     ),
 
     'menu' => array(

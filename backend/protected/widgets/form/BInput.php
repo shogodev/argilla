@@ -11,6 +11,8 @@ Yii::import('backend.modules.settings.models.BHint');
 
 abstract class BInput extends TbInput
 {
+  const TYPE_TEXT = 'textfield';
+
   public $popupHintText;
 
   public function run()

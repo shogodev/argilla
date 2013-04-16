@@ -79,6 +79,18 @@ class BActiveForm extends TbActiveForm
   }
 
   /**
+   * Renders a text field input row.
+   * @param CModel $model the data model
+   * @param string $attribute the attribute
+   * @param array $htmlOptions additional HTML attributes
+   * @return string the generated row
+   */
+  public function textFieldRow($model, $attribute, $htmlOptions = array())
+  {
+    return $this->inputRow(BInput::TYPE_TEXT, $model, $attribute, null, $htmlOptions);
+  }
+
+  /**
    * Renders a CKEditor row.
    *
    * @param CModel $model the data model
@@ -122,7 +134,7 @@ class BActiveForm extends TbActiveForm
    */
   public function urlRow($model, $attribute, $htmlOptions = array())
   {
-    return $this->inputRow(TbInput::TYPE_TEXT, $model, $attribute, null, CMap::mergeArray(array('rel' => 'extender', 'data-extender' => 'translit', 'data-source' => 'input[name*="name"]'), $htmlOptions));
+    return $this->inputRow(BInput::TYPE_TEXT, $model, $attribute, null, CMap::mergeArray(array('rel' => 'extender', 'data-extender' => 'translit', 'data-source' => 'input[name*="name"]'), $htmlOptions));
   }
 
   public function dropDownListRow($model, $attribute, $data = array(), $htmlOptions = array())
@@ -144,7 +156,7 @@ class BActiveForm extends TbActiveForm
    */
   public function dropDownListDefaultRow($model, $attribute, $data = array(), $htmlOptions = array())
   {
-    return $this->inputRow(TbInput::TYPE_DROPDOWN, $model, $attribute, array('' => 'Не задано') + $data, $htmlOptions);
+    return $this->inputRow(BInput::TYPE_DROPDOWN, $model, $attribute, array('' => 'Не задано') + $data, $htmlOptions);
   }
 
   public function autocompleteRow($model, $attribute, $htmlOptions = array())
