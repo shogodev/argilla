@@ -51,6 +51,7 @@ td.button-column a,
 .lt-ie9 .fileupload-files td.button-column button {
   filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#a7c4e1', endColorstr='#4782be',GradientType=0 ); }
 .btn:hover,
+.btn:focus,
 .btn:active,
 .btn.active,
 .btn.disabled,
@@ -212,6 +213,8 @@ td.button-column a.delete:before,
 .table-striped tbody tr:nth-child(2n+1) td {
   background-color: #DBE2E8; }
 
+.table .table {
+  background-color: transparent; }
 .table .table thead:first-child tr:first-child th {
   border-bottom: 3px solid #E0E6EB; }
 .table .table td {
@@ -533,6 +536,7 @@ span.required {
   border-color: #BECBD6; }
 
 .tooltip-inner {
+  padding: 3px 8px;
   background-color: #A08A79; }
 .tooltip.top .tooltip-arrow,
 .tooltip.right .tooltip-arrow,
