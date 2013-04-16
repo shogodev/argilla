@@ -23,8 +23,8 @@ $this->widget('BGridView', array(
     array('name' => 'type', 'header' => 'Тип', 'filter' => false, 'value' => '$data->isGroup() ? "" : $data->types[$data->type]'),
 
     array('class' => 'ParamToggleColumn', 'name' => 'visible', 'header' => 'Вид'),
-    array('class' => 'ParamToggleColumn', 'name' => 'product', 'header' => 'Товар'),
-    array('class' => 'ParamToggleColumn', 'name' => 'section', 'header' => 'Разводная'),
+    array('class' => 'ParamToggleColumn', 'name' => 'product', 'header' => 'Товар', 'filter' => false),
+    array('class' => 'ParamToggleColumn', 'name' => 'section', 'header' => 'Разводная', 'filter' => false),
 
     array('class' => 'ParamButtons'),
   ),

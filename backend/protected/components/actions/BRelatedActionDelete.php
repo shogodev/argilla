@@ -12,8 +12,13 @@ class BRelatedActionDelete extends CAction
   {
     if( Yii::app()->request->isAjaxRequest )
     {
-      $id           = Yii::app()->request->getPost('id');
-      $relation     = Yii::app()->request->getPost('relation');
+      $id       = Yii::app()->request->getPost('id');
+      $relation = Yii::app()->request->getPost('relation');
+
+      /**
+       * @var BActiveRecord $model
+       * @var BActiveRecord $relatedModel
+       */
       $model        = new $this->controller->modelClass;
       $className    = $model->getActiveRelation($relation)->className;
       $relatedModel = $className::model()->findByPk($id);

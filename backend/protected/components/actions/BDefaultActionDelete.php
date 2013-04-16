@@ -11,7 +11,7 @@ class BDefaultActionDelete extends CAction
   public $redirectTo = 'index';
 
   /**
-   * @var CActiveRecord
+   * @var BActiveRecord
    */
   public $model;
 
