@@ -487,9 +487,9 @@ class TbActiveForm extends CActiveForm
 	public function inputRow($type, $model, $attribute, $data = null, $htmlOptions = array())
 	{
 		ob_start();
-		Yii::app()->controller->widget($this->getInputClassName(), array(
-			'type'=>$type,
-			'form'=>$this,
+		$this->getOwner()->widget($this->getInputClassName(), array(
+            'form'=>$this,
+            'type'=>$type,
 			'model'=>$model,
 			'attribute'=>$attribute,
 			'data'=>$data,
