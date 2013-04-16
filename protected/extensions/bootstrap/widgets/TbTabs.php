@@ -10,7 +10,7 @@
 Yii::import('bootstrap.widgets.TbMenu');
 
 /**
- * Bootstrap Javascript tabs widget.
+ * Bootstrap JavaScript tabs widget.
  * @see http://twitter.github.com/bootstrap/javascript.html#tabs
  */
 class TbTabs extends CWidget
