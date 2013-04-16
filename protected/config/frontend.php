@@ -10,11 +10,12 @@ return array(
   'basePath' => dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
   'name' => 'argilla.ru',
   'defaultController' => 'index',
-  'preload'  => array('log', 'seoRedirect', 'bootstrap'),
+  'preload'  => array('log', 'seoRedirect'),
 
   'aliases' => array(
     'nestedset' => 'ext.nested-set-behavior',
     'share' => 'frontend.share',
+    'bootstrap' => 'ext.bootstrap',
   ),
 
   'import' => array(
@@ -140,7 +141,6 @@ return array(
 
     'bootstrap' => array(
       'class' => 'ext.bootstrap.components.Bootstrap',
-      'responsiveCss' => true,
     ),
 
     'phpThumb' => array(
