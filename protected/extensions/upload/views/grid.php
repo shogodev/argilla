@@ -23,7 +23,7 @@ if( $this->multiple )
   $columns[] = array('name' => 'position', 'header' => 'Позиция', 'class' => 'OnFlyEditField', 'gridId' => $gridId, 'htmlOptions' => array('class' => 'span2'));
   $columns[] = array('name' => 'type', 'header' => 'Тип', 'class' => 'OnFlyEditField', 'dropDown' => $this->model->imageTypes, 'gridId' => $gridId, 'htmlOptions' => array('class' => 'span2'));
   $columns[] = array('name' => 'size', 'header' => 'Размер', 'htmlOptions' => array('class' => 'span2'));
-  $columns[] = array('name' => 'notice', 'class' => 'OnFlyEditField', 'gridId' => $gridId, 'header' => 'Описание');
+  $columns[] = array('name' => 'notice', 'class' => 'OnFlyEditField', 'gridId' => $gridId, 'header' => 'Описание', 'htmlOptions' => array('class' => ''));
 }
 
 $columns[] = array(
