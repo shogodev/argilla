@@ -12,11 +12,6 @@
  */
 class Callback extends FActiveRecord
 {
-  public function tableName()
-  {
-    return '{{callbacks}}';
-  }
-
   public function rules()
   {
     return array(

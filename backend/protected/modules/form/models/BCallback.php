@@ -20,11 +20,6 @@ class BCallback extends BActiveRecord
 
   public $date_to;
 
-  public function tableName()
-  {
-    return '{{callbacks}}';
-  }
-
   public function rules()
   {
     return array(
