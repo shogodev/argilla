@@ -10,6 +10,9 @@ $config = array_replace_recursive(
         'class' => 'share.SFixtureManager',
         'basePath' => 'frontend.tests.fixtures',
       ),
+      'request' => array(
+        'class' => 'frontend.tests.components.THttpRequest'
+      )
     ),
 
     'params' => array(
