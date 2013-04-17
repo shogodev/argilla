@@ -8,6 +8,13 @@
  *
  * @method textBlock($key)
  * @method textBlocks($key)
+ * @method Counter[] getCounters($key = 'copyright')
+ * @method array getCopyrights()
+ * @method array getContacts($groupName = null)
+ *
+ * @property Counter[] $counters
+ * @property array $copyrights
+ * @property array $contacts
  */
 class FController extends CController
 {
