@@ -6,9 +6,6 @@
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
  * @package frontend.controllers.behaviors
- *
- * @property array counters
- * @property array copyrights
  */
 class CommonDataBehavior extends CBehavior
 {
@@ -16,6 +13,8 @@ class CommonDataBehavior extends CBehavior
    * @var TextBlock[] $textBlocks
    */
   protected $textBlocks = array();
+
+  private $contacts;
 
   /**
    * @param $key
@@ -61,11 +60,23 @@ class CommonDataBehavior extends CBehavior
     return $copyrights;
   }
 
-  public function getContacts()
+  /**
+   * @param string $groupName - имя группы полей
+   * @return array|null
+   */
+  public function getContacts($groupName = null)
   {
-    return array(
-      'phones' => ContactGroup::getByKey('phones')->fields,
-      'icq'    => ContactGroup::getByKey('icq')->fields,
-    );
+    if( !$this->contacts )
+    {
+      /**
+       * @var ContactGroup[] $groups;
+       */
+      $groups = ContactGroup::model()->findAll('sysname != ""');
+
+      foreach($groups as $group)
+        $this->contacts[$group->sysname] = $group->fields;
+    }
+
+    return isset($groupName) ? Arr::get($this->contacts, $groupName, null) : $this->contacts;
   }
 }
