@@ -44,19 +44,18 @@ class LinkBlock extends FActiveRecord
    */
   public function getLinks($key = 'copyright', $url)
   {
-    $charList   = " \r\n/";
     $copyrights = array();
-    $url        = trim($url, $charList);
+    $url        = trim($url, "/");
 
     $criteria = new CDbCriteria();
-    $criteria->compare('`key`', '='.$key);
+    $criteria->compare('`key`', $key);
 
     foreach($this->findAll($criteria) as $copyright)
-      foreach(explode("\r", $copyright->url) as $page)
-        $copyrights[trim($page, $charList)][] = $copyright;
+      foreach(explode("\r", trim($copyright->url)) as $page)
+        $copyrights[trim($page, "/")][] = $copyright;
 
     if( isset($copyrights[$url]) )
-      $copyrights = $copyrights[$url];
+      $copyrights = CMap::mergeArray($copyrights[$url], $copyrights['*']);
     else if( isset($copyrights['*']) )
       $copyrights = $copyrights['*'];
     else
