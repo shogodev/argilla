@@ -80,14 +80,15 @@ class TbCarousel extends CWidget
 		echo CHtml::openTag('div', $this->htmlOptions);
 		echo '<div class="carousel-inner">';
 		$this->renderItems($this->items);
+		echo '</div>';
 
 		if ($this->displayPrevAndNext)
 		{
-			echo '</div>';
 			echo '<a class="carousel-control left" href="#'.$id.'" data-slide="prev">'.$this->prevLabel.'</a>';
 			echo '<a class="carousel-control right" href="#'.$id.'" data-slide="next">'.$this->nextLabel.'</a>';
-			echo '</div>';
 		}
+
+		echo '</div>';
 
 		/** @var CClientScript $cs */
 		$cs = Yii::app()->getClientScript();

@@ -133,13 +133,13 @@ CREATE TABLE `argilla_banner` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `argilla_callbacks`
+-- Table structure for table `argilla_callback`
 --
 
-DROP TABLE IF EXISTS `argilla_callbacks`;
+DROP TABLE IF EXISTS `argilla_callback`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `argilla_callbacks` (
+CREATE TABLE `argilla_callback` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET utf8 NOT NULL,
   `phone` varchar(255) CHARACTER SET utf8 NOT NULL,
@@ -1280,4 +1280,4 @@ CREATE TABLE `argilla_vacancy_file` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-04-09 15:05:36
+-- Dump completed on 2013-04-16 15:29:56

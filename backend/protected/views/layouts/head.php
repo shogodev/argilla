@@ -1,5 +1,6 @@
 <head>
   <meta charset="utf-8" />
+  <?php Yii::app()->bootstrap->register(); ?>
   <?php Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl.'/css/st.css') ?>
   <?php Yii::app()->clientScript->registerCssFile(Yii::app()->request->baseUrl.'/css/skin.css') ?>
   <?php Yii::app()->clientScript->registerScriptFile('/js/jquery.plugins/jquery.throttledresize.js') ?>

@@ -18,6 +18,10 @@ class BSaveAssociationAction extends CAction
       $ids   = Yii::app()->request->getPost('ids');
       $value = Yii::app()->request->getPost('value');
 
+      /**
+       * @var BActiveRecord $class
+       * @var BActiveRecord $model
+       */
       $class = new $src;
       $model = $class->findByPk($srcId);
 

@@ -15,18 +15,32 @@ class BDefaultActionDeleteTest extends CDbTestCase
 
   public function setUp()
   {
+    Yii::app()->setAjaxRequest();
     parent::setUp();
+  }
 
-    $_SERVER['REQUEST_METHOD']        = 'POST';
-    $_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
+  /**
+   * @expectedException CHttpException
+   */
+  public function testPostOnlyException()
+  {
+    $_SERVER['REQUEST_METHOD'] = '';
+    Yii::app()->setUnitEnvironment('News', 'BNewsSection');
+    $action = new BDefaultActionDelete(Yii::app()->controller, 'delete');
+    $action->run();
   }
 
   public function testDelete()
   {
     Yii::app()->setUnitEnvironment('News', 'BNewsSection', 'update', array('id' => '3'));
-    $action = Yii::createComponent(array('class' => 'BDefaultActionDelete',
-                                         'model' => Yii::app()->controller->loadModel(Yii::app()->request->getParam('id'))),
-                                   Yii::app()->controller, 'delete');
+
+    $action = Yii::createComponent(
+      array(
+        'class' => 'BDefaultActionDelete',
+        'model' => Yii::app()->controller->loadModel(Yii::app()->request->getParam('id'))
+      ),
+      Yii::app()->controller, 'delete'
+    );
     $action->run();
 
     $model = BNewsSection::model()->findByPk(3);
@@ -36,9 +50,14 @@ class BDefaultActionDeleteTest extends CDbTestCase
   public function testDeleteNested()
   {
     Yii::app()->setUnitEnvironment('Info', 'BInfo', 'update', array('id' => '3'));
-    $action = Yii::createComponent(array('class' => 'BDefaultActionDelete',
-                                         'model' => Yii::app()->controller->loadModel(Yii::app()->request->getParam('id'))),
-                                   Yii::app()->controller, 'delete');
+
+    $action = Yii::createComponent(
+      array(
+        'class' => 'BDefaultActionDelete',
+        'model' => Yii::app()->controller->loadModel(Yii::app()->request->getParam('id'))
+      ),
+      Yii::app()->controller, 'delete'
+    );
     $action->run();
 
     $model = BInfo::model()->findByPk(3);

@@ -617,6 +617,9 @@ td.button-column a:hover {
           box-shadow: none; }
 
 .tooltip {
+  padding: 5px;
+  font-size: 11px;
+  text-shadow: none;
   z-index: 1033; }
 
 .text-crop {
