@@ -19,6 +19,17 @@ class BSaveAssociationActionTest extends CDbTestCase
     parent::setUp();
   }
 
+  /**
+   * @expectedException CHttpException
+   */
+  public function testPostOnlyException()
+  {
+    $_SERVER['HTTP_X_REQUESTED_WITH'] = '';
+    Yii::app()->setUnitEnvironment('seo', 'BLink');
+    $action = new BSaveAssociationAction(Yii::app()->controller, 'delete');
+    $action->run('BProduct', 11, 'BProduct');
+  }
+
   public function testRunOne()
   {
     $this->getFixtureManager()->truncateTable('{{association}}');

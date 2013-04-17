@@ -20,6 +20,17 @@ class BRelatedActionDeleteTest extends CDbTestCase
     parent::setUp();
   }
 
+  /**
+   * @expectedException CHttpException
+   */
+  public function testPostOnlyException()
+  {
+    $_SERVER['HTTP_X_REQUESTED_WITH'] = '';
+    Yii::app()->setUnitEnvironment('seo', 'BLink');
+    $action = new BRelatedActionDelete(Yii::app()->controller, 'delete');
+    $action->run();
+  }
+
   public function testRun()
   {
     $_POST['id']       = 1;
