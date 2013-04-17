@@ -15,6 +15,8 @@ class BRelatedActionDeleteTest extends CDbTestCase
   public function setUp()
   {
     Yii::app()->setUnitEnvironment('seo', 'BLinkSection');
+    Yii::app()->setAjaxRequest();
+
     parent::setUp();
   }
 
@@ -22,9 +24,6 @@ class BRelatedActionDeleteTest extends CDbTestCase
   {
     $_POST['id']       = 1;
     $_POST['relation'] = 'links';
-
-    $_SERVER['REQUEST_METHOD']        = 'POST';
-    $_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
 
     $model = BLink::model()->findByPk(1);
     $this->assertNotNull('BActiveRecord', $model);

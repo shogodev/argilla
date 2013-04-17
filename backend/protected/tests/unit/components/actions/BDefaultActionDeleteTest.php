@@ -16,9 +16,7 @@ class BDefaultActionDeleteTest extends CDbTestCase
   public function setUp()
   {
     parent::setUp();
-
-    $_SERVER['REQUEST_METHOD']        = 'POST';
-    $_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
+    Yii::app()->setAjaxRequest();
   }
 
   public function testDelete()

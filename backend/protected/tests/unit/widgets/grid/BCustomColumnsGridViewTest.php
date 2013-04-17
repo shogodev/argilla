@@ -38,7 +38,7 @@ class BCustomColumnsGridViewTest extends CDbTestCase
     /**
      * @var BCustomColumnsGridView $widget
      */
-    $widget = Yii::app()->getWidgetFactory()->createWidget($this, 'BCustomColumnsGridView', $properties);
+    $widget = Yii::app()->getWidgetFactory()->createWidget(Yii::app()->controller, 'BCustomColumnsGridView', $properties);
     $widget->init();
 
     $classes = array_flip(array_map(function($obj){

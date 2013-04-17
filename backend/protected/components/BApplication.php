@@ -46,66 +46,6 @@ class BApplication extends CWebApplication
     return $this->request->getHostInfo().'/';
   }
 
-  /**
-   * Устанавливаем окружение.
-   * Задаем модуль, контроллер и экшен, в контексте которого выполняется код.
-   *
-   * Yii::app()->setUnitEnvironment('BInfo', 'BInfo', 'update', array('id' => '2'));
-   *
-   * @param string $module_name
-   * @param string $controller_name
-   * @param string $action
-   * @param array  $params
-   */
-  public function setUnitEnvironment($module_name, $controller_name, $action = 'index', $params = array())
-  {
-    $module     = $module_name.'Module';
-    $controller = $controller_name.'Controller';
-
-    $controller = new $controller(strtolower($controller_name), new $module(strtolower($module_name), null));
-    $controller->setAction(new CInlineAction($controller, $action));
-
-    Yii::app()->setController($controller);
-    $_GET = CMap::mergeArray($_GET, $params);
-  }
-
-  /**
-   * Инициализируем модули
-   *
-   * Функция используется в тестах, чтобы не инклудить модели
-   */
-  public function initModules()
-  {
-    $modules = Yii::app()->getModules();
-    foreach($modules as $id => $module)
-    {
-      Yii::import($module['class']);
-
-      $className = ucfirst($id).'Module';
-      $class     = new $className($id, null);
-    }
-  }
-
-  /**
-   * Завершаем приложение
-   * Если приложение запущено с тестовым конфигом, то возвращаем управление в вызываемый код
-   *
-   * @param integer  $status
-   * @param bool $exit
-   */
-  public function end($status = 0, $exit = true)
-  {
-    if( Yii::app()->params['mode'] === 'test' )
-    {
-      Yii::app()->user->setFlash('end', array('status' => $status, 'exit' => $exit));
-      return;
-    }
-    else
-    {
-      parent::end($status, $exit);
-    }
-  }
-
   public function registerAjaxUpdateError()
   {
     Yii::app()->clientScript->registerScript('ajaxUpdateError', '

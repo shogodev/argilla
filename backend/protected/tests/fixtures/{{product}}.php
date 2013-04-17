@@ -6,7 +6,6 @@
  * @license http://argilla.ru/LICENSE
  */
 return [
-
   'product1'  => ['id' => '1',  'name' => 'Новый товар1',  'url' => 'new_product1'],
   'product2'  => ['id' => '2',  'name' => 'Новый товар2',  'url' => 'new_product2'],
   'product3'  => ['id' => '3',  'name' => 'Новый товар3',  'url' => 'new_product3'],
@@ -18,4 +17,7 @@ return [
   'product9'  => ['id' => '9',  'name' => 'Новый товар9',  'url' => 'new_product9'],
   'product10' => ['id' => '10', 'name' => 'Новый товар10', 'url' => 'new_product10'],
 
+  'saveAssoc1' => ['id' => '11', 'name' => 'Новый товар11', 'url' => 'new_product11'],
+  'saveAssoc2' => ['id' => '12', 'name' => 'Новый товар12', 'url' => 'new_product12'],
+  'saveAssoc3' => ['id' => '13', 'name' => 'Новый товар13', 'url' => 'new_product13'],
 ];

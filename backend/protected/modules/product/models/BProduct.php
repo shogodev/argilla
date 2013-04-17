@@ -32,6 +32,7 @@
  * @property integer $type_id
  *
  * @property BProductAssignment $assignment
+ * @property BAssociation[] $associations
  */
 class BProduct extends BActiveRecord implements IHasFrontendModel
 {

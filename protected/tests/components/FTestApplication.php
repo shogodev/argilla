@@ -1,6 +1,4 @@
 <?php
-require_once(dirname(__FILE__).'/../../components/FApplication.php');
-
 /**
  * @author Alexey Tatarinov <tatarinov@shogo.ru>
  * @link https://github.com/shogodev/argilla/
@@ -8,7 +6,9 @@ require_once(dirname(__FILE__).'/../../components/FApplication.php');
  * @license http://argilla.ru/LICENSE
  * @package frontend.tests.components
  */
-class TApplication extends FApplication
+require_once(dirname(__FILE__).'/../../components/FApplication.php');
+
+class FTestApplication extends FApplication
 {
   /**
    * Устанавливаем окружение.
@@ -31,24 +31,13 @@ class TApplication extends FApplication
     $_GET = CMap::mergeArray($_GET, $params);
   }
 
-
   /**
-   * Завершаем приложение
-   * Если приложение запущено с тестовым конфигом, то возвращаем управление в вызываемый код
-   *
    * @param integer  $status
    * @param bool $exit
    */
   public function end($status = 0, $exit = true)
   {
-    if( Yii::app()->params['mode'] === 'test' )
-    {
-      Yii::app()->user->setFlash('end', array('status' => $status, 'exit' => $exit));
-      return;
-    }
-    else
-    {
-      parent::end($status, $exit);
-    }
+    Yii::app()->user->setFlash('end', array('status' => $status, 'exit' => $exit));
+    return;
   }
 }
