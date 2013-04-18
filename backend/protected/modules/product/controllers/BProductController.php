@@ -14,6 +14,26 @@ class BProductController extends BController
 
   public $modelClass = 'BProduct';
 
+  /**
+   * @throws CHttpException
+   */
+  public function actionCopyProduct()
+  {
+    if( Yii::app()->request->isPostRequest )
+    {
+      $copier    = new BProductCopier(Yii::app()->request->getPost('id'));
+      $productId = $copier->copy();
+
+      if( !$productId )
+        throw new CHttpException(500, 'Невозможно скопировать продукт');
+
+      echo CJavaScript::jsonEncode(array(
+        'url' => $this->createUrl('product/update', array('id' => $productId)),
+      ));
+      Yii::app()->end();
+    }
+  }
+
   public function actionUpdateAssignment($id = 0)
   {
     $response = array();

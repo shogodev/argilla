@@ -20,4 +20,7 @@ return [
   'saveAssoc1' => ['id' => '11', 'name' => 'Новый товар11', 'url' => 'new_product11'],
   'saveAssoc2' => ['id' => '12', 'name' => 'Новый товар12', 'url' => 'new_product12'],
   'saveAssoc3' => ['id' => '13', 'name' => 'Новый товар13', 'url' => 'new_product13'],
+
+  'copier1' => ['id' => '14', 'name' => 'Новый товар14', 'url' => 'new_product14'],
+  'copier2' => ['id' => '15', 'name' => 'Новый товар15', 'url' => 'new_product15'],
 ];

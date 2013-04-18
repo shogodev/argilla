@@ -678,7 +678,7 @@ CREATE TABLE `argilla_product` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `parent` int(11) DEFAULT NULL,
   `position` int(11) DEFAULT '0',
-  `url` varchar(255) NOT NULL,
+  `url` varchar(255) DEFAULT NULL,
   `name` varchar(255) NOT NULL,
   `articul` varchar(255) DEFAULT NULL,
   `price` decimal(10,2) DEFAULT NULL,
@@ -831,10 +831,12 @@ DROP TABLE IF EXISTS `argilla_product_param`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `argilla_product_param` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `param_id` int(10) unsigned NOT NULL DEFAULT '0',
   `product_id` int(10) unsigned NOT NULL DEFAULT '0',
   `variant_id` int(10) unsigned DEFAULT NULL,
   `value` text,
+  PRIMARY KEY (`id`),
   UNIQUE KEY `value` (`param_id`,`product_id`,`variant_id`),
   KEY `product_id` (`product_id`),
   KEY `param_id` (`param_id`),
@@ -1280,4 +1282,4 @@ CREATE TABLE `argilla_vacancy_file` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-04-16 15:29:56
+-- Dump completed on 2013-06-06 14:44:25
