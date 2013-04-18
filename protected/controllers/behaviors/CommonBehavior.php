@@ -5,11 +5,6 @@
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
  * @package frontend.controllers.behaviors
- *
- * @property array counters
- * @property array copyrights
- * @property FForm loginForm
- * @property FForm callbackForm
  */
 class CommonBehavior extends CommonDataBehavior
 {
@@ -46,7 +41,6 @@ class CommonBehavior extends CommonDataBehavior
   {
     return Menu::getMenu('bottom')->build();
   }
-
 
   public function getCatalogMenu()
   {

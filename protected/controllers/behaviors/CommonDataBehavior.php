@@ -6,10 +6,6 @@
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
  * @package frontend.controllers.behaviors
- *
- * @property array $counters
- * @property array $copyrights
- * @property array $contacts
  */
 class CommonDataBehavior extends CBehavior
 {
@@ -18,7 +14,7 @@ class CommonDataBehavior extends CBehavior
    */
   protected $textBlocks = array();
 
-  protected $_contacts;
+  private $contacts;
 
   /**
    * @param $key
@@ -70,7 +66,7 @@ class CommonDataBehavior extends CBehavior
    */
   public function getContacts($groupName = null)
   {
-    if( !$this->_contacts )
+    if( !$this->contacts )
     {
       /**
        * @var ContactGroup[] $groups;
@@ -78,9 +74,9 @@ class CommonDataBehavior extends CBehavior
       $groups = ContactGroup::model()->findAll('sysname != ""');
 
       foreach($groups as $group)
-        $this->_contacts[$group->sysname] = $group->fields;
+        $this->contacts[$group->sysname] = $group->fields;
     }
 
-    return isset($groupName) ? Arr::get($this->_contacts, $groupName, null) : $this->_contacts;
+    return isset($groupName) ? Arr::get($this->contacts, $groupName, null) : $this->contacts;
   }
 }
