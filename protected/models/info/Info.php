@@ -7,6 +7,8 @@
  * @package frontend.models
  *
  * @method static Info model(string $class = __CLASS__)
+ * @method Info siblingsScope() scope для родственников
+ * @method Info childrenScope() scope для потомков
  *
  * @property integer  $id
  * @property string  $date
@@ -27,10 +29,6 @@ class Info extends FActiveRecord implements IMenuItem
 {
   const ROOT_ID = 1;
 
-  const ID_ORDER = 6;
-
-  const ID_TO_PARTNERS = 7;
-
   protected $files;
 
   public function tableName()
@@ -49,6 +47,19 @@ class Info extends FActiveRecord implements IMenuItem
 
     return array(
       'condition' => $alias.'.visible=1',
+
+    );
+  }
+
+  public function scopes()
+  {
+    return array(
+      'siblingsScope' => array(
+        'condition' => 'siblings=1'
+      ),
+      'childrenScope' => array(
+        'condition' => 'children=1'
+      )
     );
   }
 
@@ -95,13 +106,13 @@ class Info extends FActiveRecord implements IMenuItem
   public function getSiblings($includeNode = false)
   {
     $criteria = new CDbCriteria();
+
     if( !$includeNode )
       $criteria->compare('id', '<>'.$this->getPrimaryKey());
 
-    $parent   = $this->parent()->find();
-    $siblings = $parent->children()->findAll($criteria);
+    $parent = $this->resetScope()->parent()->find();
 
-    return $siblings;
+    return $parent ? $parent->children()->siblingsScope()->findAll($criteria) : array();
   }
 
   public function getTemplate()
@@ -180,6 +191,18 @@ class Info extends FActiveRecord implements IMenuItem
       $this->files[$file['type']][] = $file;
   }
 
+  public function getBreadcrumbs()
+  {
+    $breadcrumbs = array();
+
+    foreach($this->parents as $parent)
+      $breadcrumbs[$parent->name] = array('info/index', 'url' => $parent->url);
+
+    $breadcrumbs[] = $this->name;
+
+    return $breadcrumbs;
+  }
+
   public function getName()
   {
     return $this->name;
@@ -198,22 +221,5 @@ class Info extends FActiveRecord implements IMenuItem
   public function setDepth($d)
   {
 
-  }
-
-  public function getBreadcrumbs()
-  {
-    $breadcrumbs = array();
-
-    foreach($this->parents as $parent)
-    {
-      if( $parent->menu_only )
-        $breadcrumbs[] = $parent->name;
-      else
-        $breadcrumbs[$parent->name] = array('info/index', 'url' => $parent->url);
-    }
-
-    $breadcrumbs[$this->name] = array('info/index', 'url' => $this->url);
-
-    return $breadcrumbs;
   }
 }
