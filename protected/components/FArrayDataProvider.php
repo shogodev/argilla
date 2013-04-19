@@ -18,7 +18,7 @@ class FArrayDataProvider extends CArrayDataProvider
       $config['pagination'] = new FPagination();
 
     $controller = Yii::app()->controller;
-    if( isset($controller->pageSize) )
+    if( isset($controller->pageSize) && $config['pagination'] )
       $config['pagination']->pageSize = $controller->pageSize;
 
     parent::__construct($rawData, $config);
