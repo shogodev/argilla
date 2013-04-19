@@ -8,7 +8,7 @@
  */
 class CommonDataBehaviorTest extends CTestCase
 {
-  public $fixtures = array('contact_group' => 'ContactGroup');
+  protected $fixtures = array('contact_group' => 'ContactGroup');
 
   public function setUp()
   {

@@ -5,7 +5,7 @@
  */
 class UploadBehaviorTest extends CDbTestCase
 {
-  public $fixtures = array('news_section' => 'BNewsSection');
+  protected $fixtures = array('news_section' => 'BNewsSection');
 
   public function setUp()
   {

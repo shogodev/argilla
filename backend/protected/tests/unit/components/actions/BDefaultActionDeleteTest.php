@@ -10,7 +10,7 @@ Yii::import('backend.models.BAssociation');
 
 class BDefaultActionDeleteTest extends CDbTestCase
 {
-  public $fixtures = array('news_section' => 'BNewsSection',
+  protected $fixtures = array('news_section' => 'BNewsSection',
                            'info'         => 'BInfo');
 
   public function setUp()

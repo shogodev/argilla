@@ -8,7 +8,7 @@
  */
 class MetaTest extends CDbTestCase
 {
-  public $fixtures = array(
+  protected $fixtures = array(
     'product' => 'Product',
     'product_section' => 'ProductSection',
     'product_assignment' => 'ProductAssignment',

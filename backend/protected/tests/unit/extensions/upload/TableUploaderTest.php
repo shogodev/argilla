@@ -12,7 +12,7 @@ class TableUploaderTest extends CDbTestCase
    */
   public $behavior;
 
-  public $fixtures = array('info' => 'BInfo');
+  protected $fixtures = array('info' => 'BInfo');
 
   public function setUp()
   {
