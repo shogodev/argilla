@@ -59,6 +59,13 @@
 
 </target>
 
+<target name="migrate" description="Накатить миграции">
+    <available file = "${dbSchemaLocation}" property = "schema_exists" value = "1" />
+    <fail unless = "schema_exists" message = "Schema file does not exist in specified location (${dbSchemaLocation})" />
+
+    <exec command = "protected/yiic migrate" passthru = "true" />
+</target>
+
 <target name = "applyDump" depends = "createDb" description = "Накатить дамп">
     <available file = "${sqlFolder}/${db.dbname}.sql" property = "dump_exists" value = "1" />
     <fail unless = "dump_exists" message = "Dump file does not exists in specified location (${sqlFolder}/${db.dbname}.sql)" />

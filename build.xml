@@ -14,6 +14,9 @@
   <target name="applyDump" description="Накатить дамп">
     <phing phingfile="build/db.xml" target="applyDump"/>
   </target>
+<target name="migrate" description="Накатить миграции">
+    <phing phingfile="build/db.xml" target="migrate"/>
+</target>
   <target name="revertSchema" description="Восстановить оригинальный файл схемы (git)">
     <phing phingFile="build/db.xml" target="revertSchema"/>
   </target>
