@@ -71,7 +71,7 @@ class BApplication extends CWebApplication
           alert(err);
         }
       }'
-    );
+    , CClientScript::POS_HEAD);
   }
 
   protected function init()
