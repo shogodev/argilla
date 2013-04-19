@@ -23,21 +23,27 @@ abstract class BActiveRecord extends CActiveRecord
   }
 
   /**
-   * Получение CHtml::listData по стандартным ключам id => name
+   * Получение CHtml::listData по стандартным ключам $key => $value
    *
+	 * @HINT: $value может использоваться как анонимная функция
+	 *
    * @param string $key
-   * @param string $value
+   * @param string|callable $value
    * @param CDbCriteria $criteria
    *
    * @return array
    */
-  public static function listData($key = 'id', $value = 'name', CDbCriteria $criteria = null)
-  {
-    if( $criteria === null )
-      $criteria = new CDbCriteria();
+    public static function listData($key = 'id', $value = 'name', CDbCriteria $criteria = null)
+    {
+      $data = array();
 
-    return CHtml::listData(static::model()->findAll($criteria), $key, $value);
-  }
+      foreach( static::model()->findAll($criteria) as $entry )
+			{
+          $data[$entry->{$key}] = is_callable($value) ? $value($entry) : $entry->{$value};
+      }
+
+      return $data;
+    }
 
   /**
    * Получение имени таблицы по имени текущей модели в виде {{class_name}}
