@@ -24,9 +24,7 @@ Backend.modules.onFly = function(box) {
   };
 
   var bindTextFields = function($) {
-    var onFly = $('.onfly-edit');
-
-    onFly.onfly({apply: function(elem, oldText) {
+    $('.onfly-edit').onfly({apply: function(elem, oldText) {
       handler($, elem, oldText);
     }});
   };

@@ -1,12 +1,13 @@
 <?php
-
 /**
+ * @author Nikita Melnikov <melnikov@shogo.ru>
+ * @author Vladimir Utenkov <utenkov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
+ *
  * Класс для работы с полями из контроллера
  * необходимо добавить в метод CController::actions()
- *
- * @package onFlyEdit
- * @author Nikita Melnikov <melnikov@shogo.ru>
- * @date 22.08.2012
  */
 class OnFlyEditAction extends CAction
 {

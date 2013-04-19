@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * @author Nikita Melnikov <melnikov@shogo.ru>
+ * @author Vladimir Utenkov <utenkov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
+ */
 Yii::import('zii.widgets.grid.CGridColumn');
 
 /**
@@ -20,10 +26,6 @@ Yii::import('zii.widgets.grid.CGridColumn');
  *  'columns' => array($onFlyEdit,))
  * );
  * </code>
- *
- * @date 22.08.2012
- * @author Nikita Melnikov <melnikov@shogo.ru>
- * @package onFlyEdit
  */
 class OnFlyEditField extends BDataColumn
 {
@@ -137,7 +139,7 @@ class OnFlyEditField extends BDataColumn
     }
 
     $commonAttributes = [
-      'data-onflyedit' => $name . '-' . $fieldID,
+      'data-onflyedit' => $name.'-'.$fieldID,
       'data-ajax-url' => $this->ajaxUrl,
       'data-grid-id' => $this->gridId,
     ];
