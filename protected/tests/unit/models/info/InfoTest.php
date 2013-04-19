@@ -30,5 +30,11 @@ class InfoTest extends CDbTestCase
      */
     $model = Info::model()->findByPk(5);
     $this->assertCount(1, $model->getSiblings());
+
+    /**
+     * @var Info $model
+     */
+    $model = Info::model()->findByPk(5);
+    $this->assertCount(2, $model->getSiblings(true));
   }
 }

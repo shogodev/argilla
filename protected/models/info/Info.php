@@ -7,8 +7,6 @@
  * @package frontend.models
  *
  * @method static Info model(string $class = __CLASS__)
- * @method Info siblingsScope() scope для родственников
- * @method Info childrenScope() scope для потомков
  *
  * @property integer  $id
  * @property string  $date
@@ -48,18 +46,6 @@ class Info extends FActiveRecord implements IMenuItem
     return array(
       'condition' => $alias.'.visible=1',
 
-    );
-  }
-
-  public function scopes()
-  {
-    return array(
-      'siblingsScope' => array(
-        'condition' => 'siblings=1'
-      ),
-      'childrenScope' => array(
-        'condition' => 'children=1'
-      )
     );
   }
 
@@ -106,13 +92,14 @@ class Info extends FActiveRecord implements IMenuItem
   public function getSiblings($includeNode = false)
   {
     $criteria = new CDbCriteria();
+    $criteria->addCondition(array('siblings' => 1));
 
     if( !$includeNode )
       $criteria->compare('id', '<>'.$this->getPrimaryKey());
 
     $parent = $this->resetScope()->parent()->find();
 
-    return $parent ? $parent->children()->siblingsScope()->findAll($criteria) : array();
+    return $parent ? $parent->children()->findAll($criteria) : array();
   }
 
   public function getTemplate()
