@@ -61,7 +61,8 @@ class OnFlyEditAction extends CAction
   {
     $field = $this->field;
 
-    $this->model->$field = $this->value;
+    $this->model->setAttributes(array($field => $this->value));
+
     if( $this->model->save() )
     {
       if( Yii::app()->request->isAjaxRequest )
@@ -71,7 +72,7 @@ class OnFlyEditAction extends CAction
     }
     else
     {
-      throw new CHttpException(500, $this->model->getErrors());
+      throw new CHttpException(500, implode("; ", $this->model->getErrors($field)));
     }
   }
 

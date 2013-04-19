@@ -89,8 +89,8 @@ class OnFlyEditField extends BDataColumn
     $this->ajaxUrl = Yii::app()->controller->createUrl(Yii::app()->controller->id."/$this->action");
     $scriptUrl = Yii::app()->assetManager->publish(dirname(__FILE__).'/js');
 
-    Yii::app()->clientScript->registerScriptFile($scriptUrl.'/jquery.onFlyEdit.js');
-    Yii::app()->clientScript->registerScriptFile($scriptUrl.'/onFlyModule.js');
+    Yii::app()->clientScript->registerScriptFile($scriptUrl.'/jquery.onFlyEdit.js', CClientScript::POS_END);
+    Yii::app()->clientScript->registerScriptFile($scriptUrl.'/onFlyModule.js', CClientScript::POS_END);
 
     Yii::app()->clientScript->registerScript('initOnFly',
       '$(function() {

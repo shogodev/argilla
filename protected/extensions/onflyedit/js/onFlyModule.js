@@ -26,12 +26,12 @@ Backend.modules.onFly = function(box) {
   var bindTextFields = function($) {
     var onFly = $('.onfly-edit');
 
-    onFly.onfly({apply: function(elem) {
-      handler($, elem);
+    onFly.onfly({apply: function(elem, oldText) {
+      handler($, elem, oldText);
     }});
   };
 
-  var handler = function($, elem) {
+  var handler = function($, elem, oldText) {
     var wrappedElem = $(elem),
         gridId = wrappedElem.data('grid-id'),
         ajaxUrl = wrappedElem.data('ajax-url'),
@@ -45,11 +45,28 @@ Backend.modules.onFly = function(box) {
     data.value = wrappedElem.is("span") ? wrappedElem.text() : wrappedElem.val(); // Проверяем текстовое поле или список.
 
     $.post(ajaxUrl, data, '', 'json')
-      .done(function() {
-        wrappedElem.removeClass('text-error');
+      .done(function(resp) {
+        if (data.value == resp)
+        {
+          wrappedElem.removeClass('text-error');
+        }
+        else
+        {
+          reportError(wrappedElem, oldText);
+        }
       })
-      .fail(function() {
-        wrappedElem.addClass('text-error');
+      .fail(function(xhr) {
+        ajaxUpdateError(xhr);
+        reportError(wrappedElem, oldText);
       });
   };
+
+  var reportError = function(elem, oldText)
+  {
+    elem.addClass('text-error');
+    if (elem.is("span") && oldText)
+    {
+      elem.text(oldText);
+    }
+  }
 };
