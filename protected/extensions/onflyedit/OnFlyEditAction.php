@@ -40,28 +40,39 @@ class OnFlyEditAction extends CAction
 
   public function run()
   {
-    if( !empty($_POST['id']) && !empty($_POST['field']) && isset($_POST['value']) )
+    $request = Yii::app()->request;
+    $id = $request->getPost('id');
+    $field = $request->getPost('field');
+    $value = $request->getPost('value');
+    $gridId = Yii::app()->request->getPost('gridId');
+
+    if( !empty($id) && !empty($field) && isset($value) )
     {
-      $gridId = Yii::app()->request->getPost('gridId');
-      $this->init($_POST['id'], $_POST['field'], $_POST['value'], $gridId)->process();
+      $this->init($id, $field, $value, $gridId)->process();
     }
   }
 
   /**
    * Присваивание нового значения для выбранной модели, с заданным полем и ID
    *
-   * @return mixed
+   * @throws CHttpException Бросается в случае ошибки при сохранении модели.
    */
   protected function process()
   {
     $field = $this->field;
 
     $this->model->$field = $this->value;
-
     if( $this->model->save() )
-      echo CJSON::encode(array('data' => $this->model->$field));
+    {
+      if( Yii::app()->request->isAjaxRequest )
+      {
+        echo $this->model->$field;
+      }
+    }
     else
-      echo CJSON::encode(array('error' => 'Невозможно сохранить запись', 'message' => $this->model->getError($field)));
+    {
+      throw new CHttpException(500, $this->model->getErrors());
+    }
   }
 
   /**

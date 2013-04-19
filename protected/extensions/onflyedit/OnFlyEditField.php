@@ -60,6 +60,13 @@ class OnFlyEditField extends BDataColumn
   public $action = 'onflyedit';
 
   /**
+   * URL для AJAX запроса.
+   *
+   * @var string
+   */
+  protected $ajaxUrl;
+
+  /**
    * Инициализация вывода свойства в столбец
    *
    * @override
@@ -79,63 +86,21 @@ class OnFlyEditField extends BDataColumn
    */
   protected function renderScript()
   {
-    $url_script = Yii::app()->getAssetManager()->publish(dirname(__FILE__).'/js');
-    $url_onfly  = Yii::app()->getController()->createUrl(Yii::app()->getController()->id . '/onflyedit');
+    $this->ajaxUrl = Yii::app()->controller->createUrl(Yii::app()->controller->id."/$this->action");
+    $scriptUrl = Yii::app()->assetManager->publish(dirname(__FILE__).'/js');
 
-    Yii::app()->clientScript->registerScriptFile($url_script.'/jquery.onFlyEdit.js');
+    Yii::app()->clientScript->registerScriptFile($scriptUrl.'/jquery.onFlyEdit.js');
+    Yii::app()->clientScript->registerScriptFile($scriptUrl.'/onFlyModule.js');
 
-    if( empty($this->dropDown) )
-    {
-      $this->renderTextScript($url_script, $url_onfly);
-    }
-    else
-    {
-      $this->renderDropDownScript($url_script, $url_onfly);
-    }
-  }
+    Yii::app()->clientScript->registerScript('initOnFly',
+      '$(function() {
 
-  /**
-   * Вывод скрипта для выпадающего списка
-   *
-   * @param $url_script
-   * @param string $url_onfly
-   */
-  protected function renderDropDownScript($url_script, $url_onfly)
-  {
-    Yii::app()->clientScript->registerScriptFile($url_script.'/dropDownOnFlyHandler.js', CClientScript::POS_END);
+        Backend("onFly", function(box) {
+          box.init(jQuery);
+          jQuery.fn.yiiGridView.addObserver("'.$this->grid->id.'", function(id) { box.reinstall(jQuery); });
+        });
 
-    $args = CJavaScript::encode([
-      'urlToPost' => $url_onfly,
-      'gridId' => $this->gridId
-    ]);
-
-    Yii::app()->clientScript->registerScript('initDropDownOnFlyEdit',
-      "$(function(){bindDropDownOnFlyHandler({$args});})", CClientScript::POS_END);
-
-    Yii::app()->clientScript->registerScript('reinstallDropDownOnFlyEdit',
-      "function reinstallDropDownOnFlyEdit(){bindDropDownOnFlyHandler({$args});}", CClientScript::POS_END);
-  }
-
-  /**
-   * Вывод скриптов для текстового поля
-   *
-   * @param $url_script
-   * @param string $url_onfly
-   */
-  protected function renderTextScript($url_script, $url_onfly)
-  {
-    Yii::app()->clientScript->registerScriptFile($url_script.'/textOnFlyHandler.js', CClientScript::POS_END);
-
-    $args = CJavaScript::encode([
-      'urlToPost' => $url_onfly,
-      'gridId' => $this->gridId
-    ]);
-
-    Yii::app()->clientScript->registerScript('initTextOnFlyEdit',
-      "$(function(){bindTextOnFlyHandler({$args});})", CClientScript::POS_END);
-
-    Yii::app()->clientScript->registerScript('reinstallTextOnFlyEdit',
-      "function reinstallTextOnFlyEdit(){bindTextOnFlyHandler({$args});}", CClientScript::POS_END);
+      });', CClientScript::POS_END);
   }
 
   /**
@@ -167,11 +132,24 @@ class OnFlyEditField extends BDataColumn
   protected function prepareFieldData($fieldID, $value, $name = null)
   {
     if( $name === null )
+    {
       $name = $this->name;
+    }
+
+    $commonAttributes = [
+      'data-onflyedit' => $name . '-' . $fieldID,
+      'data-ajax-url' => $this->ajaxUrl,
+      'data-grid-id' => $this->gridId,
+    ];
 
     if( empty($this->dropDown) )
-      return CHtml::tag('span', array('class' => 'onfly-edit', 'data-onflyedit' => $name . '-' . $fieldID), $value);
+    {
+      return CHtml::tag('span', array_merge($commonAttributes, ['class' => 'onfly-edit']), $value);
+    }
     else
-      return CHtml::dropDownList('', $value, $this->dropDown, array('class' => 'onfly-edit-dropdown', 'data-onflyedit' => $name . '-' . $fieldID));
+    {
+      return CHtml::dropDownList('', $value, $this->dropDown,
+        array_merge($commonAttributes, ['class' => 'onfly-edit-dropdown']));
+    }
   }
 }
