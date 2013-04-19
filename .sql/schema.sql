@@ -979,24 +979,6 @@ CREATE TABLE `argilla_product_type` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `argilla_redirect`
---
-
-DROP TABLE IF EXISTS `argilla_redirect`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `argilla_redirect` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `base` varchar(255) COLLATE utf8_bin NOT NULL,
-  `target` varchar(255) COLLATE utf8_bin NOT NULL,
-  `type_id` int(11) NOT NULL,
-  `visible` int(11) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id`),
-  KEY `base` (`base`,`target`,`type_id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `argilla_response`
 --
 

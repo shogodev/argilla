@@ -42,7 +42,7 @@
 
       elem.parentNode.insertBefore(inp, elem);
 
-      $(window).on('click.onfly', function(e)
+      $(document).on('click.onfly', function(e)
       {
         if( $(e.target).hasClass('onfly-edit-fixed') )
           return false;
