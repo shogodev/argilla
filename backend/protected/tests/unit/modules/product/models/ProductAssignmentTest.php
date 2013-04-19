@@ -5,7 +5,7 @@
  */
 class ProductAssignmentTest extends CDbTestCase
 {
-  public $fixtures = array('product_assignment' => 'BProductAssignment');
+  protected $fixtures = array('product_assignment' => 'BProductAssignment');
 
   public function setUp()
   {

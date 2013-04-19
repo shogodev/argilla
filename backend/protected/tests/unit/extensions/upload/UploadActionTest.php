@@ -9,7 +9,7 @@ Yii::import('frontend.extensions.upload.actions.*');
 
 class UploadActionTest extends CDbTestCase
 {
-  public $fixtures = array('info' => 'BInfo');
+  protected $fixtures = array('info' => 'BInfo');
 
   public $actionClass;
 

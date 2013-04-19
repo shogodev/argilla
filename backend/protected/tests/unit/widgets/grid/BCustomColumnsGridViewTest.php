@@ -11,7 +11,7 @@ Yii::import('backend.modules.product.models.*');
 
 class BCustomColumnsGridViewTest extends CDbTestCase
 {
-  public $fixtures = array(
+  protected $fixtures = array(
     'settings_grid' => 'BGridSettings',
   );
 

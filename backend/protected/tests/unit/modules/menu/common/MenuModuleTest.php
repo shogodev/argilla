@@ -10,7 +10,7 @@ Yii::import('backend.modules.menu.components.*');
 
 abstract class MenuModuleTest extends CDbTestCase
 {
-  public $fixtures = array(
+  protected $fixtures = array(
 
   );
 

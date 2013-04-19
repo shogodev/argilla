@@ -7,7 +7,7 @@
  */
 class BProductTest extends CDbTestCase
 {
-  public $fixtures = [
+  protected $fixtures = [
     'product' => 'BProduct',
     'product_assignment' => 'BProductAssignment',
   ];

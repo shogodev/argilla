@@ -7,7 +7,7 @@
  */
 class BProductControllerTest extends CDbTestCase
 {
-  public $fixtures = array('product'                 => 'BProduct',
+  protected $fixtures = array('product'                 => 'BProduct',
                            'product_type'            => 'BProductType',
                            'product_section'         => 'BProductSection',
                            'product_assignment'      => 'BProductAssignment',
