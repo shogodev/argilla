@@ -1,5 +1,11 @@
 <?php
-
+/**
+ * @author Nikita Melnikov <melnikov@shogo.ru>
+ * @author Vladimir Utenkov <utenkov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
+ */
 Yii::import('zii.widgets.grid.CGridColumn');
 
 /**
@@ -20,10 +26,6 @@ Yii::import('zii.widgets.grid.CGridColumn');
  *  'columns' => array($onFlyEdit,))
  * );
  * </code>
- *
- * @date 22.08.2012
- * @author Nikita Melnikov <melnikov@shogo.ru>
- * @package onFlyEdit
  */
 class OnFlyEditField extends BDataColumn
 {
@@ -60,6 +62,13 @@ class OnFlyEditField extends BDataColumn
   public $action = 'onflyedit';
 
   /**
+   * URL для AJAX запроса.
+   *
+   * @var string
+   */
+  protected $ajaxUrl;
+
+  /**
    * Инициализация вывода свойства в столбец
    *
    * @override
@@ -79,81 +88,21 @@ class OnFlyEditField extends BDataColumn
    */
   protected function renderScript()
   {
-    $url_script = Yii::app()->getAssetManager()->publish(dirname(__FILE__).'/js');
-    $url_onfly  = Yii::app()->getController()->createUrl($this->action);
+    $this->ajaxUrl = Yii::app()->controller->createUrl(Yii::app()->controller->id."/$this->action");
+    $scriptUrl = Yii::app()->assetManager->publish(dirname(__FILE__).'/js');
 
-    if( empty($this->dropDown) )
-      $this->renderTextScript($url_script, $url_onfly);
-    else
-      $this->renderDropDownScript($url_onfly);
+    Yii::app()->clientScript->registerScriptFile($scriptUrl.'/jquery.onFlyEdit.js', CClientScript::POS_END);
+    Yii::app()->clientScript->registerScriptFile($scriptUrl.'/onFlyModule.js', CClientScript::POS_END);
 
-  }
+    Yii::app()->clientScript->registerScript('initOnFly',
+      '$(function() {
 
-  /**
-   * Вывод скрипта для выпадающего списка
-   *
-   * @param string $url_onfly
-   */
-  protected function renderDropDownScript($url_onfly)
-  {
-    $js = <<<EOD
-$(function(){
-  $('select.onfly-edit-dropdown').live('change', function()
-  {
-    var matches = $(this).attr('data-onflyedit').match(/(\w+)-(\d+)/);
-    var data    = {};
+        Backend("onFly", function(box) {
+          box.init(jQuery);
+          jQuery.fn.yiiGridView.addObserver("'.$this->grid->id.'", function(id) { box.reinstall(jQuery); });
+        });
 
-    data.action = 'onflyedit';
-    data.field  = matches[1];
-    data.id     = matches[2];
-    data.value  = $(this).val();
-    data.gridId = '{$this->gridId}';
-
-    $.post("{$url_onfly}", data, '', 'json');
-  });
-});
-EOD;
-
-    Yii::app()->getClientScript()->registerScript('onflyeditDropDownHandler', $js);
-  }
-
-  /**
-   * Вывод скриптов для текстового поля
-   *
-   * @param string $url
-   * @param string $url_onfly
-   */
-  protected function renderTextScript($url, $url_onfly)
-  {
-    Yii::app()->getClientScript()->registerScriptFile($url.'/jquery.onFlyEdit.js');
-
-    $onflyHandler = <<<EOD
-$(function(){
-  $('.onfly-edit').onfly({apply : function(elem)
-  {
-    var matches = $(elem).attr('data-onflyedit').match(/(\w+)-(\d+)/);
-    var data    = {};
-
-    data.action = 'onflyedit';
-    data.field  = matches[1];
-    data.id     = matches[2];
-    data.value  = $(elem).text();
-    data.gridId = '{$this->gridId}';
-
-    /*function callback( result )
-    {
-      if( result )
-      {
-        if( result == '' )
-          $(elem).html('[не задано]');
-      }
-    }*/
-
-    $.post("{$url_onfly}", data, '', 'json');
-  }});
-});
-EOD;
-    Yii::app()->getClientScript()->registerScript('onflyeditHandler', $onflyHandler);
+      });', CClientScript::POS_END);
   }
 
   /**
@@ -185,11 +134,24 @@ EOD;
   protected function prepareFieldData($fieldID, $value, $name = null)
   {
     if( $name === null )
+    {
       $name = $this->name;
+    }
+
+    $commonAttributes = [
+      'data-onflyedit' => $name.'-'.$fieldID,
+      'data-ajax-url' => $this->ajaxUrl,
+      'data-grid-id' => $this->gridId,
+    ];
 
     if( empty($this->dropDown) )
-      return CHtml::tag('span', array('class' => 'onfly-edit', 'data-onflyedit' => $name . '-' . $fieldID), $value);
+    {
+      return CHtml::tag('span', array_merge($commonAttributes, ['class' => 'onfly-edit']), $value);
+    }
     else
-      return CHtml::dropDownList('', $value, $this->dropDown, array('class' => 'onfly-edit-dropdown', 'data-onflyedit' => $name . '-' . $fieldID));
+    {
+      return CHtml::dropDownList('', $value, $this->dropDown,
+        array_merge($commonAttributes, ['class' => 'onfly-edit-dropdown']));
+    }
   }
 }

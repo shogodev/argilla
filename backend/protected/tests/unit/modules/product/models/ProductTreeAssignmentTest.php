@@ -5,7 +5,7 @@
  */
 class ProductTreeAssignmentTest extends CDbTestCase
 {
-  public $fixtures = array('product_type'            => 'BProductType',
+  protected $fixtures = array('product_type'            => 'BProductType',
                            'product_tree_assignment' => 'BProductTreeAssignment');
 
   public function setUp()

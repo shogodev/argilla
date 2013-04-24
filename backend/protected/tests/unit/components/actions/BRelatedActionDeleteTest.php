@@ -7,7 +7,7 @@
  */
 class BRelatedActionDeleteTest extends CDbTestCase
 {
-  public $fixtures = array(
+  protected $fixtures = array(
     'seo_link_section' => 'BLinkSection',
     'seo_link' => 'BLink',
   );

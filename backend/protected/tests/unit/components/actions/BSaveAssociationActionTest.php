@@ -7,7 +7,7 @@
  */
 class BSaveAssociationActionTest extends CDbTestCase
 {
-  public $fixtures = array(
+  protected $fixtures = array(
     'product' => 'BProduct',
   );
 

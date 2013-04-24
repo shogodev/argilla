@@ -12,7 +12,7 @@ class BControllerTest extends CDbTestCase
    */
   public $controller;
 
-  public $fixtures = array('news_section' => 'BNewsSection', 'news' => 'BNews');
+  protected $fixtures = array('news_section' => 'BNewsSection', 'news' => 'BNews');
 
   public function setUp()
   {
