@@ -7,4 +7,13 @@
  *
  * @var LinkController $this
  * @var FActiveDataProvider $dataProvider
+ *
+ * @var Link[] $links
+ * @var FFixedPageCountPagination $pages
  */
+foreach( $links as $link )
+{
+  $this->renderPartial('link_link', ['link' => $link]);
+}
+
+$this->widget('FLinkPager', ['pages' => $pages]);

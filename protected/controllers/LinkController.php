@@ -1,67 +1,57 @@
 <?php
 /**
  * @author Nikita Melnikov <nickswdit@gmail.com>
+ * @author Vladimir Utenkov <utenkov@shogo.ru>
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
  */
 class LinkController extends FController
 {
-	public function actionIndex()
-	{
-		return $this->render('index', array(
-			'dataProvider' => new FActiveDataProvider('LinkSection')
-		));
-	}
+  public function actionIndex()
+  {
+    $this->render('index', [
+      'dataProvider' => new FActiveDataProvider('LinkSection'),
+    ]);
+  }
 
-	public function actionSection($url)
-	{
-		/**@var LinkSection $section*/
-		$section = LinkSection::model()->findByAttributes(array('url' => $url));
+  /**
+   * @param string $url
+   * @param int $page
+   *
+   * @throws CHttpException
+   */
+  public function actionSection($url, $page)
+  {
+    /** @var $section LinkSection */
+    $section = LinkSection::model()->whereUrl($url)->find();
+    if( $section === null )
+    {
+      throw new CHttpException(404);
+    }
 
-		if( $section === null )
-			throw new CHttpException(404);
+    $this->breadcrumbs = [
+      'Каталог ссылок' => $this->createUrl('link/index'),
+      $section->name,
+    ];
 
-		$this->breadcrumbs = array(
-			'Каталог ссылок' => $this->createUrl('link/index'),
-			$section->name,
-		);
+    $pages = new FFixedPageCountPagination($section->pageCount);
 
-		$criteria = new CDbCriteria();
-		$criteria->compare('section_id', $section->id);
+    /** @var $links Link[] */
+    $links = $section->getLinksOnPage($page);
 
-		$this->render('section', array(
-				'dataProvider' => new FActiveDataProvider('Link', array(
-					'criteria' => $criteria,
-				)),
-			));
-	}
+    $this->render('section', [
+      'links' => $links,
+      'pages' => $pages,
+    ]);
+  }
 
-	public function actionOne($id)
-	{
-		/**@var Link $link*/
-		$link = Link::model()->findByPk($id);
+  public function actionAdd()
+  {
+    $form = new FForm('LinkForm', new Link());
 
-		if( $link === null )
-			throw new CHttpException(404);
-
-		$this->breadcrumbs = array(
-			'Каталог ссылок' => $this->createUrl('link/index'),
-			$link->section->name => $this->createUrl('link/section', array('url' => $link->section->url)),
-			$link->title,
-		);
-
-		$this->render('link', array(
-			'link' => $link,
-		));
-	}
-
-	public function actionAdd()
-	{
-		$form = new FForm('LinkForm', new Link());
-
-		$this->render('add', array(
-				'form' => $form,
-		));
-	}
+    $this->render('add', array(
+      'form' => $form,
+    ));
+  }
 }

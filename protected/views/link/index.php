@@ -8,3 +8,8 @@
  * @var LinkController $this
  * @var FActiveDataProvider $dataProvider
  */
+$this->widget('FListView', [
+    'dataProvider' => $dataProvider,
+    'itemView' => 'section_link',
+  ]
+);
