@@ -5,9 +5,9 @@
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
- *
- * Класс для работы с полями из контроллера
- * необходимо добавить в метод CController::actions()
+ */
+/**
+ * Класс для работы с полями из контроллера необходимо добавить в метод CController::actions()
  */
 class OnFlyEditAction extends CAction
 {
