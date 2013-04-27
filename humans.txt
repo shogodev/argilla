@@ -4,7 +4,7 @@
 	From: Tula, Russia
 
 	Developer: Nikita Melnkov
-	Contact: menlikov [at] shogo.ru
+	Contact: melnikov [at] shogo.ru
 	From: Tula, Russia
 
 	Developer: Alexey Tatarinov
@@ -16,6 +16,7 @@
 	From: Tula, Russia
 
 	UI Developer: Grigory Zarubin
+	Contact: grinder [at] tsu.tula.ru
 	From: Tula, Russia
 
 	Chef: Fedor Borshev
@@ -25,4 +26,3 @@
 	Tech leader: Sergey Glagolev
 	Contact: glagolev [at] shogo.ru
 	From: Tula, Russia
-	
