@@ -6,40 +6,6 @@
 ?>
 
 <?php
-$columns = array(
-  array(
-    'header'              => 'Изоб.',
-    'class'               => 'EImageColumn',
-    'imagePathExpression' => '!empty($data["thmb"]) ? $data["thmb"] : $data["path"]',
-    'htmlOptions'         => array('class' => 'center', 'style' => 'width:6.5%'),
-    'style'               => 'max-width: 20px;',
-    //'width'               => 135,
-    //'belowText'           => '<a href="#" class="resize-pic">Вырезать превью</a>'
-  ),
-);
-
-if( $this->multiple )
-{
-  $columns[] = array('name' => 'position', 'header' => 'Позиция', 'class' => 'OnFlyEditField', 'gridId' => $gridId, 'htmlOptions' => array('class' => 'span2'));
-  $columns[] = array('name' => 'type', 'header' => 'Тип', 'class' => 'OnFlyEditField', 'dropDown' => $this->model->imageTypes, 'gridId' => $gridId, 'htmlOptions' => array('class' => 'span2'));
-  $columns[] = array('name' => 'size', 'header' => 'Размер', 'htmlOptions' => array('class' => 'span2'));
-  $columns[] = array('name' => 'notice', 'class' => 'OnFlyEditField', 'gridId' => $gridId, 'header' => 'Описание', 'htmlOptions' => array('class' => ''));
-}
-
-$columns[] = array(
-  'class'           => 'bootstrap.widgets.TbButtonColumn',
-  'template'        => '{delete}',
-  'deleteButtonUrl' => function ($data) use ($model)
-  {
-    return Yii::app()->controller->createUrl('upload', array(
-      'id'     => $model->id,
-      'model'  => get_class($model),
-      'fileId' => $data['id'],
-      'attr'   => $this->attribute,
-      'method' => 'delete'));
-  },
-);
-
 if( $this->multiple )
 {
   $this->widget('BGridView', array(
@@ -47,7 +13,7 @@ if( $this->multiple )
     'htmlOptions'     => $htmlOptions,
     'dataProvider'    => $this->model->getUploadedFiles(),
     'buttonsTemplate' => false,
-    'columns'         => $columns,
+    'columns'         => $this->gridClass->getColumns(),
   ));
 }
 else
@@ -65,7 +31,7 @@ else
                             if( td.find('.items a').length == 0 ){
                               td.find('.fileupload-files').show();
                               td.find('.fileupload-buttonbar').show();}}",
-    'columns'         => $columns,
+    'columns'         => $this->gridClass->getColumns(),
   ));
 }
 ?>
