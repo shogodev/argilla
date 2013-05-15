@@ -17,7 +17,7 @@
  * @property string $message
  * @property integer $visible
  */
-class SNotification extends FActiveRecord
+class SNotification extends SActiveRecord
 {
   public $defaultSubject = "Письмо с сайта {projectName}";
   public $layout         = 'main';
