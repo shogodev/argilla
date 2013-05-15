@@ -20,6 +20,6 @@ class BOrderProduct extends BActiveRecord
 {
   public function relations()
   {
-    return array('history' => array(self::HAS_ONE, 'OrderProductHistory', 'order_product_id'));
+    return array('history' => array(self::HAS_ONE, 'BOrderProductHistory', 'order_product_id'));
   }
 }
