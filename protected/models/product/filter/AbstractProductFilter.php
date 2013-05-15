@@ -5,9 +5,17 @@
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
  * @package frontend.models.product.filter
+ *
+ * @property ProductFilterRender $render
+ * @method public __construct($filterKey = 'productFilter', $saveState = true, $setStateAuto = true)
  */
 class AbstractProductFilter extends CComponent
 {
+  /**
+   * @var ProductFilterRender
+   */
+  protected $render;
+
   protected $filterKey;
 
   /**
@@ -30,8 +38,26 @@ class AbstractProductFilter extends CComponent
     if( $this->saveState )
       $this->setState($this->loadStateFromSession());
 
-    if( $setStateAuto && Yii::app()->request->getParam($this->filterKey, false) )
-      $this->setState(Yii::app()->request->getParam($this->filterKey));
+    $state = Yii::app()->request->getParam($this->filterKey, array());
+
+    if( Arr::cut($state, 'remove', false) )
+    {
+      foreach($state as $elementId => $value)
+      {
+        if( !is_array($value) )
+          $this->removeElementState($elementId);
+        else
+        {
+          foreach($value as $key => $item)
+            $this->removeElementState($elementId, $key);
+        }
+      }
+    }
+
+    if( $setStateAuto && Arr::cut($state, 'submit', false) )
+      $this->setState($state);
+
+    $this->render = new ProductFilterRender($this);
   }
 
   public function getFilterKey()
@@ -68,6 +94,11 @@ class AbstractProductFilter extends CComponent
     $this->setState($newState);
   }
 
+  public function getRender()
+  {
+    return $this->render;
+  }
+
   protected function loadStateFromSession()
   {
     return Arr::get(Yii::app()->session, $this->filterKey, array());
@@ -85,5 +116,23 @@ class AbstractProductFilter extends CComponent
         unset($state[$key]);
 
     return $state;
+  }
+
+  protected function removeElementState($elementId, $value = null)
+  {
+    $state = $this->getState();
+
+    if( !isset($state[$elementId]) )
+      return;
+
+    if( $value !== null && !isset($state[$elementId][$value]) )
+      return;
+
+    if( $value !== null )
+      unset($state[$elementId][$value]);
+    else
+      unset($state[$elementId]);
+
+    $this->setState($state);
   }
 }

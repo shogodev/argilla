@@ -19,4 +19,6 @@ return array(
   'product13' => array('id' => '13', 'name' => 'Колья 2', 'url' => 'new_product13', 'visible' => 1),
   'product14' => array('id' => '14', 'name' => 'Веревка', 'url' => 'new_product14', 'visible' => 1),
   'product15' => array('id' => '15', 'name' => 'Спички', 'url' => 'new_product15', 'visible' => 1),*/
+
+  'product16' => array('id' => 16, 'name' => 'Продукт 16', 'url' => 'product_16_url', 'visible' => 1),
 );

@@ -15,6 +15,7 @@ class FilterTestHelper
   const ELEMENT_LENGTH = 'param_3';
   const ELEMENT_TEXT = 'param_4';
   const ELEMENT_PRICE = 'price';
+  const ELEMENT_RANGE = 'param_10';
 
   protected $parameters;
 
@@ -79,6 +80,18 @@ class FilterTestHelper
         '1001-3000' => 'от 1000 до 3000',
         '3001-5000' => 'от 3000 до 5000',
         '5001-999999' => ' > 5000',
+      ),
+    );
+
+    $range = ProductParamName::model()->findByAttributes(array('key' => 'range'));
+    $this->filterElements[self::ELEMENT_RANGE] = array(
+      'id' => $range->id,
+      'label' => $range->name,
+      'type' => 'range',
+      'itemLabels' => array(
+        '0-5' => '< 6',
+        '6-10' => 'от 6 до 10',
+        '11-30' => 'от 11 до 30',
       ),
     );
 
