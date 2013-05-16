@@ -5,6 +5,9 @@
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
  * @package frontend.controllers
+ *
+ * @property string $errorCode
+ * @property string $errorMessage
  */
 class ErrorController extends FController
 {
@@ -33,17 +36,27 @@ class ErrorController extends FController
       Yii::app()->end();
     }
 
-    switch( $this->errorCode )
+    if( YII_DEBUG )
+      $this->render('errorDebug', $this->error);
+    else
     {
-      case 404:
-        $this->error404();
-        break;
-      case 402:
-        $this->error402();
-        break;
-      default:
-        $this->defaultError();
+      $methodName = 'error'.$this->errorCode;
+
+      if( method_exists($this, $methodName) )
+        $this->$methodName();
+      else
+        $this->render('error');
     }
+  }
+
+  public function getErrorCode()
+  {
+    return $this->errorCode;
+  }
+
+  public function getErrorMessage()
+  {
+    return $this->errorMessage;
   }
 
   protected function error404()
@@ -56,14 +69,6 @@ class ErrorController extends FController
     $this->render('error402', array(
       'loginForm' => method_exists($this, 'getLoginForm') ? $this->getLoginForm() : null,
     ));
-  }
-
-  protected function defaultError()
-  {
-    if( !YII_DEBUG )
-      $this->render('error');
-    else
-      $this->render('error'.$this->errorCode, $this->error);
   }
 
   protected function initError()
