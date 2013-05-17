@@ -28,8 +28,6 @@ class BMenuController extends BController
     $criteria->compare('item_id', $id);
     $criteria->compare('type', $type);
 
-    echo $menuId."\n".$id."\n".$type."\n".$position;
-
     /**
      * @var BFrontendMenuItem $item
      */
@@ -39,6 +37,9 @@ class BMenuController extends BController
     {
       $item->position = $position;
       $item->save();
+
+      echo $item->position;
+      Yii::app()->end();
     }
   }
 

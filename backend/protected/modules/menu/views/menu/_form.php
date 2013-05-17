@@ -41,7 +41,7 @@ echo $form->renderRequire();
             'header' => 'Позиция',
             'class' => 'BFrontendMenuGridPositionColumn',
             'gridId' => BFrontendMenuGridView::buildGridId($model),
-            'action' => '/menu/bMenu/setPosition'
+            'action' => 'setPosition'
           ),
           array('name' => 'url', 'header' => 'Url'),
           array('name' => 'type', 'header' => 'Тип', 'class' => 'BFrontendMenuGridTypeColumn'),
