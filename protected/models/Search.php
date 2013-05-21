@@ -51,7 +51,7 @@ class Search extends CComponent
   protected function getContent()
   {
     $parameters = array(
-      'text' => urlencode($this->query),
+      'text' => $this->query,
       'xml' => 'yes',
       'p' => $this->page - 1,
     );
