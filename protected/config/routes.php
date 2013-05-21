@@ -55,11 +55,11 @@ return array(
 
 	// link
 	'linkIndex' => array('link/index', 'pattern' => 'links/<page:\d+>', 'defaultParams' => array('page' => 1)),
-	'linkSection' => array('link/section', 'pattern' => 'links/<section:\w+>/<page:\d+>', 'defaultParams' => array('page' => 1)),
+	'linkSection' => array('link/section', 'pattern' => 'links/<url:\w+>/<page:\d+>', 'defaultParams' => array('page' => 1)),
 	'linkAdd' => array('link/add', 'pattern' => 'links/add'),
-	'linkOne' => array('link/one', 'pattern' => 'link/<id:\d+>'),
 
   // captcha
   'captchaImg' => array('index/captcha', 'pattern' => '<model:\w+>/captcha/v/<code:\w+>'),
   'captchaRef' => array('index/captcha', 'pattern' => '<model:\w+>/captcha/<refresh:refresh>/<code:\w+>'),
+
 );
