@@ -28,6 +28,9 @@ class FListView extends CListView
 
     $pager['pages'] = $this->dataProvider->getPagination();
 
+    if( $pager['pages']->pageCount <= 1 )
+      return;
+
     echo '<div class="'.$this->pagerCssClass.'">';
     $this->widget($class, $pager);
     echo '</div>';
