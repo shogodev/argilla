@@ -229,7 +229,16 @@ class BActiveForm extends TbActiveForm
    */
   public function uploadRow($model, $attribute, $multiple = true, $htmlOptions = array(), $gridOptions = array())
   {
-    return $this->inputRow('upload', $model, $attribute, CMap::mergeArray(array('multiple' => $multiple), $gridOptions), $htmlOptions);
+    return $this->inputRow(
+      'upload',
+      $model,
+      $attribute,
+      CMap::mergeArray(
+        array('multiple' => $multiple),
+        array('gridOptions' => $gridOptions)
+      ),
+      $htmlOptions
+    );
   }
 
   /**

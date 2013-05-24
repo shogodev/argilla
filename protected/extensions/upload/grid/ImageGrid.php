@@ -20,6 +20,9 @@ class ImageGrid
 
   public function getColumns()
   {
+    if( empty($this->columns) )
+      $this->initColumns();
+
     return $this->columns;
   }
 
@@ -28,8 +31,6 @@ class ImageGrid
     $this->widget = $widget;
     $this->gridId = $widget->htmlOptions['gridId'];
     $this->model  = $widget->model;
-
-    $this->initColumns();
   }
 
   protected function initColumns()
