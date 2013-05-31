@@ -92,25 +92,4 @@ class FFormInputElement extends CFormInputElement
               </div>
             </div>";
   }
-
-  public function getCheckboxlistTemplate()
-  {
-    $template = "<div class=\"clearfix m10\" style=\"padding-left: 163px\">";
-
-    foreach( $this->items as $id => $name )
-    {
-      $template .= '<div class="left">';
-
-      $template .= "<input type='checkbox' name='".get_class($this->getParent()->getModel())."[".$this->name."][]' value='".$id."' id='".get_class($this->getParent()->getModel())."_".$this->name."_".$id."' style='display: none;'>";
-      $template .= '<span style="margin-top: 2px; margin-right: 5px;" class="checkbox el-name-'.get_class($this->getParent()->getModel()).$this->name.'"></span>';
-      $template .= '<label for="'.get_class($this->getParent()->getModel())."_".$this->name."_".$id.'">'.$name.'</label>';
-
-      $template .= '</div>';
-    }
-
-    $template .= "</div>";
-
-    return $template;
-  }
-
 }
