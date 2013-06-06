@@ -157,6 +157,16 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
     return $criteria;
   }
 
+  public function getParameterVariants($key)
+  {
+    $variants  = array();
+    $parameter = BProductParamName::model()->findByAttributes(array('key' => $key));
+
+    if( $parameter )
+      $variants = $parameter->variants;
+
+    return $variants;
+  }
   public function attributeLabels()
   {
     return CMap::mergeArray(parent::attributeLabels(), array(
