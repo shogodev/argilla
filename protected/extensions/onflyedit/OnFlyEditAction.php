@@ -110,8 +110,9 @@ class OnFlyEditAction extends CAction
    */
   protected function parseGridId($gridId)
   {
-    preg_match("/(\w+)_(\w+)-(\w+)$/U", $gridId, $matches);
-    if( !empty($matches) )
+    $model = null;
+
+    if( preg_match("/(\w+)_(\w+)-(\w+)$/U", $gridId, $matches) )
     {
       $model = $matches[1];
       $table = $matches[2];
@@ -121,6 +122,11 @@ class OnFlyEditAction extends CAction
       {
         $model = new UploadModel($table);
       }
+    }
+    else
+    {
+      $model = preg_replace("/-.*/", "", $gridId);
+      $model = new $model;
     }
 
     return $model;
