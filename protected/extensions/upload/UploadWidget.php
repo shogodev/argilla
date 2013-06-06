@@ -71,6 +71,8 @@ class UploadWidget extends CJuiInputWidget
   /**
    * @var array
    */
+  public $gridOptions = array();
+
   public $gridClass;
 
   /**
@@ -155,11 +157,10 @@ class UploadWidget extends CJuiInputWidget
     $this->render($this->uploadView);
     $this->render($this->downloadView);
 
-    if( is_array($this->gridClass) && isset($this->gridClass['class']) )
-      $this->gridClass = Yii::createComponent($this->gridClass, $this);
+    if( !isset($this->gridOptions['class']) )
+      $this->gridOptions['class'] = $this->multiple ? 'ImageGrid' : 'SingleImageGrid';
 
-    if( $this->gridClass === null )
-      $this->gridClass = $this->multiple ? 'ImageGrid' : 'SingleImageGrid';
+    $this->gridClass = Yii::createComponent($this->gridOptions['class'], $this);
 
     $this->render($this->formGrid, array(
       'model'       => $this->model,
