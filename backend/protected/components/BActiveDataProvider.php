@@ -69,7 +69,9 @@ class BActiveDataProvider extends CActiveDataProvider
     parent::__construct($modelClass, $config);
 
     $this->attributeName  = $this->getId() . '_count';
-    $this->pagination     = array('pageSize' => $this->createPageSize());
+
+    if( $this->pagination !== false )
+      $this->pagination = array('pageSize' => $this->createPageSize());
   }
 
   /**
