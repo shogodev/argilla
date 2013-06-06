@@ -276,6 +276,7 @@ class UploadAction extends CAction
         else
           $newPath = $this->path.$pref.'_'.$model->name;
 
+        $this->addWatermark($thumb, $pref);
         $thumb->save($newPath);
         chmod($newPath, $this->fileMode);
       }
@@ -292,6 +293,27 @@ class UploadAction extends CAction
     $preview = 'data:image/png;base64,'.base64_encode($thumb->getImageAsString());
 
     return $preview;
+  }
+
+  private function addWatermark($thumb, $preffix = null)
+  {
+    $settings = Yii::app()->controller->module->getWatermarkSettings();
+    $settings = Arr::get($settings, BApplication::getMappedControllerId(), array());
+
+    if( $preffix && isset($settings[$preffix]) )
+    {
+      $settings = $settings[$preffix];
+      $position = Arr::get($settings, 'position', 'center');
+      $opacity  = Arr::get($settings, 'opacity', 100);
+      $offsetX  = Arr::get($settings, 'offsetX', 0);
+      $offsetY  = Arr::get($settings, 'offsetY', 0);
+
+      if( !file_exists($this->path.$settings['image']) )
+        return;
+
+      $watermark = Yii::app()->phpThumb->create($this->path.$settings['image']);
+      $thumb->addWatermark($watermark, $position, $opacity, $offsetX, $offsetY);
+    }
   }
 
   private function deleteThumbs($name)
