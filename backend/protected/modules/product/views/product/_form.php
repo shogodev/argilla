@@ -31,7 +31,7 @@ $form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId()));
 
   <?php echo $form->textFieldRow($model, 'price', array('class' => 'span4')); ?>
 
-  <?php echo $form->uploadRow($model, 'product_img')?>
+  <?php echo $form->uploadRow($model, 'product_img', true, array(), array('class' => 'ProductImageGrid'))?>
 
   <?php echo $form->ckeditorRow($model, 'content');?>
 

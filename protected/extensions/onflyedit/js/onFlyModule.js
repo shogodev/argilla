@@ -9,8 +9,8 @@ Backend.modules.onFly = function(box) {
     bindTextFields($);
 
     // Привязать drop down'ы.
-    $('body').on('change', 'select.onfly-edit-dropdown', function(_, elem) {
-      handler($, elem);
+    $('body').on('change', 'select.onfly-edit-dropdown', function() {
+      handler($, $(this));
     });
   };
 
@@ -42,7 +42,7 @@ Backend.modules.onFly = function(box) {
     data.gridId = gridId;
     data.value = wrappedElem.is("span") ? wrappedElem.text() : wrappedElem.val(); // Проверяем текстовое поле или список.
 
-    $.post(ajaxUrl, data, '', 'json')
+    $.post(ajaxUrl, data)
       .done(function(resp) {
         if (data.value == resp)
         {

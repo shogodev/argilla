@@ -32,6 +32,13 @@ class UploadModel extends CModel
     $this->tableName = $table;
   }
 
+  public function rules()
+  {
+    return array(
+      array('position, type, notice', 'save'),
+    );
+  }
+
   public function attributeNames()
   {
     return array('size', 'type', 'notice', 'position');
