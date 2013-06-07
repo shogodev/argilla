@@ -120,18 +120,15 @@ class UploadBehavior extends CActiveRecordBehavior
 
   protected function init()
   {
-    $prefix = Yii::app()->db->tablePrefix;
-    $tables = Yii::app()->db->schema->tables;
-
-    if( array_key_exists($prefix.$this->attribute, $tables) )
-    {
-      $this->table    = $prefix.$this->attribute;
-      $this->uploader = $this->UploaderFactory(false);
-    }
-    else
+    if( array_key_exists($this->attribute, $this->owner->attributes) )
     {
       $this->table    = $this->owner->tableName();
       $this->uploader = $this->UploaderFactory(true);
+    }
+    else
+    {
+      $this->table    = Yii::app()->db->tablePrefix.$this->attribute;
+      $this->uploader = $this->UploaderFactory(false);
     }
   }
 
@@ -151,7 +148,9 @@ class UploadBehavior extends CActiveRecordBehavior
       else
         return new ModelUploader($this);
     }
-    else return new TableUploader($this);
-
+    else
+    {
+      return new TableUploader($this);
+    }
   }
 }

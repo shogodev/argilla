@@ -1,7 +1,9 @@
 <?php
 /**
- * User: Sergey Glagolev <glagolev@shogo.ru>
- * Date: 28.08.12
+ * @author Sergey Glagolev <glagolev@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
  */
 class UploadBehaviorTest extends CDbTestCase
 {
@@ -15,7 +17,7 @@ class UploadBehaviorTest extends CDbTestCase
 
   public function testBeforeDelete()
   {
-    $model = BInfo::model()->findByPk('3');
+    $model = BInfo::model()->findByPk(3);
     $file  = array('name' => 'img.jpg');
     $model->asa('uploadBehavior')->attribute = 'info_files';
     $model->saveUploadedFile($file);
@@ -24,6 +26,30 @@ class UploadBehaviorTest extends CDbTestCase
     $files = $model->getUploadedFiles();
     $this->assertEquals(0, $files->ItemCount);
   }
-}
 
-?>
+  public function testInit()
+  {
+    $model = BInfo::model()->findByPk(4);
+
+    $behavior = new UploadBehavior();
+    $behavior->attach($model);
+
+    $property = new ReflectionProperty($behavior, 'uploader');
+    $property->setAccessible(true);
+    $property->getValue($behavior);
+
+    $behavior->attribute = 'info_files';
+    $method = new ReflectionMethod($behavior, 'init');
+    $method->setAccessible(true);
+
+    $method->invoke($behavior);
+    $this->assertInstanceOf('TableUploader', $property->getValue($behavior));
+
+    $behavior->attribute = 'img';
+    $method = new ReflectionMethod($behavior, 'init');
+    $method->setAccessible(true);
+
+    $method->invoke($behavior);
+    $this->assertInstanceOf('TreeModelUploader', $property->getValue($behavior));
+  }
+}

@@ -1,11 +1,6 @@
 <?php
 class OnFlyEditActionTest extends CTestCase
 {
-  public function setUp()
-  {
-
-  }
-
   public function testParseGridId()
   {
     $action = new OnFlyEditAction(null, 'null');
@@ -13,9 +8,9 @@ class OnFlyEditActionTest extends CTestCase
     $method->setAccessible(true);
 
     $model = $method->invoke($action, 'BGallery_gallery_image-files');
-    $this->assertEquals('UploadModel', get_class($model));
+    $this->assertInstanceOf('UploadModel', $model);
 
     $model = $method->invoke($action, 'BCounters-files');
-    $this->assertEquals('BCounters', get_class($model));
+    $this->assertInstanceOf('BCounters', $model);
   }
 }
