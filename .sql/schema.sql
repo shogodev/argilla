@@ -1,5 +1,5 @@
 -- This file was created by ShogoCMS $Id: d6242f0a510ed3000bd17d9bfba8d1ebf0872153 $
--- User: glagolev	Hostname: boojaka.shogo.ru
+-- User: tatarinov	Hostname: boojaka.shogo.ru
 -- PHP: 5.4.5 Phing 2.4.12
 -- Original prefix: argilla_
 -- MySQL dump 10.13  Distrib 5.1.63, for portbld-freebsd8.2 (amd64)
@@ -115,21 +115,21 @@ DROP TABLE IF EXISTS `argilla_banner`;
 CREATE TABLE `argilla_banner` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `position` int(11) NOT NULL DEFAULT '10',
-  `location` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
-  `title` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `url` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `img` varchar(255) CHARACTER SET utf8 DEFAULT NULL,
+  `location` varchar(255) DEFAULT NULL,
+  `title` varchar(255) NOT NULL,
+  `url` varchar(255) NOT NULL,
+  `img` varchar(255) DEFAULT NULL,
   `swf_w` int(4) DEFAULT NULL,
   `swf_h` int(4) DEFAULT NULL,
-  `code` varchar(511) CHARACTER SET utf8 DEFAULT NULL,
-  `pagelist` text CHARACTER SET utf8,
-  `pagelist_exc` text CHARACTER SET utf8,
+  `code` varchar(511) DEFAULT NULL,
+  `pagelist` text,
+  `pagelist_exc` text,
   `new_window` tinyint(1) DEFAULT '0',
   `visible` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `location` (`location`),
   KEY `postition` (`position`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -141,14 +141,14 @@ DROP TABLE IF EXISTS `argilla_callback`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `argilla_callback` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `phone` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `time` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `content` text CHARACTER SET utf8 NOT NULL,
-  `result` text CHARACTER SET utf8 NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `phone` varchar(255) NOT NULL,
+  `time` varchar(255) NOT NULL,
+  `content` text NOT NULL,
+  `result` text NOT NULL,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -187,7 +187,7 @@ CREATE TABLE `argilla_contact` (
   `notice` text,
   `img` varchar(512) DEFAULT NULL,
   `img_big` varchar(512) DEFAULT NULL,
-  `map` varchar(1023) DEFAULT NULL,
+  `map` varchar(2048) DEFAULT NULL,
   `visible` int(1) DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -264,11 +264,11 @@ DROP TABLE IF EXISTS `argilla_dir_banner_location`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `argilla_dir_banner_location` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(128) CHARACTER SET utf8 NOT NULL,
+  `name` varchar(128) NOT NULL,
   `deleted` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `name` (`name`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -347,13 +347,13 @@ DROP TABLE IF EXISTS `argilla_hint`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `argilla_hint` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `model` varchar(255) DEFAULT NULL,
-  `attribute` varchar(255) DEFAULT NULL,
-  `content` text NOT NULL,
+  `model` varchar(255) CHARACTER SET koi8r DEFAULT NULL,
+  `attribute` varchar(255) CHARACTER SET koi8r DEFAULT NULL,
+  `content` text CHARACTER SET koi8r NOT NULL,
   `popup` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `model` (`model`,`attribute`)
-) ENGINE=InnoDB DEFAULT CHARSET=koi8r;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -436,12 +436,12 @@ DROP TABLE IF EXISTS `argilla_menu_custom_item`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `argilla_menu_custom_item` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_bin NOT NULL,
-  `url` varchar(255) COLLATE utf8_bin NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `url` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `visible` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `name` (`name`,`url`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -454,13 +454,13 @@ DROP TABLE IF EXISTS `argilla_menu_custom_item_data`;
 CREATE TABLE `argilla_menu_custom_item_data` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `parent` int(11) NOT NULL,
-  `name` varchar(255) COLLATE utf8_bin NOT NULL,
-  `value` varchar(255) COLLATE utf8_bin NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `value` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   PRIMARY KEY (`id`),
   KEY `parent` (`parent`),
   KEY `fk_argilla_menu_custom_item_data_1` (`parent`),
   CONSTRAINT `fk_argilla_menu_custom_item_data_1` FOREIGN KEY (`parent`) REFERENCES `argilla_menu_custom_item` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -527,10 +527,10 @@ DROP TABLE IF EXISTS `argilla_migration`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `argilla_migration` (
-  `version` varchar(255) COLLATE utf8_bin NOT NULL,
+  `version` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `apply_time` int(11) DEFAULT NULL,
   PRIMARY KEY (`version`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -587,16 +587,16 @@ DROP TABLE IF EXISTS `argilla_notification`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `argilla_notification` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `index` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `name` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `email` text CHARACTER SET utf8 NOT NULL,
-  `subject` varchar(512) CHARACTER SET utf8 NOT NULL,
-  `view` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `message` text CHARACTER SET utf8 NOT NULL,
+  `index` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `email` text NOT NULL,
+  `subject` varchar(512) NOT NULL,
+  `view` varchar(255) NOT NULL,
+  `message` text NOT NULL,
   `visible` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   UNIQUE KEY `index` (`index`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -609,22 +609,22 @@ DROP TABLE IF EXISTS `argilla_order`;
 CREATE TABLE `argilla_order` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `user_id` int(10) unsigned DEFAULT NULL,
-  `name` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `email` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `phone` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `address` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `comment` text CHARACTER SET utf8 NOT NULL,
-  `type` enum('normal','fast') CHARACTER SET utf8 NOT NULL DEFAULT 'normal',
+  `name` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `phone` varchar(255) NOT NULL,
+  `address` varchar(255) NOT NULL,
+  `comment` text NOT NULL,
+  `type` enum('normal','fast') NOT NULL DEFAULT 'normal',
   `sum` decimal(10,2) NOT NULL,
   `ip` int(10) unsigned NOT NULL,
   `date_create` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `status` enum('new','confirmed','canceled') COLLATE utf8_bin NOT NULL DEFAULT 'new',
-  `order_comment` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `status` enum('new','confirmed','canceled') CHARACTER SET utf8 COLLATE utf8_bin NOT NULL DEFAULT 'new',
+  `order_comment` varchar(255) NOT NULL,
   `deleted` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
   CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `argilla_user` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -637,7 +637,7 @@ DROP TABLE IF EXISTS `argilla_order_product`;
 CREATE TABLE `argilla_order_product` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `order_id` int(10) unsigned NOT NULL,
-  `name` varchar(512) COLLATE utf8_bin NOT NULL,
+  `name` varchar(512) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `price` decimal(10,2) NOT NULL,
   `count` int(11) NOT NULL DEFAULT '1',
   `discount` decimal(10,2) NOT NULL,
@@ -645,7 +645,7 @@ CREATE TABLE `argilla_order_product` (
   PRIMARY KEY (`id`),
   KEY `order` (`order_id`),
   CONSTRAINT `argilla_order_product_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `argilla_order` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -658,13 +658,13 @@ DROP TABLE IF EXISTS `argilla_order_product_history`;
 CREATE TABLE `argilla_order_product_history` (
   `order_product_id` int(10) unsigned NOT NULL,
   `product_id` int(10) unsigned NOT NULL,
-  `url` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `img` varchar(255) CHARACTER SET utf8 NOT NULL,
-  `articul` varchar(255) CHARACTER SET utf8 NOT NULL,
+  `url` varchar(255) NOT NULL,
+  `img` varchar(255) NOT NULL,
+  `articul` varchar(255) NOT NULL,
   UNIQUE KEY `order_product_id` (`order_product_id`),
   KEY `product_id` (`product_id`),
   CONSTRAINT `id` FOREIGN KEY (`order_product_id`) REFERENCES `argilla_order_product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1009,12 +1009,12 @@ DROP TABLE IF EXISTS `argilla_seo_counters`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `argilla_seo_counters` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_bin NOT NULL,
-  `code` text COLLATE utf8_bin NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `code` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `main` int(1) NOT NULL DEFAULT '0',
   `visible` int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=MyISAM DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1052,14 +1052,14 @@ DROP TABLE IF EXISTS `argilla_seo_link_block`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `argilla_seo_link_block` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) COLLATE utf8_bin NOT NULL,
-  `code` text COLLATE utf8_bin NOT NULL,
-  `url` text COLLATE utf8_bin,
-  `key` varchar(255) COLLATE utf8_bin NOT NULL,
+  `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `code` text CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
+  `url` text CHARACTER SET utf8 COLLATE utf8_bin,
+  `key` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `position` int(1) NOT NULL DEFAULT '20',
   `visible` int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -1262,4 +1262,4 @@ CREATE TABLE `argilla_vacancy_file` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-04-16 15:29:56
+-- Dump completed on 2013-06-07 15:12:24
