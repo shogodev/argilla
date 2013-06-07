@@ -9,6 +9,7 @@
 class ProductModule extends BModule
 {
   public $defaultController = 'BProduct';
+
   public $name = 'Каталог продукции';
 
   public function getThumbsSettings()
@@ -19,5 +20,28 @@ class ProductModule extends BModule
         'pre' => array(130, 70),
       )
     );
+  }
+
+  /**
+   * Задаем параметры наложения ватермарка на изображения
+   *
+   * @return array
+   *
+   * Example:
+   *
+   * return array(
+   *  'product' => array(
+   *    'pre' => array(
+   *      'image' => 'watermarks/pre.png',
+   *      'position' => 'centerBottom',
+   *      'offsetX' => 0,
+   *      'offsetY' => -20,
+   *      ),
+   *    ),
+   *  );
+   */
+  public function getWatermarkSettings()
+  {
+    return array();
   }
 }
