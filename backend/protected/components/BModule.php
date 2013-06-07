@@ -91,6 +91,11 @@ class BModule extends CWebModule
     return $this->thumbsSettings;
   }
 
+  public function getWatermarkSettings()
+  {
+    return array();
+  }
+
   /**
    * Возвращаем массив контроллеров, которые нужно отображать в меню
    *
