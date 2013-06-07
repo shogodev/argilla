@@ -19,6 +19,8 @@ $form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId()));
 <table class="detail-view table table-striped table-bordered">
   <tbody>
 
+  <?php $this->renderPartial('_copier', CMap::mergeArray($_data_, array('form' => $form))); ?>
+
   <?php echo $form->textFieldRow($model, 'position', array('class' => 'span1')); ?>
 
   <?php echo $form->textFieldRow($model, 'name'); ?>

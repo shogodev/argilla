@@ -19,4 +19,6 @@ return [
   'assignment10' => ['product_id' => 9,  'section_id' => 3, 'type_id' => 1, 'category_id' => 1, 'collection_id' => 1],
   'assignment11' => ['product_id' => 10, 'section_id' => 1, 'type_id' => 2, 'category_id' => 1, 'collection_id' => 1],
 
+  'asgn2' => array('product_id' => 14, 'section_id' => 333, 'type_id' => 1, 'category_id' => 1, 'collection_id' => 1),
+  'asgn3' => array('product_id' => 15, 'section_id' => 444, 'type_id' => 1, 'category_id' => 1, 'collection_id' => 1),
 ];
