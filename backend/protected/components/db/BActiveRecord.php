@@ -25,25 +25,23 @@ abstract class BActiveRecord extends CActiveRecord
   /**
    * Получение CHtml::listData по стандартным ключам $key => $value
    *
-	 * @HINT: $value может использоваться как анонимная функция
-	 *
    * @param string $key
    * @param string|callable $value
    * @param CDbCriteria $criteria
    *
    * @return array
    */
-    public static function listData($key = 'id', $value = 'name', CDbCriteria $criteria = null)
+  public static function listData($key = 'id', $value = 'name', CDbCriteria $criteria = null)
+  {
+    $data = array();
+
+    foreach(static::model()->findAll($criteria) as $entry)
     {
-      $data = array();
-
-      foreach( static::model()->findAll($criteria) as $entry )
-			{
-          $data[$entry->{$key}] = is_callable($value) ? $value($entry) : $entry->{$value};
-      }
-
-      return $data;
+      $data[$entry->{$key}] = is_callable($value) ? $value($entry) : $entry->{$value};
     }
+
+    return $data;
+  }
 
   /**
    * Получение имени таблицы по имени текущей модели в виде {{class_name}}
@@ -226,9 +224,9 @@ abstract class BActiveRecord extends CActiveRecord
    */
   public function getPopupHints()
   {
-    if( empty($this->_popupHints) )
+    if( $this->_popupHints === null )
     {
-       $items = BHint::model()->findAllByAttributes(
+      $items = BHint::model()->findAllByAttributes(
         array(
           'model' => get_class($this),
           'popup' => '1'
@@ -258,7 +256,7 @@ abstract class BActiveRecord extends CActiveRecord
    */
   public function getHints()
   {
-    if( empty($this->_hints) )
+    if( $this->_hints === null )
     {
       $items = BHint::model()->findAllByAttributes(
         array(

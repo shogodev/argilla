@@ -41,6 +41,7 @@ class Search extends CComponent
   protected function initQuery()
   {
     $query = Yii::app()->request->getQuery('search');
+    $query = CHtml::encode(trim($query));
 
     if( !empty($query) )
       Yii::app()->session['search'] = $query;
