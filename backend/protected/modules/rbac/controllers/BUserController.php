@@ -22,7 +22,6 @@ class BUserController extends BController
 
     if( isset($attributes) )
     {
-      $model->password = $attributes['passwordNew'];
       $model->setAttributes($attributes);
 
       if( $model->save() )

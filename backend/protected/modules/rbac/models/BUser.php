@@ -136,10 +136,8 @@ class BUser extends BActiveRecord
    */
   protected function beforeSave()
   {
-    if( $this->isNewRecord )
-      $this->password = BUserIdentity::createPassword($this->username, $this->password);
-    if( !empty($this->passwordNew) )
-      $this->password = BUserIdentity::createPassword($this->username, $this->passwordNew);;
+    if( $this->isNewRecord || !empty($this->passwordNew))
+      $this->password = BUserIdentity::createPassword($this->username, $this->passwordNew);
 
     return parent::beforeSave();
   }
