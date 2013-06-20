@@ -5,8 +5,10 @@
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
  * @package frontend.models.product.filter
+ *
+ * @property integer $selectedMin;
+ * @property integer $selectedMax;
  */
-
 class ProductFilterElementRange extends ProductFilterElement
 {
   public $round = true;
@@ -14,6 +16,28 @@ class ProductFilterElementRange extends ProductFilterElement
   public $minValue = null;
 
   public $maxValue = null;
+
+  public function getSelectedMin()
+  {
+    if( !empty($this->selected) )
+      $selected = $this->normalizeValue(explode("-", $this->selected)[0]);
+
+    if( !isset($selected) )
+      $selected = $this->minValue;
+
+    return $selected;
+  }
+
+  public function getSelectedMax()
+  {
+    if( !empty($this->selected) )
+      $selected = $this->normalizeValue(explode("-", $this->selected)[1]);
+
+    if( !isset($selected) )
+      $selected = $this->maxValue;
+
+    return $selected;
+  }
 
   public function prepareAvailableValues($value)
   {
@@ -38,18 +62,27 @@ class ProductFilterElementRange extends ProductFilterElement
 
     $select = "(CASE \n";
 
+    $i = 0;
     foreach($this->itemLabels as $key => $value)
     {
       $min = explode("-", $key)[0];
       $max = explode("-", $key)[1];
-      $select .= "WHEN {$this->id} >= {$min} AND {$this->id} <= {$max} THEN '{$key}'\n";
+      $select .= "WHEN {$this->id} >= :{$i}_min AND {$this->id} <= :{$i}_max THEN :{$i}_key\n";
+
+      $criteria->params[":{$i}_min"] = $min;
+      $criteria->params[":{$i}_max"] = $max;
+      $criteria->params[":{$i}_key"] = $key;
+      $i++;
     }
 
     $select .= "ELSE 0 END)";
 
     // Пока единственное рабочее решение, GROUP по {$this->id} работает не корректно
-    $criteria->select = "{$select} AS {$this->id}_key_for_group \n, {$select} AS {$this->id} \n , COUNT(t.id) AS count";
+    $criteria->select = "{$select} AS :element_group \n, {$select} AS :element_id \n , COUNT(t.id) AS count";
     $criteria->group  = "{$this->id}_key_for_group";
+
+    $criteria->params[':element_id']    = $this->id;
+    $criteria->params[':element_group'] = $this->id.'_key_for_group';
 
     return $criteria;
   }

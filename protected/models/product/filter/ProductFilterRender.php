@@ -20,14 +20,22 @@ class ProductFilterRender extends CComponent
     $this->parent = $parent;
   }
 
-  public function begin()
+  public function begin($action = '')
   {
     $htmlOption = array(
       'name' => $this->parent->filterKey,
       'autocomplete' => 'off'
     );
 
-    return CHtml::form(Yii::app()->controller->getCurrentUrl(), null, $htmlOption);
+    if( empty($action) )
+      $action = Yii::app()->controller->getCurrentUrl();
+
+    return CHtml::form($action, 'post', $htmlOption);
+  }
+
+  public function submitProperty()
+  {
+    return CHtml::hiddenField($this->parent->filterKey.'[submit]', 1);
   }
 
   public function end()
