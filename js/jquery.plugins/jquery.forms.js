@@ -51,7 +51,7 @@
                 }
               }
             });
-          break;
+            break;
           case 'radio':
             if(el.prop('checked')) {
               el.next().addClass('check_'+el.type);
@@ -74,7 +74,7 @@
                 el.next().addClass('check_'+el.type);
               }
             });
-          break;
+            break;
           case 'file':
             el.id = el.attr('id');
             el.show();
@@ -85,7 +85,7 @@
             el.emulate.find('input').change(function() {
               el.emulate.find('.input').html($(this).val());
             });
-          break;
+            break;
         }
       }
     });
@@ -95,6 +95,6 @@
     checkbox : true,
     radio    : true,
     file     : true,
-    file_bt  : 'Îáçîð'
+    file_bt  : 'ÐžÐ±Ð·Ð¾Ñ€'
   };
 })(jQuery);
