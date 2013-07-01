@@ -50,7 +50,7 @@ abstract class BActiveRecord extends CActiveRecord
    */
   public function tableName()
   {
-    return Utils::camelToSnakeCase(BApplication::cutClassPrefix(get_class($this)));
+    return '{{'.Utils::toSnakeCase(BApplication::cutClassPrefix(get_class($this))).'}}';
   }
 
   /**
