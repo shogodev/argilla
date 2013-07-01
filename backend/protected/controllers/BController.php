@@ -8,6 +8,8 @@
  */
 abstract class BController extends CController
 {
+  public $enabled = true;
+
   public $position = 0;
 
   public $name = '[Не задано]';
@@ -167,7 +169,9 @@ abstract class BController extends CController
 
   public function actionCreate()
   {
-    $this->actionSave(new $this->modelClass);
+    $model = new $this->modelClass;
+    $model->attributes = Yii::app()->request->getQuery(get_class($model));
+    $this->actionSave($model);
   }
 
   /**
