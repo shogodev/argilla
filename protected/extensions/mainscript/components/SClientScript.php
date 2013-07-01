@@ -21,6 +21,22 @@ class SClientScript extends CClientScript
   }
 
   /**
+   * @param $url
+   * @param null $position
+   *
+   * @return $this
+   */
+  public function unregisterScriptFile($url, $position = null)
+  {
+    if( $position === null )
+      $position = $this->defaultScriptFilePosition;
+
+    unset($this->scriptFiles[$position][$url]);
+
+    return $this;
+  }
+
+  /**
    * Происходит очистка уже загруженных скриптов,
    * для того, чтобы в нужном порядке загрузить список скриптов
    *
