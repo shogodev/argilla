@@ -1,9 +1,10 @@
 <?php
 /**
- * User: Sergey Glagolev <glagolev@shogo.ru>
- * Date: 12.10.12
+ * @author Sergey Glagolev <glagolev@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
  */
-
 class YandexShare extends CWidget
 {
   public $htmlOptions;
@@ -26,7 +27,8 @@ class YandexShare extends CWidget
       'data-yashareL10n' => $this->language,
       'data-yashareType' => $this->type,
       'data-yashareQuickServices' => $this->services,
-    ));
+    ), false, false);
+    echo CHtml::closeTag('div');
     echo CHtml::closeTag('div');
   }
 }
