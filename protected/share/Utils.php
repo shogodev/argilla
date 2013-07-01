@@ -31,16 +31,16 @@ class Utils
 
   /**
    * @param string $str
-   * @param bool $method_format
+   * @param bool $methodFormat
    *
    * @return string
    */
-  public static function toCamelCaps($str, $method_format = false)
+  public static function toCamelCase($str, $methodFormat = false)
   {
     $arr  = explode("_", $str);
     $name = array_shift($arr);
 
-    if( !$method_format )
+    if( !$methodFormat )
       $name = ucfirst($name);
 
     if( count($arr) )
@@ -48,6 +48,15 @@ class Utils
         $name .= ucfirst($value);
 
     return $name;
+  }
+
+  /**
+   * @param string $class
+   * @return string
+   */
+  public static function toSnakeCase($class)
+  {
+    return strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $class));
   }
 
   /**
@@ -200,18 +209,6 @@ class Utils
   }
 
   /**
-   * Получение имени таблицы по имени модели в виде {{class_name}}
-   *
-   * @param string $class
-   *
-   * @return string
-   */
-  public static function camelToSnakeCase($class)
-  {
-    return '{{'.strtolower(preg_replace('/([a-z])([A-Z])/', '$1_$2', $class)).'}}';
-  }
-
-  /**
    * Возводит первый символ строки в верхний регистр
    * @param $string
    * @return string
@@ -219,5 +216,25 @@ class Utils
   public static function ucfirst($string)
   {
     return mb_strlen($string) > 1 ? mb_strtoupper(mb_substr($string, 0, 1)).mb_substr($string, 1) : mb_strtoupper(mb_substr($string, 0, 1));
+  }
+
+  public static function isDecimalEmpty($value)
+  {
+    return empty($value) || $value === '0.00' ? true : false;
+  }
+
+  /**
+   * @param $number
+   * @param array|string $titles
+   * @return string
+   */
+  public static function plural($number, $titles)
+  {
+    $cases = [2, 0, 1, 1, 1, 2];
+
+    if( !is_array($titles) )
+      $titles = explode(',', $titles);
+
+    return $titles[ ($number%100 > 4 && $number %100 < 20) ? 2 : $cases[min($number%10, 5)] ];
   }
 }

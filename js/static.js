@@ -44,7 +44,7 @@ function checkResponse(response, form)
     if( response.messageForm !== undefined )
     {
       form.html('<div id=\'form_success_message\'>' + response.messageForm + '</div>');
-      scrollTo('#form_success_message');
+      scroll_to('#form_success_message');
     }
   }
 
@@ -62,10 +62,10 @@ function updateElements(data)
 
       if( $(selector).is('input') )
         $(selector).val(data[i]);
-      else if( $('.' + i).hasClass('html') )
-        $(selector).html(data[i]);
-      else
+      else if( $('.' + i).hasClass('text') )
         $(selector).text(data[i]);
+      else
+      $(selector).replaceWith(data[i]);
     }
   }
 }

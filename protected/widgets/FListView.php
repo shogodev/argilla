@@ -14,6 +14,8 @@ class FListView extends CListView
 
   public $ajaxUpdate = false;
 
+  public $emptyText = 'Ни одного элемента не найдено';
+
   public function renderPager()
   {
     if( !$this->enablePagination )
@@ -38,7 +40,6 @@ class FListView extends CListView
 
   public function renderEmptyText()
   {
-    $emptyText = 'Ни одного элемента не найдено';
-    echo CHtml::tag('div', array('class' => 'empty m20'), $emptyText);
+    echo CHtml::tag('div', array('class' => 'empty m20'), $this->emptyText);
   }
 }
