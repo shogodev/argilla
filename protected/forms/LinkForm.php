@@ -1,50 +1,43 @@
 <?php
 /**
- * @author Nikita Melnikov <nickswdit@gmail.com>
+ * @author Sergey Glagolev <glagolev@shogo.ru>
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
  */
 return array(
-	'class' => 'form m20',
+  'class' => 'form',
+  'description' => 'Поля, отмеченные знаком <span class="required">*</span> , обязательны для заполнения.',
 
-	'elements' => array(
+  'elements' => array(
 
-		'title' => array(
-			'label'  => 'Текст ссылки',
-			'type'   => 'text',
-		),
+    'url' => array(
+      'type' => 'text',
+    ),
 
-		'email' => array(
-			'label'  => 'Email',
-			'type'   => 'text',
-		),
+    'title' => array(
+      'type' => 'text',
+    ),
 
-		'url' => array(
-			'label'  => 'Url',
-			'type'   => 'text',
-		),
+    'content' => array(
+      'type' => 'textarea',
+    ),
 
-		'product_id' => array(
-			'type' => 'dropdownlist',
-			'items' => CHtml::listData(LinkSection::model()->findAll(), 'id', 'name'),
-		),
+    'email' => array(
+      'type' => 'text',
+    ),
 
-		'content' => array(
-			'label'  => 'Полный текст',
-			'type'   => 'textarea',
-			'attributes' => array(
-				'cols' => 5,
-				'rows' => 5
-			),
-		),
-	),
+    'section_id' => array(
+      'type' => 'dropdownlist',
+      'items' => CHtml::listData(LinkSection::model()->findAll(), 'id', 'name'),
+    ),
+  ),
 
-	'buttons' => array(
-		'submit' => array(
-			'type'  => 'submit',
-			'class' => 'btn btn-red btn-submit',
-			'value' => 'Отправить'
-		),
-	),
+  'buttons' => array(
+    'submit' => array(
+      'type' => 'submit',
+      'class' => 'btn',
+      'value' => 'Отправить'
+    ),
+  ),
 );
