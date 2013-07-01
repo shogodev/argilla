@@ -25,15 +25,12 @@ class LinkControllerTest extends CDbTestCase
       ->method('render')
       ->with(
         $this->equalTo('section'),
-        $this->equalTo([
-          'links' => [
-            $this->links('link2'),
-            $this->links('link1'),
-            $this->links('link4'),
-            $this->links('link3'),
-          ],
-          'pages' => new FFixedPageCountPagination(1),
-        ])
+        $this->logicalAnd(
+          $this->arrayHasKey('model'),
+          $this->arrayHasKey('sections'),
+          $this->arrayHasKey('dataProvider'),
+          $this->arrayHasKey('pages')
+        )
       );
 
     /** @var $controller LinkController */

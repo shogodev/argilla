@@ -65,13 +65,4 @@ class LinkController extends FController
       'pages' => $pages,
     ]);
   }
-
-  public function actionAdd()
-  {
-    $form = new FForm('LinkForm', new Link());
-
-    $this->render('add', array(
-      'form' => $form,
-    ));
-  }
 }
