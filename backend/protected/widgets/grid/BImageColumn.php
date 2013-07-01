@@ -8,6 +8,8 @@
  */
 class BImageColumn extends BDataColumn
 {
+  public $filter = false;
+
   protected function renderDataCellContent($row, $data)
   {
     if( !isset($this->htmlOptions['class']) )
