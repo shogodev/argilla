@@ -35,24 +35,25 @@ class FActiveRecord extends CActiveRecord
   }
 
   /**
-   * @param CActiveRecord $object
+   * @param FActiveRecord $object
    *
-   * @return CActiveRecord
+   * @return FActiveRecord
    */
-  public function findThroughAssociation(CActiveRecord $object)
+  public function findThroughAssociation(FActiveRecord $object)
   {
-    $association = Association::model()->source($this)->destination($object)->find();
+    /**@var Association $association*/
+    $association = Association::model()->setSource($this)->setDestination($object)->find();
 
     return !empty($association) ? $object->findByPk($association->dst_id) : null;
   }
 
   /**
-   * @param CActiveRecord $object
+   * @param FActiveRecord $object
    * @param $reverseMode
    *
-   * @return array
+   * @return FActiveRecord[]
    */
-  public function findAllThroughAssociation(CActiveRecord $object, $reverseMode = false)
+  public function findAllThroughAssociation(FActiveRecord $object, $reverseMode = false)
   {
     $ids = array();
 
@@ -61,7 +62,7 @@ class FActiveRecord extends CActiveRecord
     $key         = $reverseMode ? 'src_id' : 'dst_id';
     $id          = $reverseMode ? $this->id : null;
 
-    foreach( Association::model()->source($source)->destination($destination, $id)->findAll() as $association )
+    foreach(Association::model()->setSource($source)->setDestination($destination)->findAll() as $association)
       $ids[] = $association->{$key};
 
     return $object->findAllByPk($ids);
