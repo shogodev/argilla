@@ -1,67 +1,77 @@
 <?php
 /**
  * @author Nikita Melnikov <nickswdit@gmail.com>
+ * @author Vladimir Utenkov <utenkov@shogo.ru>
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
  */
 class LinkController extends FController
 {
-	public function actionIndex()
-	{
-		return $this->render('index', array(
-			'dataProvider' => new FActiveDataProvider('LinkSection')
-		));
-	}
+  public function actionIndex()
+  {
+    $sections = LinkSection::model()->findAll();
 
-	public function actionSection($url)
-	{
-		/**@var LinkSection $section*/
-		$section = LinkSection::model()->findByAttributes(array('url' => $url));
+    $form = new FForm('LinkForm', new Link());
+    $form->loadFromSession = true;
+    $form->clearAfterSubmit = true;
 
-		if( $section === null )
-			throw new CHttpException(404);
+    $form->ajaxValidation();
 
-		$this->breadcrumbs = array(
-			'Каталог ссылок' => $this->createUrl('link/index'),
-			$section->name,
-		);
+    if( Yii::app()->request->isAjaxRequest && $form->save() )
+    {
+      $form->responseSuccess(CHtml::tag('div', array('class' => 'center bb'), 'Ваша ссылка успешно отправлена.'));
+    }
+    else
+    {
+      $this->render('index', [
+        'sections' => $sections,
+        'form' => $form,
+      ]);
+    }
+  }
 
-		$criteria = new CDbCriteria();
-		$criteria->compare('section_id', $section->id);
+  /**
+   * @param string $section
+   * @param int $page
+   *
+   * @throws CHttpException
+   */
+  public function actionSection($section, $page)
+  {
+    /** @var $model LinkSection */
+    $model = LinkSection::model()->whereUrl($section)->find();
 
-		$this->render('section', array(
-				'dataProvider' => new FActiveDataProvider('Link', array(
-					'criteria' => $criteria,
-				)),
-			));
-	}
+    if( $model === null )
+    {
+      throw new CHttpException(404);
+    }
 
-	public function actionOne($id)
-	{
-		/**@var Link $link*/
-		$link = Link::model()->findByPk($id);
+    $this->breadcrumbs = [
+      'Каталог ссылок' => $this->createUrl('link/index'),
+      $model->name,
+    ];
 
-		if( $link === null )
-			throw new CHttpException(404);
+    $pages = new FFixedPageCountPagination($model->pageCount);
 
-		$this->breadcrumbs = array(
-			'Каталог ссылок' => $this->createUrl('link/index'),
-			$link->section->name => $this->createUrl('link/section', array('url' => $link->section->url)),
-			$link->title,
-		);
+    /** @var $links Link[] */
+    $links = $model->getLinksOnPage($page);
+    $sections = LinkSection::model()->findAll();
 
-		$this->render('link', array(
-			'link' => $link,
-		));
-	}
+    $this->render('section', [
+      'model' => $model,
+      'sections' => $sections,
+      'dataProvider' => new FArrayDataProvider($links),
+      'pages' => $pages,
+    ]);
+  }
 
-	public function actionAdd()
-	{
-		$form = new FForm('LinkForm', new Link());
+  public function actionAdd()
+  {
+    $form = new FForm('LinkForm', new Link());
 
-		$this->render('add', array(
-				'form' => $form,
-		));
-	}
+    $this->render('add', array(
+      'form' => $form,
+    ));
+  }
 }
