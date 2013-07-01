@@ -11,18 +11,16 @@
  *
  * @method static LinkSection model(string $className = __CLASS__)
  *
- * Атрибуты:
  * @property integer $id
  * @property string  $name
  * @property string  $url
  * @property integer $position
  * @property boolean $visible
  *
- * Отношения:
- * @property Link[]  $links Возвращает все видимые ссылки в этой секции.
- * @property integer $linkCount Возвращает количество видимых ссылок в этой секции.
+ * @property Link[]  $links Все видимые ссылки в текущей секции.
+ * @property integer $linkCount Количество видимых ссылок в текущей секции.
  *
- * @property integer $pageCount Возвращает количество страниц в этой секции.
+ * @property integer $pageCount Количество страниц в текущей секции.
  */
 class LinkSection extends FActiveRecord
 {
@@ -45,7 +43,7 @@ class LinkSection extends FActiveRecord
   }
 
   /**
-   * Скоуп по умолчинию. Отыскивает видимые секции и сортирует их по позиции по возрастанию.
+   * Видимые секции отсортированные по позиции по возрастанию.
    *
    * @return array
    */
@@ -61,11 +59,11 @@ class LinkSection extends FActiveRecord
   }
 
   /**
-   * Именованный скоуп. Отыскивает секцию с указанным URL.
+   * Секция с указанным URL.
    *
    * @param string $url URL секции.
    *
-   * @return LinkSection Владелец.
+   * @return LinkSection
    */
   public function whereUrl($url)
   {
@@ -79,9 +77,8 @@ class LinkSection extends FActiveRecord
     return $this;
   }
 
-
   /**
-   * Возвращает количество страниц в этой секции.
+   * Возвращает количество страниц в текущей секции.
    *
    * @return int Количество страниц.
    */
@@ -96,14 +93,20 @@ class LinkSection extends FActiveRecord
   }
 
   /**
-   * Возвращает видимые ссылки из этой секции на указанной странице.
+   * Возвращает видимые ссылки из текущей секции на указанной странице.
    *
-   * @param int $page Страница для которой вернуть ссылки.
+   * @param int $page Страница, для которой вернуть ссылки.
    *
    * @return Link[] Ссылки на странице.
    */
   public function getLinksOnPage($page)
   {
     return Link::model()->visible()->inSection($this->id)->onPage($page)->findAll();
+  }
+
+  protected function afterFind()
+  {
+    $this->url = Yii::app()->controller->createUrl('link/section', array('section' => $this->url));
+    parent::afterFind();
   }
 }

@@ -10,10 +10,8 @@
  * Class Link Ссылка на ресурс по теме.
  *
  * @method static Link model(string $className = __CLASS__)
+ * @method Link visible()
  *
- * @method Link visible() Именованный скоуп. Отыскивает все видимые ссылки.
- *
- * Атрибуты:
  * @property integer $id
  * @property integer $section_id
  * @property string  $title
@@ -26,12 +24,11 @@
  * @property boolean $visible
  * @property integer $position
  *
- * Отношения:
- * @property LinkSection $section Возвращает секцию которой принадлежит эта ссылка.
+ * @property LinkSection $section Секция, к которой принадлежит данная ссылка.
  */
 class Link extends FActiveRecord
 {
-  const LINKS_PER_PAGE = 5;
+  const LINKS_PER_PAGE = 10;
 
   public function tableName()
   {
@@ -41,7 +38,7 @@ class Link extends FActiveRecord
   public function rules()
   {
     return [
-      ['title, url', 'required'],
+      ['title, url, section_id', 'required'],
       ['title, url, region', 'length', 'max' => 255, 'min' => 3],
       ['url', 'url'],
       ['email', 'email'],
@@ -68,9 +65,8 @@ class Link extends FActiveRecord
     ];
   }
 
-
   /**
-   * Скоуп по умолчанию. Отыскивает все ссылки и сортирует их по атрибуту 'position' по возрастанию.
+   * Ссылки отсортированные по атрибуту 'position' по возрастанию.
    *
    * @return array
    */
@@ -93,13 +89,12 @@ class Link extends FActiveRecord
     ];
   }
 
-
   /**
-   * Именованный скоуп. Отыскивает ссылки на указанной странице.
+   * Ссылки на указанной странице.
    *
-   * @param int $page Номер страницы для которой найти ссылки.
+   * @param int $page Номер страницы, для которой нужно найти ссылки.
    *
-   * @return Link Владелец.
+   * @return Link
    */
   public function onPage($page)
   {
@@ -114,11 +109,11 @@ class Link extends FActiveRecord
   }
 
   /**
-   * Именованный скоуп. Отыскивает ссылки в указанной секции.
+   * Ссылки в указанной секции.
    *
-   * @param int $sectionId ID секции для которой искать ссылки.
+   * @param int $sectionId ID секции, для которой искать ссылки.
    *
-   * @return Link Владелец.
+   * @return Link
    */
   public function inSection($sectionId)
   {
@@ -133,11 +128,11 @@ class Link extends FActiveRecord
   }
 
   /**
-   * Именованный скоуп. Отыскивает ссылоки на всех страницах перед указанной.
+   * Ссылки на всех страницах перед указанной.
    *
    * @param int $page Страница до которой искать ссылки.
    *
-   * @return Link Владелец.
+   * @return Link
    */
   public function linksOnPagesBefore($page)
   {
@@ -150,7 +145,6 @@ class Link extends FActiveRecord
 
     return $this;
   }
-
 
   public function beforeSave()
   {
@@ -169,7 +163,6 @@ class Link extends FActiveRecord
 
     return false;
   }
-
 
   /**
    * Выбирает страницу для новой ссылки.

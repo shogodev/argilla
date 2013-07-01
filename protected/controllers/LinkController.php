@@ -10,38 +10,58 @@ class LinkController extends FController
 {
   public function actionIndex()
   {
-    $this->render('index', [
-      'dataProvider' => new FActiveDataProvider('LinkSection'),
-    ]);
+    $sections = LinkSection::model()->findAll();
+
+    $form = new FForm('LinkForm', new Link());
+    $form->loadFromSession = true;
+    $form->clearAfterSubmit = true;
+
+    $form->ajaxValidation();
+
+    if( Yii::app()->request->isAjaxRequest && $form->save() )
+    {
+      $form->responseSuccess(CHtml::tag('div', array('class' => 'center bb'), 'Ваша ссылка успешно отправлена.'));
+    }
+    else
+    {
+      $this->render('index', [
+        'sections' => $sections,
+        'form' => $form,
+      ]);
+    }
   }
 
   /**
-   * @param string $url
+   * @param string $section
    * @param int $page
    *
    * @throws CHttpException
    */
-  public function actionSection($url, $page)
+  public function actionSection($section, $page)
   {
-    /** @var $section LinkSection */
-    $section = LinkSection::model()->whereUrl($url)->find();
-    if( $section === null )
+    /** @var $model LinkSection */
+    $model = LinkSection::model()->whereUrl($section)->find();
+
+    if( $model === null )
     {
       throw new CHttpException(404);
     }
 
     $this->breadcrumbs = [
       'Каталог ссылок' => $this->createUrl('link/index'),
-      $section->name,
+      $model->name,
     ];
 
-    $pages = new FFixedPageCountPagination($section->pageCount);
+    $pages = new FFixedPageCountPagination($model->pageCount);
 
     /** @var $links Link[] */
-    $links = $section->getLinksOnPage($page);
+    $links = $model->getLinksOnPage($page);
+    $sections = LinkSection::model()->findAll();
 
     $this->render('section', [
-      'links' => $links,
+      'model' => $model,
+      'sections' => $sections,
+      'dataProvider' => new FArrayDataProvider($links),
       'pages' => $pages,
     ]);
   }

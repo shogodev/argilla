@@ -51,12 +51,12 @@ return array(
   // db routing
   'productOne'              => array('product/one',              'pattern' => '<url:\w+>', 'models' => array('url' => 'Product'), 'class' => 'DBRule'),
 
-  'productSections'          => array('product/sections',        'pattern' => 'sections'),
+  'productSections'         => array('product/sections',        'pattern' => 'sections'),
 
-	// link
-	'linkIndex' => array('link/index', 'pattern' => 'links/<page:\d+>', 'defaultParams' => array('page' => 1)),
-	'linkSection' => array('link/section', 'pattern' => 'links/<url:\w+>/<page:\d+>', 'defaultParams' => array('page' => 1)),
-	'linkAdd' => array('link/add', 'pattern' => 'links/add'),
+  // link
+  'linkIndex' => array('link/index', 'pattern' => 'links/<page:\d+>', 'defaultParams' => array('page' => 1)),
+  'linkSection' => array('link/section', 'pattern' => 'links/<section:\w+>/<page:\d+>', 'defaultParams' => array('page' => 1)),
+  'linkAdd' => array('link/add', 'pattern' => 'links/add'),
 
   // captcha
   'captchaImg' => array('index/captcha', 'pattern' => '<model:\w+>/captcha/v/<code:\w+>'),
