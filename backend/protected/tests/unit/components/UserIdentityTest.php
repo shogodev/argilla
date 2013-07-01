@@ -24,7 +24,7 @@ class UserIdentityTest extends CTestCase
   {
     $user = new BUser();
     $user->username = 'test';
-    $user->password = 'test';
+    $user->passwordNew = 'test';
     $user->save(false);
 
     $this->assertEquals(BUserIdentity::createPassword('test', 'test'), $user->password);
