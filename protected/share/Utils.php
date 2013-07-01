@@ -76,10 +76,10 @@ class Utils
    */
   public static function stripText($str, $n = 150)
   {
-    if( strlen($str) > $n )
+    if( mb_strlen($str, 'UTF-8') > $n )
     {
-      $str = substr($str, 0, $n + 1);
-      $str = substr($str, 0, strrpos($str, " ") - $n - 1);
+      $str = mb_substr($str, 0, $n + 1, 'UTF-8');
+      $str = mb_substr($str, 0, mb_strrpos($str, " ", 'UTF-8') - $n - 1, 'UTF-8').'...';
     }
 
     return $str;
