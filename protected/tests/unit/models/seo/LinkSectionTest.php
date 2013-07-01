@@ -18,6 +18,28 @@ class LinkSectionTest extends CDbTestCase
     'links' => 'Link'
   ];
 
+  private $_oldController;
+
+
+  protected function setUp()
+  {
+    $this->_oldController = Yii::app()->controller;
+
+    $controllerStub = $this->getMockBuilder('LinkController')->disableOriginalConstructor()->getMock();
+    $controllerStub->expects($this->any())->method('createUrl')->will($this->returnValue('some/url'));
+    Yii::app()->controller = $controllerStub;
+
+    parent::setUp();
+  }
+
+  protected function tearDown()
+  {
+    Yii::app()->controller = $this->_oldController;
+
+    parent::tearDown();
+  }
+
+
   public function testDefaultScope()
   {
     $sections = LinkSection::model()->findAll();
