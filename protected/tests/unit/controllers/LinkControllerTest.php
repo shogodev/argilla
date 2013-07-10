@@ -25,12 +25,15 @@ class LinkControllerTest extends CDbTestCase
       ->method('render')
       ->with(
         $this->equalTo('section'),
-        $this->logicalAnd(
-          $this->arrayHasKey('model'),
-          $this->arrayHasKey('sections'),
-          $this->arrayHasKey('dataProvider'),
-          $this->arrayHasKey('pages')
-        )
+        $this->callback(function($params)
+        {
+          $this->assertInstanceOf('LinkSection', $params['model']);
+          $this->assertArrayHasKey('sections', $params);
+          $this->assertInstanceOf('FArrayDataProvider', $params['dataProvider']);
+          $this->assertInstanceOf('FFixedPageCountPagination', $params['pages']);
+
+          return true;
+        })
       );
 
     /** @var $controller LinkController */
