@@ -24,6 +24,8 @@ class BGridView extends TbGridView
 
   public $afterAjaxUpdate = 'notifyGridObservers';
 
+  public $ajaxUpdate = 'flash-message';
+
   public $ajaxUpdateError;
 
   /**
@@ -69,7 +71,7 @@ class BGridView extends TbGridView
         $column->renderFilterCell();
         echo '</div>';
       }
-      echo "<a href=\"".'?'."\" rel=\"tooltip\" class=\"btn btn-alone update\" title=\"Очистить\"></a>";
+      echo "<a href=\"".'?'.(!empty($this->owner->popup) ? 'popup=1' : '')."\" rel=\"tooltip\" class=\"btn btn-alone update\" title=\"Очистить\"></a>";
       echo "</div>\n";
     }
   }
@@ -99,17 +101,18 @@ class BGridView extends TbGridView
         jQuery.fn.yiiGridView.notifyObservers(id);
     }");
 
-    $this->reinstallTooltips();
+    $this->addObservers();
   }
 
-  protected function reinstallTooltips()
+  protected function addObservers()
   {
     $afterAjaxUpdate = "function(id) {
       jQuery('.tooltip').remove();
+      jQuery('.flash').animate({opacity: 0.5}, 5000).fadeOut('fast');
     }";
 
     Yii::app()->clientScript->registerScript(
-      'reinstallTooltips',
+      'observers'.$this->id,
       "jQuery.fn.yiiGridView.addObserver('".$this->id."', $afterAjaxUpdate)",
       CClientScript::POS_READY
     );

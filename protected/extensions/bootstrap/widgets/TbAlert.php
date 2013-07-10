@@ -133,7 +133,7 @@ class TbAlert extends CWidget
 
 		/** @var CClientScript $cs */
 		$cs = Yii::app()->getClientScript();
-		$cs->registerScript(__CLASS__.'#'.$id, "jQuery('{$selector}').alert();");
+		$cs->registerScript(__CLASS__.'#'.$id, "jQuery('{$selector}').alert().animate({opacity: 0.5}, 5000).fadeOut('fast')");
 
 		foreach ($this->events as $name => $handler)
 		{

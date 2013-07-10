@@ -16,6 +16,8 @@ class BPkColumn extends BDataColumn
 
   public $header = '#';
 
+  public $ajaxUrl;
+
   protected $popup = false;
 
   protected $assocSrcId;
@@ -24,8 +26,6 @@ class BPkColumn extends BDataColumn
 
   protected $assocDst;
 
-  protected $ajaxUrl;
-
   public function init()
   {
     $this->popup      = Yii::app()->controller->popup;
@@ -33,11 +33,15 @@ class BPkColumn extends BDataColumn
     $this->assocSrc   = Yii::app()->request->getQuery('src');
     $this->assocDst   = Yii::app()->request->getQuery('dst');
 
-    $this->ajaxUrl = Yii::app()->controller->createUrl(
-      'association', array('srcId' => $this->assocSrcId, 'src' => $this->assocSrc, 'dst' => $this->assocDst)
-    );
+    if( $this->ajaxUrl === null )
+    {
+      $this->ajaxUrl = Yii::app()->controller->createUrl(
+        'association', array('srcId' => $this->assocSrcId, 'src' => $this->assocSrc, 'dst' => $this->assocDst)
+      );
 
-    $this->registerScript();
+      $this->registerScript();
+    }
+
     parent::init();
   }
 
