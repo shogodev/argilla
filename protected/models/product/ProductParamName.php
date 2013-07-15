@@ -131,12 +131,8 @@ class ProductParamName extends FActiveRecord
     {
       case 'text':
       case 'slider':
-      $this->value = $paramValue['value'];
-        break;
-
-      case 'radio':
-        $this->value = $paramValue['variant_id'];
-        break;
+        $this->value = $paramValue['value'];
+      break;
 
       default:
         $this->value[] = $paramValue['variant_id'];
