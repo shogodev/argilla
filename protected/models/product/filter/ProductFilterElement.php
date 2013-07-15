@@ -10,11 +10,19 @@
  */
 abstract class ProductFilterElement extends CComponent
 {
+  const MERGE_TYPE_NONE = '';
+
+  const MERGE_TYPE_OR = 'OR';
+
+  const MERGE_TYPE_AND = 'AND';
+
   public $id;
 
   public $key;
 
   public $type;
+
+  public $mergeType = self::MERGE_TYPE_NONE;
 
   public $label;
 
@@ -23,6 +31,8 @@ abstract class ProductFilterElement extends CComponent
   public $selected;
 
   public $disabled = array();
+
+  public $htmlOptions = array();
 
   /**
    * @var ProductFilterElementItem[] $items
@@ -35,10 +45,6 @@ abstract class ProductFilterElement extends CComponent
    * @var ProductFilter
    */
   protected $parent;
-
-  abstract public function addPropertyCondition(CDbCriteria $criteria);
-
-  abstract public function getParameterCondition();
 
   /**
    * @param $availableValues
@@ -55,7 +61,43 @@ abstract class ProductFilterElement extends CComponent
     if( !is_array($selected) )
       $selected = array($selected);
 
-    return in_array($this->selected, $selected);
+    if( !$this->isMultiple() )
+      return in_array($this->selected, $selected);
+
+    if( !empty($this->selected) )
+      $intersect = array_intersect_key($this->selected, $selected);
+
+    return !empty($intersect);
+  }
+
+  public function addPropertyConditions(CDbCriteria $criteria)
+  {
+    $propertyCriteria = array();
+
+    if( !$this->isSelected() )
+      return;
+
+    $selected = is_array($this->selected) ? $this->selected : array($this->selected);
+
+    foreach($selected as $value)
+      $propertyCriteria[] = $this->propertyCondition($value);
+
+    $criteria->mergeWith($this->mergeElementsCriteria($propertyCriteria));
+  }
+
+  public function getParameterConditions()
+  {
+    $parameterCriteria = array();
+
+    if( !$this->isSelected() )
+      return null;
+
+    $selected = is_array($this->selected) ? $this->selected : array($this->selected);
+
+    foreach($selected as $value)
+      $parameterCriteria[] = $this->parameterCondition($value);
+
+    return $this->mergeElementsCriteria($parameterCriteria);
   }
 
   public function setParent($parent)
@@ -94,7 +136,16 @@ abstract class ProductFilterElement extends CComponent
   {
     if( isset($this->parent->state[$this->id]) )
     {
-      if( (is_array($this->parent->state[$this->id]) && in_array($this->parent->state[$this->id], $itemId)) || $this->parent->state[$this->id] == $itemId )
+      if( !$this->isMultiple() )
+      {
+        if( (is_array($this->parent->state[$this->id]) && in_array($this->parent->state[$this->id], $itemId)) )
+          return true;
+
+        if( $this->parent->state[$this->id] == $itemId )
+          return true;
+      }
+
+      if( isset($this->parent->state[$this->id][$itemId]) )
         return true;
     }
 
@@ -139,12 +190,12 @@ abstract class ProductFilterElement extends CComponent
       $this->items = CMap::mergeArray($this->items, $this->sortItems($newItems));
   }
 
-  public function setSelected($state, $elementAvailableValues)
+  public function setSelected($state)
   {
     $this->selected = isset($state[$this->id]) ? $state[$this->id] : array();
   }
 
-  public function prepareAvailableValues($value, $filtered)
+  public function prepareAvailableValues($value)
   {
     return $value;
   }
@@ -160,6 +211,11 @@ abstract class ProductFilterElement extends CComponent
     $criteria->group  = $this->id;
 
     return $criteria;
+  }
+
+  public function isMultiple()
+  {
+    return $this->mergeType == self::MERGE_TYPE_NONE ? false : true;
   }
 
   protected function sortItems($items)
@@ -184,5 +240,32 @@ abstract class ProductFilterElement extends CComponent
     }
 
     return $items;
+  }
+
+  protected function mergeElementsCriteria($criteria)
+  {
+    $mergedCriterion = new CDbCriteria();
+
+    foreach($criteria as $criterion)
+      $mergedCriterion->mergeWith($criterion, $this->mergeType);
+
+    return $mergedCriterion;
+  }
+
+  protected function propertyCondition($value)
+  {
+    $criteria = new CDbCriteria();
+    $criteria->compare($this->id, $value);
+
+    return $criteria;
+  }
+
+  protected function parameterCondition($value)
+  {
+    $criteria = new CDbCriteria();
+    $criteria->compare('param_id', $this->id);
+    $criteria->compare('variant_id', $value);
+
+    return $criteria;
   }
 }

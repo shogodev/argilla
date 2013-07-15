@@ -8,6 +8,7 @@
  *
  * @property string $label
  * @property string $name
+ * @property string $cssId
  */
 class ProductFilterElementItem extends CComponent
 {
@@ -18,6 +19,8 @@ class ProductFilterElementItem extends CComponent
   public $selected = false;
 
   public $amount = 0;
+
+  public $image;
 
   protected $label;
 
@@ -53,12 +56,25 @@ class ProductFilterElementItem extends CComponent
 
   public function getName()
   {
+    if( !$this->parent->isMultiple() )
+      return $this->parent->name;
+
     return !empty($this->parent->name) ? $this->parent->name.'['.$this->id.']' : '';
+  }
+
+  public function getCssId()
+  {
+    $cssId = !empty($this->parent->name) ? $this->parent->name.'['.$this->id.']' : '';
+
+    return CHtml::getIdByName(str_replace('.', '_', $cssId));
   }
 
   public function isSelected()
   {
-    return $this->parent->isSelectedItems($this->id);
+    if( $this->parent instanceof ProductFilterElement )
+      return $this->parent->isSelectedItems($this->id);
+
+    return false;
   }
 
   public function isDisabled()

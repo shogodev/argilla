@@ -27,11 +27,9 @@ class ProductFilterTest extends CDbTestCase
 
   public function setUp()
   {
-    Yii::app()->setUnitEnvironment('Product', 'one', array('url' => 'new_product1'));
-
-    $this->fth = new FilterTestHelper();
-
     parent::setUp();
+    Yii::app()->setUnitEnvironment('Product', 'one', array('url' => 'new_product1'));
+    $this->fth = new FilterTestHelper();
   }
 
   public function testProductFilter()
@@ -80,8 +78,8 @@ class ProductFilterTest extends CDbTestCase
       $this->fth->createFilter(array(
         FilterTestHelper::ELEMENT_SECTION,
         FilterTestHelper::ELEMENT_TYPE,
-        FilterTestHelper::ELEMENT_COLOR => array('type' => 'multipleOr'),
-        FilterTestHelper::ELEMENT_SIZE => array('type' => 'multipleOr')
+        FilterTestHelper::ELEMENT_COLOR => array('mergeType' => ProductFilterElement::MERGE_TYPE_OR),
+        FilterTestHelper::ELEMENT_SIZE => array('mergeType' => ProductFilterElement::MERGE_TYPE_OR)
       )),
       $this->fth->createStateByName(array(
         'section_id' => 'Одежда',
@@ -97,7 +95,7 @@ class ProductFilterTest extends CDbTestCase
         FilterTestHelper::ELEMENT_SECTION,
         FilterTestHelper::ELEMENT_TYPE,
         FilterTestHelper::ELEMENT_COLOR ,
-        FilterTestHelper::ELEMENT_SIZE => array('type' => 'multipleOr')
+        FilterTestHelper::ELEMENT_SIZE => array('mergeType' => ProductFilterElement::MERGE_TYPE_OR)
       )),
       $this->fth->createStateByName(array(
         'Размер' => array('10')
@@ -107,8 +105,8 @@ class ProductFilterTest extends CDbTestCase
 
     $this->assertTrue($this->fth->checkFilterForData(
       $this->fth->createFilter(array(
-        FilterTestHelper::ELEMENT_COLOR => array('type' => 'multipleOr') ,
-        FilterTestHelper::ELEMENT_SIZE => array('type' => 'multipleOr')
+        FilterTestHelper::ELEMENT_COLOR => array('mergeType' => ProductFilterElement::MERGE_TYPE_OR) ,
+        FilterTestHelper::ELEMENT_SIZE => array('mergeType' => ProductFilterElement::MERGE_TYPE_OR)
       )),
       $this->fth->createStateByName(array(
 
@@ -120,7 +118,7 @@ class ProductFilterTest extends CDbTestCase
     $this->assertTrue($this->fth->checkFilterForData(
       $this->fth->createFilter(array(
         FilterTestHelper::ELEMENT_COLOR,
-        FilterTestHelper::ELEMENT_SIZE => array('type' => 'multipleOr'),
+        FilterTestHelper::ELEMENT_SIZE => array('mergeType' => ProductFilterElement::MERGE_TYPE_OR),
         FilterTestHelper::ELEMENT_LENGTH
       )),
       $this->fth->createStateByName(array(
@@ -160,7 +158,7 @@ class ProductFilterTest extends CDbTestCase
 $this->assertTrue($this->fth->checkFilterForData(
       $this->fth->createFilter(array(
         FilterTestHelper::ELEMENT_COLOR,
-        FilterTestHelper::ELEMENT_SIZE => array('type' => 'multipleOr'),
+        FilterTestHelper::ELEMENT_SIZE => array('type' => ProductFilterElement::MERGE_TYPE_OR),
         FilterTestHelper::ELEMENT_LENGTH,
         FilterTestHelper::ELEMENT_TEXT,
       )),
@@ -176,8 +174,8 @@ $this->assertTrue($this->fth->checkFilterForData(
   {
     $productFilter = new ProductFilter('pf');
 
-    $this->filterAddElement($productFilter, 'section_id', 'list', ProductSection::model()->findAll(), 'Раздел');
-    $this->filterAddElement($productFilter, 'type_id', 'multipleOr', ProductType::model()->findAll(), 'Тип');
+    $this->filterAddElement($productFilter, 'section_id', 'list', ProductFilterElement::MERGE_TYPE_NONE,ProductSection::model()->findAll(), 'Раздел');
+    $this->filterAddElement($productFilter, 'type_id', 'list', ProductFilterElement::MERGE_TYPE_OR, ProductType::model()->findAll(), 'Тип');
 
     $criteria = new CDbCriteria();
     $criteria->compare('`key`', 'filter');
@@ -191,7 +189,7 @@ $this->assertTrue($this->fth->checkFilterForData(
       if( $parameter->type == 'text' )
         continue;
 
-      $this->filterAddElement($productFilter, $parameter->id, 'radio', $parameter->variants, $parameter->name);
+      $this->filterAddElement($productFilter, $parameter->id, 'list', ProductFilterElement::MERGE_TYPE_NONE, $parameter->variants, $parameter->name);
     }
   }
 
@@ -329,18 +327,53 @@ $this->assertTrue($this->fth->checkFilterForData(
     );
 
     $_POST['pf1'] = $state1;
+    $_POST['pf1']['submit'] = 1;
     $filter1 = new ProductFilter('pf1', false, true);
     $this->assertEquals($state1, $filter1->state);
 
     $_GET['pf2'] = $state2;
+    $_GET['pf2']['submit'] = 1;
     $filter2 = new ProductFilter('pf2', false);
     $this->assertEquals($state2, $filter2->state);
 
 
     $_POST['pf3'] = $state1;
+    $_POST['pf3']['submit'] = 1;
     $_GET['pf3'] = $state2;
+    $_GET['pf3']['submit'] = 1;
     $filter3 = new ProductFilter('pf3', false, false);
     $this->assertEmpty($filter3->state);
+  }
+
+  public function testRemoveElementState()
+  {
+    $state1 = array(
+      'section_id' => '2',
+      'category_id' => '1',
+      '3' => array(
+        '5'=> '5',
+        '2' => '2',
+        '3' => '3'
+      )
+    );
+
+    $remove = array(
+      'category_id' => '1',
+      '3' => array(
+        '5' => '5',
+        '3' => '3',
+      ),
+      'remove' => 1
+    );
+
+    $_SESSION['pf1'] = $state1;
+    $filter1 = new ProductFilter('pf1', true);
+    $this->assertEquals($state1, $filter1->state);
+
+    unset($state1['category_id'], $state1['3']['5'], $state1['3']['3']);
+    $_POST['pf1'] = $remove;
+    $filter1 = new ProductFilter('pf1', true);
+    $this->assertEquals($state1, $filter1->state);
   }
 
   public function testFilterCountAmountNoSelected()
@@ -503,9 +536,9 @@ $this->assertTrue($this->fth->checkFilterForData(
     $this->assertEquals(3, count($products));
 
     $section = $filter->elements[FilterTestHelper::ELEMENT_SECTION]->items;
-    $this->assertEquals($section[1]->amount, 5);
-    $this->assertEquals($section[2]->amount, 4);
-    $this->assertEquals($section[3]->amount, 1);
+    $this->assertEquals($section[1]->amount, 3);
+    $this->assertEquals($section[2]->amount, 0);
+    $this->assertEquals($section[3]->amount, 0);
 
     $type = $filter->elements[FilterTestHelper::ELEMENT_TYPE]->items;
     $this->assertEquals($type[1]->amount, 2);
@@ -545,7 +578,7 @@ $this->assertTrue($this->fth->checkFilterForData(
     $filter = $this->fth->createFilter(array(
       FilterTestHelper::ELEMENT_SECTION,
       FilterTestHelper::ELEMENT_TYPE,
-      FilterTestHelper::ELEMENT_COLOR => array('type' => 'multipleOr'),
+      FilterTestHelper::ELEMENT_COLOR => array('mergeType' => ProductFilterElement::MERGE_TYPE_OR),
       FilterTestHelper::ELEMENT_SIZE,
       FilterTestHelper::ELEMENT_LENGTH,
     ));
@@ -560,9 +593,9 @@ $this->assertTrue($this->fth->checkFilterForData(
     $this->assertEquals(2, count($products));
 
     $section = $filter->elements[FilterTestHelper::ELEMENT_SECTION]->items;
-    $this->assertEquals($section[1]->amount, 5);
-    $this->assertEquals($section[2]->amount, 4);
-    $this->assertEquals($section[3]->amount, 1);
+    $this->assertEquals($section[1]->amount, 2);
+    $this->assertEquals($section[2]->amount, 0);
+    $this->assertEquals($section[3]->amount, 0);
 
     $type = $filter->elements[FilterTestHelper::ELEMENT_TYPE]->items;
     $this->assertEquals($type[1]->amount, 1);
@@ -581,7 +614,7 @@ $this->assertTrue($this->fth->checkFilterForData(
     $color = $filter->elements[$this->fth->getParameterId(FilterTestHelper::ELEMENT_COLOR)]->items;
     $this->assertEquals($color[5]->amount, 2); // зел
     $this->assertEquals($color[6]->amount, 2); // синий
-    $this->assertEquals($color[7]->amount, 2); // красный
+    $this->assertEquals($color[7]->amount, 1); // красный
 
     $length = $filter->elements[$this->fth->getParameterId(FilterTestHelper::ELEMENT_LENGTH)]->items;
     $this->assertEquals($length[8]->amount, 2);  // 100
@@ -596,7 +629,7 @@ $this->assertTrue($this->fth->checkFilterForData(
     $filter = $this->fth->createFilter(array(
       FilterTestHelper::ELEMENT_SECTION,
       FilterTestHelper::ELEMENT_TYPE,
-      FilterTestHelper::ELEMENT_COLOR => array('type' => 'multipleOr'),
+      FilterTestHelper::ELEMENT_COLOR => array('mergeType' => ProductFilterElement::MERGE_TYPE_OR),
       FilterTestHelper::ELEMENT_SIZE,
       FilterTestHelper::ELEMENT_LENGTH,
       FilterTestHelper::ELEMENT_PRICE
@@ -612,9 +645,9 @@ $this->assertTrue($this->fth->checkFilterForData(
     $this->assertEquals(4, count($products));
 
     $section = $filter->elements[FilterTestHelper::ELEMENT_SECTION]->items;
-    $this->assertEquals($section[1]->amount, 5);
-    $this->assertEquals($section[2]->amount, 4);
-    $this->assertEquals($section[3]->amount, 1);
+    $this->assertEquals($section[1]->amount, 4);
+    $this->assertEquals($section[2]->amount, 0);
+    $this->assertEquals($section[3]->amount, 0);
 
     $type = $filter->elements[FilterTestHelper::ELEMENT_TYPE]->items;
     $this->assertEquals($type[1]->amount, 2);
@@ -633,7 +666,7 @@ $this->assertTrue($this->fth->checkFilterForData(
     $color = $filter->elements[$this->fth->getParameterId(FilterTestHelper::ELEMENT_COLOR)]->items;
     $this->assertEquals($color[5]->amount, 2); // зел
     $this->assertEquals($color[6]->amount, 2); // синий
-    $this->assertEquals($color[7]->amount, 2); // красный
+    $this->assertEquals($color[7]->amount, 1); // красный
 
     $length = $filter->elements[$this->fth->getParameterId(FilterTestHelper::ELEMENT_LENGTH)]->items;
     $this->assertEquals($length[8]->amount, 2);  // 100
@@ -647,12 +680,105 @@ $this->assertTrue($this->fth->checkFilterForData(
     $this->assertEquals($price['5001-999999']->amount, 0);
   }
 
+  public function testFilterCountAmountSelectedRange()
+  {
+    $this->setUp();
+
+    $filter = $this->fth->createFilter(array(
+      FilterTestHelper::ELEMENT_RANGE,
+      FilterTestHelper::ELEMENT_SECTION,
+      FilterTestHelper::ELEMENT_TYPE,
+
+    ));
+
+    $state = array();
+
+    $products = $this->fth->getFilteredData($filter, $state);
+
+    $this->assertEquals(10, count($products));
+
+    $section = $filter->elements[FilterTestHelper::ELEMENT_SECTION]->items;
+    $this->assertEquals($section[1]->amount, 5);
+    $this->assertEquals($section[2]->amount, 4);
+    $this->assertEquals($section[3]->amount, 1);
+
+    $range = $filter->elements[$this->fth->getParameterId(FilterTestHelper::ELEMENT_RANGE)]->items;
+    $this->assertEquals($range['0-5']->amount, 2); // < 6
+    $this->assertEquals($range['6-10']->amount, 1); // от 6 до 10
+    $this->assertEquals($range['11-30']->amount, 2); // от 11 до 30
+  }
+
+  public function testFilterCountAmountSelectedRange2()
+  {
+    $this->setUp();
+
+    $filter = $this->fth->createFilter(array(
+      FilterTestHelper::ELEMENT_RANGE,
+      FilterTestHelper::ELEMENT_SECTION,
+      FilterTestHelper::ELEMENT_TYPE,
+    ));
+
+    $state = array(
+      $this->fth->getParameterId(FilterTestHelper::ELEMENT_RANGE) => '0-5',
+    );
+
+    $products = $this->fth->getFilteredData($filter, $state);
+
+    $this->assertEquals(2, count($products));
+
+    $range = $filter->elements[$this->fth->getParameterId(FilterTestHelper::ELEMENT_RANGE)]->items;
+    $this->assertEquals($range['0-5']->amount, 2); // < 6
+    $this->assertEquals($range['6-10']->amount, 1); // от 6 до 10
+    $this->assertEquals($range['11-30']->amount, 2); // от 11 до 30
+
+    $section = $filter->elements[FilterTestHelper::ELEMENT_SECTION]->items;
+    $this->assertEquals($section[1]->amount, 2);
+    $this->assertEquals($section[2]->amount, 0);
+    $this->assertEquals($section[3]->amount, 0);
+  }
+
+  public function testFilterCountAmountSelectedRange3()
+  {
+    $this->setUp();
+
+    $filter = $this->fth->createFilter(array(
+      FilterTestHelper::ELEMENT_RANGE,
+      FilterTestHelper::ELEMENT_COLOR,
+      FilterTestHelper::ELEMENT_SECTION,
+      FilterTestHelper::ELEMENT_TYPE,
+    ));
+
+    $state = array(
+      $this->fth->getParameterId(FilterTestHelper::ELEMENT_RANGE) => '0-5',
+      $this->fth->getParameterId(FilterTestHelper::ELEMENT_COLOR) => '5'
+    );
+
+    $products = $this->fth->getFilteredData($filter, $state);
+
+    $this->assertEquals(1, count($products));
+
+    $color = $filter->elements[$this->fth->getParameterId(FilterTestHelper::ELEMENT_COLOR)]->items;
+    $this->assertEquals($color[5]->amount, 1); // зел
+    $this->assertEquals($color[6]->amount, 1); // синий
+    $this->assertEquals($color[7]->amount, 0); // красный
+
+    $range = $filter->elements[$this->fth->getParameterId(FilterTestHelper::ELEMENT_RANGE)]->items;
+    $this->assertEquals($range['0-5']->amount, 1); // < 6
+    $this->assertEquals($range['6-10']->amount, 0); // от 6 до 10
+    $this->assertEquals($range['11-30']->amount, 1); // от 11 до 30
+
+    $section = $filter->elements[FilterTestHelper::ELEMENT_SECTION]->items;
+    $this->assertEquals($section[1]->amount, 1);
+    $this->assertEquals($section[2]->amount, 0);
+    $this->assertEquals($section[3]->amount, 0);
+  }
+
   public function testFilterCountAmountForRangePrice()
   {
     $this->setUp();
 
     $filter = $this->fth->createFilter(array(
-      FilterTestHelper::ELEMENT_SECTION => array('type' => 'multipleOr'),
+      FilterTestHelper::ELEMENT_SECTION => array('mergeType' => ProductFilterElement::MERGE_TYPE_OR),
       FilterTestHelper::ELEMENT_TYPE,
       FilterTestHelper::ELEMENT_COLOR,
       FilterTestHelper::ELEMENT_SIZE,
@@ -671,9 +797,9 @@ $this->assertTrue($this->fth->checkFilterForData(
     $this->assertEquals(5, count($products));
 
     $section = $filter->elements[FilterTestHelper::ELEMENT_SECTION]->items;
-    $this->assertEquals($section[1]->amount, 5);
-    $this->assertEquals($section[2]->amount, 4);
-    $this->assertEquals($section[3]->amount, 1);
+    $this->assertEquals($section[1]->amount, 2);
+    $this->assertEquals($section[2]->amount, 3);
+    $this->assertEquals($section[3]->amount, 0);
 
     $type = $filter->elements[FilterTestHelper::ELEMENT_TYPE]->items;
     $this->assertEquals($type[1]->amount, 1);
@@ -703,7 +829,7 @@ $this->assertTrue($this->fth->checkFilterForData(
     $this->assertEquals($price['0-1000']->amount, 2);
     $this->assertEquals($price['1001-3000']->amount, 5);
     $this->assertEquals($price['3001-5000']->amount, 1);
-    $this->assertEquals($price['5001-999999']->amount, 2);
+    $this->assertEquals($price['5001-999999']->amount, 1);
   }
 
   public function testFilterCheckOldState()
@@ -732,7 +858,7 @@ $this->assertTrue($this->fth->checkFilterForData(
     //todo: Добавить еще варианты тестирования
   }
 
-  private function filterAddElement(ProductFilter $productFilter, $elementId, $type, $modelForItemLabels, $label)
+  private function filterAddElement(ProductFilter $productFilter, $elementId, $type, $mergeType, $modelForItemLabels, $label)
   {
     $this->assertNotEmpty($modelForItemLabels);
 
@@ -741,6 +867,7 @@ $this->assertTrue($this->fth->checkFilterForData(
         'id' => $elementId,
         'label' => $label,
         'type' => $type,
+        'mergeType' => $mergeType,
         'itemLabels' => CHtml::listData($modelForItemLabels , 'id', 'name'),
       ), false
     );

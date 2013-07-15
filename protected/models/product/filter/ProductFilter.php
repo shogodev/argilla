@@ -24,6 +24,11 @@ class ProductFilter extends AbstractProductFilter
    */
   protected $elements = array();
 
+  /**
+   * @var array
+   */
+  protected $defaultSelectedElements = array();
+
   public function addElement(array $filterElement, $emptyValue = null)
   {
     $items = array();
@@ -44,9 +49,8 @@ class ProductFilter extends AbstractProductFilter
 
     if( !isset($filterElement['id']) && !empty($filterElement['key']) )
       $filterElement['id'] = ProductParamName::model()->findByAttributes(array('key' => $filterElement['key']))->id;
-    else
+    else if( empty($filterElement['key']))
       $filterElement['key'] = $filterElement['id'];
-
 
     if( empty($filterElement['type']) )
       $filterElement['type'] = $this->defaultElementType;
@@ -62,6 +66,12 @@ class ProductFilter extends AbstractProductFilter
     $element = Yii::createComponent(CMap::mergeArray(array('parent' => $this, 'items' => $items), $filterElement));
 
     $this->elements[$filterElement['id']] = $element;
+  }
+
+  public function removeElement($elementId)
+  {
+    if( isset($this->elements[$elementId]) )
+      unset($this->elements[$elementId]);
   }
 
   public function getElements()
@@ -80,6 +90,48 @@ class ProductFilter extends AbstractProductFilter
     return null;
   }
 
+  public function getSelectedElements()
+  {
+    $selected = array();
+
+    if( !empty($this->defaultSelectedElements) )
+      $selected = $this->defaultSelectedElements;
+
+    foreach($this->elements as $elementId => $element)
+    {
+      if( !$element->isSelected() )
+        continue;
+
+      if( !isset($selected[$elementId]) )
+      {
+        $selected[$elementId] = array(
+          'id' => $elementId,
+          'name' => $element->label,
+          'items' => array()
+        );
+      }
+
+      foreach($element->items as $item)
+        if( $item->isSelected() )
+          $selected[$elementId]['items'][$item->id] = $item;
+    }
+
+    return $selected;
+  }
+
+  public function setDefaultSelectedElements($elements)
+  {
+    $this->defaultSelectedElements = array();
+
+    foreach($elements as $element)
+    {
+      if( isset($element['id']) )
+        unset($element['id']);
+
+      $this->defaultSelectedElements[] = $element;
+    }
+  }
+
   /**
    * @param CDbCriteria $actionCriteria
    *
@@ -87,15 +139,13 @@ class ProductFilter extends AbstractProductFilter
    */
   public function apply(CDbCriteria $actionCriteria)
   {
-    $availableValues = $this->getAvailableValues($actionCriteria, false);
+    $availableValues = $this->getAvailableValues($actionCriteria);
     $this->buildItems($availableValues);
     $filteredCriteria = $this->createFilteredCriteria($actionCriteria, $availableValues);
 
     $this->disablingFilterElements($actionCriteria, $filteredCriteria, $availableValues);
 
     $this->countAmount($filteredCriteria);
-    // только для выбранных элементов
-    $this->countAmount($actionCriteria, true);
 
     $this->removeEmptyItems();
 
@@ -119,7 +169,7 @@ class ProductFilter extends AbstractProductFilter
     return $filteredCriteria;
   }
 
-  protected function getAvailableValues(CDbCriteria $criteria, $filtered = true)
+  protected function getAvailableValues(CDbCriteria $criteria)
   {
     $builder                 = new CriteriaBuilder($criteria);
     $availableValuesCriteria = $builder->getAvailableValuesCriteria($this->elements);
@@ -128,7 +178,7 @@ class ProductFilter extends AbstractProductFilter
     $command = $commandBuilder->createFindCommand(Product::model()->tableName(), $availableValuesCriteria);
     $data    = $command->queryAll();
 
-    $propertyValues = array();
+    $availableValues = array();
 
     foreach($this->elements as $element)
     {
@@ -136,15 +186,20 @@ class ProductFilter extends AbstractProductFilter
       {
         $itemId = $element->isProperty() ? $element->id : 'variant_id';
 
-        if( $element->isProperty() || $element->id == $row['param_id'] )
-        {
-          $availableValue = $element->prepareAvailableValues($row[$itemId], $filtered);
-          $propertyValues[$element->id][$availableValue] = $availableValue;
-        }
+        if( $element->isParameter() && $element->id != $row['param_id'] )
+          continue;
+
+        $value = $element->isParameter() && $row['variant_id'] == null ? $row['value'] : $row[$itemId];
+
+        $availableValue = $element->prepareAvailableValues($value);
+        $availableValueArray = is_array($availableValue) ? $availableValue : array($availableValue);
+
+        foreach($availableValueArray as $availableValue)
+          $availableValues[$element->id][$availableValue] = $availableValue;
       }
     }
 
-    return $propertyValues;
+    return $availableValues;
   }
 
   protected function countAmount($criteria, $onlySelected = false)
@@ -199,9 +254,23 @@ class ProductFilter extends AbstractProductFilter
 
       foreach($data as $row)
       {
-        if( $element->id == $row['param_id'] && isset($element->items[$row['variant_id']]) )
+        $value = $row['variant_id'] == null ? $row['value'] : $row['variant_id'];
+
+        $itemId = $element->prepareAvailableValues($value);
+        $itemIdsArray = is_array($itemId) ? $itemId : array($itemId);
+
+        foreach($itemIdsArray as $itemId)
         {
-          $element->items[$row['variant_id']]->amount = $row['count'];
+          if( $element->id != $row['param_id'] || !isset($element->items[$itemId]) )
+            continue;
+
+          if( $onlySelected && $element->items[$itemId]->isSelected() )
+            continue;
+
+          if( $row['variant_id'] == null  ) // полея у которых нет вариантов, а есть value
+            $element->items[$itemId]->amount += $row['count'];
+          else
+            $element->items[$itemId]->amount = $row['count'];
         }
       }
     }
@@ -298,7 +367,11 @@ class ProductFilter extends AbstractProductFilter
       $otherSelectedStates = $selectedStates;
       unset($otherSelectedStates[$id]);
 
-      $selectedCriteria     = $this->createFilteredCriteria($actionCriteria, $otherSelectedStates);
+      $selectedCriteria = $this->createFilteredCriteria($actionCriteria, $otherSelectedStates);
+
+      // только для выбранных элементов
+      $this->countAmount($selectedCriteria, true);
+
       $otherAvailableValues = $this->getAvailableValues($selectedCriteria);
 
       if( isset($otherAvailableValues[$id]) )
@@ -328,7 +401,7 @@ class ProductFilter extends AbstractProductFilter
     {
       $elementAvailableValues = isset($availableValues[$element->id]) ? $availableValues[$element->id] : array();
       $element->buildItems($elementAvailableValues);
-      $element->setSelected($this->state, $elementAvailableValues);
+      $element->setSelected($this->state);
     }
   }
 

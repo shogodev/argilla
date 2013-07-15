@@ -9,23 +9,5 @@
 
 class ProductFilterElementList extends ProductFilterElement
 {
-  public function addPropertyCondition(CDbCriteria $criteria)
-  {
-    $criteria->compare($this->id, '='.$this->selected);
-  }
 
-  public function getParameterCondition()
-  {
-    $criteria = new CDbCriteria();
-    $criteria->compare('param_id', '='.$this->id);
-
-    if( !is_array($this->selected) )
-      $variants = array($this->selected => $this->selected);
-    else
-      $variants = array_keys($this->selected);
-
-    $criteria->addInCondition('variant_id', $variants);
-
-    return $criteria;
-  }
 }
