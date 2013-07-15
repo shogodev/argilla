@@ -48,7 +48,8 @@ class CriteriaBuilderTest extends CTestCase
     $filter->addElement(array(
         'key' => 'size',
         'label' => $size->name,
-        'type' => 'multipleOr',
+        'type' => 'list',
+        'mergeType'  => ProductFilterElement::MERGE_TYPE_OR,
         'itemLabels' => CHtml::listData($size->variants , 'id', 'name')
       )
       , false

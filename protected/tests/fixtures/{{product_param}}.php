@@ -8,8 +8,8 @@ return array(
   'param6' => array('id' => '6', 'param_id' => '1', 'product_id' => '3', 'variant_id' => '2'),
   'param7' => array('id' => '7', 'param_id' => '1', 'product_id' => '2', 'variant_id' => '1'),
 
-  'param8' => array('id' => '8', 'param_id' => '2', 'product_id' => '1', 'variant_id' => '5'),
-  'param9' => array('id' => '9', 'param_id' => '2', 'product_id' => '2', 'variant_id' => '6'),
+  'param8'  => array('id' => '8',  'param_id' => '2', 'product_id' => '1', 'variant_id' => '5'),
+  'param9'  => array('id' => '9',  'param_id' => '2', 'product_id' => '2', 'variant_id' => '6'),
   'param10' => array('id' => '10', 'param_id' => '2', 'product_id' => '3', 'variant_id' => '7'),
 
   'param11' => array('id' => '11', 'param_id' => '2', 'product_id' => '4', 'variant_id' => '5'),
@@ -31,4 +31,17 @@ return array(
   'param25' => array('id' => '25', 'param_id' => '4', 'product_id' => '6', 'value' => '661166666'),
   'param26' => array('id' => '26', 'param_id' => '4', 'product_id' => '7', 'value' => '7733377777'),
   'param27' => array('id' => '27', 'param_id' => '4', 'product_id' => '8', 'value' => '88333881118'),
+
+  'param28' => array('id' => '27', 'param_id' => '7', 'product_id' => '1', 'value' => '42'),
+  'param29' => array('id' => '27', 'param_id' => '8', 'product_id' => '1', 'value' => '9001'),
+
+  'param30' => array('param_id' => '9', 'product_id' => '16', 'variant_id' => '11', 'value' => null),
+  'param31' => array('param_id' => '9', 'product_id' => '16', 'variant_id' => '12', 'value' => null),
+  'param32' => array('param_id' => '9', 'product_id' => '16', 'variant_id' => '13', 'value' => null),
+
+  'param33' => array('param_id' => '10', 'product_id' => '1', 'value' => '1'),
+  'param34' => array('param_id' => '10', 'product_id' => '2', 'value' => '2'),
+  'param35' => array('param_id' => '10', 'product_id' => '3', 'value' => '10'),
+  'param36' => array('param_id' => '10', 'product_id' => '4', 'value' => '13'),
+  'param37' => array('param_id' => '10', 'product_id' => '5', 'value' => '20'),
 );

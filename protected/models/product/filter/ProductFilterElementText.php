@@ -9,16 +9,19 @@
 
 class ProductFilterElementText extends ProductFilterElement
 {
-  public function addPropertyCondition(CDbCriteria $criteria)
+  public function propertyCondition($value)
   {
-    $criteria->addSearchCondition($this->id, $this->selected);
+    $criteria = new CDbCriteria();
+    $criteria->addSearchCondition($this->id, $value);
+
+    return $criteria;
   }
 
-  public function getParameterCondition()
+  public function parameterCondition($value)
   {
     $criteria = new CDbCriteria();
     $criteria->compare('param_id', '='.$this->id);
-    $criteria->addSearchCondition('value', $this->selected);
+    $criteria->addSearchCondition('value', $value);
 
     return $criteria;
   }

@@ -1,6 +1,6 @@
 <?php
 /**
- * @author Sergey Glagolev <glagolev@shogo.ru>
+ * @author Sergey Glagolev <glagolev@shogo.ru>, Alexey Tatarinov <tatarinov@shogo.ru>
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
@@ -26,9 +26,14 @@ class CriteriaBuilder
   public function addCondition(ProductFilterElement $element)
   {
     if( $element->isProperty() )
-      $element->addPropertyCondition($this->mainCriteria);
+      $element->addPropertyConditions($this->mainCriteria);
     else
-      $this->parameterCriteria[$element->id] = $element->getParameterCondition();
+    {
+      $parameterCondition = $element->getParameterConditions();
+
+      if( $parameterCondition )
+        $this->parameterCriteria[$element->id] = $parameterCondition;
+    }
   }
 
   public function getFilteredCriteria()
@@ -49,9 +54,9 @@ class CriteriaBuilder
 
     $criteria = clone $this->mainCriteria;
     $criteria->distinct = true;
-    $criteria->select = implode(',', CMap::mergeArray($properties, array('p.param_id', 'p.variant_id')));
+    $criteria->select = implode(',', CMap::mergeArray($properties, array('p.param_id', 'p.variant_id', 'p.value')));
+    $criteria->group  = $criteria->select;
     $criteria->compare('visible', '=1');
-    $criteria->group   = $criteria->select;
 
     $assignment = ProductAssignment::model()->tableName();
     $parameters = ProductParam::model()->tableName();
@@ -84,7 +89,7 @@ class CriteriaBuilder
   {
     $criteria = clone $this->mainCriteria;
     $criteria->distinct = true;
-    $criteria->select = implode(',', array('p.param_id', 'p.variant_id'));
+    $criteria->select = implode(',', array('p.param_id', 'p.variant_id', 'p.value'));
     $criteria->group  = $criteria->select;
     $criteria->select .= ', COUNT(t.id) AS count';
 
