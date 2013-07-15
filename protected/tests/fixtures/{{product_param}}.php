@@ -32,8 +32,8 @@ return array(
   'param26' => array('id' => '26', 'param_id' => '4', 'product_id' => '7', 'value' => '7733377777'),
   'param27' => array('id' => '27', 'param_id' => '4', 'product_id' => '8', 'value' => '88333881118'),
 
-  'param28' => array('id' => '27', 'param_id' => '7', 'product_id' => '1', 'value' => '42'),
-  'param29' => array('id' => '27', 'param_id' => '8', 'product_id' => '1', 'value' => '9001'),
+  'param28' => array('id' => '28', 'param_id' => '7', 'product_id' => '1', 'value' => '42'),
+  'param29' => array('id' => '29', 'param_id' => '8', 'product_id' => '1', 'value' => '9001'),
 
   'param30' => array('param_id' => '9', 'product_id' => '16', 'variant_id' => '11', 'value' => null),
   'param31' => array('param_id' => '9', 'product_id' => '16', 'variant_id' => '12', 'value' => null),
