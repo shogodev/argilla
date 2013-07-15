@@ -59,6 +59,8 @@ class OnFlyEditField extends BDataColumn
 
   public $htmlOptions = array('class' => 'span1');
 
+  public $elementOptions = array();
+
   public $action = 'onflyedit';
 
   /**
@@ -66,7 +68,7 @@ class OnFlyEditField extends BDataColumn
    *
    * @var string
    */
-  protected $ajaxUrl;
+  public $ajaxUrl;
 
   /**
    * Инициализация вывода свойства в столбец
@@ -88,7 +90,9 @@ class OnFlyEditField extends BDataColumn
    */
   protected function renderScript()
   {
-    $this->ajaxUrl = Yii::app()->controller->createUrl(Yii::app()->controller->id."/$this->action");
+    if( empty($this->ajaxUrl) )
+      $this->ajaxUrl = Yii::app()->controller->createUrl(Yii::app()->controller->id."/$this->action");
+
     $scriptUrl = Yii::app()->assetManager->publish(dirname(__FILE__).'/js');
 
     Yii::app()->clientScript->registerScriptFile($scriptUrl.'/jquery.onFlyEdit.js', CClientScript::POS_END);
@@ -146,12 +150,12 @@ class OnFlyEditField extends BDataColumn
 
     if( empty($this->dropDown) )
     {
-      return CHtml::tag('span', array_merge($commonAttributes, ['class' => 'onfly-edit']), $value);
+      return CHtml::tag('span', array_merge($commonAttributes, ['class' => 'onfly-edit'], $this->elementOptions), $value);
     }
     else
     {
       return CHtml::dropDownList('', $value, $this->dropDown,
-        array_merge($commonAttributes, ['class' => 'onfly-edit-dropdown']));
+        array_merge($commonAttributes, ['class' => 'onfly-edit-dropdown'], $this->elementOptions));
     }
   }
 }
