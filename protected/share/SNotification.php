@@ -6,8 +6,6 @@
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.form.models
  *
- * @method static SNotification model(string $class = __CLASS__)
- *
  * @property integer $id
  * @property string $index
  * @property string $name
@@ -23,9 +21,15 @@ class SNotification extends CActiveRecord
   public $layout         = 'main';
   public $from           = "info@{projectName}";
 
+  public static function model($className = __CLASS__)
+  {
+    return parent::model(get_called_class());
+  }
+
   public function init()
   {
     parent::init();
+
     $this->from =  strtr($this->from, array('{projectName}' => Yii::app()->params->project));
   }
 
