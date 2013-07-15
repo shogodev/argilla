@@ -87,6 +87,11 @@ class JToggleColumn extends BDataColumn
   public $action;
 
   /**
+   * @var string
+   */
+  public $ajaxUrl;
+
+  /**
    * @var string Assets url
    */
   private $_assetsUrl;
@@ -141,7 +146,7 @@ class JToggleColumn extends BDataColumn
       $this->toggle_button['htmlOptions'] = array('rel' => 'tooltip');
 
     $this->toggle_button = array(
-      'url' => 'Yii::app()->controller->createUrl("'.$this->action.'",array("id"=>$data->primaryKey,"attribute"=>"'.$this->name.'"))',
+      'url' => $this->ajaxUrl ? $this->ajaxUrl : 'Yii::app()->controller->createUrl("'.$this->action.'", array("id" => $data["primaryKey"], "attribute" => "'.$this->name.'"))',
       'options' => CMap::mergeArray(array('class' => $this->name.'_toggle'), $this->toggle_button['htmlOptions']),
     );
 
