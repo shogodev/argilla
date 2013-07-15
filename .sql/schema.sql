@@ -347,9 +347,9 @@ DROP TABLE IF EXISTS `argilla_hint`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `argilla_hint` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `model` varchar(255) CHARACTER SET koi8r DEFAULT NULL,
-  `attribute` varchar(255) CHARACTER SET koi8r DEFAULT NULL,
-  `content` text CHARACTER SET koi8r NOT NULL,
+  `model` varchar(255) DEFAULT NULL,
+  `attribute` varchar(255) DEFAULT NULL,
+  `content` text NOT NULL,
   `popup` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `model` (`model`,`attribute`)
@@ -438,8 +438,7 @@ CREATE TABLE `argilla_menu_custom_item` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `url` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `visible` tinyint(1) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id`),
+  `visible` tinyint(1) NOT NULL DEFAULT '1',  PRIMARY KEY (`id`),
   KEY `name` (`name`,`url`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -678,11 +677,11 @@ CREATE TABLE `argilla_product` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `parent` int(11) DEFAULT NULL,
   `position` int(11) DEFAULT '0',
-  `url` varchar(255) NOT NULL,
+  `url` varchar(255) DEFAULT NULL,
   `name` varchar(255) NOT NULL,
   `articul` varchar(255) DEFAULT NULL,
   `price` decimal(10,2) DEFAULT NULL,
-  `currency_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `currency_id` int(10) unsigned DEFAULT NULL,
   `price_old` decimal(10,2) DEFAULT NULL,
   `notice` text,
   `content` text,
@@ -831,10 +830,12 @@ DROP TABLE IF EXISTS `argilla_product_param`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `argilla_product_param` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
   `param_id` int(10) unsigned NOT NULL DEFAULT '0',
   `product_id` int(10) unsigned NOT NULL DEFAULT '0',
   `variant_id` int(10) unsigned DEFAULT NULL,
   `value` text,
+  PRIMARY KEY (`id`),
   UNIQUE KEY `value` (`param_id`,`product_id`,`variant_id`),
   KEY `product_id` (`product_id`),
   KEY `param_id` (`param_id`),
