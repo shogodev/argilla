@@ -41,7 +41,7 @@ class RbacCommand extends CConsoleCommand
    *
    * @var string
    */
-  protected $modulePath;
+  protected $modulePath = '/backend/protected/modules';
 
   /**
    * Массив названий модулей
@@ -79,21 +79,15 @@ class RbacCommand extends CConsoleCommand
    *
    * @var string
    */
-  protected $roleSystemName = 'root';
+  protected $roleSystemName = 'admin';
 
   /**
-   * @param        $path
-   * @param string $modulePath
    * @param string $username
    * @param string $password
    */
-  public function actionBuild($path = null, $modulePath = '/backend/protected/modules', $username = 'root', $password = '123')
+  public function actionBuild($username = 'admin', $password = '123')
   {
-    if( $path === null )
-      $path = dirname(dirname(dirname(__FILE__)));
-
-    $this->path       = $path;
-    $this->modulePath = $modulePath;
+    $this->path       = dirname(dirname(dirname(__FILE__)));
     $this->username   = $username;
     $this->password   = $password;
 
