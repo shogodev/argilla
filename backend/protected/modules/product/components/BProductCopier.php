@@ -38,7 +38,6 @@ class BProductCopier extends BAbstractModelCopier
 
     $this->copyRelations($this->copy, $this->origin, 'assignment');
     $this->copyRelations($this->copy, $this->origin, 'associations');
-    $this->copyRelations($this->copy, $this->origin, 'videos');
 
     $this->copyParams();
 

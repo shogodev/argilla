@@ -682,7 +682,7 @@ CREATE TABLE `argilla_product` (
   `name` varchar(255) NOT NULL,
   `articul` varchar(255) DEFAULT NULL,
   `price` decimal(10,2) DEFAULT NULL,
-  `currency_id` int(10) unsigned NOT NULL DEFAULT '1',
+  `currency_id` int(10) unsigned DEFAULT NULL,
   `price_old` decimal(10,2) DEFAULT NULL,
   `notice` text,
   `content` text,

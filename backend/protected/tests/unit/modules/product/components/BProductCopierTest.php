@@ -13,7 +13,6 @@ class BProductCopierTest extends CDbTestCase
     'product' => 'BProduct',
     'product_assignment' => 'BProductAssignment',
     'association' => 'BAssociation',
-    'product_video' => 'BProductVideo',
   );
 
   protected function setUp()
@@ -30,8 +29,6 @@ class BProductCopierTest extends CDbTestCase
 
     $this->assertNotNull($model);
     $this->assertEquals(444, Arr::reset($model->assignment)->section_id);
-    $this->assertEquals(444, Arr::reset($model->assignment)->section_id);
     $this->assertEquals(150, Arr::reset($model->associations)->dst_id);
-    $this->assertEquals('new video 1', Arr::reset($model->videos)->name);
   }
 }
