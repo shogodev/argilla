@@ -48,7 +48,7 @@ class ProductFilterRender extends CComponent
     return 'callback_'.$this->parent->filterKey;
   }
 
-  public function registerOnChangeScript($live = true)
+  public function registerOnChangeScript($live = true, $ajaxUpdate = false)
   {
     $form = "form[name={$this->parent->filterKey}]";
 
@@ -64,18 +64,39 @@ class ProductFilterRender extends CComponent
 
       var submitForm_{$this->parent->filterKey} = function(data)
       {
-        var form = $('{$form}');
-        data += '&{$this->parent->filterKey}[submit]=1';
+        var form       = $('{$form}');
+        var ajaxUpdate = {$ajaxUpdate};
 
-        $.post(form.attr('action'), data, function(resp) {
-          if(typeof {$this->finishCallback} == 'function')
-          {
-            {$this->finishCallback}(resp);
-          }
-          else
-           location.reload();
-      }, 'html');
-    }
+        data += (data ? '&' : '') + encodeURIComponent('{$this->parent->filterKey}[submit]') + '=1';
+        var action = form.attr('action').split('?');
+        var url = action[0] + '?' + data;
+
+        if( ajaxUpdate && window.History.enabled )
+        {
+          window.History.pushState(null, document.title, decodeURIComponent(url));
+        }
+        else
+        {
+          $.post(form.attr('action'), data, function(resp) {
+            if(typeof {$this->finishCallback} == 'function')
+            {
+              {$this->finishCallback}(resp);
+            }
+            else
+              document.location.href = url;
+          }, 'html');
+        }
+      };
+
+      $('body').on('submit', '{$form}', function(e) {
+        e.preventDefault();
+        submitForm_{$this->parent->filterKey}($(this).serialize());
+      });
+
+      $('body').on('click', 'a#clearFilter', function(e) {
+        e.preventDefault();
+        submitForm_{$this->parent->filterKey}('');
+      });
     ";
 
     Yii::app()->clientScript->registerScript('onChangeScript_'.$this->parent->filterKey, $script, CClientScript::POS_LOAD);
@@ -86,6 +107,14 @@ class ProductFilterRender extends CComponent
     $form = "form[name={$this->parent->filterKey}]";
 
     $script = "$('body').on('change', '.removeElement', function(e) {
+      var id = $(this).attr('id').replace('remove_', '');
+
+      if( $('#' + id).length )
+      {
+        $('#' + id).click();
+      }
+      else
+      {
         var form = $('{$form}');
         var data = $(this).attr('name') + '=' + $(this).val() + '&{$this->parent->filterKey}[remove]=1';
 
@@ -97,9 +126,8 @@ class ProductFilterRender extends CComponent
           else
            location.reload();
         }, 'html');
-
-      });
-    ";
+      }
+    });";
 
     Yii::app()->clientScript->registerScript('removeElementsScript_'.$this->parent->filterKey, $script, CClientScript::POS_LOAD);
   }
