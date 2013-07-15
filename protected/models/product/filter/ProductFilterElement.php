@@ -32,6 +32,8 @@ abstract class ProductFilterElement extends CComponent
 
   public $disabled = array();
 
+  public $htmlOptions = array();
+
   /**
    * @var ProductFilterElementItem[] $items
    */

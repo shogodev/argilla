@@ -24,6 +24,11 @@ class ProductFilter extends AbstractProductFilter
    */
   protected $elements = array();
 
+  /**
+   * @var array
+   */
+  protected $defaultSelectedElements = array();
+
   public function addElement(array $filterElement, $emptyValue = null)
   {
     $items = array();
@@ -83,6 +88,48 @@ class ProductFilter extends AbstractProductFilter
     }
 
     return null;
+  }
+
+  public function getSelectedElements()
+  {
+    $selected = array();
+
+    if( !empty($this->defaultSelectedElements) )
+      $selected = $this->defaultSelectedElements;
+
+    foreach($this->elements as $elementId => $element)
+    {
+      if( !$element->isSelected() )
+        continue;
+
+      if( !isset($selected[$elementId]) )
+      {
+        $selected[$elementId] = array(
+          'id' => $elementId,
+          'name' => $element->label,
+          'items' => array()
+        );
+      }
+
+      foreach($element->items as $item)
+        if( $item->isSelected() )
+          $selected[$elementId]['items'][$item->id] = $item;
+    }
+
+    return $selected;
+  }
+
+  public function setDefaultSelectedElements($elements)
+  {
+    $this->defaultSelectedElements = array();
+
+    foreach($elements as $element)
+    {
+      if( isset($element['id']) )
+        unset($element['id']);
+
+      $this->defaultSelectedElements[] = $element;
+    }
   }
 
   /**

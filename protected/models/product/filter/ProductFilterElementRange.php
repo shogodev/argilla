@@ -60,6 +60,9 @@ class ProductFilterElementRange extends ProductFilterElement
   {
     $criteria->distinct = true;
 
+    if( empty($this->itemLabels) )
+      return $criteria;
+
     $select = "(CASE \n";
 
     $i = 0;
