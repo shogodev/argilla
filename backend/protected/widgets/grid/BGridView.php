@@ -79,7 +79,8 @@ class BGridView extends TbGridView
     if( !empty($this->buttonsTemplate) )
     {
       Yii::app()->controller->renderPartial($this->buttonsTemplate, array(
-        'model' => !empty($this->filter) ? $this->filter : null
+        'model' => !empty($this->filter) ? $this->filter : null,
+        'grid' => $this
       ));
     }
   }
