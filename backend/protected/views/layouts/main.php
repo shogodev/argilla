@@ -50,15 +50,9 @@
 <div class="s-shader navbar-fixed-top"></div>
 
 <?php if( !Yii::app()->user->isGuest ) { ?>
-<div class="flash">
+<div class="flash" id="flash-message">
   <?php $this->widget('bootstrap.widgets.TbAlert'); ?>
 </div>
-  <?php
-  Yii::app()->clientScript->registerScript(
-    'flashSuccess',
-    '$(".flash").slideDown("slow", function(){$(".flash").animate({opacity: 1.0}, 5000).fadeOut("slow");});',
-    CClientScript::POS_READY
-  ); ?>
 <?php } ?>
 
 <div class="container-fluid s-container" id="top">
