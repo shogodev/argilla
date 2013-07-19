@@ -1,10 +1,10 @@
 <?php
 /**
- * @author Nikita Melnikov <melnikov@shogo.ru>
+ * @author Nikita Melnikov <melnikov@shogo.ru>, Alexey Tatarivov <tatarinov@shogo.ru>
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
- * @package frontend.components.validators.LoginValidator
+ * @package frontend.components.validators
  */
 class LoginValidator extends CValidator
 {
@@ -14,12 +14,7 @@ class LoginValidator extends CValidator
 
   const MAX_WORDS_COUNT = 3;
 
-  /**
-   * @var array
-   */
-  protected $delimiters = array(
-    ' ', '-'
-  );
+  protected $delimiters =  '\ \_\-';
 
   /**
    * @param CModel $object
@@ -29,7 +24,6 @@ class LoginValidator extends CValidator
   {
     $this->validateLength($object, $attribute);
     $this->validateLetters($object, $attribute);
-    $this->validateCharRegister($object, $attribute);
     $this->validateLoginBorders($object, $attribute);
     $this->validateDelimiters($object, $attribute);
   }
@@ -40,11 +34,11 @@ class LoginValidator extends CValidator
    */
   protected function validateLength($object, $attribute)
   {
-    if( $this->strlen($object->{$attribute}) > self::MAX_LENGTH )
-      $this->addError($object, $attribute, 'Логин не может быть более '.self::MAX_LENGTH.' символов');
+    if( mb_strlen($object->{$attribute}) > self::MAX_LENGTH )
+      $this->addError($object, $attribute, '{attribute} не может быть более '.self::MAX_LENGTH.' символов');
 
-    if( $this->strlen($object->{$attribute}) < self::MIN_LENGTH )
-      $this->addError($object, $attribute, 'Логин не может быть менее '.self::MIN_LENGTH.' символов');
+    if( mb_strlen($object->{$attribute}) < self::MIN_LENGTH )
+      $this->addError($object, $attribute, '{attribute} не может быть менее '.self::MIN_LENGTH.' символов');
 
     $this->validateWordsCount($object, $attribute);
   }
@@ -55,26 +49,16 @@ class LoginValidator extends CValidator
    */
   protected function validateLetters($object, $attribute)
   {
-    if( !preg_match('/^[a-zA-Z-_]+$/', $object->{$attribute}) )
+    if( !preg_match('/^[A-ZА-ЯЁ0-9'.$this->delimiters.']+$/iu', $object->{$attribute}) )
     {
-      $error = 'Логин может содержать только буквы английского алфавита.
-                В качестве разделительных символов можно использовать пробел или тире "-"';
+      $error = '{attribute} может содержать только цифры и буквы английского или русского алфавита.
+                В качестве разделительных символов можно использовать пробел, тире "-" и нижнее подчеркивание "_".';
 
       $this->addError($object, $attribute, $error);
     }
-  }
 
-  /**
-   * @param CModel $object
-   * @param string $attribute
-   */
-  protected function validateCharRegister($object, $attribute)
-  {
-    if( preg_match('/[a-z][A-Z]/', $object->{$attribute}) )
-    {
-      $error = 'Логин не может содержать заглавную букву после обычной';
-      $this->addError($object, $attribute, $error);
-    }
+    if( preg_match('/[A-Z]+/ui', $object->{$attribute}) && preg_match('/[А-ЯЁ]+/ui', $object->{$attribute}) )
+      $this->addError($object, $attribute, '{attribute} может содержать буквы только одного алфавита: английского или русского.');
   }
 
   /**
@@ -83,20 +67,8 @@ class LoginValidator extends CValidator
    */
   protected function validateLoginBorders($object, $attribute)
   {
-    $excluded = array(
-      ' ', '-', '_'
-    );
-
-    foreach( $excluded as $char )
-    {
-      if( substr($object->{$attribute}, -1, 1) === $char || stripos($object->{$attribute}, $char) === 0 )
-      {
-        $error = 'Логин не может начинаться или заканчиваться пробелом, подчеркиванием или тире';
-
-        $this->addError($object, $attribute, $error);
-        break;
-      }
-    }
+    if( preg_match('/^['.$this->delimiters.']+/', $object->{$attribute}) || preg_match('/['.$this->delimiters.']+$/', $object->{$attribute}) )
+      $this->addError($object, $attribute, '{attribute} не может начинаться или заканчиваться пробелом, подчеркиванием или тире');
   }
 
   /**
@@ -105,16 +77,8 @@ class LoginValidator extends CValidator
    */
   public function validateDelimiters($object, $attribute)
   {
-    foreach( $this->delimiters as $delimiter )
-    {
-      if( strpos($object->{$attribute}, $delimiter.$delimiter) !== false )
-      {
-        $error = 'Запрещено использовать два разделительных символа подряд';
-
-        $this->addError($object, $attribute, $error);
-        break;
-      }
-    }
+    if( preg_match('/['.$this->delimiters.']+['.$this->delimiters.']+/', $object->{$attribute}) )
+      $this->addError($object, $attribute, 'Запрещено использовать два разделительных символа подряд');
   }
 
   /**
@@ -123,26 +87,8 @@ class LoginValidator extends CValidator
    */
   protected function validateWordsCount($object, $attribute)
   {
-    $specialDelimiter = '%';
-
-    foreach( $this->delimiters as $delimiter )
-    {
-      $object->{$attribute} = str_replace($delimiter, $specialDelimiter, $object->{$attribute});
-    }
-
-    $data = explode($specialDelimiter, $object->{$attribute});
-
-    if( count($data) > self::MAX_WORDS_COUNT )
-      $this->addError($object, $attribute, 'Логин не может состоять более чем из '.self::MAX_WORDS_COUNT.' слов');
-  }
-
-  /**
-   * @param string $data
-   *
-   * @return int
-   */
-  protected function strlen($data)
-  {
-    return mb_strlen($data, 'utf-8');
+    $words = preg_split('/['.$this->delimiters.']+/', $object->{$attribute});
+    if( count($words) > self::MAX_WORDS_COUNT )
+      $this->addError($object, $attribute, '{attribute} не может состоять более чем из '.self::MAX_WORDS_COUNT.' слов');
   }
 }
