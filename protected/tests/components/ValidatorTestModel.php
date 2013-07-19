@@ -1,12 +1,12 @@
 <?php
 class ValidatorTestModel extends CFormModel
 {
-	public $login;
+  public $login;
 
-	public function rules()
-	{
-		return array(
+  public function rules()
+  {
+    return array(
       array('login', 'LoginValidator'),
-		);
-	}
+    );
+  }
 }

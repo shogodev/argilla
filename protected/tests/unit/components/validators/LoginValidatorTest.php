@@ -6,15 +6,18 @@
  * @license http://argilla.ru/LICENSE
  * @package frontend.tests.unit.components.validators
  */
-Yii::import('frontend.tests.unit.components.validators.ValidatorTestModel');
+Yii::import('frontend.tests.components.ValidatorTestModel');
 
 class LoginValidatorTest extends CTestCase
 {
   public function testValidate()
   {
-    $testModel =  new ValidatorTestModel();
+    $testModel = new ValidatorTestModel();
 
     $testModel->login = 'q';
+    $this->assertFalse($testModel->validate('login', true));
+
+    $testModel->login = str_repeat('э', LoginValidator::MAX_LENGTH + 1);
     $this->assertFalse($testModel->validate('login', true));
 
     $testModel->login = 'qw';
@@ -52,6 +55,9 @@ class LoginValidatorTest extends CTestCase
 
     $testModel->login = 'ЫыЬьЭэЮюЯя';
     $this->assertTrue($testModel->validate('login', true));
+
+    $testModel->login = 'ЫыЬь╤ЭэЮюЯя';
+    $this->assertFalse($testModel->validate('login', true));
 
     $testModel->login = 'AaBbCcDdEeFfGg';
     $this->assertTrue($testModel->validate('login', true));

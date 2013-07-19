@@ -34,10 +34,10 @@ class LoginValidator extends CValidator
    */
   protected function validateLength($object, $attribute)
   {
-    if( $this->strlen($object->{$attribute}) > self::MAX_LENGTH )
+    if( mb_strlen($object->{$attribute}) > self::MAX_LENGTH )
       $this->addError($object, $attribute, '{attribute} не может быть более '.self::MAX_LENGTH.' символов');
 
-    if( $this->strlen($object->{$attribute}) < self::MIN_LENGTH )
+    if( mb_strlen($object->{$attribute}) < self::MIN_LENGTH )
       $this->addError($object, $attribute, '{attribute} не может быть менее '.self::MIN_LENGTH.' символов');
 
     $this->validateWordsCount($object, $attribute);
@@ -49,15 +49,15 @@ class LoginValidator extends CValidator
    */
   protected function validateLetters($object, $attribute)
   {
-    if( !preg_match('/^[a-zA-ZА-ЯЁа-пр-яё0-9'.$this->delimiters.']+$/u', $object->{$attribute}) )
+    if( !preg_match('/^[A-ZА-ЯЁ0-9'.$this->delimiters.']+$/iu', $object->{$attribute}) )
     {
-      $error = '{attribute} может содержать только цыфры и буквы английского или русского алфавита.
+      $error = '{attribute} может содержать только цифры и буквы английского или русского алфавита.
                 В качестве разделительных символов можно использовать пробел, тире "-" и нижнее подчеркивание "_".';
 
       $this->addError($object, $attribute, $error);
     }
 
-    if( preg_match('/[a-zA-Z]+/u', $object->{$attribute}) && preg_match('/[А-ЯЁа-пр-яё]+/u', $object->{$attribute}) )
+    if( preg_match('/[A-Z]+/ui', $object->{$attribute}) && preg_match('/[А-ЯЁ]+/ui', $object->{$attribute}) )
       $this->addError($object, $attribute, '{attribute} может содержать буквы только одного алфавита: английского или русского.');
   }
 
@@ -90,15 +90,5 @@ class LoginValidator extends CValidator
     $words = preg_split('/['.$this->delimiters.']+/', $object->{$attribute});
     if( count($words) > self::MAX_WORDS_COUNT )
       $this->addError($object, $attribute, '{attribute} не может состоять более чем из '.self::MAX_WORDS_COUNT.' слов');
-  }
-
-  /**
-   * @param string $data
-   *
-   * @return int
-   */
-  protected function strlen($data)
-  {
-    return mb_strlen($data, 'utf-8');
   }
 }
