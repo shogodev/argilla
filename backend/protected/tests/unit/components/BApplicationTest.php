@@ -29,6 +29,9 @@ class BApplicationTest extends CTestCase
 
   public function testGetFrontendUrl()
   {
+    if( !isset($_SERVER['HTTP_HOST']) )
+      $this->markTestSkipped();
+
     $url  = $this->app->getFrontendUrl();
     $host = 'http://'.$_SERVER['HTTP_HOST']."/";
 

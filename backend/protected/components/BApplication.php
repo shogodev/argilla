@@ -85,6 +85,6 @@ class BApplication extends CWebApplication
 
     $this->params->project = preg_replace("/^www./", '', Yii::app()->request->serverName);
 
-    return parent::init();
+    parent::init();
   }
 }

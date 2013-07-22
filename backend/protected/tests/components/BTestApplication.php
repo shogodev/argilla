@@ -12,10 +12,12 @@ class BTestApplication extends BApplication
 {
   protected function init()
   {
+    $_SERVER['SERVER_NAME']     = 'argilla.dev.shogo.ru';
     $_SERVER['SCRIPT_NAME']     = 'backend/index.php';
     $_SERVER['SCRIPT_FILENAME'] = dirname(__FILE__).'/../../../../'.$_SERVER['SCRIPT_NAME'];
+    $_SERVER['REQUEST_URI']     = $_SERVER['SCRIPT_FILENAME'];
 
-    return parent::init();
+    parent::init();
   }
 
   /**

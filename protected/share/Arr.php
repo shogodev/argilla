@@ -12,9 +12,13 @@ class Arr
   public static function get($array, $key, $default = null, $strict_default_check = false)
   {
     if( $strict_default_check )
+    {
       return !empty($array[$key]) ? $array[$key] : $default;
+    }
     else
+    {
       return isset($array[$key]) ? $array[$key] : $default;
+    }
   }
 
   /**
@@ -32,9 +36,13 @@ class Arr
   public static function cut(&$array, $key, $default = null, $strict_default_check = false)
   {
     if( $strict_default_check )
+    {
       $value = !empty($array[$key]) ? $array[$key] : $default;
+    }
     else
+    {
       $value = isset($array[$key]) ? $array[$key] : $default;
+    }
 
     unset($array[$key]);
 
@@ -59,10 +67,16 @@ class Arr
     $found = array();
 
     if( is_array($keys) )
+    {
       foreach($keys as $key)
+      {
         $found[$key] = isset($array[$key]) ? $array[$key] : $default;
+      }
+    }
     else
+    {
       $found = isset($array[$keys]) ? $array[$keys] : $default;
+    }
 
     return $found;
   }
@@ -105,11 +119,17 @@ class Arr
     if( is_array($keys) )
     {
       foreach($keys as $value)
+      {
         if( !array_key_exists($value, $search) )
+        {
           return false;
+        }
+      }
     }
     else
+    {
       $result = array_key_exists($keys, $search);
+    }
 
     return $result;
   }
@@ -123,16 +143,22 @@ class Arr
   public static function fromObj($obj)
   {
     if( is_object($obj) )
+    {
       return get_object_vars($obj);
+    }
     else if( is_array($obj) )
     {
       foreach($obj as $key => $value)
+      {
         $obj[$key] = call_user_func(__METHOD__, $value);
+      }
 
       return $obj;
     }
     else
+    {
       return $obj;
+    }
   }
 
   /**
@@ -163,17 +189,25 @@ class Arr
       foreach($array as $key => $value)
       {
         if( !empty($charlist) )
+        {
           $array[$key] = self::trim($value, $charlist);
+        }
         else
+        {
           $array[$key] = self::trim($value);
+        }
       }
     }
     elseif( is_string($array) )
     {
       if( !empty($charlist) )
+      {
         $array = trim($array, $charlist);
+      }
       else
+      {
         $array = trim($array);
+      }
     }
 
     return $array;
@@ -192,7 +226,9 @@ class Arr
     foreach($array as $key => $value)
     {
       if( empty($value) )
+      {
         unset($array[$key]);
+      }
     }
 
     return preg_replace("/\s+/", " ", implode($glue, $array));
@@ -211,9 +247,13 @@ class Arr
   public static function reduce($data)
   {
     if( is_array($data) )
+    {
       return self::reset($data);
+    }
     else
+    {
       return $data;
+    }
   }
 
   /**
@@ -246,9 +286,13 @@ class Arr
   public static function divide(array $array, $countOfParts = 2)
   {
     if( !count($array) )
+    {
       return array();
+    }
     else
+    {
       return array_chunk($array, ceil(count($array) / $countOfParts));
+    }
   }
 
   /**
@@ -259,7 +303,9 @@ class Arr
   public static function push(&$array, $itemKey, $item)
   {
     if( !isset($array[$itemKey]) )
+    {
       $array[$itemKey] = array();
+    }
 
     $array[$itemKey][] = $item;
   }
@@ -276,7 +322,9 @@ class Arr
     foreach($array as $key => $value)
     {
       if( $key === $after )
+      {
         break;
+      }
 
       $counter++;
     }

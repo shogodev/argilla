@@ -148,6 +148,7 @@ class ArrTest extends CTestCase
 
     $result = Arr::divide($array);
     $this->assertEquals([[1], [2]], $result);
+    $this->assertEquals(array(), Arr::divide(array()));
   }
 
   public function testArrayMergeAssoc()

@@ -21,7 +21,7 @@
  */
 class FApplication extends CWebApplication
 {
-  public function init()
+  protected function init()
   {
     parent::init();
 

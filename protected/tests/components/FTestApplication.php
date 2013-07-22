@@ -10,6 +10,15 @@ require_once(dirname(__FILE__).'/../../components/FApplication.php');
 
 class FTestApplication extends FApplication
 {
+  protected function init()
+  {
+    $_SERVER['SCRIPT_NAME']     = 'backend/index.php';
+    $_SERVER['SCRIPT_FILENAME'] = dirname(__FILE__).'/../../../../'.$_SERVER['SCRIPT_NAME'];
+    $_SERVER['REQUEST_URI']     = dirname(__FILE__).'/../../../../'.$_SERVER['SCRIPT_NAME'];
+
+    parent::init();
+  }
+
   /**
    * Устанавливаем окружение.
    * Задаем контроллер и экшен, в контексте которого выполняется код.
