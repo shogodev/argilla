@@ -5,40 +5,17 @@
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
  */
+/**
+ * @method BProduct product(string $alias)
+ * @method BProductAssignment assignment(string $alias)
+ */
 class BProductTest extends CDbTestCase
 {
-  protected $fixtures = [
+  protected $fixtures = array(
     'product' => 'BProduct',
-    'product_assignment' => 'BProductAssignment',
-  ];
+    'assignment' => 'BProductAssignment',
+  );
 
-  /**
-   * Дата провайдер для testGetSearchCriteriaWithFilteringBySection().
-   *
-   * @return array
-   */
-  public function getSearchCriteriaWithFilteringBySectionDataProvider()
-  {
-    return [
-      ['section_id' => 1, 'expected_count' => 4],
-      ['section_id' => 2, 'expected_count' => 3],
-      ['section_id' => 3, 'expected_count' => 3],
-    ];
-  }
-
-  /**
-   * Дата провайдер для testGetSearchCriterialWithFilteringByType().
-   *
-   * @return array
-   */
-  public function getSearchCriterialWithFilteringByTypeDataProvider()
-  {
-    return [
-      ['type_id' => 1, 'expected_count' => 8],
-      ['type_id' => 2, 'expected_count' => 2],
-      ['type_id' => 3, 'expected_count' => 0],
-    ];
-  }
 
   public function testMagicGet()
   {
@@ -67,71 +44,88 @@ class BProductTest extends CDbTestCase
     $this->assertEquals('1', $product2->type_id);
   }
 
-  // TODO: отрефакторить для DRY.
-
-  /**
-   * Проверяет критерий для поиска при фильтрации по секции.
-   *
-   * @property integer $section_id Идентификатор секции по которой фильтровать.
-   * @property integer $expected_count Ожидаемое количество продуктов.
-   *
-   * @dataProvider getSearchCriteriaWithFilteringBySectionDataProvider
-   */
-  public function testGetSearchCriteriaWithFilteringBySection($section_id, $expected_count)
+  public function testSearchWithFilteringBySection()
   {
-    $product = new BProduct();          // Модель для фильтра.
-    $product->section_id = $section_id; // Фильтруем по секции.
+    $product = new BProduct();
+    $product->section_id = 2;
 
-    // Получаем критерий для поиска всех продуктов в указанной секции.
-    $criteria = $product->getSearchCriteria();
+    $products = $product->search()->getData();
 
-    $products = BProduct::model()->findAll($criteria);
-
+    $this->assertNotEmpty($products);
     $this->assertContainsOnly('BProduct', $products);
-    $this->assertCount($expected_count, $products);
 
-    // Проверяем, что все уникальные.
-    for ($i = 1; $i < count($products); $i++)
-    {
-      $this->assertNotSame($products[$i - 1], $products[$i]);
-    }
+    $this->assertTrue($this->product('product4')->equals($products[0]));
+    $this->assertTrue($this->product('product7')->equals($products[1]));
+    $this->assertTrue($this->product('product8')->equals($products[2]));
+
+    $this->assertTrue($this->areAllActiveRecordsUnique($products));
   }
 
-  /**
-   * Проверяет критерий для поиска при фильтрации по типу.
-   *
-   * @param $type_id Идентификатор типа по которому фильтровать.
-   * @param $expected_count Ожидаемое количество продуктов.
-   *
-   * @dataProvider getSearchCriterialWithFilteringByTypeDataProvider
-   */
-  public function testGetSearchCriterialWithFilteringByType($type_id, $expected_count)
+  public function testSearchWithFilteringBySectionWhenThereAreNoAssignedProducts()
   {
-    // Bug: Тест не проходит после добавления новых фикстур
-    $this->markTestSkipped();
+    $product = new BProduct();
+    $product->section_id = 9001;
 
-    $product = new BProduct();    // Модель для фильтра.
-    $product->type_id = $type_id; // Фильтруем по секции.
+    $products = $product->search()->getData();
 
-    // Получаем критерий для поиска всех продуктов в указанной секции.
-    $criteria = $product->getSearchCriteria();
-
-    $products = BProduct::model()->findAll($criteria);
-
-    $this->assertContainsOnly('BProduct', $products);
-    $this->assertCount($expected_count, $products);
-
-    // Проверяем, что все уникальные.
-    for ($i = 1; $i < count($products); $i++)
-    {
-      $this->assertNotSame($products[$i - 1], $products[$i]);
-    }
+    $this->assertEmpty($products);
   }
 
-  // TODO: добавить тест для фильтрации по visible.
-  // TODO: добавить тест для фильтрации по discount.
-  // TODO: добавить тест для фильтрации по spec.
-  // TODO: добавить тест для фильтрации по novelty.
-  // TODO: добавить тест для фильтрации по main.
-  // TODO: добавить тест для фильтрации по name.
+  public function testSearchWithFilteringByType()
+  {
+    $product = new BProduct();
+    $product->type_id = 42;
+
+    $products = $product->search()->getData();
+
+    $this->assertNotEmpty($products);
+    $this->assertContainsOnly('BProduct', $products);
+
+    $this->assertTrue($this->product('product1')->equals($products[0]));
+    $this->assertTrue($this->product('product2')->equals($products[1]));
+    $this->assertTrue($this->product('product3')->equals($products[2]));
+    $this->assertTrue($this->product('product4')->equals($products[3]));
+    $this->assertTrue($this->product('product5')->equals($products[4]));
+    $this->assertTrue($this->product('product6')->equals($products[5]));
+    $this->assertTrue($this->product('product8')->equals($products[6]));
+    $this->assertTrue($this->product('product9')->equals($products[7]));
+
+    $this->assertTrue($this->areAllActiveRecordsUnique($products));
+  }
+
+  public function testSearchWithFilteringByTypeWnenThereAreNoAssignedProducts()
+  {
+    $product = new BProduct();
+    $product->type_id = 9001;
+
+    $products = $product->search()->getData();
+
+    $this->assertEmpty($products);
+  }
+
+
+  /**
+   * @param CActiveRecord[] $activeRecords
+   *
+   * @return bool
+   */
+  private function areAllActiveRecordsUnique(array $activeRecords)
+  {
+    for( $i = 0; $i < count($activeRecords); $i++ )
+    {
+      for( $j = 0; $j < count($activeRecords); $j++ )
+      {
+        if( $i === $j )
+        {
+          continue;
+        }
+        if( $activeRecords[$i]->equals($activeRecords[$j]) )
+        {
+          return false;
+        }
+      }
+    }
+
+    return true;
+  }
 }
