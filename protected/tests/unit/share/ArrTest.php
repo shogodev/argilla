@@ -157,6 +157,13 @@ class ArrTest extends CTestCase
 
     $result = Arr::mergeAssoc($array1, $array2);
     $this->assertEquals([1 => 'a', 2 => 'b'], $result);
+
+    // test key overriding
+    $array1 = [1 => 'a', 2 => 'b'];
+    $array2 = [2 => 'c'];
+
+    $result = Arr::mergeAssoc($array1, $array2);
+    $this->assertEquals([1 => 'a', 2 => 'c'], $result);
   }
 
   public function testInsertAfter()

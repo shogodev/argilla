@@ -217,14 +217,30 @@ class Arr
   }
 
   /**
-   * Ассоциативное объединение массивов
+   * Объединение ассоциативных массивов.
+   * В отличие от CMap::mergeArray перекрывает целочисленные ключи, а не увеличивает индекс элементов
    * @param array $a
    * @param array $b
    * @return array
    */
   public static function mergeAssoc(array $a, array $b)
   {
-    return array_diff_key($a, $b) + $b;
+    $args = func_get_args();
+    $res  = array_shift($args);
+
+    while( !empty($args) )
+    {
+      $next = array_shift($args);
+      foreach($next as $k => $v)
+      {
+        if( is_array($v) && isset($res[$k]) && is_array($res[$k]) )
+          $res[$k] = self::mergeAssoc($res[$k], $v);
+        else
+          $res[$k] = $v;
+      }
+    }
+
+    return $res;
   }
 
   public static function divide(array $array, $countOfParts = 2)
