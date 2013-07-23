@@ -1,4 +1,6 @@
-<?php $this->widget('bootstrap.widgets.TbBreadcrumbs', array(
+<?php
+$this->widget('FBreadcrumbs', array(
   'links' => $this->breadcrumbs,
-  'htmlOptions' => array('id' => 'breadcrumbs', 'class' => 'breadcrumb'),
-));?>
+  'separator' => '<span class="breadcrumbs-separator"></span>',
+  'htmlOptions' => array('class' => 'breadcrumbs m10'),
+));
