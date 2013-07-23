@@ -111,11 +111,18 @@ class BProductTest extends CDbTestCase
    */
   private function areAllActiveRecordsUnique(array $activeRecords)
   {
-    for ($i = 1; $i < count($activeRecords); $i++)
+    for( $i = 0; $i < count($activeRecords); $i++ )
     {
-      if( $activeRecords[$i - 1]->equals($activeRecords[$i]) )
+      for( $j = 0; $j < count($activeRecords); $j++ )
       {
-        return false;
+        if( $i === $j )
+        {
+          continue;
+        }
+        if( $activeRecords[$i]->equals($activeRecords[$j]) )
+        {
+          return false;
+        }
       }
     }
 
