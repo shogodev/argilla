@@ -51,6 +51,44 @@ class CommonDataBehaviorTest extends CDbTestCase
     $this->assertEmpty($textBlocks);
   }
 
+  public function testTextBlockRegister()
+  {
+    $textBlock = new TextBlock();
+    $textBlock->attributes = array(
+      'location' => 'index/index',
+      'content' => 'test',
+      'visible' => '1'
+    );
+    $textBlock->save();
+
+    $this->clearTextBlocksCache();
+
+    Yii::app()->controller->textBlockRegister(null, 'new content');
+    $textBlock = TextBlock::model()->findByAttributes(array('location' => 'index/index'));
+    $this->assertRegExp('/test/iu', $textBlock->content);
+
+    TextBlock::model()->deleteAllByAttributes(array('location' => 'index/index'));
+    $this->clearTextBlocksCache();
+
+    Yii::app()->controller->textBlockRegister();
+    $textBlock = TextBlock::model()->findByAttributes(array('location' => 'index/index'));
+    $this->assertRegExp('/данный текстовый блок сгенерирован автоматическ/iu', $textBlock->content);
+
+    $this->clearTextBlocksCache();
+
+    Yii::app()->controller->textBlockRegister('Сообщение', 'Сообщение успешно отправлено');
+    $textBlock = TextBlock::model()->findByAttributes(array('location' => 'index/'.Utils::translite('Сообщение')));
+    $this->assertRegExp('/сообщение успешно отправлено/iu', $textBlock->content);
+
+    $this->clearTextBlocksCache();
+
+    Yii::app()->controller->textBlockRegister('Регистрация', 'Успешная регистрация', array('class' => 'test_class', 'id' => 'message'));
+    $textBlock = TextBlock::model()->findByAttributes(array('location' => 'index/'.Utils::translite('Регистрация')));
+    $this->assertRegExp('/Успешная регистрация/iu', $textBlock->content);
+    $this->assertRegExp('/class="test_class"/iu', $textBlock->content);
+    $this->assertRegExp('/id="message"/iu', $textBlock->content);
+  }
+
   public function testGetCounters()
   {
     // выбирется все кроме флага на главной
@@ -130,5 +168,14 @@ class CommonDataBehaviorTest extends CDbTestCase
 
     $contacts = Yii::app()->controller->getContacts('icq');
     $this->assertEmpty($contacts);
+  }
+
+  protected function clearTextBlocksCache()
+  {
+    $controller = function (FController $controller) {
+      $controller->textBlocks = null;
+    };
+
+    $controller(Yii::app()->controller);
   }
 }
