@@ -1,8 +1,12 @@
-Здравствуйте<?php echo !empty($model->user->name) ? ' '.$model->user->name : ''?>!<br />
+<?php
+/**
+ * @var User $model
+ * @var UserDataExtended $userData
+ * @var string $password
+ */
+?>
+Здравствуйте<?php echo !empty($userData->name) ? ' '.$userData->name : ''?>!<br />
 <br />Вы зарегистрировались на сайте <?php echo Yii::app()->params->project?>
 <br /><br />
 Ваш логин: <?php echo $model->login?><br/>
-Ваш пароль: <?php echo $model->password?><br/>
-<br /><br />-----------------------------------------------<br /><br />
-С уважением, <?php echo Yii::app()->params->project?><br />
-web: <a href="<?php echo Yii::app()->request->hostInfo; ?>"><?php echo Yii::app()->request->hostInfo; ?></a>
+Ваш пароль: <?php echo $password?><br/>

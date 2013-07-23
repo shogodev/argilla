@@ -27,7 +27,7 @@
 
   <?php echo $form->textFieldRow($model, 'subject'); ?>
 
-  <?php echo $form->dropDownListDefaultRow($model, 'view', CHtml::listData($model->getViews(),'id', 'name')); ?>
+  <?php echo $form->dropDownListDefaultRow($model, 'view', $model->views); ?>
 
   <?php echo $form->textAreaRow($model, 'message'); ?>
 
