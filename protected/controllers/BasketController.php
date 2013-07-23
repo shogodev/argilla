@@ -1,136 +1,146 @@
 <?php
 /**
- * User: tatarinov
- * Date: 05.10.12
+ * @author Alexey Tatarivov <tatarinov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
+ * @package frontend.controllers
  */
 class BasketController extends FController
 {
-  /**
-   * @var FBasket
-   */
-  public $basket;
-
   public function init()
   {
     parent::init();
-    $this->basket = $this->getBasket();
+
+    $this->processBasketAction();
   }
 
   public function actionIndex()
   {
-    $this->breadcrumbs = array($this->basket->name);
+    $this->breadcrumbs = array('Корзина');
+
+    $this->render('basket');
+  }
+
+  public function actionPanel()
+  {
+    $this->renderPartial('/product_panel');
+  }
+
+  public function actionCheckOut()
+  {
+    if( $this->basket->isEmpty() )
+      Yii::app()->request->redirect($this->basket->url);
+
+    $this->breadcrumbs = array('Корзина');
 
     $orderForm = new FForm('Order', new Order());
-
-    if( !Yii::app()->user->isGuest )
-      $orderForm->getModel()->attributes = User::model()->findByPk(Yii::app()->user->getId())->attributes;
+    $orderForm->autocomplete = true;
+    $orderForm->ajaxValidation();
 
     if( $orderForm->save() )
     {
-      $this->basket->removeAll();
-      $this->basket->responseSuccess(
-        array('updateElements' => array(
-          'basket_empty' => 'Заказ успешно оформлен')
-        )
-      );
+      Yii::app()->notification->send('OrderBackend', array('model' => $orderForm->model));
+      Yii::app()->notification->send($orderForm->model, array(), $orderForm->model->email);
+
+      $this->basket->clear();
+
+      echo CJSON::encode(array(
+        'status' => 'ok',
+        'redirect'  => $this->createAbsoluteUrl('basket/success')
+      ));
+
+      Yii::app()->session['orderSuccess'] = true;
+
+      Yii::app();
     }
     else
     {
-      $this->render('basket', array('basket'    => $this->basket,
-                                    'orderForm' => $orderForm));
+      if( !Yii::app()->user->isGuest )
+      {
+        $orderForm->model->setAttributes(array(
+          'name' =>Yii::app()->user->data->name,
+          'address' => Yii::app()->user->data->address,
+          'email' => Yii::app()->user->email
+        ));
+      }
+
+      $this->render('check_out', array('form' => $orderForm));
     }
   }
 
-  public function actionAdd()
+  public function actionSuccess()
   {
-    if( Yii::app()->request->isAjaxRequest && isset($_POST[$this->basket->getCollectionKey()]) )
-    {
-      if( $this->basket->add($_POST[$this->basket->getCollectionKey()]) !== false )
-        $this->basket->responseSuccess();
-    }
-  }
+    if( $this->basket->isEmpty() && !Yii::app()->session->get('orderSuccess', false) )
+      Yii::app()->request->redirect($this->basket->url);
 
-  public function actionDelete()
-  {
-    if( Yii::app()->request->isAjaxRequest && isset($_POST[$this->basket->getCollectionKey()]['collectionIndex']) )
-    {
-      $collectionIndex = $_POST[$this->basket->getCollectionKey()]['collectionIndex'];
-      if( $this->basket->remove($collectionIndex) )
-      {
-        $this->basket->responseSuccess(
-          array('removeElements' => array($this->basket->getElementId(array('row', $collectionIndex))))
-        );
-      }
-    }
-  }
+    Yii::app()->session->remove('orderSuccess');
 
-  public function actionChangeCount()
-  {
-    if( Yii::app()->request->isAjaxRequest && isset($_POST) )
-    {
-      $data = array();
-
-      foreach($this->basket->getProducts() as $product)
-      {
-        $key = $this->basket->getElementId(array('count', $product->collectionIndex));
-
-        if( isset($_POST[$key]) )
-          $data[$product->collectionIndex] = intval($_POST[$key]);
-      }
-
-      foreach($data as $collectionIndex => $count)
-        $this->basket->changeCount($collectionIndex, $count);
-
-      foreach($data as $collectionIndex => $count)
-      {
-        $product = $this->basket->getProduct($collectionIndex);
-        $response[$this->basket->getElementId(array('sum', $collectionIndex))]   = Yii::app()->format->formatNumber($product->sum);
-        $response[$this->basket->getElementId(array('count', $collectionIndex))] = $product->count;
-      }
-
-      $this->basket->responseSuccess(array('updateElements' => $response));
-    }
+    $this->render('success');
   }
 
   public function actionFastOrder()
   {
-    $fastOrderForm = $this->getFastOrderForm();
-    $basket        = $this->getBasket();
+    $form = $this->fastOrderForm;
 
-    if( $_POST['FastOrder']['action'] == 'to_basket' )
+    $form->ajaxValidation();
+
+    $this->fastOrderBasket->add(Yii::app()->request->getPost($this->fastOrderBasket->keyCollection));
+
+    if( !$this->fastOrderBasket->isEmpty() && $form->save() )
     {
-      if( isset($_POST['FastOrder']['product_id']) )
-        $product = Product::model()->findByPk($_POST['FastOrder']['product_id']);
+      Yii::app()->notification->send('OrderBackend', array('model' => $form->model));
+      Yii::app()->notification->send($form->model, array(), $form->model->email);
 
-      if( empty($product) )
-        throw new HttpException(404, 'Ошибка');
-
-      $data = $basket->dataForSend($product->id);
-      $basket->add($data[$basket->getCollectionKey()]);
-
-      $basket->responseSuccess(array(
-        'reload'   => true
+      echo CJSON::encode(array(
+        'status' => 'ok',
+        'hideElements' => array($this->fastOrderForm->id),
+        'showElements' => array('order-submit-success')
       ));
-    }
 
-    if( $fastOrderForm->process() )
-    {
-      $data = $basket->dataForSend($fastOrderForm->model->product_id);
-      $basket->add($data[$basket->getCollectionKey()]);
-
-      $fastOrderForm->model->save(false);
-      $basket->removeAll();
-      $basket->responseSuccess(array(
-        'hideElements'   => array('fast_order_form_block'),
-        'showElements'   => array('fast_order_message_block'),
-        'updateElements' => array('fast_order_message_block' => 'Заказ оформлен успешно')
-      ));
+      Yii::app()->end();
     }
   }
 
-  public function filters()
+  public function actionFavoriteToBasket()
   {
-    return array('ajaxOnly + add + delete + changeCount');
+    foreach($this->favorite as $item)
+    {
+      $data = $item->toArray();
+      unset($data['index']);
+      $this->basket->add($data);
+    }
+
+    $this->renderPartial('/product_panel');
+  }
+
+  protected function processBasketAction()
+  {
+    $request = Yii::app()->request;
+
+    if( !$request->isAjaxRequest )
+      return;
+
+    $data = $request->getPost($this->basket->keyCollection);
+    $action = $request->getPost('action');
+
+    if( $data && $action )
+    {
+      switch($action)
+      {
+        case 'remove':
+          $this->basket->remove(Arr::get($data, 'id'));
+          break;
+
+        case 'changeAmount':
+          $this->basket->change($data['id'], intval($data['amount']));
+        break;
+
+        case 'add':
+          $this->basket->add($data);
+        break;
+      }
+    }
   }
 }
 ?>

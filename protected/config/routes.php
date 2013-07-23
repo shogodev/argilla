@@ -14,6 +14,8 @@ return array(
   // info
   'info' => array('info/index', 'pattern' => 'info/<url:\w+>.html'),
 
+  // contacts
+  'contact' => array('contact/index', 'pattern' => 'contact'),
   //compare
   'compare'           => array('compare/index',      'pattern' => 'compare'),
   'compareAdd'        => array('compare/add',        'pattern' => '<url:compare\/add>/<id:\d+>'),
@@ -39,9 +41,11 @@ return array(
   //basket
   'basket'          => array('basket/index',       'pattern' => 'basket'),
   'basketAdd'       => array('basket/add',         'pattern' => 'basket/add'),
-  'basketDelete'    => array('basket/delete',      'pattern' => 'basket/delete'),
-  'basketCount'     => array('basket/changeCount', 'pattern' => 'basket/count'),
+  'basketCheckOut'       => array('basket/checkout', 'pattern' => 'basket/check_out'),
+  'basketSuccess'       => array('basket/success', 'pattern' => 'basket/success'),
   'basketFastOrder' => array('basket/fastOrder',   'pattern' => 'basket/fastorder'),
+  //favorite
+  'favorite' => array('favorite/index', 'pattern' => 'favorite/index'),
 
   // products
   'productFastOrder'        => array('product/fastOrder',        'pattern' => 'fastorder/<id:\d+>'),
