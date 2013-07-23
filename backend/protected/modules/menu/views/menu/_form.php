@@ -50,7 +50,8 @@ echo $form->renderRequire();
             'header' => 'Вид',
             'class' => 'BFrontendMenuGridActiveColumn',
             'menu_id' => $model->getId()
-          )
+          ),
+          array('class' => 'BButtonMenu'),
         ),
       ));?>
     </td>
