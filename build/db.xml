@@ -35,6 +35,7 @@
 
     <target name="createSchema" depends="getDbSettings" description="Залить схему БД">
         <exec command="mysqldump --dump-date --routines --no-data -u${db.username} -p${db.password} -h${db.host} ${db.dbname} > ${dbSchemaLocation}"/>
+        <changeTablePrefix file="${dbSchemaLocation}" originalPrefix="${db.prefix}" newPrefix="argilla_"/>
         <fixSchema file="${dbSchemaLocation}"/>
     </target>
 

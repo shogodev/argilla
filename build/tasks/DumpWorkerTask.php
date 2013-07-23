@@ -71,8 +71,9 @@ class DumpWorkerTask extends Task
   protected function removeComments($str)
   {
     $comments = array(
-      '-- Host: .+Database: .+',
-      '-- Dump completed on .+',
+      '^-- Host: .+Database: .+$',
+      '^-- Dump completed on .+$',
+      '^-- Dumping routines for database \'.+\'$',
     );
 
     foreach($comments as $pattern)

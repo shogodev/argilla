@@ -1,19 +1,20 @@
 <?php
 /**
- * ChangeTablePrefixTask, Изменение префикса таблиц.
+ * Изменение префикса таблиц
  *
  * @author Fedor A Borshev <fedor@shogo.ru>
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
- * @package build.tasks.ChangeTablePrefix
+ * @package build.tasks
  *
  */
-
 require_once 'build/tasks/DumpWorkerTask.php';
 
 class ChangeTablePrefixTask extends DumpWorkerTask
 {
+  private $originalPrefix = 'argilla_';
+
   private $newPrefix;
 
   public function setNewPrefix($newPrefix)
@@ -21,34 +22,21 @@ class ChangeTablePrefixTask extends DumpWorkerTask
     $this->newPrefix = $newPrefix;
   }
 
-  protected function parse($fileData)
+  public function setOriginalPrefix($originalPrefix)
   {
-    $originalPrefix = $this->getOriginalPrefix($fileData);
-
-    if(empty($originalPrefix))
-      throw new BuildException("Cannot find original prefix in file " . $this->file);
-
-    $result = array();
-    
-    foreach ($fileData as $str)
-    {
-      $str = str_replace($originalPrefix, $this->newPrefix, $str);
-
-      array_push($result, $str);
-    }
-    return $result;
+    $this->originalPrefix = $originalPrefix;
   }
 
-  private function getOriginalPrefix ($fileData)
+  protected function parse($fileData)
   {
+    $result = array();
+
     foreach($fileData as $str)
     {
-      if(preg_match('/^-- Original prefix: /', $str))
-      {
-        preg_match('/^-- Original prefix: (.*_)/', $str, $q);
-        return $q[1];
-      }
+      $str = str_replace($this->originalPrefix, $this->newPrefix, $str);
+      array_push($result, $str);
     }
-    return null;
+
+    return $result;
   }
 }
