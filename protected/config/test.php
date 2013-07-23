@@ -12,6 +12,9 @@ $config = array_replace_recursive(
       ),
       'request' => array(
         'class' => 'frontend.tests.components.THttpRequest'
+      ),
+      'session' => array(
+        'class' => 'CHttpSession'
       )
     ),
 
@@ -21,7 +24,6 @@ $config = array_replace_recursive(
   )
 );
 
-unset($config['preload'][array_search('bootstrap', $config['preload'])]);
 unset($config['components']['log']);
 
 $config['components']['db']['connectionString'] = preg_replace("/dbname=([\w\-_]+)/", "dbname=$1_test", $config['components']['db']['connectionString']);

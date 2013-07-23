@@ -6,7 +6,7 @@ defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', true);
 $backend  = dirname(dirname(__FILE__));
 $frontend = dirname(dirname(dirname(dirname(__FILE__)))).DIRECTORY_SEPARATOR.'protected';
 
-return array(
+return array_replace_recursive(array(
   'name' => 'backend',
   'basePath' => $backend,
   'controllerPath' => $backend.'/controllers',
@@ -180,5 +180,5 @@ return array(
 
   'sourceLanguage' => 'ru_ru',
   'language' => 'ru',
-);
+), require($frontend.'/config/share.php'));
 ?>
