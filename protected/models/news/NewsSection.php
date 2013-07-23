@@ -20,6 +20,15 @@
  */
 class NewsSection extends FActiveRecord
 {
+  const ID_NEWS = 1;
+
+  public function defaultScope()
+  {
+    return array(
+      'condition' => 'visible = 1'
+    );
+  }
+
   public function tableName()
   {
     return '{{news_section}}';
