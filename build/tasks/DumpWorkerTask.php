@@ -1,19 +1,17 @@
 <?php
 /**
- * DumpWorkerTask, Базовый класс для работы с дампами БД
+ * Базовый класс для работы с дампами БД
  *
  * @author Fedor A Borshev <fedor@shogo.ru>
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
- * @package build.tasks.DumpWorkerTask
+ * @package build.tasks
  */
-
 require_once "phing/Task.php";
 
 class DumpWorkerTask extends Task
 {
-
   protected $file;
 
   public function setFile($file)
@@ -23,14 +21,12 @@ class DumpWorkerTask extends Task
 
   public function main()
   {
-    if(!file_exists($this->file))
+    if( !file_exists($this->file) )
     {
-      throw new BuildException('Cannot open dump file ' . $this->file);
+      throw new BuildException('Cannot open dump file '.$this->file);
     }
 
-    $fileData = array();
     $fileData = file($this->file);
-
     $fileData = $this->parse($fileData);
 
     file_put_contents($this->file, $fileData);
@@ -38,7 +34,7 @@ class DumpWorkerTask extends Task
 
   protected function isTriggerOrRoutine($str)
   {
-    if(preg_match('/TRIGGER|PROCEDURE/', $str))
+    if( preg_match('/TRIGGER|PROCEDURE/', $str) )
       return true;
 
     return false;
@@ -46,7 +42,7 @@ class DumpWorkerTask extends Task
 
   protected function isView($str)
   {
-    if(preg_match('|^/\*\!50013 DEFINER|', $str) and preg_match('/SQL SECURITY/', $str))
+    if( preg_match('|^/\*\!50013 DEFINER|', $str) and preg_match('/SQL SECURITY/', $str) )
       throw new BuildException('view!!11');
 
     return false;
@@ -59,16 +55,29 @@ class DumpWorkerTask extends Task
 
   protected function replaceUserReverse($str)
   {
-    $user = '`' . $this->project->getProperty('db.mysqlUser') . '`@`' . $this->project->getProperty('db.mysqlHost') . '`';
+    $user = '`'.$this->project->getProperty('db.mysqlUser').'`@`'.$this->project->getProperty('db.mysqlHost').'`';
+
     return preg_replace('/DEFINER=CURRENT_USER/', "DEFINER=$user", $str);
   }
 
   protected function removeAutoIncrement($str)
   {
-    if(preg_match('/ENGINE=/', $str))
+    if( preg_match('/ENGINE=/', $str) )
       return preg_replace('/AUTO_INCREMENT=[0-9]+\ /', '', $str);
+
     return $str;
   }
-}  
 
+  protected function removeComments($str)
+  {
+    $comments = array(
+      '-- Host: .+Database: .+',
+      '-- Dump completed on .+',
+    );
 
+    foreach($comments as $pattern)
+      $str = preg_replace('/'.$pattern.'/', '', $str);
+
+    return $str;
+  }
+}

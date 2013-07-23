@@ -1,10 +1,6 @@
--- This file was created by ShogoCMS $Id: d6242f0a510ed3000bd17d9bfba8d1ebf0872153 $
--- User: tatarinov	Hostname: boojaka.shogo.ru
--- PHP: 5.4.5 Phing 2.4.12
--- Original prefix: argilla_
 -- MySQL dump 10.13  Distrib 5.1.63, for portbld-freebsd8.2 (amd64)
 --
--- Host: localhost    Database: argilla
+
 -- ------------------------------------------------------
 -- Server version	5.1.63-log
 
@@ -438,7 +434,8 @@ CREATE TABLE `argilla_menu_custom_item` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `url` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `visible` tinyint(1) NOT NULL DEFAULT '1',  PRIMARY KEY (`id`),
+  `visible` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`),
   KEY `name` (`name`,`url`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1263,4 +1260,4 @@ CREATE TABLE `argilla_vacancy_file` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-06-07 15:12:24
+
