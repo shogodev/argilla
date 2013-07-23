@@ -178,7 +178,7 @@ class FForm extends CForm
   }
 
   /**
-   * @return
+   * @return mixed
    */
   public function getErrorMessage()
   {
@@ -249,25 +249,7 @@ class FForm extends CForm
     $output = '';
 
     foreach($this->getButtons() as $button)
-    {
-      if( $this->ajaxSubmit )
-      {
-        if( !isset($button->attributes['ajax']) )
-          $button->attributes['ajax'] = array();
-
-        $button->attributes['ajax'] = CMap::mergeArray(array(
-                                                         'type'       => 'POST',
-                                                         'dataType'   => 'json',
-                                                         'beforeSend' => '$.mouseLoader(true)',
-                                                         'url'        => $this->action,
-                                                         'success'    => 'function(resp){checkResponse(resp, $("#'.$this->getActiveFormWidget()->id.'"))}',
-                                                         'error'      => 'function(resp){alert(resp.responseText)}',
-                                                        ), $button->attributes['ajax']);
-
-        $button->attributes['id'] = $this->getActiveFormWidget()->id.'_'.$button->name;
-      }
-      $output .= $this->renderElement($button);
-    }
+      $output .= $this->renderElement($this->modifySubmitButton($button));
 
     return $output !== '' ? $output : '';
   }
@@ -337,11 +319,16 @@ class FForm extends CForm
 
   /**
    * Посылает сообщение о успешной обработке данных
-   * @param string $message
+   * @param string $message - сообщение
+   * @param bool $scrollOnMessage - скролить страницу на сообщение
    */
-  public function responseSuccess($message = '')
+  public function responseSuccess($message = '', $scrollOnMessage = false)
   {
-    echo json_encode(array('status' => 'ok', 'messageForm' => $message));
+    echo json_encode(array(
+      'status' => 'ok',
+      'messageForm' => $message,
+      'scrollOnMessage' => $scrollOnMessage
+    ));
     Yii::app()->end();
   }
 
@@ -568,5 +555,30 @@ class FForm extends CForm
     }
 
     return $replaceArray;
+  }
+
+  protected function modifySubmitButton($button)
+  {
+    if( !$this->ajaxSubmit || !isset($button->name) )
+      return $button;
+
+    if( !isset($button->attributes['ajax']) )
+      $button->attributes['ajax'] = array();
+
+    $button->attributes['ajax'] = CMap::mergeArray(array(
+      'type'       => 'POST',
+      'dataType'   => 'json',
+      'beforeSend' => 'function(){
+        $("#'.$this->getActiveFormWidget()->id.'").data("settings").submitting = true;
+        $.mouseLoader(true);
+      }',
+      'url'        => $this->action,
+      'success'    => 'function(resp){checkResponse(resp, $("#'.$this->getActiveFormWidget()->id.'"))}',
+      'error'      => 'function(resp){alert(resp.responseText)}',
+    ), $button->attributes['ajax']);
+
+    $button->attributes['id'] = $this->getActiveFormWidget()->id.'_'.$button->name;
+
+    return $button;
   }
 }
