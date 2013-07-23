@@ -6,6 +6,7 @@
  * @license http://argilla.ru/LICENSE
  * @package frontend.components
  *
+ * @property FController $controller
  * @property SClientScript $clientScript
  * @property SAssetManager $assetManager
  * @property ScriptsFactory $mainscript

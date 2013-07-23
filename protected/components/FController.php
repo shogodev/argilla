@@ -8,6 +8,7 @@
  *
  * @method textBlock($key)
  * @method textBlocks($key)
+ * @method textBlockRegister($name = null, $content = null, $htmlOptions = array('class' => 'm20 bb red center'))
  * @method Counter[] getCounters($key = 'copyright')
  * @method array getCopyrights()
  * @method array getContacts($groupName = null)
@@ -15,6 +16,14 @@
  * @property Counter[] $counters
  * @property array $copyrights
  * @property array $contacts
+ * @property array|string $settings
+ *
+ * @property FBasket|FCollectionElement[] $basket
+ * @property FBasket|FCollectionElement[] $fastOrderBasket
+ * @property FFavorite|FCollectionElement[] $favorite
+ * @property FForm $fastOrderForm
+ * @property FForm $callbackForm
+ * @property FForm $loginForm
  */
 class FController extends CController
 {
@@ -49,11 +58,9 @@ class FController extends CController
       'user/restore',
       'user/profile',
       'user/data',
-      'community/news/create',
-      'dealer/profile',
     );
 
-    if( !in_array(Yii::app()->request->pathInfo, $excludedPages) && $this->shouldRememberReturnUrl() )
+    if( !Yii::app()->request->isAjaxRequest && !in_array(Yii::app()->request->pathInfo, $excludedPages) && $this->shouldRememberReturnUrl() )
       Yii::app()->user->setReturnUrl($this->getCurrentUrl());
 
     parent::afterAction($action);
