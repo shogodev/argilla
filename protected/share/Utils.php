@@ -88,7 +88,8 @@ class Utils
     if( mb_strlen($str, 'UTF-8') > $n )
     {
       $str = mb_substr($str, 0, $n + 1, 'UTF-8');
-      $str = mb_substr($str, 0, mb_strrpos($str, " ", 'UTF-8') - $n - 1, 'UTF-8').'...';
+      $str = mb_substr($str, 0, mb_strrpos($str, " ", 'UTF-8') - $n - 1, 'UTF-8');
+      $str = trim(trim($str), "., ").'...';
     }
 
     return $str;
@@ -236,5 +237,22 @@ class Utils
       $titles = explode(',', $titles);
 
     return $titles[ ($number%100 > 4 && $number %100 < 20) ? 2 : $cases[min($number%10, 5)] ];
+  }
+
+  /**
+   * Возвращает домен
+   * @param integer $level если узан уровень, то домен обрезается до указанного уровня
+   * @return mixed|string
+   */
+  public static function getDomain($level = null)
+  {
+    $domain = str_replace('http://', '', Yii::app()->request->getHostInfo());
+
+    $elements = explode('.', $domain);
+
+    if( $level === null || count($elements) < $level )
+      return $domain;
+
+    return implode('.', array_slice($elements,  $level * -1));
   }
 }

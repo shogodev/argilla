@@ -27,7 +27,7 @@ class ContactField extends FActiveRecord
   public function relations()
   {
     return array(
-      'group' => array(self::BELONGS_TO, 'ContactFgroup', 'group_id'),
+      'group' => array(self::BELONGS_TO, 'ContactGroup', 'group_id'),
     );
   }
 

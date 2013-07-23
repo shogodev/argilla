@@ -24,8 +24,14 @@
  * @property integer $archive
  * @property integer $xml
  * @property ParamName[] parameters
-
  * @property ProductConfiguration configuration
+ *
+ * collectionElement behavior
+ * @property integer $collectionIndex
+ * @property integer $collectionAmount
+ * @property integer $collectionItems
+ * @method string removeButton(string $text = '', array $htmlOption = array())
+ * @method string amountInput(array $htmlOptions = array() )
  */
 class Product extends FActiveRecord
 {
@@ -35,6 +41,11 @@ class Product extends FActiveRecord
 
   protected $parameters;
   protected $images;
+
+  public function behaviors()
+  {
+    return array('collectionElement' => array('class' => 'FCollectionElement'));
+  }
 
   /**
    * @var array

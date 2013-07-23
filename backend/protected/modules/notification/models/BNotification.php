@@ -10,12 +10,13 @@
  *
  * @property integer $id
  * @property string $index
- * @property string name
- * @property string email
- * @property string subject
- * @property string view
- * @property string message
- * @property integer visible
+ * @property string $name
+ * @property string $email
+ * @property string $subject
+ * @property string $view
+ * @property string $message
+ * @property integer $visible
+ * @property array $views
  */
 class BNotification extends BActiveRecord
 {
@@ -45,9 +46,8 @@ class BNotification extends BActiveRecord
     {
       while( ($file = readdir($dh)) !== false )
       {
-        if( preg_match('/(.*).php/', $file, $matches) )
-          $data[] = array('id'   => $matches[1],
-                          'name' => $matches[1]);
+        if( !preg_match('/^_/', $file) && preg_match('/(.*).php/', $file, $matches) )
+          $data[$matches[1]] = $matches[1];
       }
       closedir($dh);
     }

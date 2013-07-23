@@ -51,6 +51,44 @@ class CommonDataBehaviorTest extends CDbTestCase
     $this->assertEmpty($textBlocks);
   }
 
+  public function testTextBlockRegister()
+  {
+    $textBlock = new TextBlock();
+    $textBlock->attributes = array(
+      'location' => 'index/index',
+      'content' => 'test',
+      'visible' => '1'
+    );
+    $textBlock->save();
+
+    $this->clearTextBlocksCache();
+
+    Yii::app()->controller->textBlockRegister(null, 'new content');
+    $textBlock = TextBlock::model()->findByAttributes(array('location' => 'index/index'));
+    $this->assertRegExp('/test/iu', $textBlock->content);
+
+    TextBlock::model()->deleteAllByAttributes(array('location' => 'index/index'));
+    $this->clearTextBlocksCache();
+
+    Yii::app()->controller->textBlockRegister();
+    $textBlock = TextBlock::model()->findByAttributes(array('location' => 'index/index'));
+    $this->assertRegExp('/данный текстовый блок сгенерирован автоматическ/iu', $textBlock->content);
+
+    $this->clearTextBlocksCache();
+
+    Yii::app()->controller->textBlockRegister('Сообщение', 'Сообщение успешно отправлено');
+    $textBlock = TextBlock::model()->findByAttributes(array('location' => 'index/'.Utils::translite('Сообщение')));
+    $this->assertRegExp('/сообщение успешно отправлено/iu', $textBlock->content);
+
+    $this->clearTextBlocksCache();
+
+    Yii::app()->controller->textBlockRegister('Регистрация', 'Успешная регистрация', array('class' => 'test_class', 'id' => 'message'));
+    $textBlock = TextBlock::model()->findByAttributes(array('location' => 'index/'.Utils::translite('Регистрация')));
+    $this->assertRegExp('/Успешная регистрация/iu', $textBlock->content);
+    $this->assertRegExp('/class="test_class"/iu', $textBlock->content);
+    $this->assertRegExp('/id="message"/iu', $textBlock->content);
+  }
+
   public function testGetCounters()
   {
     // выбирется все кроме флага на главной
@@ -81,8 +119,6 @@ class CommonDataBehaviorTest extends CDbTestCase
 
   public function testGetCopyrights()
   {
-    Yii::app()->setUnitEnvironment('Index', 'index');
-
     Yii::app()->request->setRequestUri('/');
 
     $copyrights = Yii::app()->controller->copyrights;
@@ -121,14 +157,20 @@ class CommonDataBehaviorTest extends CDbTestCase
   {
     $contacts = Yii::app()->controller->contacts;
 
-    $this->assertNotEmpty($contacts['phones']);
-    $this->assertContains('8 800 000 00 00', $contacts['phones']);
+    $contact = Arr::reduce($contacts);
 
-    $contacts = Yii::app()->controller->getContacts('phones');
-    $this->assertNotEmpty($contacts);
-    $this->assertContains('8 800 300 40 50', $contacts);
+    $this->assertNotEmpty($contact->getFields('phones'));
+    $this->assertContains('8 800 000 00 00', $contact->getFields('phones')[0]);
+    $this->assertContains('8 800 300 40 50', $contact->getFields('phones')[1]);
+    $this->assertEmpty($contact->getFields('icq'));
+  }
 
-    $contacts = Yii::app()->controller->getContacts('icq');
-    $this->assertEmpty($contacts);
+  protected function clearTextBlocksCache()
+  {
+    $controller = function (FController $controller) {
+      $controller->textBlocks = null;
+    };
+
+    $controller(Yii::app()->controller);
   }
 }

@@ -6,6 +6,8 @@
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.form.models
  *
+ * @method static SNotification model(string $class = __CLASS__)
+ *
  * @property integer $id
  * @property string $index
  * @property string $name

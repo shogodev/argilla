@@ -15,6 +15,7 @@ $this->widget('BGridView', array(
     array('name' => 'name', 'htmlOptions' => array('class' => 'span3'), 'header' => 'Описание'),
     array('name' => 'content', 'filter' => false, 'type' => 'html'),
 
+    array('name' => 'auto_created', 'htmlOptions' => array('class' => 'span1'), 'value' => '$data->auto_created ? "Автоматически" : "Пользователем"'),
     array('class' => 'JToggleColumn', 'name' => 'visible'),
     array('class' => 'BButtonColumn'),
   ),

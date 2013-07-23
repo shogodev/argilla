@@ -1,16 +1,13 @@
 <?php
 /**
- * @var FForm $registration_form
- * @var FController $this
+ * @var FForm $registrationForm
+ * @var UserController $this
  */
 ?>
-<div class="wrap-info">
+<div id="content" class="paddings">
   <?php $this->renderPartial('/breadcrumbs');?>
-</div>
 
-<div class="wrap">
-  <div class="container container_16 nofloat">
-    <h1 class="h3"><?php echo $this->clip('h1', 'Профиль')?></h1>
-    <?php echo $userForm; ?>
-  </div>
+  <h1><?php echo $this->clip('h1', 'Профиль')?></h1>
+
+  <?php echo $userForm; ?>
 </div>

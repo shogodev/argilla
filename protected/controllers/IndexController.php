@@ -9,6 +9,14 @@ class IndexController extends FController
 {
   public function actionIndex()
   {
-    $this->render('index');
+    $news = News::model()->findAll();
+    $newsDataProvider = !empty($news) ? new FArrayDataProvider($news, array('pagination' => false)) : null;
+
+    $banners  = Banner::model()->getByLocation('index_banner');
+
+    $this->render('index', array(
+      'banners' => $banners,
+      'newsDataProvider' => $newsDataProvider
+    ));
   }
 }

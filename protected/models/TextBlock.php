@@ -19,9 +19,13 @@ class TextBlock extends FActiveRecord
 {
   public $image;
 
-  public function tableName()
+  public function rules()
   {
-    return '{{text_block}}';
+    return array(
+      array('position, visible, auto_created', 'numerical', 'integerOnly' => true),
+      array('location, name, url', 'length', 'max' => 255),
+      array('content', 'safe'),
+    );
   }
 
   public function defaultScope()

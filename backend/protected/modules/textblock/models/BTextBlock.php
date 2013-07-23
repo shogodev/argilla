@@ -14,6 +14,7 @@
  * @property integer $visible
  * @property string $content
  * @property string $img
+ * @property integer $auto_created
  */
 class BTextBlock extends BActiveRecord
 {
@@ -31,6 +32,16 @@ class BTextBlock extends BActiveRecord
     );
   }
 
+  public function defaultScope()
+  {
+    return array('order' => 'auto_created DESC');
+  }
+
+  public function afterValidate()
+  {
+    $this->auto_created = 0;
+  }
+
   public function getSearchCriteria()
   {
     $criteria = new CDbCriteria;
@@ -43,6 +54,7 @@ class BTextBlock extends BActiveRecord
   {
     return CMap::mergeArray(parent::attributeLabels(), array(
       'name' => 'Описание',
+      'auto_created' => 'Создан'
     ));
   }
 }

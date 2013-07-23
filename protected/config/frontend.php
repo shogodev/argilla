@@ -6,7 +6,7 @@ defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', true);
 $backend  = dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'backend/protected';
 $frontend = dirname(dirname(__FILE__));
 
-return array(
+return array_merge_recursive(array(
   'basePath' => dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
   'name' => 'argilla.ru',
   'defaultController' => 'index',
@@ -15,7 +15,6 @@ return array(
   'aliases' => array(
     'nestedset' => 'ext.nested-set-behavior',
     'share' => 'frontend.share',
-    'bootstrap' => 'ext.bootstrap',
   ),
 
   'import' => array(
@@ -29,8 +28,10 @@ return array(
     'frontend.models.product.filter.*',
     'frontend.models.user.*',
     'frontend.models.info.*',
+    'frontend.models.order.*',
 
     'frontend.components.*',
+    'frontend.components.session.*',
     'frontend.components.common.*',
     'frontend.components.interfaces.*',
     'frontend.components.validators.*',
@@ -41,6 +42,7 @@ return array(
     'frontend.components.auth.*',
     'frontend.components.ar.*',
     'frontend.components.url.*',
+    'frontend.components.collection.*',
 
     'frontend.controllers.*',
     'frontend.controllers.behaviors.*',
@@ -85,6 +87,11 @@ return array(
       'class'          => 'FWebUser',
       'allowAutoLogin' => true,
       'loginUrl'       => '/'
+    ),
+
+    'session' => array(
+      'class' => 'FHttpSession',
+      'sessionName' => 'FRONTEND',
     ),
 
     'urlManager' => array(
@@ -139,10 +146,6 @@ return array(
       'class' => 'RedirectHelper',
     ),
 
-    'bootstrap' => array(
-      'class' => 'ext.bootstrap.components.Bootstrap',
-    ),
-
     'phpThumb' => array(
       'class' => 'ext.phpthumb.EPhpThumb',
       'options' => array()
@@ -162,4 +165,4 @@ return array(
 
   'sourceLanguage' => 'ru_ru',
   'language' => 'ru',
-);
+), require(dirname(__FILE__).'/share.php'));

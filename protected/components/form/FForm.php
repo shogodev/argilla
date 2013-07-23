@@ -178,7 +178,7 @@ class FForm extends CForm
   }
 
   /**
-   * @return
+   * @return mixed
    */
   public function getErrorMessage()
   {
@@ -321,11 +321,16 @@ class FForm extends CForm
 
   /**
    * Посылает сообщение о успешной обработке данных
-   * @param string $message
+   * @param string $message - сообщение
+   * @param bool $scrollOnMessage - скролить страницу на сообщение
    */
-  public function responseSuccess($message = '')
+  public function responseSuccess($message = '', $scrollOnMessage = false)
   {
-    echo json_encode(array('status' => 'ok', 'messageForm' => $message));
+    echo json_encode(array(
+      'status' => 'ok',
+      'messageForm' => $message,
+      'scrollOnMessage' => $scrollOnMessage
+    ));
     Yii::app()->end();
   }
 

@@ -18,17 +18,47 @@ class CommonBehavior extends CommonDataBehavior
    */
   private $callbackForm;
 
+  /**
+   * @var FForm
+   */
+  private $fastOrderForm;
+
   private $basket;
+
+  private $favorite;
+
+  private $fastOrderBasket;
+
+  private $topCatalogMenu;
 
   /**
    * @return FBasket|null
    */
   public function getBasket()
   {
-    if ( empty ($this->basket) )
-      $this->basket = new FBasket();
+    if ( $this->basket == null )
+      $this->basket = new FBasket('basket', array('service'), array('Product', 'ServiceBasket'));
 
     return $this->basket;
+  }
+
+  public function getFavorite()
+  {
+    if ( $this->favorite == null )
+      $this->favorite = new FFavorite('favorite', array(), array('Product'));
+
+    return $this->favorite;
+  }
+
+  /**
+   * @return FBasket|null
+   */
+  public function getFastOrderBasket()
+  {
+    if ( $this->fastOrderBasket == null )
+      $this->fastOrderBasket = new FBasket('fastOrderBasket', array('service'), array('Product', 'Service'), false);
+
+    return $this->fastOrderBasket;
   }
 
   public function getTopMenu()
@@ -39,19 +69,16 @@ class CommonBehavior extends CommonDataBehavior
 
   public function getBottomMenu()
   {
-    return Menu::getMenu('bottom')->build();
+    $menu = Menu::getMenu('bottom');
+    return  $menu ? $menu->build() : array();
   }
 
-  public function getCatalogMenu()
+  public function getTopCatalogMenu()
   {
-    $menu = ProductSection::model()->getMenu();
+    if( $this->topCatalogMenu === null )
+      $this->topCatalogMenu = ProductSection::model()->getMenu();
 
-    $menu[] = array(
-      'label' => 'Аксессуары',
-      'url' => array('accessory/index'),
-    );
-
-    return $menu;
+    return $this->topCatalogMenu;
   }
 
   /**
@@ -64,6 +91,7 @@ class CommonBehavior extends CommonDataBehavior
       $this->loginForm = new FForm('LoginForm', new Login());
       $this->loginForm->action = Yii::app()->controller->createUrl('user/login');
       $this->loginForm->ajaxSubmit = false;
+      $this->loginForm->autocomplete = true;
     }
 
     return $this->loginForm;
@@ -81,5 +109,19 @@ class CommonBehavior extends CommonDataBehavior
     }
 
     return $this->callbackForm;
+  }
+
+  /**
+   * @return FForm
+   */
+  public function getFastOrderForm()
+  {
+    if( !$this->fastOrderForm )
+    {
+      $this->fastOrderForm = new FForm('FastOrder', new Order('fastOrder'));
+      $this->fastOrderForm->action = Yii::app()->controller->createUrl('basket/fastOrder');
+    }
+
+    return $this->fastOrderForm;
   }
 }

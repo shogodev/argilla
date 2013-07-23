@@ -63,26 +63,6 @@ class Login extends FActiveRecord
       return false;
   }
 
-  public function getRegistrationUrl()
-  {
-    return Yii::app()->controller->createUrl('user/registration');
-  }
-
-  public function getRestoreUrl()
-  {
-    return Yii::app()->controller->createUrl('user/restore');
-  }
-
-  public function getLoginUrl()
-  {
-    return Yii::app()->controller->createUrl('user/login');
-  }
-
-  public function getLogoutUrl()
-  {
-    return Yii::app()->controller->createUrl('user/logout');
-  }
-
   public function getButtonLogout($htmlOptions=array(), $text = '')
   {
     return CHtml::ajaxButton(

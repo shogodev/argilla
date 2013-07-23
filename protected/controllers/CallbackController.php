@@ -3,12 +3,12 @@ class CallbackController extends FController
 {
   public function actionIndex()
   {
-    $callback_form = $this->getCallbackForm();
+    $this->callbackForm->ajaxValidation();
 
-    if( $callback_form->save() )
+    if( $this->callbackForm->save() )
     {
-      $callback_form->sendNotification();
-      $callback_form->responseSuccess('<p class="bb">Спасибо! Ваша заявка принята, ожидайте звонок в ближайшее время.</p>');
+      $this->callbackForm->sendNotification();
+      $this->callbackForm->responseSuccess('<p class="bb">Спасибо! Ваша заявка принята, ожидайте звонок в ближайшее время.</p>');
     }
   }
 

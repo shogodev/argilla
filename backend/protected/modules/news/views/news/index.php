@@ -9,7 +9,7 @@ $this->widget('BGridView', array(
   'filter' => $model,
   'dataProvider' => $model->search(),
   'columns' => array(
-    array('name' => 'id', 'htmlOptions' => array('class' => 'center'), 'filter' => false),
+    array('name' => 'id', 'class' => 'BPkColumn'),
     array('name' => 'date', 'class' => 'BDatePickerColumn'),
 
     array(
