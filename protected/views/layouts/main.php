@@ -25,7 +25,6 @@
   <script src="js/html5msie/respond.js"></script>
   <![endif]-->
 
-  <?php Yii::app()->bootstrap->register(); ?>
   <?php Yii::app()->clientScript->registerCssFile('/i/st.css') ?>
 
   <script>
