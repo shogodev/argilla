@@ -119,8 +119,6 @@ class CommonDataBehaviorTest extends CDbTestCase
 
   public function testGetCopyrights()
   {
-    Yii::app()->setUnitEnvironment('Index', 'index');
-
     Yii::app()->request->setRequestUri('/');
 
     $copyrights = Yii::app()->controller->copyrights;
@@ -159,15 +157,12 @@ class CommonDataBehaviorTest extends CDbTestCase
   {
     $contacts = Yii::app()->controller->contacts;
 
-    $this->assertNotEmpty($contacts['phones']);
-    $this->assertContains('8 800 000 00 00', $contacts['phones']);
+    $contact = Arr::reduce($contacts);
 
-    $contacts = Yii::app()->controller->getContacts('phones');
-    $this->assertNotEmpty($contacts);
-    $this->assertContains('8 800 300 40 50', $contacts);
-
-    $contacts = Yii::app()->controller->getContacts('icq');
-    $this->assertEmpty($contacts);
+    $this->assertNotEmpty($contact->getFields('phones'));
+    $this->assertContains('8 800 000 00 00', $contact->getFields('phones')[0]);
+    $this->assertContains('8 800 300 40 50', $contact->getFields('phones')[1]);
+    $this->assertEmpty($contact->getFields('icq'));
   }
 
   protected function clearTextBlocksCache()
