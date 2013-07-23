@@ -59,17 +59,21 @@ class ProductFilterRender extends CComponent
 
     $script .= "
         var form = $('{$form}');
-        submitForm_{$this->parent->filterKey}(form.serialize());
+        submitForm_{$this->parent->filterKey}(form.serialize(), $(this).data('url'));
       });
 
-      var submitForm_{$this->parent->filterKey} = function(data)
+      var buildUrl = function(form, data)
+      {
+        data += (data ? '&' : '') + encodeURIComponent('{$this->parent->filterKey}[submit]') + '=1';
+        var action = form.attr('action').split('?');
+        return action[0] + '?' + data;
+      };
+
+      var submitForm_{$this->parent->filterKey} = function(data, url)
       {
         var form       = $('{$form}');
         var ajaxUpdate = {$ajaxUpdate};
-
-        data += (data ? '&' : '') + encodeURIComponent('{$this->parent->filterKey}[submit]') + '=1';
-        var action = form.attr('action').split('?');
-        var url = action[0] + '?' + data;
+        url            = url ? url : buildUrl(form, data);
 
         if( ajaxUpdate && window.History.enabled )
         {

@@ -19,6 +19,8 @@ class ProductFilter extends AbstractProductFilter
   */
   public $defaultElementType = 'list';
 
+  public $urlPattern;
+
   /**
    * @var ProductFilterElement[]
    */
@@ -66,70 +68,6 @@ class ProductFilter extends AbstractProductFilter
     $element = Yii::createComponent(CMap::mergeArray(array('parent' => $this, 'items' => $items), $filterElement));
 
     $this->elements[$filterElement['id']] = $element;
-  }
-
-  public function removeElement($elementId)
-  {
-    if( isset($this->elements[$elementId]) )
-      unset($this->elements[$elementId]);
-  }
-
-  public function getElements()
-  {
-    return $this->elements;
-  }
-
-  public function getElementByKey($key)
-  {
-    foreach($this->elements as $element)
-    {
-      if( $element->key == $key )
-        return $element;
-    }
-
-    return null;
-  }
-
-  public function getSelectedElements()
-  {
-    $selected = array();
-
-    if( !empty($this->defaultSelectedElements) )
-      $selected = $this->defaultSelectedElements;
-
-    foreach($this->elements as $elementId => $element)
-    {
-      if( !$element->isSelected() )
-        continue;
-
-      if( !isset($selected[$elementId]) )
-      {
-        $selected[$elementId] = array(
-          'id' => $elementId,
-          'name' => $element->label,
-          'items' => array()
-        );
-      }
-
-      foreach($element->items as $item)
-        if( $item->isSelected() )
-          $selected[$elementId]['items'][$item->id] = $item;
-    }
-
-    return $selected;
-  }
-
-  public function setDefaultSelectedElements($elements)
-  {
-    $this->defaultSelectedElements = array();
-
-    foreach($elements as $element)
-    {
-      if( isset($element['id']) )
-        unset($element['id']);
-
-      $this->defaultSelectedElements[] = $element;
-    }
   }
 
   /**
@@ -392,6 +330,10 @@ class ProductFilter extends AbstractProductFilter
     foreach($states as $id => $value)
     {
       $this->elements[$id]->disabled = !empty($disablingValues[$id]) ? array_diff($allValues[$id], $disablingValues[$id]) : (isset($allValues[$id]) ? $allValues[$id] : array());
+
+      foreach($this->elements[$id]->disabled as $disabled)
+        if( isset($this->state[$id][$disabled]) )
+          unset($this->state[$id][$disabled]);
     }
   }
 

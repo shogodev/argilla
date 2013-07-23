@@ -7,7 +7,7 @@
  * @package frontend.models.product.filter
  *
  * @property ProductFilterRender $render
- * @method public __construct($filterKey = 'productFilter', $saveState = true, $setStateAuto = true)
+ * @property ProductFilterElement[] $elements
  */
 class AbstractProductFilter extends CComponent
 {
@@ -97,6 +97,74 @@ class AbstractProductFilter extends CComponent
   public function getRender()
   {
     return $this->render;
+  }
+
+  public function getSelectedElements()
+  {
+    $selected = array();
+
+    if( !empty($this->defaultSelectedElements) )
+      $selected = $this->defaultSelectedElements;
+
+    foreach($this->elements as $elementId => $element)
+    {
+      if( !$element->isSelected() )
+        continue;
+
+      if( !isset($selected[$elementId]) )
+      {
+        $selected[$elementId] = array(
+          'id' => $elementId,
+          'name' => $element->label,
+          'items' => array()
+        );
+      }
+
+      foreach($element->items as $item)
+      {
+        if( $item->isSelected() )
+        {
+          $selected[$elementId]['items'][$item->id] = $item;
+        }
+      }
+    }
+
+    return $selected;
+  }
+
+  public function setDefaultSelectedElements($elements)
+  {
+    $this->defaultSelectedElements = array();
+
+    foreach($elements as $element)
+    {
+      if( isset($element['id']) )
+        unset($element['id']);
+
+      $this->defaultSelectedElements[] = $element;
+    }
+  }
+
+  public function removeElement($elementId)
+  {
+    if( isset($this->elements[$elementId]) )
+      unset($this->elements[$elementId]);
+  }
+
+  public function getElements()
+  {
+    return $this->elements;
+  }
+
+  public function getElementByKey($key)
+  {
+    foreach($this->elements as $element)
+    {
+      if( $element->key == $key )
+        return $element;
+    }
+
+    return null;
   }
 
   protected function loadStateFromSession()

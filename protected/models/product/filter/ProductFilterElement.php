@@ -7,6 +7,7 @@
  * @package frontend.models.product.filter
  *
  * @property string $name
+ * @property ProductFilter $parent
  */
 abstract class ProductFilterElement extends CComponent
 {
@@ -32,7 +33,7 @@ abstract class ProductFilterElement extends CComponent
 
   public $disabled = array();
 
-  public $htmlOptions = array();
+  protected $htmlOptions = array();
 
   /**
    * @var ProductFilterElementItem[] $items
@@ -40,6 +41,8 @@ abstract class ProductFilterElement extends CComponent
   public $items = array();
 
   public $itemLabels = array();
+
+  public $itemUrls = array();
 
   /**
    * @var ProductFilter
@@ -218,6 +221,11 @@ abstract class ProductFilterElement extends CComponent
     return $this->mergeType == self::MERGE_TYPE_NONE ? false : true;
   }
 
+  public function isUrlDependence()
+  {
+    return !empty($this->itemUrls);
+  }
+
   protected function sortItems($items)
   {
     if( empty($items) )
@@ -267,5 +275,22 @@ abstract class ProductFilterElement extends CComponent
     $criteria->compare('variant_id', $value);
 
     return $criteria;
+  }
+
+  protected function getHtmlOptions()
+  {
+    $options = $this->htmlOptions;
+    if( !empty($this->itemUrls) )
+    {
+      $options['class']    = trim(Arr::get($options, 'class', '').' url-dependence');
+      $options['data-key'] = $this->id;
+    }
+
+    return $options;
+  }
+
+  protected function setHtmlOptions($options)
+  {
+    $this->htmlOptions = $options;
   }
 }
