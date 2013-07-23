@@ -1,7 +1,10 @@
 <?php
 /**
- * User: tatarinov
- * Date: 02.10.12
+ * @author Alexey Tatarivov <tatarinov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
+ * @package frontend.controllers
  */
 class UserController extends FController
 {
@@ -27,20 +30,16 @@ class UserController extends FController
     if( !Yii::app()->user->isGuest )
       $this->redirect($this->createUrl('user/profile'), true, 200);
 
-    //$this->socialAuth();
-
     $this->breadcrumbs = array('Вход');
 
-    /**
-     * @var FForm $loginForm
-     */
     $loginForm = $this->loginForm;
-    $loginForm->addLayoutViewParams(array('this' => $this));
-    $loginForm->ajaxValidation();
+    $this->loginForm->ajaxValidation();
 
-    if( isset($_POST['Login']) )
+    $attributes = Yii::app()->request->getPost('Login');
+    if( $attributes)
     {
-      $loginForm->model->attributes = $_POST['Login'];
+      $loginForm->model->attributes = $attributes;
+
       if( $loginForm->process() )
       {
         if( $loginForm->model->loginUser() )
@@ -68,23 +67,47 @@ class UserController extends FController
   {
     if( Yii::app()->user->isGuest )
     {
-      $registrationForm = new FForm('UserRegistration', new UserRegistration());
-      $registrationForm['extendedData']->model = new UserDataExtended();
-      $registrationForm['extendedData']['birthday']->form = $registrationForm['extendedData'];
+      $this->breadcrumbs = array('Регистрация');
 
+      $registrationForm = new FForm('UserRegistration', new UserRegistration());
       $registrationForm->loadFromSession  = true;
       $registrationForm->clearAfterSubmit = true;
-
       $registrationForm->autocomplete = false;
+      $registrationForm['extendedData']->model = new UserDataExtended();
+
+      if( Yii::app()->request->isPostRequest )
+        $registrationForm->model->email = CHtml::encode(Yii::app()->request->getParam('email', ''));
 
       $registrationForm->ajaxValidation();
 
-      $this->breadcrumbs = array('Регистрация нового пользователя');
-
-      if( $registrationForm->save() )
+      if( Yii::app()->request->isAjaxRequest && $registrationForm->save() )
       {
-        $registrationForm->successMessage = CHtml::tag('div', array('class' => 'm20 bb center register-success'), '<span>Регистрация успешно завершена.</span>');
-        Yii::app()->notification->send('userRegistrationBackend', array('model' => $registrationForm['extendedData']->model, 'userData' => $registrationForm->model));
+        Yii::app()->notification->send(
+          $registrationForm->model,
+          array(
+            'userData' => $registrationForm['extendedData']->model,
+            'password' => Yii::app()->request->getParam('UserRegistration')['password']
+          ),
+          $registrationForm->model->email
+        );
+
+        Yii::app()->notification->send(
+          'UserRegistrationBackend',
+          array(
+            'model' => $registrationForm->model,
+            'userData' => $registrationForm['extendedData']->model
+          )
+        );
+
+        echo CJSON::encode(array(
+          'status' => 'ok',
+          'messageForm' => $this->textBlockRegister(
+            'Успешная регистрация',
+            'Регистрация успешно завершена'
+          ),
+          'removeElements' => array('registration-text')
+        ));
+        Yii::app()->end();
       }
 
       $this->render('registration', array('registrationForm' => $registrationForm));
@@ -95,22 +118,20 @@ class UserController extends FController
 
   public function actionData()
   {
-    $userForm  = new FForm('UserRegistration', User::model()->findByPk(Yii::app()->user->getId()));
-    $userForm['extendedData']->model = UserDataExtended::model()->findByPk(Yii::app()->user->getId());
-    $userForm['extendedData']['birthday']->form = $userForm['extendedData'];
-
-    $userForm->autocomplete = false;
-
-    $userForm->ajaxValidation();
-
     $this->breadcrumbs = array('Профиль');
 
-    $userForm->buttons['submit']->src = 'i/btn_send.png';
+    $userForm  = new FForm('UserRegistration', User::model()->findByPk(Yii::app()->user->getId()));
+    $userForm['extendedData']->model = UserDataExtended::model()->findByPk(Yii::app()->user->getId());
+    //$userForm['extendedData']['birthday']->form = $userForm['extendedData'];
+    $userForm->ajaxValidation();
+    $userForm->buttons['submit']->value = 'Отправить';
 
-    if( $userForm->save() )
+    if( Yii::app()->request->isAjaxRequest && $userForm->save() )
     {
-      Yii::app()->user->setFlash('success', 'Изменения сохранены');
-      $this->redirect($this->getCurrentUrl());
+      $userForm->responseSuccess(Yii::app()->controller->textBlockRegister(
+        'Успешное изменение пользовательских данных',
+        'Изменения сохранены'
+      ));
     }
 
     $this->render('userData', array('userForm' => $userForm));
@@ -122,12 +143,16 @@ class UserController extends FController
 
     $restoreForm = new FForm('UserRestore', new UserRestore());
     $restoreForm->validateOnChange = false;
+    $restoreForm->ajaxValidation();
 
-    if( $restoreForm->process() )
+    if( Yii::app()->request->isAjaxRequest && $restoreForm->process() )
     {
       $record = $restoreForm->getModel()->findByAttributes(array('email' => $restoreForm->getModel()->email));
       $record->generateRestoreCode();
-      $restoreForm->responseSuccess('Вам на E-mail отправлены дальнейшие инструкции');
+      $restoreForm->responseSuccess(Yii::app()->controller->textBlockRegister(
+        'Email успешно отправлен',
+        'Вам на E-mail отправлены дальнейшие инструкции'
+      ));
     }
     else
       $this->render('restore', array('restoreForm' => $restoreForm));

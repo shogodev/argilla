@@ -55,8 +55,6 @@ class UserRegistration extends UserBase
   {
     if( parent::beforeSave() )
     {
-      Yii::app()->notification->send($this, array(), $this->email);
-
       $this->password = FUserIdentity::createPassword($this->login, $this->password);
 
       $this->type = self::TYPE;

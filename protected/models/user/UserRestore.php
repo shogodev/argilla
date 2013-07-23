@@ -24,12 +24,15 @@ class UserRestore extends UserBase
     $this->restore_code = md5(mt_rand().$this->id);
     if( $this->save() )
     {
-      Yii::app()->notification->send('ConfirmPasswordRestore',
-                                      array(
-                                        'model'      => $this,
-                                        'restoreUrl' => $this->getRestoreUrl()
-                                        ),
-                                      $this->email);
+      Yii::app()->notification->send(
+        'UserRequestRestorePassword',
+        array(
+          'model'      => $this,
+          'restoreUrl' => $this->restoreUrl
+        ),
+        $this->email
+      );
+
       return true;
     }
     return false;
@@ -37,17 +40,21 @@ class UserRestore extends UserBase
 
   public function generateNewPassword()
   {
-    $password           = Utils::generatePassword(8);
-    $this->password     = FUserIdentity::createPassword($this->login, $password);
+    $password = Utils::generatePassword(8);
+    $this->password = FUserIdentity::createPassword($this->login, $password);
     $this->restore_code = '';
+
     if( $this->save() )
     {
-      Yii::app()->notification->send('UserRestorePassword',
-                                     array(
-                                       'model'    => $this,
-                                       'password' => $password
-                                       ),
-                                     $this->email);
+      Yii::app()->notification->send(
+        'UserRestorePassword',
+        array(
+          'model'    => $this,
+          'password' => $password
+        ),
+        $this->email
+      );
+
       return true;
     }
     return false;

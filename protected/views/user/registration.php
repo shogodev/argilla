@@ -1,26 +1,23 @@
 <?php
 /**
  * @var FForm $registrationForm
- * @var FController $this
+ * @var UserController $this
  */
 ?>
-<div class="wrap-info">
+<div id="content" class="paddings">
   <?php $this->renderPartial('/breadcrumbs');?>
-</div>
-<div class="wrap">
-  <div class="container container_16 nofloat">
-    <h1 class="h3"><?php echo $this->clip('h1', 'Регистрация нового пользователя')?></h1>
-    <?php if( Yii::app()->user->isGuest ) {?>
 
-      <?php if( !$registrationForm->getStatus() ):?>
-      <div class="text-container m30">
+  <h1><?php echo $this->clip('h1', 'Регистрация')?></h1>
+  <?php if( Yii::app()->user->isGuest ) {?>
+
+    <?php if( !$registrationForm->getStatus() ):?>
+      <div class="text-container m30 registration-text">
         <?php echo $this->textBlock('registration_text');?>
       </div>
-      <?php endif;?>
+    <?php endif;?>
 
-      <?php echo $registrationForm->render(); ?>
+    <?php echo $registrationForm->render(); ?>
 
-    <?php } else
-      echo "Вы уже зарегистрированы." ?>
-  </div>
+  <?php } else
+    echo "Вы уже зарегистрированы." ?>
 </div>
