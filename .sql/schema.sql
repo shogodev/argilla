@@ -438,7 +438,8 @@ CREATE TABLE `argilla_menu_custom_item` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
   `url` varchar(255) CHARACTER SET utf8 COLLATE utf8_bin NOT NULL,
-  `visible` tinyint(1) NOT NULL DEFAULT '1',  PRIMARY KEY (`id`),
+  `visible` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`),
   KEY `name` (`name`,`url`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1166,6 +1167,7 @@ CREATE TABLE `argilla_text_block` (
   `visible` tinyint(1) DEFAULT '0',
   `content` text,
   `img` varchar(255) DEFAULT NULL,
+  `auto_created` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1263,4 +1265,4 @@ CREATE TABLE `argilla_vacancy_file` (
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2013-06-07 15:12:24
+-- Dump completed on 2013-07-22 17:26:49
