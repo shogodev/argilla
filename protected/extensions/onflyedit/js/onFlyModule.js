@@ -31,10 +31,10 @@ Backend.modules.onFly = function(box) {
 
   var handler = function($, elem, oldText) {
     var wrappedElem = $(elem),
-        gridId = wrappedElem.data('grid-id'),
-        ajaxUrl = wrappedElem.data('ajax-url'),
-        matches = wrappedElem.data('onflyedit').match(/(\w+)-(\d+)/),
-        data = {};
+      gridId = wrappedElem.data('grid-id'),
+      ajaxUrl = wrappedElem.data('ajax-url'),
+      matches = wrappedElem.data('onflyedit').match(/(\w+)-(\d+)/),
+      data = {};
 
     data.action = 'onflyedit';
     data.field = matches[1];
@@ -42,7 +42,12 @@ Backend.modules.onFly = function(box) {
     data.gridId = gridId;
     data.value = wrappedElem.is("span") ? wrappedElem.text() : wrappedElem.val(); // Проверяем текстовое поле или список.
 
-    $.post(ajaxUrl, data)
+    $.ajax({
+      type: 'POST',
+      url: ajaxUrl,
+      data: data,
+      global: false // Чтобы не вызывались глобальные обработчики.
+    })
       .done(function(resp) {
         if (data.value == resp)
         {
@@ -59,8 +64,7 @@ Backend.modules.onFly = function(box) {
       });
   };
 
-  var reportError = function(elem, oldText)
-  {
+  var reportError = function(elem, oldText) {
     elem.addClass('text-error');
     if (elem.is("span") && oldText)
     {

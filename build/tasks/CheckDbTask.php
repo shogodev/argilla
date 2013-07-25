@@ -13,7 +13,6 @@ require_once "phing/Task.php";
 
 class CheckDbTask extends Task
 {
-
   /**
    * @var boolean проверять доступ к триггерам
    */
@@ -44,14 +43,27 @@ class CheckDbTask extends Task
    */
   private $checkInnoDb;
 
+  /**
+   * @var PDO
+   */
   private $pdo;
-  private $connected = false;
+  /**
+   * @var bool
+   */
+  private $_connected = false;
+
+  private $_user;
+  private $_host;
+  private $_dbName;
+
+  /**
+   * @var PrivilegeChecker
+   */
+  private $_privilegeChecker;
 
   private $accessRights;
-  
-  private $user;
-  private $host;
 
+  #region setters
   public function setTriggers($val)
   {
     $this->checkTriggers = $val;
@@ -81,47 +93,57 @@ class CheckDbTask extends Task
   {
     $this->checkInnoDb = $val;
   }
-  
+  #endregion
+
   public function main()
   {
-    if(!$this->connected)
+    if( !$this->_connected )
+    {
       $this->connect();
-
-    if($this->checkTriggers)
-      $this->checkPrivelege('Trigger');
-
-    if($this->checkViews)
-    {
-      $this->checkPrivelege('Show_view');
-      $this->checkPrivelege('Create_view');
     }
 
-    if($this->checkRoutines)
+    $this->_privilegeChecker = new PrivilegeChecker(PrivilegeChecker::getShowGrantsOutput($this->pdo));
+
+    if( $this->checkTriggers )
     {
-      $this->checkPrivelege('Create_routine');
-      $this->checkPrivelege('Alter_routine');
+      $this->checkPrivilege(PrivilegeEnum::Trigger);
     }
 
-    if($this->checkLockTables)
+    if( $this->checkViews )
     {
-      $this->checkPrivelege('Lock_tables');
+      $this->checkPrivilege(PrivilegeEnum::ShowView);
+      $this->checkPrivilege(PrivilegeEnum::CreateView);
     }
 
-    if($this->checkTmpTable)
+    if( $this->checkRoutines )
     {
-      $this->checkPrivelege('Create_tmp_table');
+      $this->checkPrivilege(PrivilegeEnum::CreateRoutine);
+      $this->checkPrivilege(PrivilegeEnum::AlterRoutine);
     }
 
-    if($this->checkInnoDb)
+    if( $this->checkLockTables )
+    {
+      $this->checkPrivilege(PrivilegeEnum::LockTables);
+    }
+
+    if( $this->checkTmpTable )
+    {
+      $this->checkPrivilege(PrivilegeEnum::CreateTemporaryTables);
+    }
+
+    if( $this->checkInnoDb )
     {
       $this->checkEngine('InnoDB');
     }
   }
 
-  protected function checkPrivelege($priv)
+  protected function checkPrivilege($privilege)
   {
-    if(!$this->hasPrivelege($priv))
-      throw new BuildException("Required DB privelege '$priv' not granted for '" . $this->user . '@' . $this->host . "' on db '" . $this->project->getProperty('db.dbname') . "'");
+    if( !$this->hasPrivilege($privilege) )
+    {
+      throw new BuildException(
+        "Required DB privelege '{$privilege}' not granted for '{$this->_user}'@'{$this->_host}' on db '{$this->_dbName}'");
+    }
   }
 
   protected function checkEngine($engine)
@@ -136,44 +158,178 @@ class CheckDbTask extends Task
     throw new BuildException("Required Engine '$engine' is not supported by current DB driver");
   }
 
-  protected function hasPrivelege($priv)
+  protected function hasPrivilege($privilege)
   {
-    $q = $this->pdo->prepare("SELECT * FROM mysql.user WHERE Host = :host AND User = :user AND ${priv}_priv = 'Y';"); // check global privelegies at first
-    $q->execute(array(
-      ':user' => $this->project->getProperty('db.mysqlUser'),
-      ':host' => $this->project->getProperty('db.mysqlHost'),
-    ));
-    if(sizeOf($q->fetchAll()))
-      return true;
-
-    $q = $this->pdo->prepare("SELECT * FROM mysql.db WHERE Host = :host AND User = :user AND Db = :db AND ${priv}_priv= 'Y';"); // and then privelegies for current db
-    $q->execute(array(
-      ':user' => $this->project->getProperty('db.mysqlUser'),
-      ':host' => $this->project->getProperty('db.mysqlHost'),
-      ':db'   => $this->project->getProperty('db.dbname'),
-    ));
-    if(sizeOf($q->fetchAll()))
-      return true;
-
-    return false;
+    return $this->_privilegeChecker->hasPrivilege($privilege, $this->_dbName, $this->_user, $this->_host);
   }
-
 
   private function connect()
   {
-    $dsn = $dsn = $this->project->getProperty('db.driver') . ':' . 'host=' . $this->project->getProperty('db.host');
+    $dsn = $dsn = $this->project->getProperty('db.driver').':'.'host='.$this->project->getProperty('db.host');
 
     try
     {
       $this->pdo = new PDO($dsn,
         $this->project->getProperty('db.username'),
-        $this->project->getProperty('db.password')
-      );
-    } catch (PDOException $e) {
+        $this->project->getProperty('db.password'));
+    }
+    catch( PDOException $e )
+    {
       throw new BuildException("CheckDbPermissionsTask: Could not connect to PDO: $dsn");
     }
-    $this->connected = true;
-  }
 
+    $this->_connected = true;
+    $this->_user = $this->project->getProperty('db.mysqlUser');
+    $this->_host = $this->project->getProperty('db.mysqlHost');
+    $this->_dbName = $this->project->getProperty('db.dbname');
+  }
 }
 
+
+/**
+ * Привилегии.
+ */
+class PrivilegeEnum
+{
+  const Trigger = 'trigger';
+  const ShowView = 'show view';
+  const CreateView = 'create view';
+  const CreateRoutine = 'create routine';
+  const AlterRoutine = 'alter routine';
+  const LockTables = 'lock tables';
+  const CreateTemporaryTables = 'create temporary tables';
+}
+
+/**
+ * Инкапсулиреут правила проверки привилегий.
+ */
+class PrivilegeChecker
+{
+  /**
+   * Возвращает результат команды SHOW GRANTS;
+   *
+   * @param PDO $connection Соединение с базой данных.
+   *
+   * @return array Результат команды SHOW GRANTS;
+   */
+  public static function getShowGrantsOutput(PDO $connection)
+  {
+    return $connection->query('SHOW GRANTS;')->fetchAll();
+  }
+
+  /**
+   * @var string[] Массив GRANT команд.
+   */
+  private $_showGrantsOutput;
+
+  /**
+   * Создает новый объект для проверки привилегий в базе данных для пользователя.
+   *
+   * @param string[] $showGrantsRawOutput Результат команды SHOW GRANTS;
+   */
+  public function __construct(array $showGrantsRawOutput)
+  {
+    $this->_showGrantsOutput = $this->preprocess($showGrantsRawOutput);
+  }
+
+  /**
+   * Проверает наличие указанной привилегии для определенного пользователя и хоста.
+   *
+   * @param string $privilege Название привилегии (см. PrivilegeEnum)
+   * @param string $db        Имя базы данных.
+   * @param string $user      Имя пользователя.
+   * @param string $host      Имя хоста.
+   *
+   * @return bool true в случае наличия привилегии, иначе false.
+   */
+  public function hasPrivilege($privilege, $db, $user, $host)
+  {
+    try
+    {
+      $grantQuery = $this->findRow($this->_showGrantsOutput, $db, $user, $host);
+    }
+    catch( UnexpectedValueException $e )
+    {
+      return false;
+    }
+
+    return $this->hasPrivilegeHelper($grantQuery, $privilege);
+  }
+
+  /**
+   * Выполняет предварительную обработку для результата команды SHOW GRANTS;
+   *
+   * @param $showGrantsRawOutput Результат команды SHOW GRANTS;
+   *
+   * @return string[] Массив GRANT команд.
+   */
+  private function preprocess($showGrantsRawOutput)
+  {
+    return array_map(function (array $rowAsArray)
+    {
+      return reset($rowAsArray);
+    }, $showGrantsRawOutput);
+  }
+
+  /**
+   * Отыскивает строку, содержащую GRANT команду, для указанного пользователя и хоста.
+   *
+   * @param string[] $grantCommands Все GRANT команды.
+   * @param string   $db            Имя базы данных.
+   * @param string   $user          Имя пользователя.
+   * @param string   $host          Имя хоста.
+   *
+   * @throws UnexpectedValueException Бросается если GRANT команда для указанного пользователя и хоста не найдена.
+   * @return string GRANT команда для указанного пользователя и хоста.
+   */
+  private function findRow(array $grantCommands, $db, $user, $host)
+  {
+    $candidates = array_filter($grantCommands, function ($row) use ($db, $user, $host)
+    {
+      /** @var $row string */
+      if( stripos($row, 'GRANT USAGE ON') !== false )
+      {
+        return false;
+      }
+
+      $result = preg_match("~{$user}'@'{$host}~", $row);
+      if( $result === 0 || $result === false )
+      {
+        return false;
+      }
+
+      return true;
+    });
+
+    if( count($candidates) === 0 )
+    {
+      throw new UnexpectedValueException();
+    }
+
+    return reset($candidates);
+  }
+
+  /**
+   * Проверает наличие привилегии в SQL GRANT команде.
+   *
+   * @param string $query     Строка, содержащая SQL GRANT команду.
+   * @param string $privilege Название привилегии на которую делается проверка.
+   *
+   * @return bool true в случае наличия привилегии, иначе false.
+   */
+  private function hasPrivilegeHelper($query, $privilege)
+  {
+    $result = preg_match('~GRANT(?<privileges>.+)ON~', $query, $privilegeList);
+    if( $result === 0 || $result === false )
+    {
+      return false;
+    }
+
+    $privs = array_map(function ($priv)
+    {
+      return strtolower(trim($priv));
+    }, explode(',', $privilegeList['privileges']));
+
+    return in_array(strtolower($privilege), $privs);
+  }
+}
