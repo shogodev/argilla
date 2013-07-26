@@ -11,6 +11,7 @@
  * @property string $id
  * @property string $param_id
  * @property string $name
+ * @property string $position
  *
  * @property BProductParamName $param
  */
@@ -20,7 +21,7 @@ class BProductParamVariant extends BActiveRecord
   {
     return array(
       array('param_id, name', 'required'),
-      array('param_id', 'length', 'max' => 10),
+      array('param_id, position', 'length', 'max' => 10),
     );
   }
 

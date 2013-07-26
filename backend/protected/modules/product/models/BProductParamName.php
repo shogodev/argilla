@@ -67,7 +67,7 @@ class BProductParamName extends BActiveRecord
     return array(
       'assignment' => array(self::HAS_ONE, 'BProductParamAssignment', 'param_id'),
       'children'   => array(self::HAS_MANY, 'BProductParamName', 'parent', 'order' => 'position'),
-      'variants'   => array(self::HAS_MANY, 'BProductParamVariant', 'param_id'),
+      'variants'   => array(self::HAS_MANY, 'BProductParamVariant', 'param_id', 'order' => 'variants.position'),
     );
   }
 
@@ -118,7 +118,7 @@ class BProductParamName extends BActiveRecord
 
     $criteria->compare('t.id', '<>'.self::ROOT_ID);
     $criteria->compare('parent', '='.self::ROOT_ID);
-    $criteria->order = 'position';
+    $criteria->order = 't.position';
 
     $condition  = '(assignment.section_id IS NULL OR assignment.section_id = 0)';
 

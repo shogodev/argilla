@@ -58,7 +58,7 @@ class ProductParamName extends FActiveRecord
     return array(
       'assignment' => array(self::HAS_ONE, 'ProductParamAssignment', 'param_id'),
       'children'   => array(self::HAS_MANY, 'ProductParamName', 'parent', 'order' => 'position'),
-      'variants'   => array(self::HAS_MANY, 'ProductParamVariant', 'param_id'),
+      'variants'   => array(self::HAS_MANY, 'ProductParamVariant', 'param_id', 'order' => 'variants.position'),
     );
   }
 
@@ -92,7 +92,7 @@ class ProductParamName extends FActiveRecord
     $criteria->compare('t.id', '<>'.self::ROOT_ID);
     $criteria->compare('parent', '='.self::ROOT_ID);
     $criteria->compare('visible', '=1');
-    $criteria->order = 'position';
+    $criteria->order = 't.position';
 
     return $this->buildParams($criteria);
   }

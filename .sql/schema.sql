@@ -901,6 +901,7 @@ CREATE TABLE `argilla_product_param_variant` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `param_id` int(10) unsigned NOT NULL,
   `name` text NOT NULL,
+  `position` int(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `value` (`param_id`,`name`(64)),
   KEY `param_id` (`param_id`),
@@ -1249,7 +1250,7 @@ CREATE TABLE `argilla_vacancy_file` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping routines for database 'argilla'
+
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 

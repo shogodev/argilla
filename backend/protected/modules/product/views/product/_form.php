@@ -35,9 +35,9 @@ $form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId()));
 
   <?php echo $form->uploadRow($model, 'product_img', true, array(), array('class' => 'ProductImageGrid'))?>
 
-  <?php echo $form->ckeditorRow($model, 'content');?>
-
   <?php echo $form->ckeditorRow($model, 'notice');?>
+
+  <?php echo $form->ckeditorRow($model, 'content');?>
 
   <?php echo $form->checkBoxRow($model, 'visible');?>
 
