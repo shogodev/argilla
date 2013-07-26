@@ -61,6 +61,15 @@ class UploadModel extends CModel
       if( $this->{$param} !== null )
         $params[$param] = $this->{$param};
 
-    return $this->db->createCommand()->update("{{{$this->tableName}}}", $params, 'id=:id', array(':id' => $this->id));
+    try
+    {
+      $this->db->createCommand()->update("{{{$this->tableName}}}", $params, 'id=:id', array(':id' => $this->id));
+
+      return true;
+    }
+    catch( CDbException $e )
+    {
+      return false;
+    }
   }
 }
