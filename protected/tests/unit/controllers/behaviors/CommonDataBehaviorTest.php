@@ -15,6 +15,7 @@ class CommonDataBehaviorTest extends CDbTestCase
     'seo_counters' => 'Counter',
     'seo_link_block' => 'LinkBlock',
     'info' => 'Info',
+    'settings' => 'Settings',
   );
 
   public function setUp()
@@ -163,6 +164,16 @@ class CommonDataBehaviorTest extends CDbTestCase
     $this->assertContains('8 800 000 00 00', $contact->getFields('phones')[0]);
     $this->assertContains('8 800 300 40 50', $contact->getFields('phones')[1]);
     $this->assertEmpty($contact->getFields('icq'));
+  }
+
+  public function testGetSettings()
+  {
+    $settings = Yii::app()->controller->settings;
+    $this->assertEquals('12', $settings['product_page_size']);
+    $this->assertEquals('10', $settings['page_size']);
+
+    $settings = Yii::app()->controller->getSettings('product_page_size');
+    $this->assertEquals('12', $settings);
   }
 
   protected function clearTextBlocksCache()

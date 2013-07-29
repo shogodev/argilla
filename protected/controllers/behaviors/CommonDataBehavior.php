@@ -118,16 +118,17 @@ class CommonDataBehavior extends CBehavior
 
   /**
    * Возвращает одно значение настройки или все
-   * @param null $key если укзан, то возвращается настройка с соответстующим ключом иниче возвращает все настройки
-   * @return array|null
+   * @param null $key если указан, то возвращается настройка с соответстующим ключом, иначе возвращает все настройки
+   * @param null $defaultValue
+   *
+   * @return array|string|null
    */
-  public function getSettings($key = null)
+  public function getSettings($key = null, $defaultValue = null)
   {
     if( $this->settings === null )
     {
       $this->settings = array();
-
-      $settings = Setting::model()->findAll();
+      $settings = Settings::model()->findAll();
 
       foreach($settings as $setting)
         $this->settings[$setting->param] = $setting->value;
@@ -136,6 +137,6 @@ class CommonDataBehavior extends CBehavior
     if( $key === null )
       return $this->settings;
 
-    return isset($this->settings[$key]) ? $this->settings[$key] : null;
+    return Arr::get($this->settings, $key, $defaultValue);
   }
 }

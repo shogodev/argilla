@@ -12,6 +12,7 @@
  * @method Counter[] getCounters($key = 'copyright')
  * @method array getCopyrights()
  * @method array getContacts($groupName = null)
+ * @method array getSettings($key = null, $defaultValue = null)
  *
  * @property Counter[] $counters
  * @property array $copyrights

@@ -6,17 +6,14 @@
  * @license http://argilla.ru/LICENSE
  * @package frontend.models
  *
- * @method static Setting model(string $class = __CLASS__)
+ * @method static Settings model(string $class = __CLASS__)
  *
  * @property integer $id
  * @property string $param
  * @property string $value
  * @property string $notice
  */
-class Setting extends FActiveRecord
+class Settings extends FActiveRecord
 {
-  public function tableName()
-  {
-    return '{{settings}}';
-  }
+
 }
