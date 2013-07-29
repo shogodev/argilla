@@ -16,6 +16,8 @@ class FListView extends CListView
 
   public $emptyText = 'Ни одного элемента не найдено';
 
+  public $sorterTemplate;
+
   public function renderPager()
   {
     if( !$this->enablePagination )
@@ -36,6 +38,18 @@ class FListView extends CListView
     echo '<div class="'.$this->pagerCssClass.'">';
     $this->widget($class, $pager);
     echo '</div>';
+  }
+
+  public function renderSorter()
+  {
+    if( $this->sorterTemplate )
+    {
+      echo $this->sorterHeader;
+      $this->owner->renderPartial($this->sorterTemplate);
+      echo $this->sorterFooter;
+    }
+    else
+      parent::renderSorter();
   }
 
   public function renderEmptyText()
