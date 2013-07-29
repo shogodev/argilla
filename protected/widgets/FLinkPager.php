@@ -16,6 +16,8 @@ class FLinkPager extends CLinkPager
 
   public $renderFirstAndLast = false;
 
+  public $renderNextAndPrevious = true;
+
   public function init()
   {
     if( !isset($this->htmlOptions['id']) )
@@ -30,6 +32,9 @@ class FLinkPager extends CLinkPager
     $buttons = $this->createPageButtons();
 
     if( !$this->renderFirstAndLast )
+      $buttons = array_slice($buttons, 1, count($buttons) - 2);
+
+    if( !$this->renderNextAndPrevious )
       $buttons = array_slice($buttons, 1, count($buttons) - 2);
 
     echo $this->header;
