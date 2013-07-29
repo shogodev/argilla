@@ -119,9 +119,12 @@ class BProductTreeAssignment extends BActiveRecord
     $attributes = array(
       'category' => 'Бренд',
       'section' => 'Раздел',
+      'type' => 'Тип',
     );
 
-    return CMap::mergeArray(parent::attributeLabels(),
-                            array(self::DST_FIELD => $attributes[self::$dstModel]));
+    return CMap::mergeArray(
+      parent::attributeLabels(),
+      isset($attributes[self::$dstModel]) ? array(self::DST_FIELD => $attributes[self::$dstModel]) : array()
+    );
   }
 }

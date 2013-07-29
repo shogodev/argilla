@@ -174,6 +174,27 @@ class BActiveForm extends TbActiveForm
     return $this->inputRow('coordinates', $model, $attribute, null, $htmlOptions);
   }
 
+  /**
+   * @param $model
+   * @param $attribute
+   * @param array $inputs
+   * @param array $data
+   * @param array $htmlOptions
+   *
+   * @return string
+   *
+   * Examples:
+   *
+   * two depended inputs [section] - [type]
+   * echo $form->dependedInputs($model, 'section_id', array('type_id'), CHtml::listData(BProductType::model()->findAll(), 'id', 'name'));
+   *
+   * several depended inputs [section] - [type,category]
+   * echo $form->dependedInputs($model, 'section_id', array('type_id', 'category_id'), CHtml::listData(BProductType::model()->findAll(), 'id', 'name'));
+   *
+   * three inputs depended each other [section] - [type] - [category]
+   * echo $form->inputRow('dependedInput', $model, 'section_id', array('listData' => BProductSection::model()->listData(), 'inputs' => array('type_id')));
+   * echo $form->dependedInputs($model, 'type_id', array('category_id'), CHtml::listData(BProductType::model()->findAll(), 'id', 'name'));
+   */
   public function dependedInputs($model, $attribute, array $inputs, $data = array(), $htmlOptions = array())
   {
     $data = array(

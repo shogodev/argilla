@@ -23,7 +23,7 @@ class DependedInputWidget extends CWidget
 
   protected $modelId;
 
-  protected $inputs;
+  protected $inputs = array();
 
   protected $postData;
 
@@ -63,7 +63,13 @@ class DependedInputWidget extends CWidget
     $expression = '';
 
     foreach(array_keys($this->inputs) as $input)
-      $expression .= 'if(html.'.$input.') jQuery("#'.$this->modelId.'_'.$input.'").html(html.'.$input.');';
+    {
+      $expression .= 'if(html.'.$input.')
+      {
+        jQuery("#'.$this->modelId.'_'.$input.'").html(html.'.$input.');
+        $("#'.$this->modelId.'_'.$input.'").trigger("change");
+      }';
+    }
 
     $this->updateSelector = new CJavaScriptExpression('function(html){'.$expression.'}');
     $this->updateSelector = CJavaScript::encode($this->updateSelector);
@@ -78,7 +84,7 @@ class DependedInputWidget extends CWidget
       $depended = is_array($input) ? $key : $input;
 
       $this->inputs[$depended] = array(
-        'type'     => Arr::get($input, 'type', 'dropdown'),
+        'type' => Arr::get($input, 'type', 'dropdown'),
       );
     }
   }
