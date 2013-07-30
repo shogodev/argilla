@@ -16,15 +16,12 @@
  */
 class InfoFiles extends FActiveImage
 {
+  protected $imageDir = 'f/info/';
+
   protected $availableTypes = array();
 
   public function tableName()
   {
     return '{{info_files}}';
-  }
-
-  public function getPath()
-  {
-    return 'f/info/';
   }
 }

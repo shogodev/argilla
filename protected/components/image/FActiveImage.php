@@ -8,21 +8,11 @@
  *
  * Класс используется для работы с таблицей изображений модели и их миниатюр
  *
- * Массив $availableTypes в данном случае содержит префиксы изображения
- * (preview, gallery)
+ * Examples:
  *
- * @HINT: Свойство $defaultImage содержит путь к изображению, которое будет выводиться в случае, если
- * указанное изображение не существует
- *
- * Обращение к миниатюрам происходит обращением к названию типа миниатюры
- * <code>
- *  $picture->gallery
- * </code>
- *
- * Для вызова пути к оригинальному изображению используется __toString()
- * <code>
- *  echo $picture;
- * </code>
+ * $image = ProductImage::model()->findByPk(1);
+ * echo $image;
+ * echo $image->pre;
  */
 class FActiveImage extends FActiveRecord implements ImageInterface
 {
@@ -31,7 +21,7 @@ class FActiveImage extends FActiveRecord implements ImageInterface
    *
    * @var string
    */
-  protected $defaultImage = 'i/sp.gif';
+  protected $defaultImage = '/i/sp.gif';
 
   /**
    * Массив доступных префиксов для файла
@@ -41,13 +31,27 @@ class FActiveImage extends FActiveRecord implements ImageInterface
   protected $availableTypes = array();
 
   /**
+   * Путь к папке с изображениями относительно корня проекта без начального слэша
+   *
+   * @var string
+   */
+  protected $imageDir = 'f/';
+
+  /**
    * По умолчанию отдаётся оригинальный файл
    *
    * @return string
    */
   public function __toString()
   {
-    return $this->path . $this->name;
+    if( file_exists($this->getFullPath()) )
+    {
+      return '/' . $this->getFullPath();
+    }
+    else
+    {
+      return $this->defaultImage;
+    }
   }
 
   /**
@@ -65,12 +69,14 @@ class FActiveImage extends FActiveRecord implements ImageInterface
   {
     if( in_array($name, $this->availableTypes) )
     {
-      $path =  $this->path . $name . '_' . $this->name;
-
-      if( file_exists($path) )
-        return $path;
+      if( file_exists($this->getFullPath($name)) )
+      {
+        return '/' . $this->getFullPath($name);
+      }
       else
+      {
         return $this->defaultImage;
+      }
     }
     else
       return parent::__get($name);
@@ -83,6 +89,33 @@ class FActiveImage extends FActiveRecord implements ImageInterface
    */
   public function getPath()
   {
-    return 'f/' . lcfirst(get_called_class()) . '/';
+    return $this->imageDir;
+  }
+
+  /**
+   * @param $imageDir
+   */
+  public function setImageDir($imageDir)
+  {
+    $this->imageDir = $imageDir;
+  }
+
+  /**
+   * Создание полного пути до файла
+   *
+   * @param string $name
+   *
+   * @return string
+   */
+  protected function getFullPath($name = null)
+  {
+    if( empty($name) )
+    {
+      return $this->getPath() . $this->name;
+    }
+    else
+    {
+      return $this->getPath() . $name . '_' . $this->name;
+    }
   }
 }

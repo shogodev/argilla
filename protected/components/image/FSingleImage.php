@@ -7,38 +7,12 @@
  * @package frontend.components.image
  *
  * Класс используется для работы с одним изображением модели и его миниатюр
- * @example
- * Есть класс MyClass, у которого есть поле @img с названием файла,
- * файл и его миниатюры хранятся по пути f/myClass/
- * с именами preview_@img.png, gallery_@img.png, @img.png
- * Тогда для получения оригинала изображения или его миниатюр в базовую модель необходимо добавить
- * myMethod(), который будет возвращать пути к изображениям
  *
- * <code>
- * class MyClass
- * {
- *  public function myMethod()
- *  {
- *    return new FSingleImage($this->img, $this, array('gallery', 'preview'));
- *  }
- * }
- * </code>
+ * Examples:
  *
- * Массив $availableTypes в данном случае содержит префиксы изображения
- * (preview, gallery)
- *
- * @HINT: Параметр $defaultImage конструктора содержит путь к изображению, которое будет выводиться в случае, если
- * указанное изображение не существует
- *
- * Обращение к миниатюрам происходит обращением к названию типа миниатюры
- * <code>
- *  echo $myClass->myMethod()->gallery
- * </code>
- *
- * Для вызова пути к оригинальному изображению используется __toString()
- * <code>
- *  echo $myClass->myMethod();
- * </code>
+ * $image = new FSingleImage($model->img, 'product', array('pre'));
+ * echo $image;
+ * echo $image->pre;
  */
 class FSingleImage implements ImageInterface
 {
@@ -47,7 +21,7 @@ class FSingleImage implements ImageInterface
    *
    * @var string
    */
-  protected $defaultImage = 'i/sp.gif';
+  protected $defaultImage = '/i/sp.gif';
 
   /**
    * Массив доступных префиксов для файла
@@ -64,11 +38,18 @@ class FSingleImage implements ImageInterface
   protected $name;
 
   /**
-   * Название директории в папке f
+   * Название директории в папке с изображениями
    *
    * @var string
    */
   protected $path;
+
+  /**
+   * Путь к папке с изображениями относительно корня проекта
+   *
+   * @var string
+   */
+  protected $imageDir = 'f/';
 
   /**
    *
@@ -77,7 +58,7 @@ class FSingleImage implements ImageInterface
    * @param array $types
    * @param string $defaultImage
    */
-  public function __construct($name, $path, array $types = array(), $defaultImage = 'i/sp.gif')
+  public function __construct($name, $path, array $types = array(), $defaultImage = '/i/sp.gif')
   {
     $this->name           = $name;
     $this->path           = $path;
@@ -101,13 +82,16 @@ class FSingleImage implements ImageInterface
     if( in_array($name, $this->availableTypes) )
     {
       if( file_exists($this->getFullPath($name)) )
-        return $this->getFullPath($name);
+      {
+        return '/' . $this->getFullPath($name);
+      }
 
       return $this->defaultImage;
     }
     else
+    {
       throw new CException('Запрашиваемое изображение не существует');
-
+    }
   }
 
   /**
@@ -118,9 +102,13 @@ class FSingleImage implements ImageInterface
   public function __toString()
   {
     if( file_exists($this->getFullPath()) )
-      return $this->getFullPath();
+    {
+      return '/' . $this->getFullPath();
+    }
     else
+    {
       return $this->defaultImage;
+    }
   }
 
   /**
@@ -130,13 +118,19 @@ class FSingleImage implements ImageInterface
    */
   public function getPath()
   {
-    return 'f/' . $this->path . '/';
+    return $this->imageDir . $this->path . '/';
   }
 
   /**
-   * Создание полного пути до файла,
-   * если не установлен параметр $name
-   * используется свойство класса $name
+   * @param $imageDir
+   */
+  public function setImageDir($imageDir)
+  {
+    $this->imageDir = $imageDir;
+  }
+
+  /**
+   * Создание полного пути до файла
    *
    * @param string $name
    *
@@ -145,8 +139,12 @@ class FSingleImage implements ImageInterface
   protected function getFullPath($name = null)
   {
     if( empty($name) )
+    {
       return $this->getPath() . $this->name;
+    }
     else
+    {
       return $this->getPath() . $name . '_' . $this->name;
+    }
   }
 }
