@@ -23,8 +23,11 @@
  * @property integer $dump
  * @property integer $archive
  * @property integer $xml
- * @property ParamName[] parameters
- * @property ProductConfiguration configuration
+ *
+ * @property ProductSection section
+ * @property ProductType type
+ * @property ProductParameterName[] parameters
+ * @property ProductIngrediente[] $ingredients
  *
  * collectionElement behavior
  * @property integer $collectionIndex
@@ -36,10 +39,21 @@
 class Product extends FActiveRecord
 {
   public $collectionIndex;
+
   public $count;
+
   public $sum;
 
+  /**
+   * @var Product[]
+   */
+  protected $relatedProduct;
+
+  /**
+   * @var ProductParameterName[]
+   */
   protected $parameters;
+
   protected $images;
 
   public function behaviors()
@@ -47,42 +61,15 @@ class Product extends FActiveRecord
     return array('collectionElement' => array('class' => 'FCollectionElement'));
   }
 
-  /**
-   * @var array
-   */
-  protected $technologies = array();
-
-  /**
-   * @OVERRIDE
-   *
-   * @return string
-   */
-  public function tableName()
-  {
-    return '{{product}}';
-  }
-
-  /**
-   * @OVERRIDE
-   *
-   * @return array
-   */
   public function relations()
   {
     return array(
       'assignment' => array(self::HAS_ONE, 'ProductAssignment', 'product_id'),
-
-      'section'       => array(self::HAS_ONE, 'ProductSection', array('section_id' => 'id'), 'through' => 'assignment'),
-      'type'          => array(self::HAS_ONE, 'ProductType', array('type_id' => 'id'), 'through' => 'assignment'),
-      //'configuration' => array(self::HAS_ONE, 'ProductConfiguration', array('configuration_id' => 'id'), 'through' => 'assignment'),
+      'section' => array(self::HAS_ONE, 'ProductSection', array('section_id' => 'id'), 'through' => 'assignment'),
+      'type' => array(self::HAS_ONE, 'ProductType', array('type_id' => 'id'), 'through' => 'assignment'),
     );
   }
 
-  /**
-   * @OVERRIDE
-   *
-   * @return array
-   */
   public function defaultScope()
   {
     $alias = $this->getTableAlias(false, false);
@@ -93,11 +80,6 @@ class Product extends FActiveRecord
     );
   }
 
-  /**
-   * @OVERRIDE
-   *
-   * @return array
-   */
   public function scopes()
   {
     return array(
@@ -111,16 +93,12 @@ class Product extends FActiveRecord
     );
   }
 
-  /**
-   * @OVERRIDE
-   *
-   * @return void
-   */
   public function afterFind()
   {
-    $this->url       = Yii::app()->controller->createUrl('product/one', array('url' => $this->url));
+    if( isset(Yii::app()->controller) )
+      $this->url = Yii::app()->controller->createUrl('product/one', array('url' => $this->url));
 
-    $this->price     = floatval($this->price);
+    $this->price = floatval($this->price);
     $this->price_old = floatval($this->price_old);
 
     if( !Yii::app()->user->isGuest )
@@ -136,34 +114,52 @@ class Product extends FActiveRecord
     parent::afterFind();
   }
 
-  public function getParameters()
+  /**
+   * @param null $key
+   * @param CDbCriteria $groupCriteria
+   *
+   * @return ProductParameterName[]
+   */
+  public function getParameters($key = null, CDbCriteria $groupCriteria = null)
   {
-    if( empty($this->parameters) )
+    if( !isset($this->parameters) )
     {
-      $paramModel = ProductParam::model();
-      $paramModel->product_id = $this->id;
+      if( $groupCriteria === null )
+        $groupCriteria = new CDbCriteria();
 
-      $criteria = new CDbCriteria();
-      $criteria->compare('product', '=1');
+      $names = new ProductParameterName();
+      $names->groupCriteria->compare('product', '1');
+      $names->addAssignmentCondition(array('section_id' => $this->section->id));
+      $names->groupCriteria->mergeWith($groupCriteria);
 
-      $this->parameters = $paramModel->getParameters($criteria);
+      $this->parameters = $names->search();
 
-      foreach($this->parameters as $i => $param)
-        if( is_array($param->value) )
-          $this->parameters[$i]->value = $param->setVariants($param->variants);
+      foreach($this->parameters as $parameter)
+        $parameter->setProductId($this->id);
+
+      ProductParameter::model()->setParameterValues($this->parameters);
     }
 
-    return $this->parameters;
+    return isset($key) ? Arr::filter($this->parameters, 'groupKey', $key) : $this->parameters;
   }
 
   /**
    * @param array $parameters
    *
-   * @return void
+   * @return $this
    */
   public function setParameters($parameters)
   {
     $this->parameters = $parameters;
+    return $this;
+  }
+
+  /**
+   * @param $parameter
+   */
+  public function addParameter($parameter)
+  {
+    $this->parameters[] = $parameter;
   }
 
   /**
@@ -218,24 +214,14 @@ class Product extends FActiveRecord
       $this->images[$image['type']][] = $image;
   }
 
-  public function getTechnologies()
+  /**
+   * @return Product[]
+   */
+  public function getRelatedProducts()
   {
-    if( empty($this->technologies) )
-      $this->technologies = $this->findAllThroughAssociation(new Info());
+    if( $this->relatedProduct === null )
+      $this->relatedProduct = $this->findAllThroughAssociation(new Product(), false, 4);
 
-    return $this->technologies;
-  }
-
-  public function getParentsName()
-  {
-    $name = array();
-
-    if( !empty($this->section) )
-      $name[] = $this->section->name;
-
-    if( !empty($this->type) )
-      $name[] = $this->type->name;
-
-    return $name ? implode(" : ", $name) : "";
+    return $this->relatedProduct;
   }
 }

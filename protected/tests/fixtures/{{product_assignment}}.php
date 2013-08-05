@@ -19,4 +19,7 @@ return array(
   'asgn13' => array('product_id' => 13, 'section_id' => 3, 'type_id' => 9, 'category_id' => 0, 'collection_id' => 0),
   'asgn14' => array('product_id' => 14, 'section_id' => 3, 'type_id' => 10, 'category_id' => 0, 'collection_id' => 0),
   'asgn15' => array('product_id' => 15, 'section_id' => 3, 'type_id' => 11, 'category_id' => 0, 'collection_id' => 0),
+
+  'asgn17' => array('product_id' => 17, 'section_id' => 5, 'type_id' => 12, 'category_id' => 0, 'collection_id' => 0),
+  'asgn18' => array('product_id' => 18, 'section_id' => 6, 'type_id' => 12, 'category_id' => 0, 'collection_id' => 0),
 );

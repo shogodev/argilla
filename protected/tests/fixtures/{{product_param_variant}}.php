@@ -16,4 +16,7 @@ return array(
   'variant11' => array('id' => '11', 'param_id' => '9', 'name' => 'variant 11'),
   'variant12' => array('id' => '12', 'param_id' => '9', 'name' => 'variant 12'),
   'variant13' => array('id' => '13', 'param_id' => '9', 'name' => 'variant 13'),
+
+  'variant14' => array('id' => '14', 'param_id' => 16, 'name' => 'variant 14'),
+  'variant15' => array('id' => '15', 'param_id' => 16, 'name' => 'variant 15'),
 );
