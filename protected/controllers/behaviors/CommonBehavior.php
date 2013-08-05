@@ -29,7 +29,7 @@ class CommonBehavior extends CommonDataBehavior
 
   private $fastOrderBasket;
 
-  private $topCatalogMenu;
+  private $sectionMenu;
 
   /**
    * @return FBasket|null
@@ -73,12 +73,12 @@ class CommonBehavior extends CommonDataBehavior
     return  $menu ? $menu->build() : array();
   }
 
-  public function getTopCatalogMenu()
+  public function getSectionMenu()
   {
-    if( $this->topCatalogMenu === null )
-      $this->topCatalogMenu = ProductSection::model()->getMenu();
+    if( $this->sectionMenu === null )
+      $this->sectionMenu = ProductAssignment::model()->getSectionMenu();
 
-    return $this->topCatalogMenu;
+    return $this->sectionMenu;
   }
 
   /**

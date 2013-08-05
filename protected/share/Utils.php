@@ -190,9 +190,9 @@ class Utils
 
   public static function buildUrl(array $components)
   {
-    $url  = isset($components['path']) ? $components['path'] : "";
-    $url .= isset($components['query']) ? "?".$components['query'] : "";
-    $url .= isset($components['fragment']) ? "#".$components['fragment'] : "";
+    $url  = !empty($components['path']) ? $components['path'] : "";
+    $url .= !empty($components['query']) ? "?".$components['query'] : "";
+    $url .= !empty($components['fragment']) ? "#".$components['fragment'] : "";
 
     return $url;
   }
