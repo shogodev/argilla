@@ -27,7 +27,6 @@
  * @property ProductSection section
  * @property ProductType type
  * @property ProductParameterName[] parameters
- * @property ProductIngrediente[] $ingredients
  *
  * collectionElement behavior
  * @property integer $collectionIndex
@@ -220,7 +219,7 @@ class Product extends FActiveRecord
   public function getRelatedProducts()
   {
     if( $this->relatedProduct === null )
-      $this->relatedProduct = $this->findAllThroughAssociation(new Product(), false, 4);
+      $this->relatedProduct = $this->findAllThroughAssociation(new Product(), false);
 
     return $this->relatedProduct;
   }

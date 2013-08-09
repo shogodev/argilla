@@ -8,6 +8,7 @@
  *
  * @method static BProductParam model(string $class = __CLASS__)
  *
+ * @property integer $id
  * @property integer $param_id
  * @property integer $product_id
  * @property integer $variant_id
@@ -24,6 +25,14 @@ class BProductParam extends BActiveRecord
       array('param_id, product_id', 'required'),
       array('param_id, product_id', 'length', 'max' => 10),
       array('variant_id, value', 'safe'),
+    );
+  }
+
+  public function relations()
+  {
+    return array(
+      'param' => array(self::BELONGS_TO, 'BProductParamName', 'param_id'),
+      'variant' => array(self::BELONGS_TO, 'BProductParamVariant', 'variant_id'),
     );
   }
 
@@ -51,11 +60,11 @@ class BProductParam extends BActiveRecord
             break;
 
           case 'radio':
-            $name->value = $param->variant_id;
+            $name->value[$param->id] = $param->variant_id;
             break;
 
           default:
-            $name->value[] = $param->variant_id;
+            $name->value[$param->id] = $param->variant_id;
         }
       }
 
@@ -65,43 +74,82 @@ class BProductParam extends BActiveRecord
     return $parameters;
   }
 
-  public function setParameters(BProduct $product, array $parameters)
+  public function saveParameters(BProduct $product, array $parameters)
   {
-    self::model()->deleteAllByAttributes(array('product_id' => $product->id));
-    $types = BProductParamName::model()->getParameterTypes(array_keys($parameters));
+    $types    = BProductParamName::model()->getParameterTypes(array_keys($parameters));
+    $savedIds = array();
 
     foreach($parameters as $id => $param)
     {
-      if( !is_array($param['value']) )
-        $param['value'] = array($param['value']);
+      $param['value'] = !is_array($param['value']) ? array($param['value']) : $param['value'];
 
       foreach($param['value'] as $value)
       {
         if( $value === '' )
           continue;
 
-        $variant_id = null;
+        $attributes = array(
+          'param_id' => $id,
+          'product_id' => $product->id,
+          'variant_id' => $this->getVariantId($id, $value, $types),
+          'value' => $value,
+        );
 
-        // из-за ограничения по внешним ключам записываем id варианта и текстовое значение
-        // в разные столбцы таблицы параметров
-        if( !in_array($types[$id], array('text', 'slider')) )
-        {
-          $variant_id = $value;
-          $value      = null;
-        }
-
-        $model = new BProductParam();
-        $model->setAttributes(array('param_id'   => $id,
-                                    'product_id' => $product->id,
-                                    'variant_id' => $variant_id,
-                                    'value'      => $value));
-        if( !$model->save() )
-        {
-          throw new CHttpException(500, 'Не удается сохранить параметры продукта');
-        }
+        $model = $this->saveParameter($attributes);
+        $savedIds[] = $model->id;
       }
     }
+
+    $this->deleteProductParameters($product, $savedIds);
   }
 
+  /**
+   * @param $id
+   * @param $value
+   * @param array $types
+   *
+   * @return null
+   */
+  protected function getVariantId($id, $value, array $types)
+  {
+    // из-за ограничения по внешним ключам записываем id варианта и текстовое значение
+    // в разные столбцы таблицы параметров
+    return !in_array($types[$id], array('text', 'slider')) ? $value : null;
+  }
 
+  /**
+   * @param array $attributes
+   *
+   * @return BProductParam
+   * @throws CHttpException
+   */
+  protected function saveParameter(array $attributes)
+  {
+    if( !$model = $this->findByAttributes(Arr::extract($attributes, array('param_id', 'product_id', 'variant_id'))) )
+    {
+      $model = new BProductParam();
+    }
+
+    $model->setAttributes($attributes);
+    $model->value = !isset($attributes['variant_id']) ? $attributes['value']: null;
+
+    if( !$model->save() )
+    {
+      throw new CHttpException(500, 'Не удается сохранить параметры продукта');
+    }
+
+    return $model;
+  }
+
+  /**
+   * @param BProduct $product
+   * @param array $savedIds
+   */
+  protected function deleteProductParameters(BProduct $product, array $savedIds)
+  {
+    $criteria = new CDbCriteria();
+    $criteria->compare('product_id', $product->id);
+    $criteria->addNotInCondition('id', $savedIds);
+    $this->deleteAll($criteria);
+  }
 }

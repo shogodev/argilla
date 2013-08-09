@@ -44,7 +44,7 @@ $form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId()));
   </tbody>
 </table>
 
-<?php $this->renderPartial('params', CMap::mergeArray($_data_, array('form' => $form))); ?>
+<?php $this->renderPartial('_parameters', CMap::mergeArray($_data_, array('form' => $form))); ?>
 
 <?php $this->renderPartial('//_form_buttons', array('model' => $model)); ?>
 <?php $this->endWidget(); ?>
