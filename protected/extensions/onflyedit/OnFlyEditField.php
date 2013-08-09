@@ -98,14 +98,12 @@ class OnFlyEditField extends BDataColumn
     Yii::app()->clientScript->registerScriptFile($scriptUrl.'/jquery.onFlyEdit.js', CClientScript::POS_END);
     Yii::app()->clientScript->registerScriptFile($scriptUrl.'/onFlyModule.js', CClientScript::POS_END);
 
-    Yii::app()->clientScript->registerScript('initOnFly',
+    Yii::app()->clientScript->registerScript('initOnFly'.$this->grid->id,
       '$(function() {
-
         Backend("onFly", function(box) {
           box.init(jQuery);
           jQuery.fn.yiiGridView.addObserver("'.$this->grid->id.'", function(id) { box.reinstall(jQuery); });
         });
-
       });', CClientScript::POS_END);
   }
 
