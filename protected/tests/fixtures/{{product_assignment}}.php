@@ -6,7 +6,6 @@ return array(
   'asgn4' => array('product_id' => 4, 'section_id' => 1, 'type_id' => 2, 'category_id' => 0, 'collection_id' => 0),
   'asgn5' => array('product_id' => 5, 'section_id' => 1, 'type_id' => 2, 'category_id' => 0, 'collection_id' => 0),
 
-
   'asgn6' => array('product_id' => 6, 'section_id' => 2, 'type_id' => 3, 'category_id' => 0, 'collection_id' => 0),
   'asgn7' => array('product_id' => 7, 'section_id' => 2, 'type_id' => 3, 'category_id' => 0, 'collection_id' => 0),
   'asgn8' => array('product_id' => 8, 'section_id' => 2, 'type_id' => 4, 'category_id' => 0, 'collection_id' => 0),
@@ -22,4 +21,7 @@ return array(
 
   'asgn17' => array('product_id' => 17, 'section_id' => 5, 'type_id' => 12, 'category_id' => 0, 'collection_id' => 0),
   'asgn18' => array('product_id' => 18, 'section_id' => 6, 'type_id' => 12, 'category_id' => 0, 'collection_id' => 0),
+
+  'asgn19' => array('product_id' => 19, 'section_id' => 7, 'type_id' => 13, 'category_id' => 0, 'collection_id' => 0),
+  'asgn20' => array('product_id' => 20, 'section_id' => 7, 'type_id' => 13, 'category_id' => 0, 'collection_id' => 0),
 );

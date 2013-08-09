@@ -15,4 +15,6 @@ return array(
   'type10' => array('id' => 10, 'name' => 'Спички', 'visible' => 1),
 
   'type12' => array('id' => 12, 'name' => 'Фаст-фуд', 'visible' => 1),
+
+  'type13' => array('id' => 13, 'name' => 'Здоровое питание', 'visible' => 1),
 );

@@ -19,4 +19,7 @@ return array(
 
   'param15' => array('id' => 15, 'visible' => 1, 'product' => 1, 'name' => 'Параметры корзины', 'key' => 'section', 'parent' => 11),
     'param16' => array('id' => 16, 'visible' => 1, 'name' => 'Ширина', 'parent' => 15, 'type' => 'checkbox'),
+
+  'param17' => array('id' => 17, 'visible' => 1, 'product' => 1, 'section' => 1, 'name' => 'Параметры на разводной', 'key' => 'page', 'parent' => 11),
+    'param18' => array('id' => 18, 'visible' => 1, 'name' => 'Количество', 'parent' => 17, 'type' => 'checkbox'),
 );

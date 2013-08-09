@@ -7,4 +7,6 @@ return array(
 
   'section5' => array('id' => 5, 'name' => 'Пицца', 'visible' => 1),
   'section6' => array('id' => 6, 'name' => 'Спагетти', 'visible' => 1),
+
+  'section7' => array('id' => 7, 'name' => 'Салаты', 'visible' => 1),
 );

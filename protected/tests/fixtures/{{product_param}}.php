@@ -49,4 +49,8 @@ return array(
 
   'param39' => array('param_id' => '16', 'product_id' => '17', 'variant_id' => 14),
   'param40' => array('param_id' => '16', 'product_id' => '17', 'variant_id' => 15),
+
+  'param41' => array('param_id' => '18', 'product_id' => '19', 'variant_id' => 16),
+  'param42' => array('param_id' => '18', 'product_id' => '19', 'variant_id' => 17),
+  'param43' => array('param_id' => '18', 'product_id' => '20', 'variant_id' => 18),
 );
