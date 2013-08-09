@@ -25,13 +25,13 @@ class ProductParameter extends FActiveRecord
    */
   public function setParameterValues(array $parameterNames)
   {
-    $productIds = CHtml::listData($parameterNames, 'id', 'productId');
+    list($productIds, $paramIds) = $this->getParameterIds($parameterNames);
 
     if( !empty($productIds) )
     {
       $criteria = new CDbCriteria();
-      $criteria->addInCondition('product_id', array_unique($productIds));
-      $criteria->addInCondition('param_id', array_keys($productIds));
+      $criteria->addInCondition('product_id', $productIds);
+      $criteria->addInCondition('param_id', $paramIds);
 
       $parameters = $this->findAll($criteria);
       $parameters = $this->rearrangeParameters($parameters);
@@ -46,6 +46,25 @@ class ProductParameter extends FActiveRecord
 
       ProductParameterVariant::model()->setVariants($parameterNames);
     }
+  }
+
+  /**
+   * @param ProductParameterName[] $parameterNames
+   *
+   * @return array
+   */
+  protected function getParameterIds($parameterNames)
+  {
+    $paramIds = array();
+    $productIds = array();
+
+    foreach($parameterNames as $name)
+    {
+      $productIds[] = $name->productId;
+      $paramIds[]   = $name->id;
+    }
+
+    return array(array_unique($productIds), array_unique($paramIds));
   }
 
   /**
