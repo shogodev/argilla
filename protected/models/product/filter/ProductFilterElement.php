@@ -148,7 +148,7 @@ abstract class ProductFilterElement extends CComponent
           return true;
       }
 
-      if( isset($this->parent->state[$this->id][$itemId]) )
+      if( is_array($this->parent->state[$this->id]) && isset($this->parent->state[$this->id][$itemId]) )
         return true;
     }
 
