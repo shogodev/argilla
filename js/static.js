@@ -43,8 +43,10 @@ function checkResponse(response, form)
 
     if( response.messageForm !== undefined )
     {
-      form.html('<div id=\'form_success_message\'>' + response.messageForm + '</div>');
-      scroll_to('#form_success_message');
+      form.html('<div id=\'form-success-message\'>' + response.messageForm + '</div>');
+
+      if( response.scrollOnMessage === true )
+        scroll_to('#form-success-message');
     }
   }
 
