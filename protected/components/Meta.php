@@ -12,7 +12,7 @@ class Meta extends CComponent
 {
   public static $VARS_PATTERN = '/{(\w+)}|{(\w+):(\w+)}/';
 
-  public $modelExceptions = array('ProductAssignment', 'ProductParamAssignment');
+  public $modelExceptions = array('ProductAssignment', 'ProductParameterAssignment');
 
   public $maxDepthFind = 1;
 

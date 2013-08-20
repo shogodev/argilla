@@ -881,7 +881,6 @@ CREATE TABLE `argilla_product_param_name` (
   `img` varchar(255) NOT NULL,
   `type` varchar(50) NOT NULL DEFAULT 'text',
   `key` varchar(50) DEFAULT NULL,
-  `group` int(11) DEFAULT '0',
   `product` tinyint(1) DEFAULT NULL,
   `section` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`),

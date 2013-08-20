@@ -50,7 +50,7 @@ class ProductFilter extends AbstractProductFilter
     }
 
     if( !isset($filterElement['id']) && !empty($filterElement['key']) )
-      $filterElement['id'] = ProductParamName::model()->findByAttributes(array('key' => $filterElement['key']))->id;
+      $filterElement['id'] = ProductParameterName::model()->findByAttributes(array('key' => $filterElement['key']))->id;
     else if( empty($filterElement['key']))
       $filterElement['key'] = $filterElement['id'];
 

@@ -12,7 +12,6 @@
  * @property integer $position
  * @property string $url
  * @property string $name
- * @property string $menu_name
  * @property string $notice
  * @property string $img
  * @property integer $visible
@@ -23,7 +22,7 @@ class BProductSection extends BActiveRecord
 {
   public function behaviors()
   {
-    return array('uploadBehavior' => array('class' => 'UploadBehavior', 'validAttributes' => "img"));
+    return array('uploadBehavior' => array('class' => 'UploadBehavior', 'validAttributes' => 'img'));
   }
 
   public function rules()
@@ -33,16 +32,13 @@ class BProductSection extends BActiveRecord
       array('url', 'unique'),
       array('position, visible', 'numerical', 'integerOnly' => true),
       array('url', 'length', 'max' => 255),
-      array('name, menu_name, notice, content_top, content_bottom', 'safe'),
+      array('name, notice', 'safe'),
     );
   }
 
   public function attributeLabels()
   {
     return CMap::mergeArray(parent::attributeLabels(), array(
-      'content_top'    => 'Текст вверху',
-      'content_bottom' => 'Текст внизу',
-      'menu_name' => 'Название для меню',
     ));
   }
 }

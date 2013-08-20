@@ -37,7 +37,7 @@ class FilterTestHelper
       'itemLabels' => CHtml::listData(ProductType::model()->findAll() , 'id', 'name'),
     );
 
-    $size = ProductParamName::model()->findByAttributes(array('key' => 'size'));
+    $size = ProductParameterName::model()->findByAttributes(array('key' => 'size'));
 
     $this->filterElements[self::ELEMENT_SIZE] = array(
       'id' => $size->id,
@@ -46,7 +46,7 @@ class FilterTestHelper
       'itemLabels' => CHtml::listData($size->variants , 'id', 'name'),
     );
 
-    $color = ProductParamName::model()->findByAttributes(array('key' => 'color'));
+    $color = ProductParameterName::model()->findByAttributes(array('key' => 'color'));
 
     $this->filterElements[self::ELEMENT_COLOR] = array(
       'id' => $color->id,
@@ -55,7 +55,7 @@ class FilterTestHelper
       'itemLabels' => CHtml::listData($color->variants , 'id', 'name'),
     );
 
-    $length = ProductParamName::model()->findByAttributes(array('key' => 'length'));
+    $length = ProductParameterName::model()->findByAttributes(array('key' => 'length'));
 
     $this->filterElements[self::ELEMENT_LENGTH] = array(
       'id' => $length->id,
@@ -64,7 +64,7 @@ class FilterTestHelper
       'itemLabels' => CHtml::listData($length->variants , 'id', 'name'),
     );
 
-    $text = ProductParamName::model()->findByAttributes(array('key' => 'text'));
+    $text = ProductParameterName::model()->findByAttributes(array('key' => 'text'));
     $this->filterElements[self::ELEMENT_TEXT] = array(
       'id' => $text->id,
       'label' => $text->name,
@@ -83,7 +83,7 @@ class FilterTestHelper
       ),
     );
 
-    $range = ProductParamName::model()->findByAttributes(array('key' => 'range'));
+    $range = ProductParameterName::model()->findByAttributes(array('key' => 'range'));
     $this->filterElements[self::ELEMENT_RANGE] = array(
       'id' => $range->id,
       'label' => $range->name,
@@ -142,6 +142,7 @@ class FilterTestHelper
     $filter->setState( $state );
 
     $criteria = new CDbCriteria();
+    $criteria->compare('price', '>0');
     $productList = new ProductList($criteria, null, false, $filter);
 
     $products = $productList->getProducts();
@@ -229,10 +230,10 @@ class FilterTestHelper
 
     foreach($values as $value)
     {
-      $item = ProductParamVariant::model()->findByAttributes(array('param_id' => $paramId, 'name' => $value));
+      $item = ProductParameterVariant::model()->findByAttributes(array('param_id' => $paramId, 'name' => $value));
 
       if( !$item )
-        throw new ErrorException('elementName does not find in ProductParamVariant');
+        throw new ErrorException('elementName does not find in ProductParameterVariant');
 
       $data[$paramId][$item->id] = $item->id;
     }
@@ -247,7 +248,8 @@ class FilterTestHelper
       $criteria = new CDbCriteria();
       $criteria->compare('`key`', 'filter');
 
-      $this->parameters = ProductParam::model()->getParameters($criteria);
+      $model = new ProductParameterName();
+      $this->parameters = $model->setGroupCriteria($criteria)->search();
     }
 
     return $this->parameters;

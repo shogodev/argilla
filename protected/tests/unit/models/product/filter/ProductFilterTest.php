@@ -20,9 +20,9 @@ class ProductFilterTest extends CDbTestCase
     'product_section' => 'ProductSection',
     'product_type' => 'ProductType',
     'product_assignment' => 'ProductAssignment',
-    'product_param_name' => 'ProductParamName',
-    'product_param_variant' => 'ProductParamVariant',
-    'product_param' => 'ProductParam',
+    'product_param_name' => 'ProductParameterName',
+    'product_param_variant' => 'ProductParameterVariant',
+    'product_param' => 'ProductParameter',
   );
 
   public function setUp()
@@ -180,7 +180,8 @@ $this->assertTrue($this->fth->checkFilterForData(
     $criteria = new CDbCriteria();
     $criteria->compare('`key`', 'filter');
 
-    $parameters = ProductParam::model()->getParameters($criteria);
+    $model = new ProductParameterName();
+    $parameters = $model->setGroupCriteria($criteria)->search($criteria);
 
     $this->assertNotEmpty($parameters);
 
@@ -203,6 +204,7 @@ $this->assertTrue($this->fth->checkFilterForData(
     ));
 
     $criteria = new CDbCriteria();
+    $criteria->compare('price', '>0');
     $productList = new ProductList($criteria, null, false, $productFilter);
 
     $products = $productList->getProducts();

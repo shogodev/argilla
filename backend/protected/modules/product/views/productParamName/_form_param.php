@@ -18,6 +18,4 @@
 
 <?php echo $form->textFieldRow($model, 'key', array('class' => 'span4'));?>
 
-<?php echo $form->textFieldRow($model, 'group', array('class' => 'span1')); ?>
-
 <?php echo $form->checkBoxRow($model, 'visible');?>

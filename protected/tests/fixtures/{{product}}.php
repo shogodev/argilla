@@ -12,13 +12,11 @@ return array(
   'product8' => array('id' => '9', 'name' => 'Сапоги', 'url' => 'new_product9', 'visible' => 1, 'price' => '2800'),
 
   'product10' => array('id' => '10', 'name' => 'Палатка', 'url' => 'new_product10', 'visible' => 1, 'price' => '8000'),
-
-/*  'product11' => array('id' => '11', 'name' => 'Спальник', 'url' => 'new_product11', 'visible' => 1),
-
-  'product12' => array('id' => '12', 'name' => 'Колья 1', 'url' => 'new_product12', 'visible' => 1),
-  'product13' => array('id' => '13', 'name' => 'Колья 2', 'url' => 'new_product13', 'visible' => 1),
-  'product14' => array('id' => '14', 'name' => 'Веревка', 'url' => 'new_product14', 'visible' => 1),
-  'product15' => array('id' => '15', 'name' => 'Спички', 'url' => 'new_product15', 'visible' => 1),*/
-
   'product16' => array('id' => 16, 'name' => 'Продукт 16', 'url' => 'product_16_url', 'visible' => 1),
+
+  'product17' => array('id' => 17, 'name' => 'Тесты для параметров 17', 'url' => 'product_17_url', 'visible' => 1, 'price' => 0),
+  'product18' => array('id' => 18, 'name' => 'Тесты для параметров 18', 'url' => 'product_18_url', 'visible' => 1, 'price' => 0),
+
+  'product19' => array('id' => 19, 'name' => 'Тесты для параметров 19', 'url' => 'product_19_url', 'visible' => 1, 'price' => 0),
+  'product20' => array('id' => 20, 'name' => 'Тесты для параметров 20', 'url' => 'product_20_url', 'visible' => 1, 'price' => 0),
 );
