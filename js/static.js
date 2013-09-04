@@ -39,7 +39,10 @@ function checkResponse(response, form)
   if( response.status == 'ok' &&  form !== undefined )
   {
     if( response.validateErrors !== undefined )
-      show_yii_errors_messages(form, $.parseJSON(response.validateErrors))
+    {
+      show_yii_errors_messages(form, $.parseJSON(response.validateErrors));
+      form.data("settings").submitting = false;
+    }
 
     if( response.messageForm !== undefined )
     {
@@ -121,8 +124,11 @@ function show_yii_errors_messages(form, messages)
 
   $.each(data.settings.attributes, function ()
   {
-    form.yiiactiveform.updateInput(this, messages, form);
-    delete messages[this.inputID];
+    if( $('#' + this.errorID).length )
+    {
+      form.yiiactiveform.updateInput(this, messages, form)
+      delete messages[this.inputID];
+    }
   });
 
   var error = [];
