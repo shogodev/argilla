@@ -59,7 +59,7 @@ class CriteriaBuilder
     $criteria->compare('visible', '=1');
 
     $assignment = ProductAssignment::model()->tableName();
-    $parameters = ProductParam::model()->tableName();
+    $parameters = ProductParameter::model()->tableName();
 
     $criteria->join  = 'JOIN '.$assignment.' AS a ON a.product_id = t.id';
     $criteria->join .= ' LEFT JOIN '.$parameters.' AS p ON p.product_id = t.id';
@@ -93,7 +93,7 @@ class CriteriaBuilder
     $criteria->group  = $criteria->select;
     $criteria->select .= ', COUNT(t.id) AS count';
 
-    $parameters = ProductParam::model()->tableName();
+    $parameters = ProductParameter::model()->tableName();
     $criteria->join .= ' LEFT JOIN '.$parameters.' AS p ON p.product_id = t.id';
 
     return $criteria;
@@ -126,7 +126,7 @@ class CriteriaBuilder
   protected function getQueryColumn(CDbCriteria $criteria)
   {
     $builder = new CDbCommandBuilder(Yii::app()->db->getSchema());
-    $command = $builder->createFindCommand(ProductParam::model()->tableName(), $criteria);
+    $command = $builder->createFindCommand(ProductParameter::model()->tableName(), $criteria);
     return $command->queryColumn();
   }
 }

@@ -13,4 +13,8 @@ return array(
   'type8' => array('id' => 8, 'name' => 'Колья', 'visible' => 1),
   'type9' => array('id' => 9, 'name' => 'Веревки', 'visible' => 1),
   'type10' => array('id' => 10, 'name' => 'Спички', 'visible' => 1),
+
+  'type12' => array('id' => 12, 'name' => 'Фаст-фуд', 'visible' => 1),
+
+  'type13' => array('id' => 13, 'name' => 'Здоровое питание', 'visible' => 1),
 );

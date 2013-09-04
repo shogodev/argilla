@@ -89,6 +89,6 @@ class BProductController extends BController
     $parameters = Yii::app()->request->getPost('BProductParamName');
 
     if( !empty($parameters) )
-      BProductParam::model()->setParameters($event->sender, $parameters);
+      BProductParam::model()->saveParameters($event->sender, $parameters);
   }
 }

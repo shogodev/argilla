@@ -43,7 +43,7 @@ class CriteriaBuilderTest extends CTestCase
       , false
     );
 
-    $size = ProductParamName::model()->findByAttributes(array('key' => 'size'));
+    $size = ProductParameterName::model()->findByAttributes(array('key' => 'size'));
 
     $filter->addElement(array(
         'key' => 'size',
