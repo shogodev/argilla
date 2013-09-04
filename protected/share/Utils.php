@@ -203,7 +203,7 @@ class Utils
     $keyChars = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789_";
     $max      = strlen($keyChars) - 1;
 
-    for($i = 0; $i <= $length; $i++)
+    for($i = 0; $i < $length; $i++)
       $randKey .= $keyChars{rand(0, $max)};
 
     return $randKey;
