@@ -35,10 +35,6 @@
  */
 class Product extends FActiveRecord
 {
-  public $collectionIndex;
-  public $count;
-  public $sum;
-
   protected $parameters;
   protected $images;
 

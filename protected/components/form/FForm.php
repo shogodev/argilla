@@ -351,6 +351,9 @@ class FForm extends CForm
        */
       foreach($this->getModels() as $model)
       {
+        if( !($model instanceof CActiveRecord) )
+          continue;
+
         if( get_class($model) !== get_class($this->model) )
         {
           $foreignKey = null;

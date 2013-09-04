@@ -8,7 +8,9 @@ class CallbackController extends FController
     if( $this->callbackForm->save() )
     {
       $this->callbackForm->sendNotification();
-      $this->callbackForm->responseSuccess('<p class="bb">Спасибо! Ваша заявка принята, ожидайте звонок в ближайшее время.</p>');
+      $this->callbackForm->responseSuccess(
+        $this->textBlockRegister('Обратный звонок', '<div class="m7">Ваша заявка принята.</div><div>Наш менеджер свяжется с вами в ближайшее время.</div>', null)
+      );
     }
   }
 

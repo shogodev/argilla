@@ -86,7 +86,7 @@ return array_merge_recursive(array(
     'user' => array(
       'class'          => 'FWebUser',
       'allowAutoLogin' => true,
-      'loginUrl'       => '/'
+      'loginUrl'       => '/user/login'
     ),
 
     'session' => array(
