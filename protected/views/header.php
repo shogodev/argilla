@@ -44,31 +44,42 @@
           </script>
         </div>
       </div>
-    </div>
+  <div id="search" class="fbhandler-activate">
+    <form method="get" action="/search/">
+      <input class="inp" type="search" value="" name="search" title="Я ищу..." />
+      <input type="image" alt="Поиск" src="i/sp.gif" />
+    </form>
+  </div>
   </header>
+<script>
+  $(function() {
+    var urlPredictiveSearch = '<?php echo $this->createUrl('search/predictiveSearch')?>';
 
-<?php $this->widget('FMenu', array(
-      'items' => array(
-        array('label' => 'Новости', 'url' => $this->createUrl('news/section', array('url' => 'news'))),
-        array('label' => 'Информация', 'url' => $this->createUrl('info/index', array('url' => 'shop'))),
-        array('label' => 'Продукты', 'url' => $this->createUrl('product/sections')),
-      ),
-));?>
-<form class="navbar-search pull-left" action=""><input type="text" class="search-query span2" placeholder="Search"></form>
-<?php
-$this->widget('FMenu', array(
-  'items' => CMap::mergeArray(
-    array(
-      array('label' => 'Заказать обратный звонок', 'url' => '#', 'linkOptions' => array('class' => 'callback-btn'))
-    ),
-    Yii::app()->user->isGuest ?
-      array(
-        array('label' => 'Вход', 'url' => $this->createUrl('user/login')),
-        array('label' => 'Регистрация', 'url' => $this->createUrl('user/registration')),
-      )
-      :
-      array(
-        array('label' => 'Выход', 'url' => $this->createUrl('user/logout')),
-        array('label' => 'Профиль', 'url' => $this->createUrl('user/data')),
-  ))));
-?>
+    $("input[name=search]").autocomplete({
+      minLength: 2,
+      delay: 300,
+      search: '',
+      select: function( event, ui ) {
+        $("input[name=search]").val(ui.item.value);
+        $("input[name=search]").parent('form').submit();
+      }
+    });
+
+    $("input[name=search]").on('keyup', function() {
+      var array = [];
+
+      $("input[name=search]").autocomplete('option', 'source', array);
+
+      if( $(this).val().length >= 2)
+      {
+        $.post(urlPredictiveSearch, {'query' : $(this).val()}, function(resp) {
+          for(i in resp)
+            array.push(resp[i]);
+          $("input[name=search]").autocomplete('option', 'source', array);
+        }, 'json');
+      }
+
+      $("input[name=search]").autocomplete('option', 'source', array);
+    });
+  });
+</script>

@@ -25,4 +25,25 @@ class SearchController extends FController
       'pages' => $pages,
     ));
   }
+
+  public function actionPredictiveSearch()
+  {
+    $query = Yii::app()->request->getPost('query');
+
+    if( Yii::app()->request->isAjaxRequest && $query )
+    {
+      $criteria = new CDbCriteria();
+      $criteria->select = 'name';
+      $criteria->addSearchCondition('name', $query);
+      $criteria->limit = 10;
+
+      $command = Yii::app()->db->getCommandBuilder()->createFindCommand(Product::model()->tableName(),$criteria);
+
+      $data = array();
+      foreach($command->queryAll() as $value)
+        $data[] = $value['name'];
+
+      echo CJSON::encode($data);
+    }
+  }
 }
