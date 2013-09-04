@@ -3,14 +3,19 @@
 /* @var $model BOrder */
 ?>
 
+<ul class="s-breadcrumbs breadcrumb">
+  <li class="active">Товары</li>
+</ul>
+
 <?php $this->widget('BGridView', array(
-  'dataProvider' => new CArrayDataProvider($model->products),
-  'template'     => "{filters}\n{items}\n{pagesize}\n{pager}\n{scripts}",
-  'columns'      => array(
-    array('name' => 'name', 'header' => 'Название'),
-    array('name' => 'price', 'header' => 'Цена', 'type' => 'number'),
-    array('name' => 'count', 'header' => 'Количество'),
-    array('name' => 'discount', 'header' => 'Скидка', 'htmlOptions' => array('class' => 'center span1'), 'type' => 'number'),
-    array('name' => 'sum', 'header' => 'Сумма', 'type' => 'number'),
+  'dataProvider' => new CArrayDataProvider($model->getProducts(), array('pagination' => false)),
+  'template' => "{filters}\n{items}\n{pagesize}\n{pager}\n{scripts}",
+  'rowCssClassExpression' => '$data instanceof BOrderProduct ? "group" : ($row % 2 ? "odd" : "even" )',
+  'columns' => array(
+    array('name' => 'name', 'header' => 'Название', 'type' => 'html'),
+    array('name' => 'price', 'header' => 'Цена', 'value' => '!Utils::isDecimalEmpty($data->price) ? Yii::app()->format->formatNumber($data->price) : ""'),
+    array('name' => 'count', 'header' => 'Количество', 'value' => '!empty($data->count) ? $data->count : ""'),
+    array('name' => 'discount', 'header' => 'Скидка', 'htmlOptions' => array('class' => 'center span1'), 'value' => '!Utils::isDecimalEmpty($data->discount) ? floatval($data->discount) : ""'),
+    array('name' => 'sum', 'header' => 'Сумма', 'value' => '!Utils::isDecimalEmpty($data->sum) ? Yii::app()->format->formatNumber($data->sum) : ""'),
   ),
 )); ?>

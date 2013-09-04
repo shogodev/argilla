@@ -16,11 +16,6 @@
  */
 class OrderProductHistory extends FActiveRecord
 {
-  public function getDbConnection()
-  {
-    return Yii::app()->commonDB;
-  }
-
   public function rules()
   {
     return [

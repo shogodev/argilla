@@ -15,14 +15,12 @@
  * @property int    $count
  * @property float  $discount
  * @property float  $sum
+ *
+ * @property OrderProductHistory $history
+ * @property OrderProductItem[] $items
  */
 class OrderProduct extends FActiveRecord
 {
-  public function getDbConnection()
-  {
-    return Yii::app()->commonDB;
-  }
-
   public function rules()
   {
     return [
@@ -35,12 +33,23 @@ class OrderProduct extends FActiveRecord
   {
     return [
       'history' => [self::HAS_ONE, 'OrderProductHistory', 'order_product_id'],
-      'items' => [self::HAS_MANY, 'OrderProductItem', 'order_product_id'],
+      'items' => [self::HAS_MANY, 'OrderProductItem', 'order_product_id', 'order' => 'type, name, value'],
     ];
   }
 
   public function afterFind()
   {
     $this->discount = floatval($this->discount);
+  }
+
+  public function getItemsType($type)
+  {
+    $items = array();
+
+    foreach($this->items as $item)
+      if( $item->type == $type )
+        $items[] = $item;
+
+    return $items;
   }
 }

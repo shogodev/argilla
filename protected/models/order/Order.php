@@ -43,11 +43,6 @@ class Order extends FActiveRecord
    */
   public $historyUrl;
 
-  public function getDbConnection()
-  {
-    return Yii::app()->commonDB;
-  }
-
   public function rules()
   {
     return array(
@@ -80,11 +75,15 @@ class Order extends FActiveRecord
       'products' => [self::HAS_MANY, 'OrderProduct', 'order_id'],
       'payment' => [self::BELONGS_TO, 'DirPayment', 'payment_id'],
       'delivery' => [self::BELONGS_TO, 'DirDelivery', 'delivery_id'],
+      'status' => [self::BELONGS_TO, 'OrderStatus', 'status_id'],
     );
   }
 
   public function beforeSave()
   {
+    if( !$this->isNewRecord )
+      return parent::beforeSave();
+
     $this->sum = $this->basket->totalSum();
     $this->ip = ip2long(Yii::app()->request->userHostAddress);
     $this->date_create = date('Y-m-d H:i:s');
@@ -103,6 +102,9 @@ class Order extends FActiveRecord
 
   public function afterSave()
   {
+    if( !$this->isNewRecord )
+      return parent::afterSave();
+
     foreach($this->basket as $product)
     {
       $orderProduct = new OrderProduct();
@@ -207,6 +209,11 @@ class Order extends FActiveRecord
                                 isset($_GET['filter']) ? $_GET['filter'] : '',
                                 CHtml::listData($filterKeys, 'id', 'name'),
                                 $htmlOptions);
+  }
+
+  public function getAdminUrl()
+  {
+    return Yii::app()->request->hostInfo.'/backend/order/bOrder/update/'.$this->id;
   }
 
   protected function isFast()

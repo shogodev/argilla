@@ -16,11 +16,6 @@
  */
 class DirDelivery extends FActiveRecord
 {
-  public function getDbConnection()
-  {
-    return Yii::app()->commonDB;
-  }
-
   public function defaultScope()
   {
     $alias = $this->getTableAlias(false, false);
