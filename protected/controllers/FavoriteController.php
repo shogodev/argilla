@@ -37,7 +37,7 @@ class FavoriteController extends FController
           break;
 
         case 'add':
-          if( !$this->favorite->findElement($data) )
+          if( !$this->favorite->isInCollectionData(Arr::get($data, 'type'), Arr::get($data, 'id')) )
             $this->favorite->add($data);
         break;
       }

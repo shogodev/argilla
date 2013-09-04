@@ -90,19 +90,20 @@ class FBasket extends FCollection
    * Пример: echo $this->basket->addButton('Добавить в корзину', array('class' => 'btn green-btn to-basket-btn', 'data-id' => $data->id, 'data-amount' => 1))
    * @param string $text
    * @param array $htmlOptions
+   * @param $checkInCollection добавлять в коллекцию 1 раз
    * @return string
    */
-  public function addButton($text = '', $htmlOptions = array())
+  public function addButton($text = '', $htmlOptions = array(), $checkInCollection = true)
   {
     $htmlOptions['class'] = empty($htmlOptions['class']) ? $this->classAdd :  $htmlOptions['class'].' '.$this->classAdd;
 
     if( empty($htmlOptions['data-type']) )
       $htmlOptions['data-type'] = 'product';
 
-    if( $this->findElement(array('id' => $htmlOptions['data-id'], 'type' => $htmlOptions['data-type'])) )
+    if( $this->isInCollectionData($htmlOptions['data-type'], $htmlOptions['data-id']) )
       $htmlOptions['class'] .= ' '.$this->classInCollection;
 
-    $this->registerAddButtonScript();
+    $this->registerAddButtonScript($checkInCollection);
 
     return CHtml::link($text, '#', $htmlOptions);
   }
@@ -155,9 +156,14 @@ class FBasket extends FCollection
     $this->registerSubmitScript();
   }
 
-  protected function registerAddButtonScript()
+  protected function registerAddButtonScript($checkInCollection)
   {
-    $script = "$('body').on('click', '.{$this->classAdd}:not(.{$this->classInCollection})', function(e){
+    if( $checkInCollection )
+      $script = "$('body').on('click', '.{$this->classAdd}:not(.{$this->classInCollection})', function(e){";
+    else
+      $script = "$('body').on('click', '.{$this->classAdd}', function(e){";
+
+    $script .= "
       e.preventDefault();
       if( !$(this).hasClass('waitAction') )
         $(this).addClass('waitAction');
@@ -225,7 +231,7 @@ class FBasket extends FCollection
 
       if( confirmValue !== undefined )
       {
-        if( !confirm(confirmValue === true ? 'Вы уверины?' : confirmValue) )
+        if( !confirm(confirmValue === true ? 'Вы уверены?' : confirmValue) )
           return;
       }
 

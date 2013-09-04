@@ -18,6 +18,7 @@ class FCollection extends SplObjectStorage
 
   protected $autoSave;
 
+  protected $arrayParentElements = array();
   /**
    * @param $keyCollection ключ колекции
    * @param array $mergeByKey объединять элементы с указаными одинаковыми параметрами
@@ -81,11 +82,14 @@ class FCollection extends SplObjectStorage
   public function remove($index)
   {
     $element = $this->getElementByIndex($index);
-    unset($this->externalIndexStorage[$element->collectionExternalIndex]);
     $element->parentCollection->detach($element);
+    unset($this->externalIndexStorage[$element->collectionExternalIndex]);
 
     if( $this->autoSave )
+    {
       $this->save();
+      $this->update();
+    }
   }
 
   public function clear()
@@ -96,6 +100,11 @@ class FCollection extends SplObjectStorage
       $this->save();
   }
 
+  public function update()
+  {
+    $this->removeAll($this);
+    $this->load();
+  }
   public function countAmount()
   {
     $amount = 0;
@@ -133,6 +142,16 @@ class FCollection extends SplObjectStorage
     return $collection->count() == 0 ? true : false;
   }
 
+  public function isInCollectionData($type, $id)
+  {
+    return in_array($this->pathToString(array($type, $id)), $this->arrayParentElements);
+  }
+
+  public function isInCollectionClass($class)
+  {
+    return $this->isInCollectionData(get_class($class), $class->primaryKey);
+  }
+
   //todo: если при создании колекции $autoSave всегда true createPathsRecursive можно сделать приватным
   public function createPathsRecursive($collection = null, $path = array(), $rootCollection = null)
   {
@@ -147,6 +166,9 @@ class FCollection extends SplObjectStorage
 
     foreach($collection as $element)
     {
+      if( $rootCollection == $collection )
+        $this->arrayParentElements[$element->collectionIndex] = $this->pathToString(array(Utils::toSnakeCase(get_class($element)), $element->id));
+
       $currentPath = CMap::mergeArray($path, array($collection->keyCollection, $element->collectionIndex));
       $element->indexationElement($currentPath, $rootCollection);
 
@@ -280,7 +302,7 @@ class FCollection extends SplObjectStorage
 
       return $model;
     }
-    else if( is_array($data) )
+    else if( is_array($data) && $this->isObject(reset($data)) )
     {
       $collection = new FCollection($innerCollectionKey, $this->mergeByKey, $this->allowedModels, false);
 
@@ -305,6 +327,9 @@ class FCollection extends SplObjectStorage
 
   protected function isObject($data)
   {
+    if( !is_array($data) )
+      return false;
+
     if( !isset($data['id']) || !isset($data['type']) )
       return false;
 

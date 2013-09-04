@@ -129,10 +129,17 @@ class BasketController extends FController
       switch($action)
       {
         case 'remove':
-          $this->basket->remove(Arr::get($data, 'id'));
+          $id = Arr::get($data, 'id');
+
+          if( !$this->basket->getElementByIndex($id) )
+            throw new CHttpException(500, 'Данный продукт уже удален. Обновите страницу.');
+
+          $this->basket->remove($id);
           break;
 
         case 'changeAmount':
+          if( !$this->basket->getElementByIndex($data['id']) )
+            throw new CHttpException(500, 'Продукт не найден. Обновите страницу.');
           $this->basket->change($data['id'], intval($data['amount']));
         break;
 

@@ -53,4 +53,23 @@ class FCollectionElement extends CBehavior
       'items' => !empty($this->owner->collectionItems) ? $this->parentCollection->toArray($this->owner->collectionItems) : array()
     );
   }
+
+  /**
+   * @param $index
+   * @param $key
+   * @param $value
+   *
+   * @return array
+   */
+  public function getCollectionValues($index, $key, $value)
+  {
+    $values = array();
+
+    if( isset($this->collectionItems[$index]) )
+    {
+      $values = Chtml::listData($this->collectionItems[$index], $key, $value);
+    }
+
+    return $values;
+  }
 }
