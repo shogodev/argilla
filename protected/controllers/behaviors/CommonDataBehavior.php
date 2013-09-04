@@ -66,7 +66,7 @@ class CommonDataBehavior extends CBehavior
       );
 
       if( $content !== null )
-        $textBlock->setAttribute('content', CHtml::tag('div', $htmlOptions, $content));
+        $textBlock->setAttribute('content', $htmlOptions != null ? CHtml::tag('div', $htmlOptions, $content) : $content);
 
       $textBlock->save();
 
