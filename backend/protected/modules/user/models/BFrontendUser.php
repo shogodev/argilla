@@ -19,6 +19,7 @@
  * @property string $restore_code
  * @property string $type
  * @property integer $visible
+ * @property BUserDataExtended $user
  */
 class BFrontendUser extends BActiveRecord
 {
@@ -27,6 +28,8 @@ class BFrontendUser extends BActiveRecord
   public $password_confirm;
 
   public $fullName;
+
+  public $userPhone;
 
   private $_password;
 
@@ -43,13 +46,16 @@ class BFrontendUser extends BActiveRecord
       array('email', 'unique'),
       array('password_confirm', 'compare', 'compareAttribute' => 'password'),
       array('password, discount, visible', 'safe'),
-      array('fullName', 'safe', 'on' => 'search'),
+      array('fullName, userPhone', 'safe', 'on' => 'search'),
     );
   }
 
   public function attributeLabels()
   {
-    return CMap::mergeArray(parent::attributeLabels(), array('fullName' => 'Имя'));
+    return CMap::mergeArray(parent::attributeLabels(), array(
+      'fullName' => 'Имя',
+      'userPhone' => 'Контактный телефон',
+    ));
   }
 
   public function defaultScope()
@@ -93,11 +99,7 @@ class BFrontendUser extends BActiveRecord
   public function getFullName()
   {
     $fullName = $this->user ? (implode(" ", array($this->user->last_name, $this->user->name, $this->user->patronymic))) : '';
-
-    return strtr($fullName, array(
-      '   ' => ' ',
-      '  '  => ' '
-    ));
+    return preg_replace("/\s+/", " ", trim($fullName));
   }
 
   public function getSearchCriteria()
@@ -106,10 +108,11 @@ class BFrontendUser extends BActiveRecord
     $criteria->together = true;
     $criteria->with     = array('user');
 
-    $criteria->compare('visible', '='.$this->visible);
+    $criteria->compare('visible', $this->visible);
     $criteria->compare('login', $this->login, true);
     $criteria->compare('email', $this->email, true);
 
+    $criteria->compare('user.phone', $this->userPhone, true);
     if( !empty($this->fullName) )
       $criteria->addSearchCondition('CONCAT(user.last_name, " ", user.name, " ", user.patronymic)', $this->fullName, true);
 

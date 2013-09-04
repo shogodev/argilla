@@ -1,6 +1,6 @@
 <?php
 /**
- * @author Alexey Tatarivov <tatarinov@shogo.ru>
+ * @author Alexey Tatarivov <tatarinov@shogo.ru>, Sergey Glagolev <glagolev@shogo.ru>
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
@@ -13,49 +13,57 @@
  * @property string  $name
  * @property string  $email
  * @property string  $address
+ * @property string  $phone
  * @property string  $comment
  * @property string  $type
  * @property string  $sum
  * @property integer $ip
  * @property string $date_create
- * @property string $status
+ * @property integer $status_id
  * @property string $order_comment
  * @property integer $deleted
+ * @property BFrontendUser $user
+ * @property BOrderStatus $status
+ * @property BOrderProduct[] $products
+ * @property BOrderStatusHistory[] $history
  */
 class BOrder extends BActiveRecord
 {
-  const STATUS_NEW       = 'new';
-  const STATUS_CONFIRMED = 'confirmed';
-  const STATUS_CANCELED  = 'canceled';
-
   const TYPE_FAST   = 'fast';
-  const TYPE_NORMAL = 'normal';
-
-  public $statusLabel = array(
-    self::STATUS_NEW       => 'Новый',
-    self::STATUS_CONFIRMED => 'Подтвержден',
-    self::STATUS_CANCELED  => 'Отменен',
-  );
+  const TYPE_BASKET = 'basket';
 
   public $typeLabel = array(
     self::TYPE_FAST   => 'Быстрый',
-    self::TYPE_NORMAL => 'Обычный',
+    self::TYPE_BASKET => 'Корзина',
   );
 
   public $date_create_from;
 
   public $date_create_to;
 
+  public function relations()
+  {
+    return array(
+      'products' => array(self::HAS_MANY, 'BOrderProduct', 'order_id'),
+      'user' => array(self::BELONGS_TO, 'BFrontendUser', 'user_id'),
+      'status' => array(self::BELONGS_TO, 'BOrderStatus', 'status_id'),
+      'payment_type' => array(self::BELONGS_TO, 'BDirPayment', 'payment_id'),
+      'history' => array(self::HAS_MANY, 'BOrderStatusHistory', 'order_id'),
+      'orderPayDetails' => array(self::BELONGS_TO, 'BOrderPayDetails', array('id' => 'order_id'))
+    );
+  }
+
   public function rules()
   {
     return array(
       array('name', 'required'),
       array('email', 'email'),
-      array('address, comment', 'safe'),
-      array('status', 'in', 'range' => array(self::STATUS_NEW, self::STATUS_CONFIRMED, self::STATUS_CANCELED)),
-      array('order_comment', 'safe'),
+      array('address, comment, phone', 'safe'),
+      array('status_id', 'numerical', 'integerOnly' => true),
+      array('sum', 'numerical'),
+      array('order_comment, delivery_id, payment_id', 'safe'),
 
-      array('id, type, sum, date_create_from, date_create_to', 'safe', 'on' => 'search'),
+      array('id, type, sum, date_create_from, date_create_to, user_id', 'safe', 'on' => 'search'),
     );
   }
 
@@ -64,67 +72,25 @@ class BOrder extends BActiveRecord
     return CMap::mergeArray(parent::attributeLabels(), array(
       'name' => 'Имя',
       'date_create_from' => 'Дата с...',
-      'date_create_to' => 'по ...'
+      'date_create_to' => 'по ...',
+      'user_id' => 'Пользователь',
+      'type' => 'Тип заказа',
+      'status_id' => 'Статус',
+      'order_comment' => 'Комментарий менеджера',
+      'delivery_id' => 'Метод доставки',
+      'payment_id' => 'Метод оплаты',
     ));
   }
 
   public function defaultScope()
   {
     return array(
-      'condition' => 'deleted = 0',
-      'order' => 'date_create DESC'
+      'condition' => 'deleted = :deleted',
+      'params' => array(
+        ':deleted' => 0,
+      ),
+      'order' => 'date_create DESC',
     );
-  }
-
-  public function relations()
-  {
-    return array('products' => array(self::HAS_MANY, 'BOrderProduct', 'order_id'));
-  }
-
-  public function changeStatus($status, $orderComment)
-  {
-    $this->status        = $status;
-    $this->order_comment = $orderComment;
-    if( $this->save() )
-      return true;
-
-    return $this->getErrors();
-  }
-
-  public function renderButtonConfirm($controller)
-  {
-    $ajaxOptions = array(
-      'type'       => 'POST',
-      'beforeSend' => "function() {return confirm('Вы уверены что хотите принять заказ?')}",
-      'success'    => "function(resp) {if(resp == 'ok') location.reload(); else alert(resp)}",
-      'data'       => new CJavaScriptExpression("{id : '{$this->id}', status : '".self::STATUS_CONFIRMED."', order_comment : $('#order_comment').val()}")
-    );
-
-    $controller->widget('bootstrap.widgets.TbButton', array(
-      'ajaxOptions' => $ajaxOptions,
-      'buttonType'  => TbButton::BUTTON_AJAXBUTTON,
-      'label'       => 'Принять',
-      'url'         => array('changeStatus'),
-      'type'        => 'primary',
-    ));
-  }
-
-  public function  renderButtonCancel($controller)
-  {
-    $ajaxOptions = array(
-      'type'       => 'POST',
-      'beforeSend' => "function() {if($('#order_comment').val() == '') {alert('Укажите причину отмены!'); return false;}}",
-      'success'    => "function(resp) {if(resp == 'ok') location.reload(); else alert(resp)}",
-      'data'       => new CJavaScriptExpression("{id : '{$this->id}', status : '".self::STATUS_CANCELED."', order_comment : $('#order_comment').val()}")
-    );
-
-    $controller->widget('bootstrap.widgets.TbButton', array(
-      'ajaxOptions' => $ajaxOptions,
-      'buttonType'  => TbButton::BUTTON_AJAXBUTTON,
-      'label'       => 'Отменить',
-      'url'         => array('changeStatus'),
-      'type'        => 'warning',
-    ));
   }
 
   /**
@@ -134,17 +100,97 @@ class BOrder extends BActiveRecord
   {
     $criteria = new CDbCriteria;
 
-    $criteria->compare('id', '='.$this->id);
-    $criteria->compare('status', '='.$this->status);
-    $criteria->compare('type', '='.$this->type);
+    $criteria->compare('id', $this->id);
+    $criteria->compare('status_id', $this->status_id);
+    $criteria->compare('sum', $this->sum);
 
-    $criteria->addSearchCondition('name', $this->name);
-    $criteria->addSearchCondition('email', $this->email);
-    $criteria->addSearchCondition('sum', $this->sum);
+    $this->addUserCondition($criteria);
 
     if( !empty($this->date_create_from) || !empty($this->date_create_to) )
       $criteria->addBetweenCondition('date_create', Utils::dayBegin($this->date_create_from), Utils::dayEnd($this->date_create_to));
 
     return $criteria;
+  }
+
+  /**
+   * @return array
+   */
+  public function getProducts()
+  {
+    $products = array();
+
+    foreach($this->products as $product)
+    {
+      $products = array_merge($products, array($product), $product->getItems());
+    }
+
+    return $products;
+  }
+
+  /**
+   * @param BFrontendUser $user
+   *
+   * @return bool
+   */
+  public function setUser(BFrontendUser $user)
+  {
+    $this->user_id = $user->id;
+    return $this->save();
+  }
+
+  public function getPadId()
+  {
+    return str_pad($this->id, 10, 0, STR_PAD_LEFT);
+  }
+
+  /**
+   * @param CDbCriteria $criteria
+   */
+  protected function addUserCondition(CDbCriteria $criteria)
+  {
+    if( preg_match("/^\d+$/", $this->user_id) )
+    {
+      $criteria->addSearchCondition('phone', $this->user_id);
+    }
+    else if( preg_match("/^[a-z@.\-_]+$/", $this->user_id) )
+    {
+      $criteria->addSearchCondition('email', $this->user_id);
+    }
+    else
+    {
+      $criteria->addSearchCondition('name', $this->user_id);
+    }
+  }
+
+  protected function beforeSave()
+  {
+    if( parent::beforeSave() )
+    {
+      if( !$this->isNewRecord )
+      {
+        /**
+         * @var BOrder $oldModel
+         */
+        $oldModel = $this->findByPk($this->getPrimaryKey());
+        if( $oldModel->status_id != $this->status_id )
+          $this->modelChangeStatus($oldModel);
+      }
+
+      return true;
+    }
+
+    return false;
+  }
+
+  /**
+   * @param BOrder $oldModel
+   */
+  protected function modelChangeStatus(BOrder $oldModel)
+  {
+    if( $status = $this->status )
+    {
+      BOrderStatusHistory::model()->add($oldModel, $status);
+      Yii::app()->notification->send('Order'.Utils::toCamelCase($status->sysname).'Backend', array('model' => $this), $this->email);
+    }
   }
 }

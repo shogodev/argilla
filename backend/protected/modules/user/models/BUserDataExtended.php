@@ -43,7 +43,7 @@ class BUserDataExtended extends BActiveRecord implements IHasCoordinates
   {
     return array(
       array('name', 'required'),
-      array('last_name, patronymic, address, birthday, coordinates, birth_day, birth_mount, birth_year', 'safe')
+      array('last_name, patronymic, address, phone, birthday, coordinates, birth_day, birth_mount, birth_year', 'safe')
     );
   }
 

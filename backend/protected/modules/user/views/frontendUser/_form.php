@@ -28,6 +28,7 @@
   <?php echo $form->textFieldRow($userExtendedData, 'name'); ?>
   <?php echo $form->textFieldRow($userExtendedData, 'last_name'); ?>
   <?php echo $form->textFieldRow($userExtendedData, 'patronymic'); ?>
+  <?php echo $form->textFieldRow($userExtendedData, 'phone'); ?>
   <?php echo $form->textFieldRow($userExtendedData, 'address'); ?>
   <?php echo $form->textFieldRow($userExtendedData, 'birthday'); ?>
 

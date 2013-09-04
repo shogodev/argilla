@@ -37,4 +37,21 @@ class BFrontendUserController extends BController implements ICoordinateSetter
       'attribute' => $attribute,
     ));
   }
+
+  public function actionSearch()
+  {
+    /**
+     * @var BFrontendUser $model
+     */
+    $model = $this->createFilterModel();
+
+    $dataProvider = new BActiveDataProvider($this->modelClass, array(
+      'criteria' => $model->getSearchCriteria(),
+    ));
+
+    $this->render('index', array(
+      'model' => $model,
+      'searchDataProvider' => $dataProvider,
+    ));
+  }
 }

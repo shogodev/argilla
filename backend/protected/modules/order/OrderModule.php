@@ -10,4 +10,12 @@ class OrderModule extends BModule
 {
   public $defaultController = 'BOrder';
   public $name = 'Заказы';
+
+  protected function getExtraDirectoriesToImport()
+  {
+
+    return array(
+      'backend.modules.user.models.*',
+    );
+  }
 }

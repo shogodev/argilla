@@ -15,11 +15,21 @@
  * @property integer $count
  * @property string $discount
  * @property string $sum
+ *
+ * @property string $itemsData
  */
 class BOrderProduct extends BActiveRecord
 {
   public function relations()
   {
     return array('history' => array(self::HAS_ONE, 'BOrderProductHistory', 'order_product_id'));
+  }
+
+  /**
+   * @return BOrderProductItem[]
+   */
+  public function getItems()
+  {
+    return BOrderProductItem::model()->findAllByAttributes(array('order_product_id' => $this->id));
   }
 }
