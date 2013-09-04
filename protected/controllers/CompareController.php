@@ -10,7 +10,7 @@ class CompareController extends FController
   {
     $criteria = new CDbCriteria();
     $criteria->addCondition('(assignment.type_id IS NULL OR assignment.type_id = 0)');
-    $parameters[0] = ProductParam::model()->getParameters($criteria);
+    $parameters[0] = ProductParameter::model()->getParameters($criteria);
 
     $this->render('compare', array(
       'parameters' => $parameters
