@@ -13,9 +13,11 @@ class ProductFilterElementRange extends ProductFilterElement
 {
   public $round = true;
 
-  public $minValue = null;
+  public $borderRange = 0;
 
-  public $maxValue = null;
+  protected $minValue = null;
+
+  protected $maxValue = null;
 
   public function getSelectedMin()
   {
@@ -88,6 +90,20 @@ class ProductFilterElementRange extends ProductFilterElement
     $criteria->params[':element_group'] = $this->id.'_key_for_group';
 
     return $criteria;
+  }
+
+  public function getMinValue($range = 0)
+  {
+    $range = $range ? $range : $this->borderRange;
+
+    return $this->minValue - ($range ? $this->minValue%$range : 0);
+  }
+
+  public function getMaxValue($range = 0)
+  {
+    $range = $range ? $range : $this->borderRange;
+
+    return $this->maxValue + ($range ? $this->maxValue%$range : 0);
   }
 
   protected function propertyCondition($value)

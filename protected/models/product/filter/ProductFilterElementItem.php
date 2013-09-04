@@ -114,18 +114,31 @@ class ProductFilterElementItem extends CComponent
     $curUrl = parse_url(Yii::app()->controller->getCurrentUrl());
     $path   = explode("/", $curUrl['path']);
 
-    $state = Arr::mergeAssoc($this->filter->state, $this->getElementState());
+    if( !is_array($this->filter->urlPattern) )
+      $this->filter->urlPattern = explode("/", $this->filter->urlPattern);
+
+    $state = Arr::mergeAssoc($this->filter->state, $this->getItemState($this));
 
     if( $this->isSelected() )
-      unset($state[$this->parent->id][$this->id]);
-
-    $state = $this->sortUrlState($state);
+    {
+      $this->parent->isMultiple() ? Arr::cut($state[$this->parent->id], $this->id) : Arr::cut($state, $this->parent->id);
+      unset($path[array_search('{'.$this->parent->id.'}', $this->filter->urlPattern)]);
+    }
 
     foreach($this->filter->elements as $element)
+    {
       if( $element->isUrlDependence() )
-        list($state, $path) = $this->changeUrlPath($state, $path, $element);
+      {
+        list($state, $path) = $this->pathToFilterMode($state, $path, $element);
+        list($state, $path) = $this->pathToUrlMode($state, $path, $element);
+      }
+    }
 
-    $state['submit'] = 1;
+    if( !empty($state) )
+    {
+      $state['submit'] = 1;
+    }
+
     $path = preg_replace("/\/+/", "/", implode('/', $path));
     $url  = Utils::buildUrl(array(
       'path' => $path,
@@ -133,6 +146,36 @@ class ProductFilterElementItem extends CComponent
     ));
 
     return $url;
+  }
+
+  /**
+   * @param array $state
+   * @param array $path
+   * @param ProductFilterElement $element
+   *
+   * @return array
+   */
+  protected function pathToFilterMode($state, $path, $element)
+  {
+    $state = $this->sortUrlState($state);
+    $key   = array_search('{'.$element->id.'}', $this->filter->urlPattern);
+    $value = Arr::get($path, $key);
+
+    $id = array_search($value, $element->itemUrls);
+    $path[$key] = '';
+
+    if( $element->isMultiple() )
+    {
+      if( isset($this->filter->state[$element->id][$id]) )
+        $state = Arr::mergeAssoc($this->getItemState($element->items[$id]), $state);
+    }
+    else
+    {
+      if( isset($this->filter->state[$element->id]) && $id )
+        $state = Arr::mergeAssoc($this->getItemState($element->items[$id]), $state);
+    }
+
+    return array($state, $path);
   }
 
   /**
@@ -145,8 +188,9 @@ class ProductFilterElementItem extends CComponent
    *
    * @return array
    */
-  protected function changeUrlPath($state, $path, $element)
+  protected function pathToUrlMode($state, $path, $element)
   {
+    $state = $this->sortUrlState($state);
     $key   = $element->id;
     $value = Arr::get($state, $key);
 
@@ -154,6 +198,9 @@ class ProductFilterElementItem extends CComponent
     {
       $id = key($value);
       unset($state[$key][$id]);
+
+      if( empty($state[$key]) )
+        unset($state[$key]);
     }
     else
     {
@@ -161,23 +208,9 @@ class ProductFilterElementItem extends CComponent
       unset($state[$key]);
     }
 
-    return array($state, $this->processPath($path, $element, $id));
-  }
+    $path[array_search('{'.$key.'}', $this->filter->urlPattern)] = Arr::get($element->itemUrls, $id, '').'/';
 
-  /**
-   * @param $path
-   * @param $element
-   * @param $id
-   *
-   * @return mixed
-   */
-  protected function processPath($path, $element, $id)
-  {
-    foreach(explode("/", $this->filter->urlPattern) as $i => $pattern)
-      if( $pattern === '{'.$this->parent->id.'}' )
-        $path[$i] = Arr::get($element->itemUrls, $id, '').'/';
-
-    return $path;
+    return array($state, $path);
   }
 
   /**
@@ -191,18 +224,31 @@ class ProductFilterElementItem extends CComponent
     $sorted = array();
 
     foreach($this->filter->elements as $elementId => $element)
+    {
+      if( isset($state[$elementId]) )
+      {
+        $sorted[$elementId] = $state[$elementId];
+      }
+
       foreach($element->items as $itemId => $item)
+      {
         if( isset($state[$elementId][$itemId]) )
+        {
           $sorted[$elementId][$itemId] = $state[$elementId][$itemId];
+        }
+      }
+    }
 
     return $sorted;
   }
 
   /**
+   * @param ProductFilterElementItem $item
+   *
    * @return array
    */
-  protected function getElementState()
+  protected function getItemState(ProductFilterElementItem $item)
   {
-    return array($this->parent->id => ($this->parent->isMultiple() ? array($this->id => $this->id) : $this->id));
+    return array($item->parent->id => ($item->parent->isMultiple() ? array($item->id => $item->id) : $item->id));
   }
 }
