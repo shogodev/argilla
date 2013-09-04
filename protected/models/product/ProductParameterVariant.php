@@ -37,7 +37,7 @@ class ProductParameterVariant extends FActiveRecord
 
     foreach($parameterNames as $name)
     {
-      $variantIds = CMap::mergeArray($variantIds, $name->getValueKeys());
+      $variantIds = CMap::mergeArray($variantIds, $name->getVariantKeys());
     }
 
     foreach($this->findAllByPk($variantIds) as $variant)

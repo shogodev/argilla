@@ -43,9 +43,14 @@ class ProductParameterName extends FActiveRecord
   protected $groupCriteria;
 
   /**
-   * @var array
+   * @var ProductParameterVariant[]
    */
   protected $values = array();
+
+  /**
+   * @var ProductParameter[]
+   */
+  protected $parameters = array();
 
   protected $productId;
 
@@ -165,7 +170,20 @@ class ProductParameterName extends FActiveRecord
   }
 
   /**
-   * @param $values
+   * @param ProductParameter[] $parameters
+   */
+  public function setParameters(array $parameters)
+  {
+    $this->parameters = $parameters;
+  }
+
+  public function getParameters()
+  {
+    return $this->parameters;
+  }
+
+  /**
+   * @param ProductParameterVariant[] $values
    */
   public function setValues(array $values)
   {
@@ -177,17 +195,44 @@ class ProductParameterName extends FActiveRecord
    */
   public function getValues()
   {
-    return array_filter($this->values, function($item){
-      return $item instanceof ProductParameterVariant;
-    });
+    return $this->values;
   }
 
   /**
    * @return array
    */
-  public function getValueKeys()
+  public function getVariantKeys()
   {
-    return array_keys($this->values);
+    return array_keys($this->parameters);
+  }
+
+  /**
+   * @return array
+   */
+  public function getParameterKeys()
+  {
+    return array_reduce($this->parameters, function($result, $item){
+      $result[] = $item['id'];
+      return $result;
+    }, array());
+  }
+
+  public function getParameterKeysByVariantId($id)
+  {
+    foreach($this->parameters as $parameter)
+    {
+      if( $parameter->variant_id == $id )
+        return $parameter->id;
+    }
+
+    return null;
+  }
+
+  public function getParameterById($parameterId)
+  {
+    return array_reduce($this->parameters, function($result, $item) use($parameterId) {
+      return $parameterId == $item->id ? $item : $result;
+    });
   }
 
   /**
@@ -195,7 +240,7 @@ class ProductParameterName extends FActiveRecord
    */
   public function setVariants(array $variants)
   {
-    foreach($this->values as $i => $value)
+    foreach($this->parameters as $i => $value)
     {
       if( isset($variants[$i]) )
       {
@@ -221,7 +266,7 @@ class ProductParameterName extends FActiveRecord
     {
       case self::TYPE_TEXT:
       case self::TYPE_SLIDER:
-        return Arr::reset($this->values)['value'];
+        return Arr::reset($this->parameters)['value'];
 
       default:
         return implode(", ", array_reduce($this->getValues(), function($result, $item){

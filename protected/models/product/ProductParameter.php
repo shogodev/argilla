@@ -20,6 +20,14 @@ class ProductParameter extends FActiveRecord
     return '{{product_param}}';
   }
 
+  public function relations()
+  {
+    return array(
+      'parameterName' => array(self::BELONGS_TO, 'ProductParameterName', 'param_id'),
+      'variant' => array(self::BELONGS_TO, 'ProductParameterVariant', 'variant_id'),
+    );
+  }
+
   /**
    * @param ProductParameterName[] $parameterNames
    */
@@ -40,7 +48,7 @@ class ProductParameter extends FActiveRecord
       {
         if( isset($parameters[$parameter->productId][$parameter->id]) )
         {
-          $parameter->setValues($parameters[$parameter->productId][$parameter->id]);
+          $parameter->setParameters($parameters[$parameter->productId][$parameter->id]);
         }
       }
 
