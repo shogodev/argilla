@@ -6,8 +6,6 @@
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.form.models
  *
- * @method static SNotification model(string $class = __CLASS__)
- *
  * @property integer $id
  * @property string $index
  * @property string $name
@@ -20,8 +18,12 @@
 class SNotification extends CActiveRecord
 {
   public $defaultSubject = "Письмо с сайта {projectName}";
-  public $layout         = 'main';
-  public $from           = "info@{projectName}";
+
+  public $layout = 'main';
+
+  public $from = "info@{projectName}";
+
+  private $emailComponent;
 
   public static function model($className = __CLASS__)
   {
@@ -32,7 +34,8 @@ class SNotification extends CActiveRecord
   {
     parent::init();
 
-    $this->from =  strtr($this->from, array('{projectName}' => Yii::app()->params->project));
+    $this->setEmailComponent();
+    $this->from = $this->replaceProjectName($this->from);
   }
 
   public function tableName()
@@ -40,95 +43,146 @@ class SNotification extends CActiveRecord
     return '{{notification}}';
   }
 
-  public function rules()
-  {
-    return array(
-      array('index', 'required'),
-      array('index', 'unique'),
-      array('subject, visible', 'safe')
-    );
-  }
-
   public function afterFind()
   {
     parent::afterFind();
 
-    $this->email   = $this->clearEmails($this->email);
-    $this->subject = strtr($this->subject, array('{projectName}' => Yii::app()->params->project));
+    $this->email   = $this->trimEmails($this->email);
+    $this->subject = $this->replaceProjectName($this->subject);
+  }
+
+  public function setEmailComponent($component = null)
+  {
+    if( $component === null )
+    {
+      $component = Yii::app()->email;
+    }
+
+    $this->emailComponent = $component;
   }
 
   /**
-   * @param $model модель или индекс
+   * @param CModel|string $index
    * @param array $varsForView
-   * @param string $mailForSend не обязательно
+   * @param string $mailForSend дополнительные адреса для отправки
    */
-  public function send($model, $varsForView = array(), $mailForSend = '')
+  public function send($index, $varsForView = array(), $mailForSend = '')
   {
-    $index = is_a($model, 'CModel') ? get_class($model) : $model;
+    if( $index instanceof CModel )
+    {
+      $varsForView['model'] = $index;
+      $index = get_class($index);
+    }
 
     $this->registerIndex($index);
-    $data = $this->find("`index` = :index AND visible = 1 AND (view != '' OR message != '')", array(':index' => $index));
+    $data = $this->findByIndex($index);
 
     if( $data !== null )
     {
       if( empty($data->email) && empty($mailForSend) )
-        return;
-      else
-        $data->email = !empty($data->email) ? $data->email.','.trim($mailForSend) : trim($mailForSend);
-
-      $email            = Yii::app()->email;
-      $email->viewsPath = 'frontend.views.email.';
-
-      $email->from    = $this->from;
-      $email->layout  = $this->layout;
-
-      $email->to      = $data->email;
-      $email->subject = $data->subject;
-
-      // Сбрасывем предыдущий шаблон
-      $email->view    = null;
-
-      if( !empty($data->view) )
       {
-        if( is_a($model, 'CModel') )
-          $varsForView['model'] = $model;
-
-        $email->view     = $data->view;
-        $email->viewVars = $varsForView;
+        return;
       }
-      else
-        $email->message = $data->message;
 
-      $email->send();
+      $this->prepareEmail($varsForView, $data);
+      $this->sendEmail($mailForSend, $data);
     }
   }
 
-  private function clearEmails($emails)
+  /**
+   * @param $varsForView
+   * @param $data
+   */
+  private function prepareEmail($varsForView, $data)
   {
-    $emails = !empty($emails) ? explode(',', $emails) : array();
+    $this->emailComponent->viewsPath = 'frontend.views.email.';
+    $this->emailComponent->from      = $this->from;
+    $this->emailComponent->layout    = $this->layout;
+    $this->emailComponent->subject   = $data->subject;
+    $this->emailComponent->view      = null;
 
-    $clear_emails = array();
-    foreach($emails as $email)
+    if( !empty($data->view) )
     {
-      $email = trim($email);
-      $clear_emails[$email] = $email;
+      $this->emailComponent->view     = $data->view;
+      $this->emailComponent->viewVars = $varsForView;
     }
-
-    return !empty($clear_emails)? implode(',', $clear_emails) : '';
+    else
+    {
+      $this->emailComponent->message = $data->message;
+    }
   }
 
+  /**
+   * @param $mailForSend
+   * @param $data
+   */
+  private function sendEmail($mailForSend, $data)
+  {
+    $emailsTo = array();
+
+    if( !empty($data->email) )
+    {
+      $emailsTo = array_merge($emailsTo, explode(',', $data->email));
+    }
+
+    if( !empty($mailForSend) )
+    {
+      $emailsTo = explode(',', $mailForSend);
+    }
+
+    foreach(array_unique($emailsTo) as $email)
+    {
+      $this->emailComponent->to = trim($email);
+      $this->emailComponent->send();
+    }
+  }
+
+  /**
+   * @param string $data
+   *
+   * @return string
+   */
+  private function replaceProjectName($data)
+  {
+    $projectName = isset(Yii::app()->params->project) ? Yii::app()->params->project : '';
+    return strtr($data, array('{projectName}' => $projectName));
+  }
+
+  /**
+   * @param $index
+   *
+   * @return SNotification
+   */
+  private function findByIndex($index)
+  {
+    return $this->find("`index` = :index AND visible = 1 AND (view != '' OR message != '')", array(':index' => $index));
+  }
+
+  /**
+   * @param string $emails
+   *
+   * @return string
+   */
+  private function trimEmails($emails)
+  {
+    $emails  = !empty($emails) ? explode(',', $emails) : array();
+    $trimmed = Arr::trim($emails);
+
+    return implode(',', $trimmed);
+  }
+
+  /**
+   * @param string $index
+   */
   private function registerIndex($index)
   {
-    $data = $this->find('`index` = :index', array(':index' => $index));
-
-    if( $data == null )
+    if( !$this->findByAttributes(array('index' => $index)) )
     {
-      $data = new SNotification();
-      $data->index   = $index;
-      $data->subject = $this->defaultSubject;
-      $data->visible = 0;
-
-      $data->save();
+      $model          = new self;
+      $model->index   = $index;
+      $model->subject = $this->defaultSubject;
+      $model->visible = 0;
+      $model->save(false);
     }
   }
 }
