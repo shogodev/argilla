@@ -22,6 +22,13 @@ class CustomMenuItem extends FActiveRecord implements IMenuItem
     return '{{menu_custom_item}}';
   }
 
+  public function defaultScope()
+  {
+    return array(
+      'with' => 'data'
+    );
+  }
+
   /**
    * @return array
    */
