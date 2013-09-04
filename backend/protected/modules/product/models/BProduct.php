@@ -122,13 +122,7 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
   public function getImageTypes()
   {
     return array(
-      '' => 'Не задано',
-      'small' => 'Превью',
-      'middle' => 'Модель',
-      'big' => 'Крупный план',
-      'gallery' => 'Галерея',
-      'details' => 'Детали',
-      'conf' => 'Конфигурация',
+      'main' => 'Основное',
     );
   }
 

@@ -48,16 +48,12 @@ class ProductFilterRender extends CComponent
     return 'callback_'.$this->parent->filterKey;
   }
 
-  public function registerOnChangeScript($live = true, $ajaxUpdate = false)
+  public function registerOnChangeScript($ajaxUpdate = false)
   {
-    $form = "form[name={$this->parent->filterKey}]";
-
-    if( $live )
-      $script = "$('body').on('change', '{$form} select, {$form} input', function(e) {";
-    else
-      $script = "$('{$form} select, {$form} input').on('change', function(e) {";
-
-    $script .= "
+    $form   = "form[name={$this->parent->filterKey}]";
+    $script = "
+      $('body').on('change', '{$form} select, {$form} input', function(e)
+      {
         var form = $('{$form}');
         submitForm_{$this->parent->filterKey}(form.serialize(), $(this).data('url'));
       });
@@ -71,24 +67,21 @@ class ProductFilterRender extends CComponent
 
       var submitForm_{$this->parent->filterKey} = function(data, url)
       {
-        var form       = $('{$form}');
-        var ajaxUpdate = {$ajaxUpdate};
-        url            = url ? url : buildUrl(form, data);
+        url = decodeURIComponent(url ? url : buildUrl($('{$form}'), data));
 
-        if( ajaxUpdate && window.History.enabled )
+        var ajaxUpdate = '{$ajaxUpdate}' && window.History.enabled;
+        var changeUrl  = url && url.match(/\?/) ? false : true;
+
+        if( ajaxUpdate && changeUrl )
         {
-          window.History.pushState(null, document.title, decodeURIComponent(url));
+          window.History.pushState(null, document.title, url);
         }
         else
         {
-          $.post(form.attr('action'), data, function(resp) {
-            if(typeof {$this->finishCallback} == 'function')
-            {
-              {$this->finishCallback}(resp);
-            }
-            else
-              document.location.href = url;
-          }, 'html');
+          if( changeUrl )
+            document.location.href = url;
+          else
+            $('#yw0').yiiListView.update('yw0', {'url' : url});
         }
       };
 
@@ -110,8 +103,10 @@ class ProductFilterRender extends CComponent
   {
     $form = "form[name={$this->parent->filterKey}]";
 
-    $script = "$('body').on('change', '.removeElement', function(e) {
-      var id = $(this).attr('id').replace('remove_', '');
+    $script = "$('body').on('click', '.removeElement', function(e) {
+      e.preventDefault();
+
+      var id = $(this).data('remove');
 
       if( $('#' + id).length )
       {

@@ -44,4 +44,13 @@ return array(
   'param35' => array('param_id' => '10', 'product_id' => '3', 'value' => '10'),
   'param36' => array('param_id' => '10', 'product_id' => '4', 'value' => '13'),
   'param37' => array('param_id' => '10', 'product_id' => '5', 'value' => '20'),
+
+  'param38' => array('param_id' => '12', 'product_id' => '17', 'value' => 'value17'),
+
+  'param39' => array('param_id' => '16', 'product_id' => '17', 'variant_id' => 14),
+  'param40' => array('param_id' => '16', 'product_id' => '17', 'variant_id' => 15),
+
+  'param41' => array('param_id' => '18', 'product_id' => '19', 'variant_id' => 16),
+  'param42' => array('param_id' => '18', 'product_id' => '19', 'variant_id' => 17),
+  'param43' => array('param_id' => '18', 'product_id' => '20', 'variant_id' => 18),
 );

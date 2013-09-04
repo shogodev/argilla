@@ -29,6 +29,13 @@ class Menu extends FActiveRecord implements IMenuItem
     return '{{menu}}';
   }
 
+  public function defaultScope()
+  {
+    return array(
+      'with' => 'items'
+    );
+  }
+
   /**
    * @return array
    */

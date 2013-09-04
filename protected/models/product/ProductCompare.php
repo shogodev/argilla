@@ -151,7 +151,7 @@ class ProductCompare
   {
     $criteria = new CDbCriteria();
     $criteria->compare('product', '=1');
-    $parameters = ProductParam::model()->getParameters($criteria);
+    $parameters = ProductParameter::model()->getParameters($criteria);
 
     foreach($parameters as $i => $parameter)
     {

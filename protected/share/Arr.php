@@ -334,4 +334,19 @@ class Arr
     $array      = self::mergeAssoc($array_head, array($itemKey => $item));
     $array      = self::mergeAssoc($array, $array_tail);
   }
+
+  /**
+   * @param $array
+   * @param $key
+   * @param $value
+   *
+   * @return array
+   */
+  public static function filter($array, $key, $value)
+  {
+    return array_filter($array, function($element) use ($key, $value)
+    {
+      return isset($element[$key]) && $element[$key] === $value;
+    });
+  }
 }

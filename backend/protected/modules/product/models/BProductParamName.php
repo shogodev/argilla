@@ -47,7 +47,7 @@ class BProductParamName extends BActiveRecord
   {
     return array(
       array('name, type', 'required'),
-      array('parent, position, visible, product, section, group', 'numerical', 'integerOnly' => true),
+      array('parent, position, visible, product, section', 'numerical', 'integerOnly' => true),
       array('name', 'length', 'max' => 1024),
       array('type, key', 'length', 'max' => 50),
       array('notice', 'safe'),

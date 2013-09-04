@@ -38,13 +38,6 @@ class ProductList extends CComponent
    */
   public $fetchContent = true;
 
-  /**
-   * Выбираем все параметры или только параметры для подбора, которые отображаются на разводных
-   *
-   * @var bool
-   */
-  public $fetchProductParameters = false;
-
   public static $sortingRange = array(
     'position_up' => 'IF(position=0, 1, 0), position DESC ',
     'position_down' => 'IF(position=0, 1, 0), position ASC ',
@@ -63,7 +56,7 @@ class ProductList extends CComponent
    * @param CDbCriteria $criteria
    * @param null $sorting
    * @param bool $pagination
-   * @param ProductFilter $filter
+   * @param null $filters
    */
   public function __construct(CDbCriteria $criteria, $sorting = null, $pagination = true, $filters = null)
   {
@@ -71,7 +64,7 @@ class ProductList extends CComponent
     $this->sorting    = $sorting;
     $this->pagination = $pagination;
     if( !empty($filters) )
-      $this->filters    = is_array($filters) ?  $filters : array($filters);
+      $this->filters = is_array($filters) ? $filters : array($filters);
   }
 
   /**
@@ -121,16 +114,17 @@ class ProductList extends CComponent
   {
     if( $this->fetchContent )
     {
-      $this->getImages();
-      $this->getParameters();
+      $this->setImages();
+      $this->setParameters();
     }
   }
 
-  protected function getImages()
+  protected function setImages()
   {
+    /**
+     * @var $products Product[]
+     */
     $products = $this->products->getData();
-    $keys     = $this->products->getKeys();
-
     $criteria = new CDbCriteria();
     $criteria->addInCondition('parent', $this->products->getKeys());
     $productImages = ProductImage::model()->findAll($criteria);
@@ -145,76 +139,29 @@ class ProductList extends CComponent
           $product->setImages($imgs, $type);
   }
 
-  protected function getParameters()
+  protected function setParameters()
   {
+    /**
+     * @var $products Product[]
+     */
     $products = $this->products->getData();
-    $keys     = $this->products->getKeys();
-
     $criteria = new CDbCriteria();
-    $criteria->compare('visible', '=1');
+    $criteria->compare('t.section', '1');
 
-    // на разводных вибираем только параметры для подбора,
-    // если установлено соответствующие свойство
-    if( !$this->fetchProductParameters )
-      $criteria->compare('t.section', '=1');
-
-    $names      = ProductParamName::model()->search($criteria);
-    $nameIds    = $names->getKeys();
-
-    $params   = array();
-    $paramIds = array();
-
-    $data = Yii::app()->db->createCommand()
-      ->selectDistinct()
-      ->from(ProductParam::model()->tableName())
-      ->where(array('AND', array('IN', 'product_id', $keys), array('IN', 'param_id', $nameIds)))
-      ->query();
-
-    foreach($data as $row)
-    {
-      $params[$row['product_id']][$row['param_id']][$row['variant_id']] = $row;
-      $paramIds[] = $row['param_id'];
-    }
-
-    $variants = $this->getVariants($paramIds);
+    $names      = ProductParameterName::model()->setGroupCriteria($criteria)->search();
+    $parameters = array();
 
     foreach($products as $product)
     {
-      $parameters = array();
-
-      foreach($names->getData() as $name)
+      foreach($names as $name)
       {
-        $paramName = clone $name;
-
-        if( isset($params[$product->id][$paramName->id]) )
-          foreach($params[$product->id][$paramName->id] as $value)
-            $paramName->setValue($value);
-
-        if( is_array($paramName->value) )
-        {
-          $variant = isset($variants[$paramName->id]) ? $variants[$paramName->id] : array();
-          $paramName->value = $paramName->setVariants($variant);
-        }
-
-        $parameters[$paramName->id] = $paramName;
+        $productParameterName = clone $name;
+        $productParameterName->setProductId($product->id);
+        $product->addParameter($productParameterName);
+        $parameters[] = $productParameterName;
       }
-
-      $product->parameters = $parameters;
     }
-  }
 
-  protected function getVariants(array $paramIds)
-  {
-    $variants = array();
-
-    $data = Yii::app()->db->createCommand()
-      ->from(ProductParamVariant::model()->tableName())
-      ->where(array('IN', 'param_id', $paramIds))
-      ->query();
-
-    foreach($data as $row)
-      $variants[$row['param_id']][$row['id']] = $row;
-
-    return $variants;
+    ProductParameter::model()->setParameterValues($parameters);
   }
 }

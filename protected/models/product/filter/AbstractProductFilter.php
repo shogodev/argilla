@@ -36,7 +36,9 @@ class AbstractProductFilter extends CComponent
     $this->saveState = $saveState;
 
     if( $this->saveState )
+    {
       $this->setState($this->loadStateFromSession());
+    }
 
     $state = Yii::app()->request->getParam($this->filterKey, array());
 
@@ -54,8 +56,10 @@ class AbstractProductFilter extends CComponent
       }
     }
 
-    if( $setStateAuto && Arr::cut($state, 'submit', false) )
+    if( $setStateAuto && (Arr::cut($state, 'submit') || Yii::app()->request->isAjaxRequest ) )
+    {
       $this->setState($state);
+    }
 
     $this->render = new ProductFilterRender($this);
   }

@@ -4,15 +4,13 @@
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
+ * @package frontend.controllers
  */
 class ProductController extends FController
 {
   public $pageSize = 9;
 
-  public $selectionPageSize = 12;
-
   public $sizeRange;
-
 
   public function beforeAction($action)
   {

@@ -1,11 +1,13 @@
 <?php
 /**
- * @property string  $id
+ * @property integer $id
  * @property integer $position
  * @property string  $url
  * @property string  $name
  * @property string  $notice
  * @property integer $visible
+ *
+ * @method static ProductSection model(string $class = __CLASS__)
  */
 class ProductSection extends FActiveRecord
 {
@@ -30,7 +32,8 @@ class ProductSection extends FActiveRecord
     $assignment = ProductAssignment::model()->tableName();
 
     $criteria            = new CDbCriteria();
-    $criteria->select    = 't.id, t.name, t.notice, t.url, t.menu_name';
+
+    $criteria->select = 't.id, t.name, t.notice, t.url';
     $criteria->join      = 'JOIN '.$assignment.' AS a ON t.id = a.section_id ';
     $criteria->join     .= 'JOIN '.$product.' AS p ON p.id = a.product_id';
     $criteria->condition = 'p.visible=1';
@@ -47,7 +50,7 @@ class ProductSection extends FActiveRecord
     foreach($sections as $section)
       $menu[$section->id] = array(
         'id' => $section->id,
-        'label' => $section->menu_name ? $section->menu_name : $section->name,
+        'label' => $section->name,
         'url' => array('product/section', 'section' => $section->url));
 
     return $menu;
