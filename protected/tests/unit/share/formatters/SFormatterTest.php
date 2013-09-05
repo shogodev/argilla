@@ -38,5 +38,8 @@ class SFormatterTest extends CTestCase
     $format = new SFormatter;
     $s = $format->toLower("TesT");
     $this->assertEquals('test', $s);
+
+    $s = $format->toLower("ТесТ");
+    $this->assertEquals('тест', $s);
   }
 }
