@@ -13,7 +13,7 @@
  * @property UrlCollection $urlCollection
  * @property FWebUser $user
  * @property FUrlManager $urlManager
- * @property FFormatter $format
+ * @property SFormatter $format
  * @property Email $email
  * @property SNotification $notification
  * @property RedirectHelper $seoRedirect

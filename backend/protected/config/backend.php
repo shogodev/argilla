@@ -44,6 +44,7 @@ return array_replace_recursive(array(
 
     'share.*',
     'share.validators.*',
+    'share.formatters.*',
 
     'ext.*',
     'ext.jtogglecolumn.*',
@@ -134,7 +135,7 @@ return array_replace_recursive(array(
     ),
 
     'format' => array(
-      'class'          => 'CFormatter',
+      'class'          => 'SFormatter',
       'datetimeFormat' => 'd.m.Y H:i:s',
       'dateFormat'     => 'd.m.Y',
       'timeFormat'     => 'H:i:s',

@@ -77,8 +77,11 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
       array('parent, position, visible, spec, novelty, main, dump, discount, archive, xml', 'numerical', 'integerOnly' => true),
       array('url, name, articul', 'length', 'max' => 255),
       array('notice, content, video, rating', 'safe'),
-      array('url', 'SUriValidator'),
       array('price, price_old', 'numerical'),
+
+      array('url', 'SUriValidator'),
+      array('name, url, articul', 'filter', 'filter' => array(Yii::app()->format, 'trim')),
+      array('url', 'filter', 'filter' => array(Yii::app()->format, 'toLower')),
 
       array('section_id', 'required'),
       array(implode(", ", array_keys(BProductAssignment::model()->getFields())), 'safe'),

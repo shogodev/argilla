@@ -49,6 +49,8 @@ return array_merge_recursive(array(
     'frontend.widgets.*',
 
     'share.*',
+    'share.validators.*',
+    'share.formatters.*',
   ),
 
   'modules' => array(),
@@ -107,7 +109,7 @@ return array_merge_recursive(array(
     ),
 
     'format' => array(
-      'class' => 'frontend.components.formatters.FFormatter',
+      'class' => 'SFormatter',
       'datetimeFormat' => 'd.m.Y H:i:s',
       'dateFormat'     => 'd.m.Y',
       'timeFormat'     => 'H:i:s',

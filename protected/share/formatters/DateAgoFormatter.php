@@ -10,9 +10,7 @@ class DateAgoFormatter
 {
   /**
    * array(
-   *  type => array(
-   *   'именительный', 'родительный', 'множественное число родительный'
-   *  ),
+   *  type => array('именительный', 'родительный', 'множественное число родительный'), #один, два, много
    * ),
    *
    * @var array
@@ -38,7 +36,6 @@ class DateAgoFormatter
       'минуту', 'минуты', 'минут'
     ),
   );
-
 
   /**
    * @var DateTime
@@ -108,16 +105,12 @@ class DateAgoFormatter
   {
     if( in_array($type, array_keys($this->forms)) )
     {
-      $forms = $this->forms[$type];
-
-      /**
-       * @link https://gist.github.com/2382775
-       */
-      $form = $count % 10 == 1 && $count % 100 != 11 ? $forms[0] : ($count % 10 >= 2 && $count % 10 <= 4 && ($count % 100 < 10 || $count % 100 >= 20) ? $forms[1] : $forms[2]);
-
+      $form = Yii::t('app', implode("|", $this->forms[$type]), $count);
       return $count . ' ' . $form . ' назад';
     }
     else
+    {
       return 'только что';
+    }
   }
 }

@@ -225,21 +225,6 @@ class Utils
   }
 
   /**
-   * @param $number
-   * @param array|string $titles
-   * @return string
-   */
-  public static function plural($number, $titles)
-  {
-    $cases = [2, 0, 1, 1, 1, 2];
-
-    if( !is_array($titles) )
-      $titles = explode(',', $titles);
-
-    return $titles[ ($number%100 > 4 && $number %100 < 20) ? 2 : $cases[min($number%10, 5)] ];
-  }
-
-  /**
    * Возвращает домен
    * @param integer $level если узан уровень, то домен обрезается до указанного уровня
    * @return mixed|string
