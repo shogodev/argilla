@@ -38,7 +38,7 @@ class BApplication extends CWebApplication
 
   public function getFrontendPath()
   {
-    return str_replace("/backend/protected", "", $this->getBasePath()).'/';
+    return str_replace("protected", "", Yii::getPathOfAlias('frontend'));
   }
 
   public function getFrontendUrl()
