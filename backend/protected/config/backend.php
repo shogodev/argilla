@@ -3,8 +3,8 @@ defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL', 3);
 defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', true);
 
-$backend  = dirname(dirname(__FILE__));
-$frontend = dirname(dirname(dirname(dirname(__FILE__)))).DIRECTORY_SEPARATOR.'protected';
+$backend = realpath(__DIR__.'/..');
+$frontend = realpath(__DIR__.'/../../../protected');
 
 return array_replace_recursive(array(
   'name' => 'backend',
@@ -15,6 +15,8 @@ return array_replace_recursive(array(
   'defaultController' => 'base',
 
   'aliases' => array(
+    'backend' => $backend,
+    'frontend' => $frontend,
     'ext' => 'frontend.extensions',
     'nestedset' => 'ext.nested-set-behavior',
     'upload' => 'ext.upload',

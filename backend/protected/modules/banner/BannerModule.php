@@ -13,7 +13,7 @@ class BannerModule extends BModule
 
   public function getUploadPath()
   {
-    return Yii::app()->getFrontendPath().$this->defaultUploadDir.'images'.'/';
+    return Yii::app()->getFrontendRoot().$this->defaultUploadDir.'images'.'/';
   }
 
   public function getUploadUrl()
