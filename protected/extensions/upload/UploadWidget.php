@@ -191,7 +191,7 @@ jQuery(function($)
     buttons.hide();
 
   $('#' + formId).fileupload(options)
-    .bind('fileuploadprogress', function(e, data)
+    .bind('fileuploadstop', function(e, data)
     {
       $.fn.yiiGridView.update(gridId);
       if( !multiply )
