@@ -252,10 +252,13 @@ class FController extends CController
     $url = rtrim($url, '/');
     $url = str_replace('/?', '?', $url);
 
-    $components          = parse_url(rtrim($url, '/'));
+    $components = parse_url(rtrim($url, '/'));
+
+    if( !isset($components['path']) )
+      $components['path'] = '';
+
     $components['path'] .= preg_match("/.+\.\w+$/", $components['path']) ? "" : '/';
     $components['path']  = preg_replace("/\/+/", "/", $components['path']);
-
 
     return Utils::buildUrl($components);
   }
