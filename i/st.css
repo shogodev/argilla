@@ -246,6 +246,11 @@ h4, h4 a, .h4, .h4 a {
   border-bottom-right-radius: 3px;
   border-bottom-left-radius: 3px; }
 
+.success-message {
+  padding: 10px;
+  font-weight: bold;
+  text-align: center; }
+
 /*   -=========== Useful classes ===========-   */
 .hova a {
   text-decoration: none; }
