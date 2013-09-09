@@ -16,7 +16,8 @@ return array(
 
   // contacts
   'contact' => array('contact/index', 'pattern' => 'contact'),
-  //compare
+
+  // compare
   'compare'           => array('compare/index',      'pattern' => 'compare'),
   'compareAdd'        => array('compare/add',        'pattern' => '<url:compare\/add>/<id:\d+>'),
   'compareRemove'     => array('compare/remove',     'pattern' => '<url:compare\/remove>/<id:\d+>'),
@@ -38,24 +39,25 @@ return array(
   'callback' => array('callback/index', 'pattern' => 'callback'),
   'response' => array('response/add', 'pattern' => 'add_response'),
 
-  //basket
-  'basket'          => array('basket/index',       'pattern' => 'basket'),
-  'basketAdd'       => array('basket/add',         'pattern' => 'basket/add'),
-  'basketCheckOut'       => array('basket/checkout', 'pattern' => 'basket/check_out'),
-  'basketSuccess'       => array('basket/success', 'pattern' => 'basket/success'),
-  'basketFastOrder' => array('basket/fastOrder',   'pattern' => 'basket/fastorder'),
-  //favorite
+  // basket
+  'basket'          => array('basket/index',     'pattern' => 'basket'),
+  'basketAdd'       => array('basket/add',       'pattern' => 'basket/add'),
+  'basketCheckOut'  => array('basket/checkout',  'pattern' => 'basket/check_out'),
+  'basketSuccess'   => array('basket/success',   'pattern' => 'basket/success'),
+  'basketFastOrder' => array('basket/fastOrder', 'pattern' => 'basket/fastorder'),
+
+  // favorite
   'favorite' => array('favorite/index', 'pattern' => 'favorite/index'),
 
   // products
-  'productFastOrder'        => array('product/fastOrder',        'pattern' => 'fastorder/<id:\d+>'),
-  'productSelection'        => array('product/selection',        'pattern' => 'selection'),
-  'productSection'          => array('product/section',          'pattern' => 'section/<section:\w+>/<page:\d+>', 'defaultParams' => array('page' => 1)),
-  'productType'             => array('product/type',             'pattern' => 'type/<type:\w+>/<page:\d+>', 'defaultParams' => array('page' => 1)),
-  // db routing
-  'productOne'              => array('product/one',              'pattern' => '<url:\w+>', 'models' => array('url' => 'Product'), 'class' => 'DBRule'),
+  'productFastOrder' => array('product/fastOrder', 'pattern' => 'fastorder/<id:\d+>'),
+  'productSelection' => array('product/selection', 'pattern' => 'selection'),
+  'productSections'  => array('product/sections',  'pattern' => 'sections'),
+  'productType'      => array('product/type',      'pattern' => 'type/<type:\w+>/<page:\d+>', 'defaultParams' => array('page' => 1)),
 
-  'productSections'         => array('product/sections',        'pattern' => 'sections'),
+  // db routing
+  'productOne' => array('product/one', 'pattern' => '<url:\w+>', 'models' => array('url' => 'Product'), 'class' => 'DBRule'),
+  'productSection' => array('product/section', 'class' => 'DBRule', 'pattern' => '<section:\w+>/<page:\d+|all>', 'defaultParams' => array('page' => 1), 'models' => array('section' => 'ProductSection')),
 
   // link
   'linkIndex' => array('link/index', 'pattern' => 'links/<page:\d+>', 'defaultParams' => array('page' => 1)),
@@ -65,5 +67,4 @@ return array(
   // captcha
   'captchaImg' => array('index/captcha', 'pattern' => '<model:\w+>/captcha/v/<code:\w+>'),
   'captchaRef' => array('index/captcha', 'pattern' => '<model:\w+>/captcha/<refresh:refresh>/<code:\w+>'),
-
 );

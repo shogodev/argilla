@@ -8,9 +8,14 @@
  */
 class ProductController extends FController
 {
-  public $pageSize = 9;
+  public $sorting = 'position_up';
 
-  public $sizeRange;
+  public $pageSize = 10;
+
+  /**
+   * @var ProductFilter
+   */
+  private $filter;
 
   public function beforeAction($action)
   {
@@ -21,74 +26,61 @@ class ProductController extends FController
   {
     parent::init();
 
-    $params          = Yii::app()->session->get($this->id);
-    $this->pageSize  = Arr::get($params, 'pageSize', $this->pageSize);
-    $this->sizeRange = Arr::reflect(array(9, 18, 27, 36, 45));
+    $params = Yii::app()->session->get($this->id);
+    $this->sorting = Arr::get($params, 'sorting', $this->sorting);
+    $this->pageSize = $this->getSettings('product_page_size', $this->pageSize);
   }
 
-  public function actionSections()
+  public function actionSection($section)
   {
-    $this->breadcrumbs = array('Продукты');
-
-    $criteria = new CDbCriteria();
-
-    $productList = new ProductList($criteria);
-
-    $this->render('products_content', array(
-      'productList'  => $productList,
-      'sectionsMenu' => ProductType::model()->getMenu()
-    ));
-  }
-
-  public function actionType($type)
-  {
-    $typeModel = ProductType::model()->findByAttributes(array('url' => $type));
-
-    if( !$typeModel )
-      throw new CHttpException(404, 'Страница не найдена');
-
-    $this->breadcrumbs = array(
-      'Продукты' => array('product/sections'),
-      $typeModel->name
-    );
-
-    $criteria = new CDbCriteria();
-    $criteria->compare('a.type_id', '='.$typeModel->id);
-
-    $productList = new ProductList($criteria);
-
-    $this->render('products_content', array(
-      'typeModel' => $typeModel,
-      'productList' => $productList,
-      'sectionsMenu' => ProductType::model()->getMenu()
-    ));
-  }
-
-  public function actionOne($url)
-  {
-    $model = Product::model()->visible()->findByAttributes(array('url' => $url));
+    $model = ProductSection::model()->findByAttributes(array('url' => $section));
 
     if( !$model )
       throw new CHttpException(404, 'Страница не найдена');
 
-    $this->activeUrl = array(
-      'product/type',
-      //'type' => $model->type->url
-    );
-
     $this->breadcrumbs = array(
-      'Продукты' => array('product/sections'),
-      //$model->type->name => array('product/type', 'type' => $model->type->url),
       $model->name,
     );
 
     $criteria = new CDbCriteria();
-    $criteria->compare('visible', '=1');
-    $criteria->compare('product_id', '='.$model->id);
+    $criteria->compare('a.section_id', $model->id);
 
-    $this->render('product', array(
+    $productList = new ProductList($criteria, $this->sorting, true, $this->filter);
+    $dataProvider = $productList->getProducts();
+
+    $data = array(
       'model' => $model,
-      'sectionsMenu' => ProductType::model()->getMenu()
-    ));
+      'dataProvider' => $dataProvider,
+    );
+
+    if( Yii::app()->request->isAjaxRequest )
+      $this->renderPartial('content', $data);
+    else
+      $this->render('content', $data);
+  }
+
+  public function actionOne($url)
+  {
+    /**
+     * @var Product $model
+     */
+    $model = Product::model()->findByAttributes(array('url' => $url));
+
+    if( !$model )
+      throw new CHttpException(404, 'Страница не найдена');
+
+    $this->breadcrumbs = array(
+      $model->section->name => array('product/section', 'section' => $model->section->url),
+      $model->name,
+    );
+
+    $data = array(
+      'model' => $model,
+    );
+
+    if( Yii::app()->request->isAjaxRequest )
+      $this->renderPartial('one/product', $data);
+    else
+      $this->render('one/product', $data);
   }
 }
