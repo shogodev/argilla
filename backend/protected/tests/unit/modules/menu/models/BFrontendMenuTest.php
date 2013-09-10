@@ -1,22 +1,21 @@
 <?php
 /**
- * User: Nikita Melnikov <melnikov@shogo.ru>
- * Date: 12/12/12
+ * @author Nikita Melnikov <melnikov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
  */
-class MenuTest extends MenuModuleTest
+class BFrontendMenuTest extends MenuModuleTest
 {
   public function testCreate()
   {
     $menu = new BFrontendMenu();
-
     $this->assertFalse($menu->save());
 
     $menu->name = 'name';
-
     $this->assertFalse($menu->save());
 
     $menu->sysname = 'sys';
-
     $this->assertTrue($menu->save());
   }
 
@@ -34,7 +33,6 @@ class MenuTest extends MenuModuleTest
     $this->assertFalse($menu->addEntry($menuItem));
 
     $menu->save();
-
     $this->assertTrue($menu->addEntry($menuItem));
   }
 

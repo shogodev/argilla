@@ -1,11 +1,12 @@
 <?php
-
 /**
  * @author Nikita Melnikov <melnikov@shogo.ru>
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
  * @package frontend.models.menu
+ *
+ * @method static MenuItem model(string $class = __CLASS__)
  *
  * @property int $id
  * @property int $menu_id
@@ -22,14 +23,6 @@ class MenuItem extends FActiveRecord implements IMenuItem
   protected $model;
 
   /**
-   * @return string
-   */
-  public function tableName()
-  {
-    return '{{menu_item}}';
-  }
-
-  /**
    * @return array
    */
   public function defaultScope()
@@ -40,46 +33,31 @@ class MenuItem extends FActiveRecord implements IMenuItem
   }
 
   /**
-   * Загрузка модели
-   *
-   * @return IMenuItem
-   */
-  public function loadModel()
-  {
-    if( empty($model) )
-    {
-      /**
-       * @var FActiveRecord $class
-       */
-      $class       = $this->frontend_model;
-      $this->model = $class::model()->findByPk($this->item_id);
-    }
-
-    return $this->getModel();
-  }
-
-  /**
+   * @throws CHttpException
    * @return IMenuItem
    */
   public function getModel()
   {
+    if( !isset($this->model) )
+      throw new CHttpException(500, "Menu item with id=".$this->id." doesn't have a model");
+
     return $this->model;
   }
 
   /**
-   * Получение массива для формирования url к элементу
-   *
-   * @return array
+   * @param IMenuItem $model
    */
-  public function getMenuLink()
+  public function setModel(IMenuItem $model)
   {
-    return $this->model->getMenuLink();
+    $this->model = $model;
   }
 
-  public function afterFind()
+  /**
+   * @return array
+   */
+  public function getMenuUrl()
   {
-    $this->loadModel();
-    parent::afterFind();
+    return $this->getModel()->getMenuUrl();
   }
 
   /**
@@ -87,7 +65,7 @@ class MenuItem extends FActiveRecord implements IMenuItem
    */
   public function getChildren()
   {
-    return $this->model->getChildren();
+    return $this->getModel()->getChildren();
   }
 
   /**
@@ -95,16 +73,16 @@ class MenuItem extends FActiveRecord implements IMenuItem
    */
   public function getName()
   {
-    return $this->model->getName();
+    return $this->getModel()->getName();
   }
 
   /**
-   * @param int $d
+   * @param int $depth
    *
    * @return IMenuItem
    */
-  public function setDepth($d)
+  public function setDepth($depth)
   {
-    return $this->model();
+
   }
 }

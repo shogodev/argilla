@@ -10,13 +10,11 @@
  * @property string $name
  * @property string $url
  * @property int $visible
+ *
+ * @property CustomMenuItemData[] $data
  */
 class CustomMenuItem extends FActiveRecord implements IMenuItem
 {
-
-  /**
-   * @return string
-   */
   public function tableName()
   {
     return '{{menu_custom_item}}';
@@ -29,9 +27,6 @@ class CustomMenuItem extends FActiveRecord implements IMenuItem
     );
   }
 
-  /**
-   * @return array
-   */
   public function relations()
   {
     return array(
@@ -40,31 +35,24 @@ class CustomMenuItem extends FActiveRecord implements IMenuItem
   }
 
   /**
-   * Получение ссылки на элемент
-   *
    * @return array
    */
-  public function getMenuLink()
+  public function getMenuUrl()
   {
-    $url   = array();
-    $url[] = $this->url;
+    $url = array($this->url);
 
-    foreach( $this->data as $entry )
+    foreach($this->data as $item)
     {
-      $url[$entry->name] = $entry->value;
+      $url[$item->name] = $item->value;
     }
 
     return $url;
   }
 
   /**
-   * У кастомных элементов не может быть дочерних элементов
-   *
-   * @param int $depth
-   *
    * @return array
    */
-  public function getChildren($depth = 0)
+  public function getChildren()
   {
     return array();
   }
@@ -78,12 +66,10 @@ class CustomMenuItem extends FActiveRecord implements IMenuItem
   }
 
   /**
-   * @param int $d
-   *
-   * @return CustomMenuItem
+   * @param int $depth
    */
-  public function setDepth($d)
+  public function setDepth($depth)
   {
-    return $this;
+
   }
 }
