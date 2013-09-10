@@ -12,6 +12,11 @@
  */
 class BMetaMask extends BActiveRecord
 {
+  public function tableName()
+  {
+    return '{{seo_meta_mask}}';
+  }
+
   public function rules()
   {
     return array(

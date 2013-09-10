@@ -4,7 +4,7 @@ class MetaMask extends FActiveRecord
 {
   public function tableName()
   {
-    return '{{meta_mask}}';
+    return '{{seo_meta_mask}}';
   }
 
   public function getData($url)

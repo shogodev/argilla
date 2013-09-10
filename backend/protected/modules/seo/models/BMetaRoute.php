@@ -12,6 +12,11 @@ class BMetaRoute extends BActiveRecord
 {
   public $globalVars = '{project}';
 
+  public function tableName()
+  {
+    return '{{seo_meta_route}}';
+  }
+
   public function rules()
   {
     return array(

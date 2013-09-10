@@ -512,44 +512,6 @@ CREATE TABLE `argilla_menu_item` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `argilla_meta_mask`
---
-
-DROP TABLE IF EXISTS `argilla_meta_mask`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `argilla_meta_mask` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `url_mask` varchar(255) NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `description` varchar(255) NOT NULL,
-  `keywords` varchar(255) NOT NULL,
-  `visible` tinyint(1) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `argilla_meta_route`
---
-
-DROP TABLE IF EXISTS `argilla_meta_route`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `argilla_meta_route` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `route` varchar(255) NOT NULL,
-  `title` varchar(255) NOT NULL,
-  `description` varchar(255) NOT NULL,
-  `keywords` varchar(255) NOT NULL,
-  `models` text NOT NULL,
-  `clips` varchar(512) NOT NULL,
-  `visible` tinyint(1) DEFAULT NULL,
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `argilla_migration`
 --
 
@@ -1168,6 +1130,44 @@ CREATE TABLE `argilla_seo_link_section` (
   `url` varchar(255) NOT NULL,
   `position` int(11) DEFAULT '20',
   `visible` int(1) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `argilla_seo_meta_mask`
+--
+
+DROP TABLE IF EXISTS `argilla_seo_meta_mask`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `argilla_seo_meta_mask` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `url_mask` varchar(255) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `keywords` varchar(255) NOT NULL,
+  `visible` tinyint(1) DEFAULT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `argilla_seo_meta_route`
+--
+
+DROP TABLE IF EXISTS `argilla_seo_meta_route`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `argilla_seo_meta_route` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `route` varchar(255) NOT NULL,
+  `title` varchar(255) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  `keywords` varchar(255) NOT NULL,
+  `models` text NOT NULL,
+  `clips` varchar(512) NOT NULL,
+  `visible` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
