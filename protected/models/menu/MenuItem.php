@@ -18,6 +18,11 @@
 class MenuItem extends FActiveRecord implements IMenuItem
 {
   /**
+   * @var integer
+   */
+  protected $depth;
+
+  /**
    * @var IMenuItem
    */
   protected $model;
@@ -81,8 +86,19 @@ class MenuItem extends FActiveRecord implements IMenuItem
    *
    * @return IMenuItem
    */
-  public function setDepth($depth)
+  public function setDepth($depth = null)
   {
+    if( isset($depth) )
+    {
+      $this->depth = $depth;
+    }
+  }
 
+  /**
+   * @return integer
+   */
+  public function getDepth()
+  {
+    return $this->depth;
   }
 }

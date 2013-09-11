@@ -68,7 +68,7 @@ class CustomMenuItem extends FActiveRecord implements IMenuItem
   /**
    * @param int $depth
    */
-  public function setDepth($depth)
+  public function setDepth($depth = null)
   {
 
   }

@@ -26,5 +26,5 @@ interface IMenuItem
   /**
    * @param integer $depth
    */
-  public function setDepth($depth);
+  public function setDepth($depth = null);
 }

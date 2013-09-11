@@ -207,7 +207,7 @@ class Info extends FActiveRecord implements IMenuItem
     return array('info/index', 'url' => $this->url);
   }
 
-  public function setDepth($depth)
+  public function setDepth($depth = null)
   {
 
   }

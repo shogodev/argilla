@@ -1,6 +1,6 @@
 <?php
 /**
- * @author Nikita Melnikov <melnikov@shogo.ru>
+ * @author Nikita Melnikov <melnikov@shogo.ru>, Sergey Glagolev <glagolev@shogo.ru>
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
@@ -18,7 +18,7 @@
  */
 class Menu extends FActiveRecord implements IMenuItem
 {
-  protected $depth = 1;
+  protected $depth;
 
   /**
    * @var FActiveRecord[]|IMenuItem[]
@@ -43,24 +43,50 @@ class Menu extends FActiveRecord implements IMenuItem
    * Получение массива элементов меню по системному имени
    *
    * @param string $sysname
+   * @param integer $depth
    *
    * @return array
    */
-  public function getMenu($sysname)
+  public function getMenu($sysname, $depth = null)
   {
     /**
      * @var Menu $menu
      */
     $menu = $this->findByAttributes(array('sysname' => $sysname));
+    $menu->setDepth($depth);
+
     return $menu ? $menu->build() : array();
+  }
+
+  /**
+   * @return array
+   */
+  public function build()
+  {
+    $data = array();
+    $this->loadModels();
+
+    foreach($this->items as $item)
+    {
+      if( $this->depth === 0 )
+        continue;
+
+      $item->setDepth($this->depth - 1);
+      $data[] = $this->buildItem($item);
+    }
+
+    return $data;
   }
 
   /**
    * @param int $depth
    */
-  public function setDepth($depth)
+  public function setDepth($depth = null)
   {
-    $this->depth = $depth;
+    if( isset($depth) )
+    {
+      $this->depth = $depth;
+    }
   }
 
   /**
@@ -85,31 +111,6 @@ class Menu extends FActiveRecord implements IMenuItem
   public function getName()
   {
     return $this->name;
-  }
-
-  protected function afterFind()
-  {
-    parent::afterFind();
-    $this->loadModels();
-  }
-
-  /**
-   * @return array
-   */
-  protected function build()
-  {
-    $data = array();
-
-    if( $this->depth > 0 )
-    {
-      foreach($this->items as $item)
-      {
-        $item->setDepth(--$this->depth);
-        $data[] = $this->buildItem($item);
-      }
-    }
-
-    return $data;
   }
 
   protected function buildItem(MenuItem $item)
@@ -139,7 +140,7 @@ class Menu extends FActiveRecord implements IMenuItem
          * @var FActiveRecord $model
          */
         $model = $modelClass::model();
-        $this->models = CMap::mergeArray($this->models, $model->findAllByPk(Arr::reset($modelPk)));
+        $this->models = CMap::mergeArray($this->models, $model->findAllByPk($modelPk));
       }
 
       $this->setModels();
@@ -155,6 +156,7 @@ class Menu extends FActiveRecord implements IMenuItem
         if( $menuItem->item_id === $model->getPrimaryKey() && $menuItem->frontend_model === get_class($model) )
         {
           $menuItem->setModel($model);
+          $model->setDepth(isset($this->depth) ? $this->depth - 1 : null);
           break;
         }
       }
