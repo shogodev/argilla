@@ -47,7 +47,7 @@
         <prepareSchema file="build/tmp/schemaApplying.sql"/>
         <changeTablePrefix file="build/tmp/schemaApplying.sql" newPrefix="${db.prefix}"/>
 
-        <exec command="mysql -u${db.username} -p${db.password} -h${db.host} ${db.dbname} &lt; build/tmp/schemaApplying.sql"/>
+        <exec checkreturn="true" passthru="true" command="mysql -u${db.username} -p${db.password} -h${db.host} ${db.dbname} &lt; build/tmp/schemaApplying.sql"/>
 
         <phingcall target="clean"/>
     </target>
@@ -76,7 +76,7 @@
                 <changeTablePrefix file="build/tmp/dumpApplying.sql" newPrefix="${db.prefix}"/>
 
                 <echo message="Inserting into mysql..."/>
-                <exec command="mysql -u${db.username} -p${db.password} -h${db.host} ${db.dbname} &lt; build/tmp/dumpApplying.sql"/>
+                <exec checkreturn="true" passthru="true" command="mysql -u${db.username} -p${db.password} -h${db.host} ${db.dbname} &lt; build/tmp/dumpApplying.sql"/>
 
                 <phingcall target="clean"/>
             </then>
