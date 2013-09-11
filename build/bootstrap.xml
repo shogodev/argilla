@@ -52,7 +52,7 @@
     <copy file = "build/tmp/compiled.js" tofile = "js/compiled.js" overwrite = "true" />
   </target>
   <target name = "symlinkYii" depends = "checkYiiAvailability">
-    <exec command = "ln -s ${shogocms.yiiStorage}/${shogocms.yiiVersion} ../yii" />
+    <exec checkreturn="true" passthru="true" command = "ln -s ${shogocms.yiiStorage}/${shogocms.yiiVersion} ../yii" />
   </target>
 
   <target name = "checkYiiAvailability" depends = "getYiiVersion">
