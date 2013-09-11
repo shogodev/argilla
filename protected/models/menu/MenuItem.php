@@ -93,12 +93,4 @@ class MenuItem extends FActiveRecord implements IMenuItem
       $this->depth = $depth;
     }
   }
-
-  /**
-   * @return integer
-   */
-  public function getDepth()
-  {
-    return $this->depth;
-  }
 }
