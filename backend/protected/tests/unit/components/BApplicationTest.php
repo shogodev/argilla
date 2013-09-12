@@ -19,9 +19,9 @@ class BApplicationTest extends CTestCase
     $this->app = Yii::app();
   }
 
-  public function testGetFrontendPath()
+  public function testGetFrontendRoot()
   {
-    $path = $this->app->getFrontendPath();
+    $path = $this->app->getFrontendRoot();
     $file = str_replace('backend/protected/tests/unit/components', '', dirname(__FILE__));
 
     $this->assertEquals($path, $file);

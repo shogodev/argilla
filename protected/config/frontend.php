@@ -3,16 +3,18 @@ defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL', 3);
 defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', true);
 
-$backend  = dirname(dirname(dirname(__FILE__))) . DIRECTORY_SEPARATOR . 'backend/protected';
-$frontend = dirname(dirname(__FILE__));
+$frontend = realpath(__DIR__.'/..');
+$backend = realpath(__DIR__.'/../../backend/protected');
 
 return array_merge_recursive(array(
-  'basePath' => dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
+  'basePath' => $frontend,
   'name' => 'argilla.ru',
   'defaultController' => 'index',
   'preload'  => array('log', 'seoRedirect'),
 
   'aliases' => array(
+    'backend' => $backend,
+    'frontend' => $frontend,
     'nestedset' => 'ext.nested-set-behavior',
     'share' => 'frontend.share',
   ),
@@ -57,7 +59,7 @@ return array_merge_recursive(array(
 
   'components' => array(
 
-    'db' => array_replace_recursive(require(dirname(__FILE__).'/db.php'),
+    'db' => array_replace_recursive(require(__DIR__.'/db.php'),
       array(
         'enableProfiling'    => YII_DEBUG,
         'enableParamLogging' => YII_DEBUG,
@@ -101,7 +103,7 @@ return array_merge_recursive(array(
       'urlFormat'        => 'path',
       'useStrictParsing' => true,
       'showScriptName'   => false,
-      'rules'            => require(dirname(__FILE__).'/routes.php'),
+      'rules'            => require(__DIR__.'/routes.php'),
     ),
 
     'errorHandler' => array(
@@ -167,4 +169,4 @@ return array_merge_recursive(array(
 
   'sourceLanguage' => 'ru_ru',
   'language' => 'ru',
-), require(dirname(__FILE__).'/share.php'));
+), require(__DIR__.'/share.php'));

@@ -70,7 +70,7 @@ class BModule extends CWebModule
 
   public function getUploadPath()
   {
-    return Yii::app()->getFrontendPath().$this->defaultUploadDir.$this->id.'/';
+    return Yii::app()->getFrontendRoot().$this->defaultUploadDir.$this->id.'/';
   }
 
   public function getUploadUrl()

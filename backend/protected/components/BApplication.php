@@ -36,9 +36,9 @@ class BApplication extends CWebApplication
     return $mappedId ?: Yii::app()->controller->id;
   }
 
-  public function getFrontendPath()
+  public function getFrontendRoot()
   {
-    return str_replace("protected", "", Yii::getPathOfAlias('frontend'));
+    return realpath(Yii::getPathOfAlias('frontend').'/..').'/';
   }
 
   public function getFrontendUrl()

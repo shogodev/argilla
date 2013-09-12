@@ -1,14 +1,16 @@
 <?php
-$frontend  = dirname(dirname(__FILE__));
-$backend   = dirname(dirname(dirname(__FILE__))) . '/backend/protected';
-
-Yii::setPathOfAlias('frontend', $frontend);
-Yii::setPathOfAlias('backend', $backend);
+$frontend = realpath(__DIR__.'/..');
+$backend = realpath(__DIR__.'/../../backend/protected');
 
 $config = array(
-  'basePath' => dirname(__FILE__).DIRECTORY_SEPARATOR.'..',
+  'basePath' => $frontend,
   'name' => 'Console Application',
   'preload' => array('log'),
+
+  'aliases' => array(
+    'backend' => $backend,
+    'frontend' => $frontend,
+  ),
 
   'components' => array(
     'db' => CMap::mergeArray(require($frontend.'/config/db.php'),
