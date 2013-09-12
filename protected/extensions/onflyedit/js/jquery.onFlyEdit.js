@@ -136,17 +136,10 @@
 
     submitInput : function(elem, inp, options)
     {
-      var oldval = elem.innerHTML;
-
-      if( !inp.value || !$.trim(inp.value) )
-      {
-        methods.removeInput(elem, inp, options);
-        return null;
-      }
-
       elem.innerHTML = inp.value;
       elem.innerHTML = elem.innerHTML.replace(/\n/g, '<br />');
-      inp.value      = '';
+      
+      inp.value = '';
 
       methods.removeInput(elem, inp, options);
     },
