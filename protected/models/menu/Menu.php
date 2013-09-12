@@ -1,7 +1,6 @@
 <?php
-
 /**
- * @author Nikita Melnikov <melnikov@shogo.ru>
+ * @author Nikita Melnikov <melnikov@shogo.ru>, Sergey Glagolev <glagolev@shogo.ru>
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
@@ -15,19 +14,16 @@
  * @property string $url
  * @property int $visible
  *
- * @property IMenuItem[] $items
+ * @property MenuItem[] $items
  */
 class Menu extends FActiveRecord implements IMenuItem
 {
-  protected $depth = 1;
+  protected $depth;
 
   /**
-   * @return string
+   * @var FActiveRecord[]|IMenuItem[]
    */
-  public function tableName()
-  {
-    return '{{menu}}';
-  }
+  protected $models;
 
   public function defaultScope()
   {
@@ -36,9 +32,6 @@ class Menu extends FActiveRecord implements IMenuItem
     );
   }
 
-  /**
-   * @return array
-   */
   public function relations()
   {
     return array(
@@ -47,66 +40,73 @@ class Menu extends FActiveRecord implements IMenuItem
   }
 
   /**
-   * Устанавливает значение глубины построения меню
+   * Получение массива элементов меню по системному имени
    *
-   * @param int $d
-   *
-   * @return Menu|null
-   */
-  public function setDepth($d)
-  {
-    if( !is_int($d) )
-      return null;
-
-    $this->depth = $d;
-    return $this;
-  }
-
-  /**
-   * Построение меню
+   * @param string $sysname
+   * @param integer $depth
    *
    * @return array
    */
-  public function build()
+  public function getMenu($sysname, $depth = null)
   {
     $data = array();
 
-    if( $this->depth > 0 )
-    {
-      foreach( $this->items as $item )
-      {
-        /**
-         * @var MenuItem $item
-         */
-        $item->setDepth(--$this->depth);
-        $model = preg_replace("/([A-Z][a-z]+)\w*/", "$1", $item->frontend_model);
+    /**
+     * @var Menu $menu
+     */
+    $menu = $this->findByAttributes(array('sysname' => $sysname));
 
-        $data[] = array(
-          'label' => $item->getName(),
-          'url'   => $item->getMenuLink(),
-          'items' => $item->getChildren(),
-          'itemOptions' => array(
-            'class' => 'icn-top-'.strtolower($model).$item->item_id
-          ),
-        );
-      }
+    if( $menu )
+    {
+      $menu->setDepth($depth);
+      $data = $menu->build();
     }
 
     return $data;
   }
 
   /**
-   * Формирование ссылки на страницу, к которой привязано меню
-   *
    * @return array
    */
-  public function getMenuLink()
+  public function build()
   {
-    return array(
-      $this->url,
-    );
+    $data = array();
+    $this->loadModels();
+
+    foreach($this->items as $item)
+    {
+      if( $this->depth === 0 )
+        continue;
+
+      $item->setDepth($this->depth - 1);
+      $data[] = $this->buildItem($item);
+    }
+
+    return $data;
   }
 
+  /**
+   * @param int $depth
+   */
+  public function setDepth($depth = null)
+  {
+    if( isset($depth) )
+    {
+      $this->depth = $depth;
+    }
+  }
+
+  /**
+   * @return array
+   */
+  public function getMenuUrl()
+  {
+    return array($this->url);
+  }
+
+  /**
+   * @return array
+   */
   public function getChildren()
   {
     return $this->build();
@@ -120,15 +120,53 @@ class Menu extends FActiveRecord implements IMenuItem
     return $this->name;
   }
 
-  /**
-   * Получение меню по системному имени
-   *
-   * @param $sysname
-   *
-   * @return Menu
-   */
-  public static function getMenu($sysname)
+  protected function buildItem(MenuItem $item)
   {
-    return Menu::model()->find('sysname = :sysname', array(':sysname' => $sysname));
+    $model = preg_replace("/([A-Z][a-z]+)\w*/", "$1", $item->frontend_model);
+
+    return array(
+      'label' => $item->getName(),
+      'url'   => $item->getMenuUrl(),
+      'items' => $item->getChildren(),
+      'itemOptions' => array(
+        'class' => 'icn-menu-'.strtolower($model).$item->item_id
+      ),
+    );
+  }
+
+  protected function loadModels()
+  {
+    if( $this->models === null )
+    {
+      $this->models = array();
+      $loadedModels = CHtml::listData($this->items, 'item_id', 'item_id', 'frontend_model');
+
+      foreach($loadedModels as $modelClass => $modelPk)
+      {
+        /**
+         * @var FActiveRecord $model
+         */
+        $model = $modelClass::model();
+        $this->models = CMap::mergeArray($this->models, $model->findAllByPk($modelPk));
+      }
+
+      $this->setModels();
+    }
+  }
+
+  protected function setModels()
+  {
+    foreach($this->models as $model)
+    {
+      foreach($this->items as $menuItem)
+      {
+        if( $menuItem->item_id === $model->getPrimaryKey() && $menuItem->frontend_model === get_class($model) )
+        {
+          $menuItem->setModel($model);
+          $model->setDepth(isset($this->depth) ? $this->depth - 1 : null);
+          break;
+        }
+      }
+    }
   }
 }

@@ -1,9 +1,11 @@
 <?php
 /**
- * User: Nikita Melnikov <melnikov@shogo.ru>
- * Date: 12/12/12
+ * @author Nikita Melnikov <melnikov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
  */
-class CustomMenuItemTest extends MenuModuleTest
+class BFrontendCustomMenuItemTest extends MenuModuleTest
 {
   public function testCreate()
   {

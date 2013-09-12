@@ -8,7 +8,7 @@
  *
  * @method static Info model(string $class = __CLASS__)
  *
- * @property integer  $id
+ * @property integer $id
  * @property string  $date
  * @property integer $position
  * @property string  $template
@@ -22,17 +22,20 @@
  * @property integer $children
  * @property integer $menu
  * @property integer $sitemap
+ *
+ * @property integer leftAttribute
+ *
+ * @method Info descendants()
+ * @method Info ancestors()
+ * @method Info parent()
+ * @method Info children()
+ * @method array buildTree($rawTree, $buildItemFunc, $buildParams = array(), $childrenKey = 'children')
  */
 class Info extends FActiveRecord implements IMenuItem
 {
   const ROOT_ID = 1;
 
   protected $files;
-
-  public function tableName()
-  {
-    return '{{info}}';
-  }
 
   public function behaviors()
   {
@@ -45,7 +48,6 @@ class Info extends FActiveRecord implements IMenuItem
 
     return array(
       'condition' => $alias.'.visible=1',
-
     );
   }
 
@@ -182,7 +184,7 @@ class Info extends FActiveRecord implements IMenuItem
   {
     $breadcrumbs = array();
 
-    foreach($this->parents as $parent)
+    foreach($this->getParents() as $parent)
       $breadcrumbs[$parent->name] = array('info/index', 'url' => $parent->url);
 
     $breadcrumbs[] = $this->name;
@@ -200,12 +202,12 @@ class Info extends FActiveRecord implements IMenuItem
     return array();
   }
 
-  public function getMenuLink()
+  public function getMenuUrl()
   {
     return array('info/index', 'url' => $this->url);
   }
 
-  public function setDepth($d)
+  public function setDepth($depth = null)
   {
 
   }

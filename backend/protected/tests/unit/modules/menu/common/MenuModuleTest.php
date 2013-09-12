@@ -1,27 +1,19 @@
 <?php
 /**
- * User: Nikita Melnikov <melnikov@shogo.ru>
- * Date: 12/12/12
+ * @author Nikita Melnikov <melnikov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
  */
-
 Yii::import('backend.modules.menu.controllers.*');
 Yii::import('backend.modules.menu.models.*');
 Yii::import('backend.modules.menu.components.*');
 
 abstract class MenuModuleTest extends CDbTestCase
 {
-  protected $fixtures = array(
-
-  );
-
-  protected function setUp()
-  {
-    parent::setUp();
-  }
-
   protected function tearDown()
   {
-    foreach( $this->getTables() as $table )
+    foreach($this->getTables() as $table)
     {
       $this->getFixtureManager()->truncateTable($table);
     }
