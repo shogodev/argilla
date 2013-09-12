@@ -6,6 +6,8 @@
  * @license http://argilla.ru/LICENSE
  * @package frontend.models.menu
  *
+ * @method static CustomMenuItemData model(string $class = __CLASS__)
+ *
  * @property int $id
  * @property int $parent
  * @property string $name

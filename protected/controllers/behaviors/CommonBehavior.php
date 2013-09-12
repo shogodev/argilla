@@ -63,14 +63,12 @@ class CommonBehavior extends CommonDataBehavior
 
   public function getTopMenu()
   {
-    $menu = Menu::getMenu('top');
-    return  $menu ? $menu->build() : array();
+    return Menu::model()->getMenu('top');
   }
 
   public function getBottomMenu()
   {
-    $menu = Menu::getMenu('bottom');
-    return  $menu ? $menu->build() : array();
+    return Menu::model()->getMenu('bottom');
   }
 
   public function getSectionMenu()

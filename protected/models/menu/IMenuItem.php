@@ -8,11 +8,23 @@
  */
 interface IMenuItem
 {
-  public function getMenuLink();
+  /**
+   * @return array
+   */
+  public function getMenuUrl();
 
+  /**
+   * @return array
+   */
   public function getChildren();
 
+  /**
+   * @return string
+   */
   public function getName();
 
-  public function setDepth($d);
+  /**
+   * @param integer $depth
+   */
+  public function setDepth($depth = null);
 }
