@@ -49,13 +49,20 @@ class Menu extends FActiveRecord implements IMenuItem
    */
   public function getMenu($sysname, $depth = null)
   {
+    $data = array();
+
     /**
      * @var Menu $menu
      */
     $menu = $this->findByAttributes(array('sysname' => $sysname));
-    $menu->setDepth($depth);
 
-    return $menu ? $menu->build() : array();
+    if( $menu )
+    {
+      $menu->setDepth($depth);
+      $data = $menu->build();
+    }
+
+    return $data;
   }
 
   /**
