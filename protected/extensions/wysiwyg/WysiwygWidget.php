@@ -27,7 +27,7 @@ class WysiwygWidget extends CInputWidget
       throw new CHttpException(500, '"attribute" have to be set!');
 
     if( !isset($this->editor) )
-      $this->editor = Yii::app()->getFrontendPath()."ckeditor/ckeditor.php";
+      $this->editor = Yii::app()->getFrontendRoot()."ckeditor/ckeditor.php";
 
     if( !isset($this->basePath) )
       $this->basePath = Yii::app()->getFrontendUrl()."ckeditor/";

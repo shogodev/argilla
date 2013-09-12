@@ -3,7 +3,7 @@ defined('YII_ENABLE_EXCEPTION_HANDLER') or define('YII_ENABLE_EXCEPTION_HANDLER'
 defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', false);
 
 $config = array_replace_recursive(
-  require(dirname(__FILE__).'/backend.php'),
+  require(__DIR__.'/backend.php'),
   array(
     'components' => array(
       'fixture' => array(
@@ -11,6 +11,7 @@ $config = array_replace_recursive(
       ),
     ),
     'aliases' => array(
+
       'bootstrap' => 'ext.bootstrap'
     ),
     'import' => array(
