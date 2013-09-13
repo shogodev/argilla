@@ -12,9 +12,9 @@ class FTestApplication extends FApplication
 {
   protected function init()
   {
-    $_SERVER['SCRIPT_NAME']     = 'backend/index.php';
-    $_SERVER['SCRIPT_FILENAME'] = dirname(__FILE__).'/../../../../'.$_SERVER['SCRIPT_NAME'];
-    $_SERVER['REQUEST_URI']     = dirname(__FILE__).'/../../../../'.$_SERVER['SCRIPT_NAME'];
+    $_SERVER['SCRIPT_NAME']     = '/index.php';
+    $_SERVER['SCRIPT_FILENAME'] = realpath(__DIR__.'/../../../'.$_SERVER['SCRIPT_NAME']);
+    $_SERVER['REQUEST_URI']     = realpath(__DIR__.'/../../../'.$_SERVER['SCRIPT_NAME']);
 
     parent::init();
   }
@@ -41,12 +41,13 @@ class FTestApplication extends FApplication
   }
 
   /**
-   * @param integer  $status
+   * @param integer $status
    * @param bool $exit
+   *
+   * @throws TEndException
    */
   public function end($status = 0, $exit = true)
   {
-    Yii::app()->user->setFlash('end', array('status' => $status, 'exit' => $exit));
-    return;
+    throw new TEndException(200, 'Application is shut down', $status);
   }
 }

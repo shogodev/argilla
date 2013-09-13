@@ -5,6 +5,9 @@ defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', false)
 $config = array_replace_recursive(
   require(dirname(__FILE__).'/frontend.php'),
   array(
+    'import' => array(
+      'frontend.tests.components.*',
+    ),
     'components' => array(
       'fixture' => array(
         'class' => 'share.SFixtureManager',
