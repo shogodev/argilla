@@ -33,6 +33,19 @@
         </pdosqlexec>
     </target>
 
+    <target name="createDbTest" depends="getDbSettings" description="Создать БД для тестов">
+        <copy file="build/sql/create_db_test.sql" tofile="build/tmp/create_db_test.sql">
+            <filterchain>
+                <expandproperties/>
+            </filterchain>
+        </copy>
+        <pdosqlexec url="${db.driver}:host=${db.host}" userid="${db.username}" password="${db.password}">
+            <fileset dir="build/tmp">
+                <include name="create_db_test.sql"/>
+            </fileset>
+        </pdosqlexec>
+    </target>
+
     <target name="createSchema" depends="getDbSettings" description="Залить схему БД">
         <exec command="mysqldump --dump-date --routines --no-data -u${db.username} -p${db.password} -h${db.host} ${db.dbname} > ${dbSchemaLocation}"/>
         <changeTablePrefix file="${dbSchemaLocation}" originalPrefix="${db.prefix}" newPrefix="argilla_"/>
@@ -48,6 +61,15 @@
         <changeTablePrefix file="build/tmp/schemaApplying.sql" newPrefix="${db.prefix}"/>
 
         <exec checkreturn="true" passthru="true" command="mysql -u${db.username} -p${db.password} -h${db.host} ${db.dbname} &lt; build/tmp/schemaApplying.sql"/>
+
+        <input propertyName="applyForTestBase" defaultValue="y">Apply for test base?</input>
+        <if>
+            <equals arg1="${applyForTestBase}" arg2="y"/>
+            <then>
+                <phingcall target="createDbTest"/>
+                <exec checkreturn="true" passthru="true" command="mysql -u${db.username} -p${db.password} -h${db.host} ${db.dbname}_test &lt; build/tmp/schemaApplying.sql"/>
+            </then>
+        </if>
 
         <phingcall target="clean"/>
     </target>
@@ -112,6 +134,7 @@
 
     <target name="clean">
         <delete file="build/tmp/create_db.sql" quiet="yes" failonerror="false"/>
+        <delete file="build/tmp/create_db_test.sql" quiet="yes" failonerror="false"/>
         <delete file="build/tmp/schema.backup.sql" quiet="yes" failonerror="false"/>
         <delete file="build/tmp/schemaPrefixChanging.sql" quiet="yes" failonerror="false"/>
         <delete file="build/tmp/schemaApplying.sql" quiet="yes" failonerror="false"/>
