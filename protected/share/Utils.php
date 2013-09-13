@@ -188,11 +188,15 @@ class Utils
     return $url;
   }
 
-  public static function buildUrl(array $components)
+  public static function buildUrl(array $parts)
   {
-    $url  = !empty($components['path']) ? $components['path'] : "";
-    $url .= !empty($components['query']) ? "?".$components['query'] : "";
-    $url .= !empty($components['fragment']) ? "#".$components['fragment'] : "";
+    $url  = isset($parts['scheme']) ? $parts['scheme'] . '://' : '';
+    $url .= isset($parts['host']) ? $parts['host'] : '';
+    $url .= isset($parts['user']) ? $parts['user'] . (isset($parts['pass'])) ? ':' . $parts['pass'] : '' .'@' : '';
+    $url .= isset($parts['port']) ? ':' . $parts['port'] : '';
+    $url .= isset($parts['path']) ? $parts['path'] : '';
+    $url .= isset($parts['query']) ? '?' . $parts['query'] : '';
+    $url .= isset($parts['fragment']) ? '#' . $parts['fragment'] : '';
 
     return $url;
   }
