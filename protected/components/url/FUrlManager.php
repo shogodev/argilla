@@ -10,6 +10,8 @@ class FUrlManager extends CUrlManager
 {
   public $urlRuleClass = 'FUrlRule';
 
+  public $isDefaultParamsUsed = false;
+
   protected function createUrlRule($route, $pattern)
   {
     if(is_array($route) && isset($route['class']))
@@ -22,7 +24,7 @@ class FUrlManager extends CUrlManager
 class FUrlRule extends CUrlRule
 {
   /**
-   * @param CUrlManager $manager
+   * @param FUrlManager $manager
    * @param CHttpRequest $request
    * @param string $pathInfo
    * @param string $rawPathInfo
@@ -39,7 +41,10 @@ class FUrlRule extends CUrlRule
       foreach($this->defaultParams as $param)
         $pathInfo .= '/'.$param;
 
-      $result = parent::parseUrl($manager, $request, $pathInfo, $rawPathInfo);
+      if( $result = parent::parseUrl($manager, $request, $pathInfo, $rawPathInfo) )
+      {
+        $manager->isDefaultParamsUsed = true;
+      }
     }
 
     return $result;

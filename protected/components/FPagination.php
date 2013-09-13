@@ -61,21 +61,14 @@ class FPagination extends CPagination
    */
   public function checkDefaultPagination($currentPage)
   {
-    if( $currentPage == $this->defaultPage )
+    if( $currentPage == $this->defaultPage && !Yii::app()->urlManager->isDefaultParamsUsed )
     {
       $get   = $_GET;
       $route = Yii::app()->controller->route;
+      unset($get[$this->pageVar]);
 
-      if( isset($get[$this->pageVar]) && $get[$this->pageVar] == $currentPage )
-      {
-        unset($get[$this->pageVar]);
-
-        $url      = Yii::app()->request->getPathInfo();
-        $redirect = Yii::app()->controller->createUrl($route, $get);
-
-        if( trim($url, '/') !== trim(parse_url($redirect)['path'], '/') )
-          Yii::app()->controller->redirect($redirect, 301);
-      }
+      $redirect = Yii::app()->controller->createUrl($route, $get);
+      Yii::app()->controller->redirect($redirect, 301);
     }
   }
 }
