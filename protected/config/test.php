@@ -3,10 +3,10 @@ defined('YII_ENABLE_EXCEPTION_HANDLER') or define('YII_ENABLE_EXCEPTION_HANDLER'
 defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', false);
 
 $config = array_replace_recursive(
-  require(dirname(__FILE__).'/frontend.php'),
+  require(__DIR__.'/frontend.php'),
   array(
     'import' => array(
-      'frontend.tests.components.*',
+      'tests' => 'frontend.tests.components.*',
     ),
     'components' => array(
       'fixture' => array(
@@ -20,7 +20,6 @@ $config = array_replace_recursive(
         'class' => 'CHttpSession'
       )
     ),
-
     'params' => array(
       'mode' => 'test'
     )
@@ -28,7 +27,6 @@ $config = array_replace_recursive(
 );
 
 unset($config['components']['log']);
-
 $config['components']['db']['connectionString'] = preg_replace("/dbname=([\w\-_]+)/", "dbname=$1_test", $config['components']['db']['connectionString']);
 
 return $config;

@@ -5,15 +5,20 @@
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
  * @package frontend.components.redirect
+ *
+ * @property bool $isRedirect
+ * @property string $targetUrl
  */
 class RedirectHelper extends CApplicationComponent
 {
   const REGEXP_START_CHAR = '#';
 
+  public $cacheUrls = false;
+
   /**
    * @var Redirect[]
    */
-  protected $redirects = array();
+  protected $redirects;
 
   /**
    * Текущая страница для сравнения
@@ -48,7 +53,7 @@ class RedirectHelper extends CApplicationComponent
    *
    * @var array
    */
-  private $currentUrlParts;
+  private $parsedUrl;
 
   /**
    * Флаг, указывающий на то, что мы работаем в режиме подмены ссылок
@@ -68,8 +73,10 @@ class RedirectHelper extends CApplicationComponent
    */
   public function __construct($url = null)
   {
-    if( !$url )
+    if( !$url && isset($_SERVER['REQUEST_URI']) )
+    {
       $url = $_SERVER['REQUEST_URI'];
+    }
 
     $this->setCurrentUrl($url);
   }
@@ -98,9 +105,14 @@ class RedirectHelper extends CApplicationComponent
     $this->redirect   = null;
     $this->targetUrl  = null;
     $this->isRedirect = false;
-
     $this->currentUrl = $url;
-    $this->clearUrl();
+
+    $this->parsedUrl = parse_url($url);
+
+    if( !isset($this->parsedUrl['path']) )
+    {
+      $this->parsedUrl['path'] = '/';
+    }
   }
 
   /**
@@ -150,14 +162,14 @@ class RedirectHelper extends CApplicationComponent
    */
   public function makeSlashRedirect()
   {
-    $url = parse_url($_SERVER['REQUEST_URI']);
-
-    if( !preg_match("/.+\.\w+$/", $url['path']) && substr($url['path'], -1, 1) !== '/' )
+    if( $this->urlNeedTrailingSlash($this->parsedUrl['path']) )
     {
       $this->isRedirect = true;
-      $this->targetUrl  = $this->currentUrl.'/';
 
-      $this->redirect          = new Redirect();
+      $this->targetUrl = $this->parsedUrl['path'].'/';
+      $this->restoreUrl();
+
+      $this->redirect = new Redirect();
       $this->redirect->type_id = RedirectType::TYPE_301;
       $this->move();
     }
@@ -170,22 +182,24 @@ class RedirectHelper extends CApplicationComponent
    */
   public function find()
   {
-    foreach( $this->getRedirects() as $redirect )
+    $this->clearUrl();
+
+    foreach($this->getRedirects() as $redirect)
     {
       if( $this->isReplaceMode() && $redirect->type_id != RedirectType::TYPE_REPLACE )
         continue;
 
+      $this->checkRedirect($redirect);
+
       if( $this->isRedirect )
         break;
-
-      $this->checkRedirect($redirect);
     }
 
     if( !$this->isRedirect && $this->originExists() && !$this->isReplaceMode() )
     {
-      $redirect          = new Redirect();
-      $redirect->type_id = RedirectType::TYPE_404;
-      $this->isRedirect  = true;
+      $this->redirect = new Redirect();
+      $this->redirect->type_id = RedirectType::TYPE_404;
+      $this->isRedirect = true;
     }
 
     $this->restoreUrl();
@@ -194,70 +208,72 @@ class RedirectHelper extends CApplicationComponent
   }
 
   /**
-   * Выполнение редиректа, если он существует
-   *
    * @throws CHttpException
    */
   public function move()
   {
     if( $this->isRedirect )
     {
-      if( empty($this->redirect) )
+      if( $this->redirect->type_id == RedirectType::TYPE_404 )
+      {
         throw new CHttpException(404, RedirectType::getList()[404]);
+      }
       elseif( $this->redirect->type_id == RedirectType::TYPE_REPLACE )
+      {
         $_SERVER['REQUEST_URI'] = $this->targetUrl;
+      }
       else
       {
-        $redirectMessage = RedirectType::getList()[$this->redirect->type_id];
-
-        header("HTTP/1.0 {$this->redirect->type_id} {$redirectMessage}");
-        header("Location: http://{$_SERVER['HTTP_HOST']}{$this->targetUrl}");
-        Yii::app()->end();
+        Yii::app()->request->redirect($this->targetUrl, true, $this->redirect->type_id);
       }
     }
   }
 
+  protected function urlNeedTrailingSlash($url)
+  {
+    return !preg_match("/.+\.\w+$/", $url) && substr($url, -1, 1) !== '/';
+  }
+
   /**
-   * Проверка на существование текущего url, как оригинального
+   * Проверяем, что текущий url не переопределен через редиректы
    *
    * @return boolean
    */
-  public function originExists()
+  protected function originExists()
   {
-    $exists = false;
-
-    foreach( $this->getRedirects() as $redirect )
+    foreach($this->getRedirects() as $redirect)
     {
-      if( $redirect->base == $this->currentUrl )
+      if( $redirect->base === $this->parsedUrl['path'] )
       {
-        $exists = true;
-        break;
+        return true;
       }
     }
 
-    return $exists;
+    return false;
   }
 
   /**
    * Проверка на возможность редиректа по текущему url и Redirect $r
    *
-   * @param Redirect $r
+   * @param Redirect $redirect
    */
-  protected function checkRedirect(Redirect $r)
+  protected function checkRedirect(Redirect $redirect)
   {
-    $currentRedirect = $this->checkRedirectType($r);
+    $this->redirect = $this->checkRedirectType($redirect);
+    $this->isRedirect = true;
 
-    if( stripos($currentRedirect->base, self::REGEXP_START_CHAR) === 0 && @preg_match($currentRedirect->base, $this->currentUrl) )
+    if( $this->redirect->hasRegExpCoincidence($this->parsedUrl['path']) )
     {
-      $this->targetUrl  = preg_replace($currentRedirect->base, $this->prepareReplacement($currentRedirect->target), $this->currentUrl);
-      $this->redirect   = $currentRedirect;
-      $this->isRedirect = true;
+      $this->targetUrl = preg_replace($this->redirect->base, $this->prepareReplacement($this->redirect->target), $this->parsedUrl['path']);
     }
-    elseif( $this->currentUrl == $currentRedirect->base )
+    elseif( $this->redirect->hasStringCoincidence($this->parsedUrl['path']) )
     {
-      $this->targetUrl  = $currentRedirect->target;
-      $this->redirect   = $currentRedirect;
-      $this->isRedirect = true;
+      $this->targetUrl = $this->redirect->target;
+    }
+    else
+    {
+      $this->redirect = null;
+      $this->isRedirect = false;
     }
   }
 
@@ -265,44 +281,40 @@ class RedirectHelper extends CApplicationComponent
    * Проверка типа редиректа,
    * если тип "подмена", то меняются местами начальный и конечный URL
    *
-   * @param Redirect $r
+   * @param Redirect $redirect
    *
    * @return Redirect
    */
-  protected function checkRedirectType($r)
+  protected function checkRedirectType($redirect)
   {
-    $checkedRedirect = clone $r;
-
-    if( $r->type_id == RedirectType::TYPE_REPLACE && !$this->replaceMode )
+    if( $redirect->type_id == RedirectType::TYPE_REPLACE && !$this->isReplaceMode() )
     {
-      $tmp                     = $checkedRedirect->base;
-      $checkedRedirect->base   = $checkedRedirect->target;
-      $checkedRedirect->target = $tmp;
+      $redirect = clone $redirect;
+      $tmp = $redirect->base;
+      $redirect->base = $redirect->target;
+      $redirect->target = $tmp;
     }
 
-    return $checkedRedirect;
+    return $redirect;
   }
 
-  /**
-   * Удаление query и fragment
-   */
   protected function clearUrl()
   {
-    $this->currentUrlParts = parse_url($this->currentUrl);
-    $this->currentUrl      = $this->currentUrlParts['path'];
-    $this->currentUrl      = '/'.trim($this->currentUrl, '/');
+    $this->parsedUrl['path'] = '/'.trim($this->parsedUrl['path'], '/');
   }
 
   /**
-   * Добавление к конечному url исходных параметров
+   * @return string
    */
   protected function restoreUrl()
   {
-    if( !empty($this->currentUrlParts['query']) )
-      $this->targetUrl .= '?' . $this->currentUrlParts['query'];
+    if( $this->targetUrl !== null )
+    {
+      $url = $this->parsedUrl;
+      $url['path'] = $this->targetUrl;
 
-    if( !empty($this->currentUrlParts['fragment']) )
-      $this->targetUrl .= '#' . $this->currentUrlParts['fragment'];
+      $this->targetUrl = Utils::buildUrl($url);
+    }
   }
 
   /**
@@ -310,7 +322,7 @@ class RedirectHelper extends CApplicationComponent
    */
   protected function getRedirects()
   {
-    if( empty($this->redirects) )
+    if( $this->redirects === null )
       $this->redirects = Redirect::model()->findAll();
 
     return $this->redirects;
@@ -319,18 +331,17 @@ class RedirectHelper extends CApplicationComponent
   /**
    * Подготовка выражения для подстановки
    *
-   * @param $string
+   * @param string $template
    *
    * @return string
    */
-  private function prepareReplacement($string)
+  protected function prepareReplacement($template)
   {
-    $string = preg_replace_callback("/\([^\)]+\)/", function(){
-      static $position = 0;
+    $template = preg_replace_callback("/\([^\)]+\)/", function(){
+      static $position = 1;
+      return '$'.$position++;
+    }, trim($template, '#'));
 
-      return '$'.++$position;
-    }, trim($string, '#'));
-
-    return Yii::app()->createUrl($string);
+    return Yii::app()->createUrl($template);
   }
 }

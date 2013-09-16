@@ -84,7 +84,7 @@ class BRedirect extends BActiveRecord
     $string = '';
 
     if( !empty($parts['path']) )
-      $string .= rtrim($parts['path'], '/');
+      $string .= '/'.trim($parts['path'], '/');
 
     if( !empty($parts['query']) )
       $string .= '?'.$parts['query'];

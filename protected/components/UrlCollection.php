@@ -8,6 +8,8 @@
  */
 class UrlCollection extends SplStack implements IApplicationComponent
 {
+  public $collectUrls = false;
+
   /**
    * @var bool
    */
