@@ -1,4 +1,4 @@
-<project name="shogocms_run_checker" basedir = "." default = "run">
+<project name="argilla_run_checker" basedir = "." default = "run">
 	<target name = "run">
 		<if>
 			<isset property = "checkdir" />

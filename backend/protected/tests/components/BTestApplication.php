@@ -12,34 +12,30 @@ class BTestApplication extends BApplication
 {
   protected function init()
   {
-    $_SERVER['SERVER_NAME']     = 'argilla.dev.shogo.ru';
-    $_SERVER['SCRIPT_NAME']     = 'backend/index.php';
-    $_SERVER['SCRIPT_FILENAME'] = dirname(__FILE__).'/../../../../'.$_SERVER['SCRIPT_NAME'];
-    $_SERVER['REQUEST_URI']     = $_SERVER['SCRIPT_FILENAME'];
-
+    $_SERVER['SCRIPT_FILENAME'] = realpath(__DIR__.'/../../../../'.$_SERVER['SCRIPT_NAME']);
     parent::init();
   }
 
   /**
    * Устанавливаем окружение.
-   * Задаем модуль, контроллер и экшен, в контексте которого выполняется код.
+   * Задаем модуль, контроллер и экшен, в контексте которого выполняется тест.
    *
    * Yii::app()->setUnitEnvironment('Info', 'BInfo', 'update', array('id' => '2'));
    *
-   * @param string $module_name
-   * @param string $controller_name
+   * @param string $moduleName
+   * @param string $controllerName
    * @param string $action
    * @param array  $params
    */
-  public function setUnitEnvironment($module_name, $controller_name, $action = 'index', $params = array())
+  public function setUnitEnvironment($moduleName, $controllerName, $action = 'index', $params = array())
   {
-    $module     = $module_name.'Module';
-    $controller = $controller_name.'Controller';
+    $moduleClass     = ucfirst($moduleName).'Module';
+    $controllerClass = ucfirst($controllerName).'Controller';
 
     /**
      * @var BController $controller
      */
-    $controller = new $controller(strtolower($controller_name), new $module(strtolower($module_name), null));
+    $controller = new $controllerClass(strtolower($controllerName), new $moduleClass(strtolower($moduleName), null));
     $controller->setAction(new CInlineAction($controller, $action));
 
     Yii::app()->setController($controller);
@@ -72,10 +68,11 @@ class BTestApplication extends BApplication
   /**
    * @param integer $status
    * @param bool $exit
+   *
+   * @throws BTestEndException
    */
   public function end($status = 0, $exit = true)
   {
-    Yii::app()->user->setFlash('end', array('status' => $status, 'exit' => $exit));
-    return;
+    throw new BTestEndException(200, 'Application is shut down', $status);
   }
 }

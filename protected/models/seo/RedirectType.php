@@ -1,8 +1,9 @@
 <?php
-
 /**
- * User: Nikita Melnikov <melnikov@shogo.ru>
- * Date: 12/3/12
+ * @author Nikita Melnikov <melnikov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
  */
 class RedirectType extends CModel
 {

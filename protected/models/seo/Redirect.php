@@ -1,9 +1,17 @@
 <?php
 /**
- * User: Nikita Melnikov <melnikov@shogo.ru>
- * Date: 12/3/12
+ * @author Sergey Glagolev <glagolev@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
+ *
+ * @property integer $id
+ * @property string $base
+ * @property string $target
+ * @property string $type_id
+ * @property string $visible
  */
-class Redirect extends FActiveRecord implements Serializable
+class Redirect extends FActiveRecord
 {
   public function tableName()
   {
@@ -20,28 +28,22 @@ class Redirect extends FActiveRecord implements Serializable
   }
 
   /**
-   * (PHP 5 &gt;= 5.1.0)<br/>
-   * String representation of object
-   * @link http://php.net/manual/en/serializable.serialize.php
-   * @return string the string representation of the object or null
+   * @param string $url
+   *
+   * @return bool
    */
-  public function serialize()
+  public function hasRegExpCoincidence($url)
   {
-    // TODO: Implement serialize() method.
+    return stripos($this->base, RedirectHelper::REGEXP_START_CHAR) === 0 && @preg_match($this->base, $url);
   }
 
   /**
-   * (PHP 5 &gt;= 5.1.0)<br/>
-   * Constructs the object
-   * @link http://php.net/manual/en/serializable.unserialize.php
+   * @param string $url
    *
-   * @param string $serialized <p>
-   *                           The string representation of the object.
-   * </p>
-   *
-   * @return mixed the original value unserialized.
+   * @return bool
    */
-  public function unserialize($serialized)
+  public function hasStringCoincidence($url)
   {
-    // TODO: Implement unserialize() method.
-}}
+    return $url === $this->base;
+  }
+}

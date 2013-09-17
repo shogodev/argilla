@@ -25,8 +25,8 @@ class FApplication extends CWebApplication
   {
     parent::init();
 
-    if( empty($this->params->project) )
-      $this->params->project = preg_replace("/^www./", '', Yii::app()->request->serverName);
+    if( empty($this->params->project) && isset($_SERVER['SERVER_NAME']) )
+      $this->params->project = preg_replace("/^www./", '', Yii::app()->request->getServerName());
 
     $this->setMbEncoding();
   }

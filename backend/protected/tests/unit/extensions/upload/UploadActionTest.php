@@ -41,7 +41,9 @@ class UploadActionTest extends CDbTestCase
 
     $uploadAction = new ReflectionMethod('UploadAction', 'uploadFile');
     $uploadAction->setAccessible(true);
+    ob_start();
     $uploadAction->invoke($this->actionClass, $uploadedFile);
+    ob_end_clean();
 
     $this->assertFileExists($this->path.'img.jpg');
     $this->assertFileExists($this->path.'pre_img.jpg');
@@ -65,7 +67,9 @@ class UploadActionTest extends CDbTestCase
 
     $uploadAction = new ReflectionMethod('UploadAction', 'deleteFile');
     $uploadAction->setAccessible(true);
+    ob_start();
     $uploadAction->invoke($this->actionClass, $id);
+    ob_end_clean();
 
     $this->assertFileNotExists($name);
     $this->assertFileNotExists($preName);
@@ -83,5 +87,3 @@ class UploadActionTest extends CDbTestCase
     rmdir($this->path);
   }
 }
-
-?>

@@ -21,21 +21,38 @@ class RedirectedUrlCreator extends CComponent
   private $target;
 
   /**
-   * @param string $baseUrl
-   *
-   * @return RedirectedUrlCreator
+   * @var CCache
    */
-  public static function init($baseUrl)
+  private $cache;
+
+  /**
+   * @var RedirectHelper
+   */
+  private $seoRedirect;
+
+  /**
+   * @param string $baseUrl
+   * @param CCache $cache
+   * @param RedirectHelper $seoRedirect
+   */
+  private function __construct($baseUrl, $cache, $seoRedirect)
   {
-    return new self($baseUrl);
+    $this->baseUrl = $baseUrl;
+    $this->cache = isset($cache) ? $cache : Yii::app()->cache;
+    $this->seoRedirect = isset($seoRedirect) ? $seoRedirect : Yii::app()->seoRedirect;
   }
 
   /**
    * @param string $baseUrl
+   *
+   * @param CCache $cache
+   * @param RedirectHelper $seoRedirect
+   *
+   * @return RedirectedUrlCreator
    */
-  private function __construct($baseUrl)
+  public static function init($baseUrl, $cache = null, $seoRedirect = null)
   {
-    $this->baseUrl = $baseUrl;
+    return new self($baseUrl, $cache, $seoRedirect);
   }
 
   /**
@@ -43,33 +60,34 @@ class RedirectedUrlCreator extends CComponent
    */
   public function create()
   {
-    $this->getFromCache();
+    $this->setTargetFromCache();
 
     if( empty($this->target) )
     {
-      $seoRedirect = Yii::app()->seoRedirect;
-
-      $seoRedirect->setReplaceMode(true);
-      $seoRedirect->setCurrentUrl($this->baseUrl);
-      $seoRedirect->find();
-
-      $this->target = $seoRedirect->isRedirect ? $seoRedirect->targetUrl : $this->baseUrl;
-
-      if( !empty(Yii::app()->params['collectUrls']) && Yii::app()->params['collectUrls'] === true )
-        Yii::app()->urlCollection->push($this->target);
-
+      $this->setTargetFromRedirects();
+      $this->setToCollection();
       $this->setToCache();
     }
 
     return $this->target;
   }
 
-  /**
-   * @return int
-   */
-  protected function getCacheExpire()
+  protected function setTargetFromRedirects()
   {
-    return YII_DEBUG ? 0 : 1800;
+    $this->seoRedirect->setReplaceMode(true);
+
+    $this->seoRedirect->setCurrentUrl($this->baseUrl);
+    $this->seoRedirect->find();
+
+    $this->target = $this->seoRedirect->isRedirect ? $this->seoRedirect->targetUrl : $this->baseUrl;
+  }
+
+  protected function setToCollection()
+  {
+    if( isset(Yii::app()->urlCollection) && Yii::app()->urlCollection->collectUrls === true )
+    {
+      Yii::app()->urlCollection->push($this->target);
+    }
   }
 
   /**
@@ -80,17 +98,20 @@ class RedirectedUrlCreator extends CComponent
     return self::CACHE_PREFIX.$this->baseUrl;
   }
 
-  protected function getFromCache()
+  protected function setTargetFromCache()
   {
-    if( $this->useCache() && Yii::app()->cache->offsetExists($this->getCacheId()) )
-      $this->target = Yii::app()->cache->offsetGet($this->getCacheId());
-
+    if( $this->useCache() && $this->cache->offsetExists($this->getCacheId()) )
+    {
+      $this->target = $this->cache->offsetGet($this->getCacheId());
+    }
   }
 
   protected function setToCache()
   {
     if( $this->useCache() )
-      Yii::app()->cache->offsetSet($this->getCacheId(), $this->target);
+    {
+      $this->cache->offsetSet($this->getCacheId(), $this->target);
+    }
   }
 
   /**
@@ -98,6 +119,6 @@ class RedirectedUrlCreator extends CComponent
    */
   protected function useCache()
   {
-    return Yii::app()->params['cacheUrls'] === true && Yii::app()->cache !== null;
+    return isset(Yii::app()->seoRedirect) && Yii::app()->seoRedirect->cacheUrls === true && $this->cache !== null;
   }
 }

@@ -22,23 +22,12 @@ class BApplicationTest extends CTestCase
   public function testGetFrontendRoot()
   {
     $path = $this->app->getFrontendRoot();
-    $file = str_replace('backend/protected/tests/unit/components', '', dirname(__FILE__));
+    $file = realpath(__DIR__.'/../../../../..').'/';
 
     $this->assertEquals($path, $file);
   }
 
-  public function testGetFrontendUrl()
-  {
-    if( !isset($_SERVER['HTTP_HOST']) )
-      $this->markTestSkipped();
-
-    $url  = $this->app->getFrontendUrl();
-    $host = 'http://'.$_SERVER['HTTP_HOST']."/";
-
-    $this->assertEquals($url, $host);
-  }
-
-  public function testTetUnitEnvironment()
+  public function testSetUnitEnvironment()
   {
     $this->app->setUnitEnvironment('News', 'BNewsSection', 'index');
 
@@ -51,9 +40,12 @@ class BApplicationTest extends CTestCase
     $this->assertEquals('index', $this->app->controller->action->id);
   }
 
+  /**
+   * @expectedException BTestEndException
+   * @expectedExceptionCode 1101
+   */
   public function testEnd()
   {
     $this->app->end('1101');
-    $this->assertEquals('1101', Yii::app()->user->getFlash('end')['status']);
   }
 }

@@ -12,28 +12,28 @@ class FTestApplication extends FApplication
 {
   protected function init()
   {
-    $_SERVER['SCRIPT_NAME']     = 'backend/index.php';
-    $_SERVER['SCRIPT_FILENAME'] = dirname(__FILE__).'/../../../../'.$_SERVER['SCRIPT_NAME'];
-    $_SERVER['REQUEST_URI']     = dirname(__FILE__).'/../../../../'.$_SERVER['SCRIPT_NAME'];
-
+    $_SERVER['SCRIPT_FILENAME'] = realpath(__DIR__.'/../../..'.$_SERVER['SCRIPT_NAME']);
     parent::init();
   }
 
   /**
    * Устанавливаем окружение.
-   * Задаем контроллер и экшен, в контексте которого выполняется код.
+   * Задаем контроллер и экшен, в контексте которого выполняется тест.
    *
    * Yii::app()->setUnitEnvironment('Info', 'update', array('id' => '2'));
    *
-   * @param string $controller_name
+   * @param string $controllerName
    * @param string $action
    * @param array  $params
    */
-  public function setUnitEnvironment($controller_name, $action = 'index', $params = array())
+  public function setUnitEnvironment($controllerName, $action = 'index', $params = array())
   {
-    $controller = $controller_name.'Controller';
+    $class = ucfirst($controllerName).'Controller';
 
-    $controller = new $controller(strtolower($controller_name));
+    /**
+     * @var FController $controller
+     */
+    $controller = new $class(strtolower($controllerName));
     $controller->setAction(new CInlineAction($controller, $action));
 
     Yii::app()->setController($controller);
@@ -41,12 +41,13 @@ class FTestApplication extends FApplication
   }
 
   /**
-   * @param integer  $status
+   * @param integer $status
    * @param bool $exit
+   *
+   * @throws TEndException
    */
   public function end($status = 0, $exit = true)
   {
-    Yii::app()->user->setFlash('end', array('status' => $status, 'exit' => $exit));
-    return;
+    throw new TEndException(200, 'Application is shut down', $status);
   }
 }

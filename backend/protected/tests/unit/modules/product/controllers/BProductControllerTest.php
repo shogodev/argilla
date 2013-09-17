@@ -7,17 +7,24 @@
  */
 class BProductControllerTest extends CDbTestCase
 {
-  protected $fixtures = array('product'                 => 'BProduct',
-                           'product_type'            => 'BProductType',
-                           'product_section'         => 'BProductSection',
-                           'product_assignment'      => 'BProductAssignment',
-                           'product_tree_assignment' => 'BProductTreeAssignment');
+  protected $fixtures = array(
+    'product'                 => 'BProduct',
+    'product_type'            => 'BProductType',
+    'product_section'         => 'BProductSection',
+    'product_assignment'      => 'BProductAssignment',
+    'product_tree_assignment' => 'BProductTreeAssignment'
+  );
 
-  public function setUp()
+  protected function setUp()
   {
     parent::setUp();
+    ob_start();
   }
 
+
+  /**
+   * @expectedException BTestEndException
+   */
   public function testActionUpdateAssignment()
   {
     $_POST['BProduct']['attribute'] = 'section_id';
@@ -26,10 +33,14 @@ class BProductControllerTest extends CDbTestCase
 
     $controller = new BProductController('product');
     $controller->actionUpdateAssignment(1);
-
     $output = $this->getActualOutput();
     $output = CJavaScript::jsonDecode($output);
-
     $this->assertRegExp("/prod_type1.*prod_type2.*prod_type3<\/option>$/", $output['type_id']);
+  }
+
+  protected function tearDown()
+  {
+    ob_end_clean();
+    parent::tearDown();
   }
 }

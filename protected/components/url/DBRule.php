@@ -71,6 +71,14 @@ class DBRule extends CUrlRule
     return $url;
   }
 
+  /**
+   * @param FUrlManager $manager
+   * @param CHttpRequest $request
+   * @param string $pathInfo
+   * @param string $rawPathInfo
+   *
+   * @return bool|string
+   */
   public function parseUrl($manager, $request, $pathInfo, $rawPathInfo)
   {
     if( $this->verb !== null && !in_array($request->getRequestType(), $this->verb, true) )
@@ -95,9 +103,15 @@ class DBRule extends CUrlRule
       $pathInfo = strtolower($request->getHostInfo()).rtrim('/'.$pathInfo, '/');
 
     if( !empty($this->defaultParams) && !preg_match($this->pattern.$case, $pathInfo.'/', $matches)  )
+    {
       $pathInfo .= rtrim('/' . implode("/", $this->defaultParams), '/') . '/';
+      $isDefaultParamsUsed = true;
+    }
     else
+    {
       $pathInfo .= '/';
+      $isDefaultParamsUsed = false;
+    }
 
     if( preg_match($this->pattern.$case, $pathInfo, $matches) )
     {
@@ -135,6 +149,8 @@ class DBRule extends CUrlRule
         elseif( isset($this->params[$key]) )
           $_REQUEST[$key] = $_GET[$key] = $value;
       }
+
+      $manager->isDefaultParamsUsed = $isDefaultParamsUsed;
 
       if( $pathInfo !== $matches[0] )
         $manager->parsePathInfo(ltrim(substr($pathInfo, strlen($matches[0])), '/'));

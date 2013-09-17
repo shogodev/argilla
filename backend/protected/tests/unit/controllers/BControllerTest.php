@@ -25,8 +25,13 @@ class BControllerTest extends CDbTestCase
     $this->controller->modelClass = 'BNews';
 
     Yii::app()->setUnitEnvironment('News', 'BNews', 'update', array('id' => '1'));
+    ob_start();
   }
 
+  /**
+   * @expectedException BTestRedirectException
+   * @expectedExceptionMessage Location: backend/base
+   */
   public function testBeforeAction()
   {
     $action     = new CInlineAction($this->controller, 'index');
@@ -67,6 +72,9 @@ class BControllerTest extends CDbTestCase
     $this->assertInstanceOf('BNews', $model);
   }
 
+  /**
+   * @expectedException BTestRedirectException
+   */
   public function testSaveModel()
   {
     $name  = 'testSaveModel';
@@ -124,6 +132,9 @@ class BControllerTest extends CDbTestCase
     $this->assertFalse($result);
   }
 
+  /**
+   * @expectedException BTestEndException
+   */
   public function testPerformAjaxValidationForSeveralModels()
   {
     $name            = 'testPerformAjaxValidationForSeveralModels';
@@ -138,10 +149,12 @@ class BControllerTest extends CDbTestCase
     $method->setAccessible(true);
 
     $method->invoke($this->controller, array($productModel, $assignmentModel));
-    $o = $this->getActualOutput();
     $this->expectOutputString('[]');
   }
 
+  /**
+   * @expectedException BTestEndException
+   */
   public function testErrorPerformAjaxValidationForSeveralModels()
   {
     $name             = 'testPerformAjaxValidationForSeveralModels';
@@ -157,6 +170,9 @@ class BControllerTest extends CDbTestCase
     $this->assertNotEquals('[]', $this->getActualOutput());
   }
 
+  /**
+   * @expectedException BTestEndException
+   */
   public function testPerformAjaxValidation()
   {
     $name              = 'testPerformAjaxValidation';
@@ -171,6 +187,9 @@ class BControllerTest extends CDbTestCase
     $this->expectOutputString('[]');
   }
 
+  /**
+   * @expectedException BTestEndException
+   */
   public function testErrorPerformAjaxValidation()
   {
     $name              = 'testPerformAjaxValidation';
@@ -185,10 +204,13 @@ class BControllerTest extends CDbTestCase
     $this->assertNotEquals('[]', $this->getActualOutput());
   }
 
+  /**
+   * @expectedException BTestRedirectException
+   * @expectedExceptionMessage Location: testUrl
+   */
   public function testRedirect()
   {
     $this->controller->redirect('testUrl');
-    $this->assertEquals('testUrl', Yii::app()->user->getFlash('redirect'));
   }
 
   public function testActionIndex()
@@ -201,9 +223,8 @@ class BControllerTest extends CDbTestCase
 
   public function tearDown()
   {
+    ob_end_clean();
     Yii::app()->db->createCommand()->truncateTable('{{product}}');
     Yii::app()->db->createCommand()->truncateTable('{{product_assignment}}');
   }
 }
-
-?>

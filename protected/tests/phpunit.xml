@@ -1,19 +1,14 @@
 <phpunit bootstrap="bootstrap.php"
-		colors="true"
-		convertErrorsToExceptions="true"
-		convertNoticesToExceptions="true"
-		convertWarningsToExceptions="true"
-		stopOnFailure="false">
+    colors="true"
+    convertErrorsToExceptions="true"
+    convertNoticesToExceptions="true"
+    convertWarningsToExceptions="true"
+    stopOnFailure="false">
 
-	<!--<selenium>
-		<browser name="Internet Explorer" browser="*iexplore" />
-		<browser name="Firefox" browser="*firefox" />
-	</selenium>-->
-
-    <!--<logging>
-        <log type="coverage-html" target="report" charset="UTF-8"
-             yui="true" highlight="true"
-             lowUpperBound="50" highLowerBound="80"/>
-    </logging>-->
+    <php>
+        <server name="SCRIPT_NAME" value="/index.php"/>
+        <server name="SERVER_NAME" value="argilla.ru"/>
+        <server name="REQUEST_URI" value="/"/>
+    </php>
 
 </phpunit>
