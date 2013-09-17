@@ -6,7 +6,7 @@ defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', true);
 $frontend = realpath(__DIR__.'/..');
 $backend = realpath(__DIR__.'/../../backend/protected');
 
-return array_merge_recursive(array(
+return array_replace_recursive(array(
   'basePath' => $frontend,
   'name' => 'argilla.ru',
   'defaultController' => 'index',
@@ -85,6 +85,7 @@ return array_merge_recursive(array(
 
     'urlCollection' => array(
       'class' => 'frontend.components.UrlCollection',
+      'collectUrls' => false,
     ),
 
     'user' => array(
@@ -148,6 +149,7 @@ return array_merge_recursive(array(
 
     'seoRedirect' => array(
       'class' => 'RedirectHelper',
+      'cacheUrls' => false,
     ),
 
     'phpThumb' => array(
@@ -163,8 +165,6 @@ return array_merge_recursive(array(
   'params' => array(
     'mode'        => 'frontend',
     'salt'        => 'random_salt',
-    'collectUrls' => false,
-    'cacheUrls'   => false,
   ),
 
   'sourceLanguage' => 'ru_ru',

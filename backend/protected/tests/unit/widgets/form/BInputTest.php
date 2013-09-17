@@ -4,7 +4,6 @@
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
- * @package frontend.models.product.filter
  */
 class BInputTest extends CTestCase
 {
@@ -24,7 +23,9 @@ class BInputTest extends CTestCase
     /**
      * @var BActiveForm $form
      */
+    ob_start();
     $form = Yii::app()->controller->beginWidget('BActiveForm', array('id' => $model->getFormId()));
+    ob_end_clean();
 
     $checkedWord = 'Label test';
 
@@ -44,7 +45,9 @@ class BInputTest extends CTestCase
     /**
      * @var BActiveForm $form
      */
+    ob_start();
     $form = Yii::app()->controller->beginWidget('BActiveForm', array('id' => $model->getFormId()));
+    ob_end_clean();
 
     $setWord = 'Help hint';
     $checkedWord = 'title="Help hint';

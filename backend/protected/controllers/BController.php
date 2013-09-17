@@ -100,19 +100,19 @@ abstract class BController extends CController
 
   /**
    * Делаем редирект.
-   * Если приложение запущено с тестовым конфигом, то записываем урл в сессию
+   * Если приложение запущено с тестовым конфигом, то бросаем эксепшн
    *
    * @param mixed $url
-   * @param bool  $terminate
+   * @param bool $terminate
    * @param integer $statusCode
    *
-   * @return string|void
+   * @throws BTestRedirectException
    */
   public function redirect($url, $terminate = true, $statusCode = 302)
   {
     if( Yii::app()->params['mode'] === 'test' )
     {
-      Yii::app()->user->setFlash('redirect', $url);
+      throw new BTestRedirectException(200, 'Location: '.$url, $statusCode);
     }
     else
     {

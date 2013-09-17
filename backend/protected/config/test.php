@@ -5,6 +5,9 @@ defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', false)
 $config = array_replace_recursive(
   require(__DIR__.'/backend.php'),
   array(
+    'import' => array(
+      'tests' => 'backend.tests.components.*',
+    ),
     'components' => array(
       'fixture' => array(
         'class' => 'SFixtureManager',
@@ -13,9 +16,6 @@ $config = array_replace_recursive(
     'aliases' => array(
 
       'bootstrap' => 'ext.bootstrap'
-    ),
-    'import' => array(
-      'backend.tests.components.*',
     ),
     'params' => array(
       'mode' => 'test'

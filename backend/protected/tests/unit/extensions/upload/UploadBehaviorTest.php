@@ -21,7 +21,9 @@ class UploadBehaviorTest extends CDbTestCase
     $file  = array('name' => 'img.jpg');
     $model->asa('uploadBehavior')->attribute = 'info_files';
     $model->saveUploadedFile($file);
+    ob_start();
     $model->deleteNode();
+    ob_end_clean();
 
     $files = $model->getUploadedFiles();
     $this->assertEquals(0, $files->ItemCount);

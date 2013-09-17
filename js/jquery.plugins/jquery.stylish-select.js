@@ -4,7 +4,7 @@
 *
 * Requires: jQuery 1.3 or newer
 *
-* Contributions from Justin Beasley: http://www.harvest.org/ 
+* Contributions from Justin Beasley: http://www.harvest.org/
 * Anatoly Ressin: http://www.artazor.lv/ Wilfred Hughes: https://github.com/Wilfred
 * Grigory Zarubin: https://github.com/Craigy-
 *
@@ -95,6 +95,10 @@
 
             //added by Justin Beasley
             $(this).data('ssOpts',options);
+
+            if( $(this).next('.newListSelected').length ) {
+                return;
+            }
 
             //build new list
             $containerDiv.insertAfter($input);
