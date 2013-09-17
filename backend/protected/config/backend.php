@@ -30,6 +30,7 @@ return array_replace_recursive(array(
 
   'import' => array(
     'backend.models.*',
+    'backend.models.behaviors.*',
     'backend.components.*',
     'backend.components.actions.*',
     'backend.components.auth.*',
