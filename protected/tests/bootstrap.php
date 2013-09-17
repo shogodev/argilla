@@ -1,12 +1,8 @@
 <?php
-$config = require_once dirname(__FILE__).'/../config/test.php';
-$yiit   = dirname(__FILE__).'/../../../yii/framework/yiit.php';
+$config = require_once __DIR__.'/../config/test.php';
 
-require_once($yiit);
-require_once(dirname(__FILE__).'/WebTestCase.php');
-require_once(dirname(__FILE__).'/components/FTestApplication.php');
-
-Yii::setPathOfAlias('backend', $backend);
-Yii::setPathOfAlias('frontend', $frontend);
+require_once(__DIR__.'/../../../yii/framework/yiit.php');
+require_once(__DIR__.'/WebTestCase.php');
+require_once(__DIR__.'/components/FTestApplication.php');
 
 $app = new FTestApplication($config);

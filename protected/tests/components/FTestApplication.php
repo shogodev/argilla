@@ -12,28 +12,28 @@ class FTestApplication extends FApplication
 {
   protected function init()
   {
-    $_SERVER['SCRIPT_NAME']     = '/index.php';
-    $_SERVER['SCRIPT_FILENAME'] = realpath(__DIR__.'/../../../'.$_SERVER['SCRIPT_NAME']);
-    $_SERVER['REQUEST_URI']     = realpath(__DIR__.'/../../../'.$_SERVER['SCRIPT_NAME']);
-
+    $_SERVER['SCRIPT_FILENAME'] = realpath(__DIR__.'/../../..'.$_SERVER['SCRIPT_NAME']);
     parent::init();
   }
 
   /**
    * Устанавливаем окружение.
-   * Задаем контроллер и экшен, в контексте которого выполняется код.
+   * Задаем контроллер и экшен, в контексте которого выполняется тест.
    *
    * Yii::app()->setUnitEnvironment('Info', 'update', array('id' => '2'));
    *
-   * @param string $controller_name
+   * @param string $controllerName
    * @param string $action
    * @param array  $params
    */
-  public function setUnitEnvironment($controller_name, $action = 'index', $params = array())
+  public function setUnitEnvironment($controllerName, $action = 'index', $params = array())
   {
-    $controller = $controller_name.'Controller';
+    $class = ucfirst($controllerName).'Controller';
 
-    $controller = new $controller(strtolower($controller_name));
+    /**
+     * @var FController $controller
+     */
+    $controller = new $class(strtolower($controllerName));
     $controller->setAction(new CInlineAction($controller, $action));
 
     Yii::app()->setController($controller);
