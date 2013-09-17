@@ -28,7 +28,17 @@ class BNews extends BActiveRecord
 
   public function behaviors()
   {
-    return array('uploadBehavior' => array('class' => 'UploadBehavior', 'validAttributes' => "img"));
+    return array(
+      'uploadBehavior' => array(
+        'class' => 'UploadBehavior',
+        'validAttributes' => "img"
+      ),
+      'dateFormatBehavior' => array(
+        'class' => 'DateFormatBehavior',
+        'attribute' => 'date',
+        'defaultNow' => true
+      )
+    );
   }
 
   public function rules()
@@ -63,17 +73,6 @@ class BNews extends BActiveRecord
     return array(
       'section' => array(self::BELONGS_TO, 'BNewsSection', 'section_id'),
     );
-  }
-
-  protected function beforeSave()
-  {
-    return parent::beforeSave() ? $this->date = date('Y-m-d', strtotime(!empty($this->date) ? $this->date : 'now')) : false;
-  }
-
-  protected function afterFind()
-  {
-    $this->date = !empty($this->date) ? date('d.m.Y', strtotime($this->date)) : '';
-    parent::afterFind();
   }
 
   /**
