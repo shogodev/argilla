@@ -290,7 +290,15 @@ abstract class BController extends CController
       }
 
       if( $extendedSave )
-        $this->saveMaximumPostData($unsavedKeys, $primaryModel);
+      {
+        $resultSaveMaximumPostData = $this->saveMaximumPostData($unsavedKeys, $primaryModel);
+
+        if( !$resultSaveMaximumPostData )
+        {
+          Yii::app()->db->currentTransaction->rollback();
+          return;
+        }
+      }
 
       Yii::app()->db->currentTransaction->commit();
       $this->redirectAfterSave($primaryModel);
@@ -383,17 +391,42 @@ abstract class BController extends CController
    * Проверям наличие в контроллере методов, чтобы сохранить данные из post
    *
    * @param array $unsavedKeys
-   * @param $primaryModel
+   * @param BActiveRecord $primaryModel
+   *
+   * @return bool
    */
-  protected function saveMaximumPostData(array $unsavedKeys, $primaryModel)
+  protected function saveMaximumPostData(array $unsavedKeys, BActiveRecord $primaryModel)
   {
     foreach($unsavedKeys as $key)
     {
       $method = 'save'.$key;
-      $data   = Yii::app()->request->getPost($key);
+      $data = Yii::app()->request->getPost($key);
 
-      if( is_array($data) && method_exists($this, $method) )
-        call_user_func_array(array($this, $method), array($data, $primaryModel));
+      if( empty($data) || !is_array($data) || !in_array($key, $this->getModelsAllowedForSave()) )
+        continue;
+
+      if( method_exists($this, $method) )
+        $result = call_user_func_array(array($this, $method), array($data, $primaryModel));
+      else
+        $result = $primaryModel->saveRelatedModels(array_search($key, $this->getModelsAllowedForSave()), $data);
+
+      if( !$result )
+        return false;
     }
+
+    return true;
+  }
+
+  /**
+   * Возвращает массив разрешенных для сохнанеия релейшенов в формате 'relationName' => 'postPrefix'
+   * пример: array('variants' => 'BProductParamVariant').
+   * Если в котроллере есть метод с именем save{postPrefix}($data, BActiveRecord $parentModel),
+   * то для сохнания данных $_POST[{postPrefix}} будет вызван он.
+   *
+   * @return array
+   */
+  protected function getModelsAllowedForSave()
+  {
+    return array();
   }
 }

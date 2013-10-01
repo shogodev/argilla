@@ -17,48 +17,15 @@ class BMenuCustomItemController extends BController
   /**
    * @var string
    */
-  public $name = 'BFrontendMenuCustomItem';
+  public $name = 'BFrontendCustomMenuItem';
 
   /**
    * @var string
    */
   public $modelClass = 'BFrontendCustomMenuItem';
 
-  /**
-   * @param BFrontendCustomMenuItem $model
-   *
-   * @return mixed|void
-   */
-  protected function actionSave($model)
+  protected function getModelsAllowedForSave()
   {
-    $this->saveData($model);
-    parent::actionSave($model);
-  }
-
-  /**
-   * @param BFrontendCustomMenuItem $model
-   */
-  protected function saveData(BFrontendCustomMenuItem $model)
-  {
-    foreach( $model->data as $entry )
-    {
-      $entry->delete();
-    }
-
-    $data = Yii::app()->request->getPost('BFrontendCustomMenuItemData');
-
-    if( $data !== null )
-    {
-      foreach( $data as $i )
-      {
-        if( empty($i) ) continue;
-
-        $e         = new BFrontendCustomMenuItemData();
-        $e->parent = $model->getId();
-        $e->name   = $i['name'];
-        $e->value  = $i['value'];
-        $e->save();
-      }
-    }
+    return array('data' => 'BFrontendCustomMenuItemData');
   }
 }

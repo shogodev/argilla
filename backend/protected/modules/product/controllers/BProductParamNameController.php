@@ -69,9 +69,8 @@ class BProductParamNameController extends BController
     ));
   }
 
-  public function saveBProductParamVariant($variants, BActiveRecord $parent)
+  protected function getModelsAllowedForSave()
   {
-    if( !empty($variants) )
-      $parent->saveRelatedModels('variants', $variants);
+    return array('variants' => 'BProductParamVariant');
   }
 }

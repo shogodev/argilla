@@ -237,6 +237,12 @@ td.button-column a.delete:before,
 .grid-view table.items tr.selected td {
   background-color: #D0DAE1; }
 
+.grid-view tr td ul {
+  font-size: 10px; }
+
+.grid-view tr td ul li {
+  line-height: 10px; }
+
 .table tr.group td {
   font-weight: bolder;
   background-color: #BFCDD7!important; }
