@@ -1,5 +1,4 @@
 <?php
-
 /**
  * CToggleColumn class file.
  * @author Nikola Trifunovic <johonunu@gmail.com>
@@ -14,23 +13,26 @@ class ToggleAction extends CAction
     if( Yii::app()->request->isPostRequest )
     {
       /**
-       * @var CActiveRecord
+       * @var BActiveRecord $model
        */
-      $model             = $this->controller->loadModel($id);
+      $model = $this->controller->loadModel($id);
       $model->$attribute = ($model->$attribute == 0) ? 1 : 0;
+      $result = $model->asa('nestedSetBehavior') ? $model->saveNode() : $model->save();
 
-      if( in_array('nestedSetBehavior', array_keys($model->behaviors())) )
-        $model->saveNode();
-      else
-        $model->save(false);
+      if( !$result )
+      {
+        throw new CHttpException(400, strip_tags(CHtml::errorSummary($model, false)));
+      }
 
       // if AJAX request (triggered by deletion via admin grid view), we should not redirect the browser
       if( !isset(Yii::app()->request->isAjaxRequest) )
+      {
         $this->controller->redirect(isset($_POST['returnUrl']) ? $_POST['returnUrl'] : array('admin'));
+      }
     }
     else
+    {
       throw new CHttpException(400, 'Invalid request. Please do not repeat this request again.');
+    }
   }
 }
-
-?>

@@ -6,7 +6,6 @@
  * @copyright Copyright &copy; 2012 Nikola Trifunovic
  * @license http://www.yiiframework.com/license/
  */
-
 class JToggleColumn extends BDataColumn
 {
   /**
