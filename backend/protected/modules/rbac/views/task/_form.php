@@ -1,6 +1,6 @@
 <?php
-/* @var $this TaskController */
-/* @var $model RbacTask */
+/* @var $this BRbacTaskController */
+/* @var $model BRbacTask */
 /* @var $form BActiveForm */
 ?>
 
@@ -24,10 +24,6 @@
   <?php endif;?>
 
   <?php echo $form->textAreaRow($model, 'description'); ?>
-
-  <?php if( !$model->isNewRecord ):?>
-  <?php echo $form->checkBoxListRow($model, 'operations', BRbacOperation::getOperations())?>
-  <?php endif;?>
 
 </tbody>
 </table>

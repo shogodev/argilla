@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @author Nikita Melnikov <melnikov@shogo.ru>
  * @link https://github.com/shogodev/argilla/
@@ -10,5 +9,8 @@
 class BRbacRoleController extends BController
 {
   public $name = 'Роли';
+
   public $modelClass = 'BRbacRole';
+
+  public $position = 20;
 }

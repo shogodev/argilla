@@ -1,14 +1,18 @@
 <?php
 /**
- * @date 31.08.2012
  * @author Nikita Melnikov <melnikov@shogo.ru>
- * @package RBAC
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2013 Shogo
+ * @license http://argilla.ru/LICENSE
+ * @package backend.modules.rbac
  */
 class BUserController extends BController
 {
   public $name = 'Пользователи';
 
   public $modelClass = 'BUser';
+
+  public $position = 10;
 
   /**
    * @param BActiveRecord $model

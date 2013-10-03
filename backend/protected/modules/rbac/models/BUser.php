@@ -64,7 +64,7 @@ class BUser extends BActiveRecord
   /**
    * @param array $roles
    */
-  public function setRoles(array $roles)
+  public function setRoles($roles)
   {
     $this->clearRoles();
 

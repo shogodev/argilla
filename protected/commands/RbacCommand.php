@@ -243,6 +243,7 @@ class RbacCommand extends CConsoleCommand
   protected function createUser()
   {
     Yii::import('backend.modules.rbac.models.*');
+    BUser::model()->deleteAllByAttributes(array('username' => $this->username, 'password' => ''));
 
     $criteria = new CDbCriteria();
     $criteria->compare('username', $this->username);
@@ -252,9 +253,12 @@ class RbacCommand extends CConsoleCommand
     {
       $this->user = new BUser();
       $this->user->username = $this->username;
-      $this->user->password = $this->password;
+      $this->user->setNewPassword($this->password);
       $this->user->save();
+      echo "Создан пользователь ".$this->username." с паролем ".$this->password.PHP_EOL;
     }
+    else
+      echo "Пользователь ".$this->username." уже существует".PHP_EOL;
   }
 
   /**
@@ -291,8 +295,6 @@ class RbacCommand extends CConsoleCommand
     }
     catch( Exception $e )
     {
-      // ????
     }
-
   }
 }

@@ -9,5 +9,10 @@
 class BRbacOperationController extends BController
 {
   public $name = 'Действия';
+
   public $modelClass = 'BRbacOperation';
+
+  public $position = 40;
+
+  public $enabled = false;
 }

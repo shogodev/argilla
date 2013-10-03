@@ -64,7 +64,7 @@ class BRbacRole extends BAuthItem
    *
    * @param array $tasks
    */
-  public function setTasks(array $tasks)
+  public function setTasks($tasks)
   {
     $this->clearTasks();
 

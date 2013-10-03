@@ -9,5 +9,8 @@
 class BRbacTaskController extends BController
 {
   public $name = 'Задачи';
+
   public $modelClass = 'BRbacTask';
+
+  public $position = 30;
 }
