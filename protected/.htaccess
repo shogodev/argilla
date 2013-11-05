@@ -1,3 +1,6 @@
 deny from all
-# dev
-allow from 192.168.
+
+<Files _intellij_phpunit_launcher.php>
+  allow from 192.168.
+  RewriteRule _intellij_phpunit_launcher\.php - [L]
+</Files>
