@@ -224,7 +224,6 @@ CREATE TABLE `argilla_contact_group` (
   `position` int(11) NOT NULL DEFAULT '10',
   `visible` int(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `sysname` (`sysname`),
   KEY `fk_argilla_contact_group_cid` (`contact_id`),
   CONSTRAINT `fk_argilla_contact_group_cid` FOREIGN KEY (`contact_id`) REFERENCES `argilla_contact` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Группы полей контактов';
