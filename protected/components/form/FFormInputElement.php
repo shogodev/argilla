@@ -32,6 +32,11 @@ class FFormInputElement extends CFormInputElement
     else
       return $this->getParent()->getModel()->getAttributeLabel(preg_replace('/(\[\w+\])?(\w+)/', '$2', $this->name));
   }
+  
+    public function setLabel($value)
+  {
+    $this->_label=$value;
+  }
 
   /**
    * Alias of getTemplate()
