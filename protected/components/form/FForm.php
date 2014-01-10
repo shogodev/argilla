@@ -323,14 +323,15 @@ class FForm extends CForm
    * Посылает сообщение о успешной обработке данных
    * @param string $message - сообщение
    * @param bool $scrollOnMessage - скролить страницу на сообщение
+   * @param array $responseData
    */
-  public function responseSuccess($message = '', $scrollOnMessage = false)
+  public function responseSuccess($message = '', $scrollOnMessage = false, $responseData = array())
   {
-    echo json_encode(array(
+    echo json_encode(CMap::mergeArray($responseData, array(
       'status' => 'ok',
       'messageForm' => $message,
       'scrollOnMessage' => $scrollOnMessage
-    ));
+    )));
     Yii::app()->end();
   }
 
