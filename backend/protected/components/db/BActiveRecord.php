@@ -91,9 +91,12 @@ abstract class BActiveRecord extends CActiveRecord
     $relation  = $this->getActiveRelation($relationName);
     $className = $relation->className;
 
+    $validationError = false;
+
     foreach($relatedData as $id => $item)
     {
       $value = trim(implode("", $item));
+
       if( empty($value) && $ignoreEmptyItems )
         continue;
 
@@ -110,11 +113,20 @@ abstract class BActiveRecord extends CActiveRecord
 
       $model->setAttributes(Arr::trim($item));
 
-      if( !$model->save() )
+      if( !$model->validate() )
       {
-        throw new CHttpException(500, 'Не удается сохранить зависимую модель');
+        foreach($model->errors as $errors)
+          foreach($errors as $value)
+            $this->addError('relatedModelErrors', $value);
+
+        $validationError = true;
       }
+
+      if( !$model->save(false) )
+        throw new CHttpException(500, "Не удается сохранить зависимую модель {$className}");
     }
+
+    return !$validationError;
   }
 
   public function getFormId()
