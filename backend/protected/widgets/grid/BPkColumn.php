@@ -58,7 +58,7 @@ class BPkColumn extends BDataColumn
     $criteria = new CDbCriteria();
     $criteria->compare('src', '='.$this->assocSrc);
     $criteria->compare('src_id', '='.$this->assocSrcId);
-    $criteria->compare('dst', '='.strtolower(get_class($data)));
+    $criteria->compare('dst', '='.$this->assocDst);
     $criteria->compare('dst_id', '='.$data->getPrimaryKey());
 
     $options = array(
