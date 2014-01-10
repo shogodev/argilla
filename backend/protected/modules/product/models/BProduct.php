@@ -105,6 +105,8 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
       'associations' => array(self::HAS_MANY, 'BAssociation', 'src_id', 'on' => 'src="bproduct"'),
       'products' => array(self::HAS_MANY, 'BProduct', 'dst_id', 'on' => 'dst="product"', 'through' => 'associations'),
       'section' => array(self::HAS_ONE, 'BProductSection', 'section_id', 'through' => 'assignment'),
+      'category' => array(self::HAS_ONE, 'BProductCategory', 'category_id', 'through' => 'assignment'),
+      'collection' => array(self::HAS_ONE, 'BProductCollection', 'collection_id', 'through' => 'assignment'),
       'type' => array(self::HAS_ONE, 'BProductType', 'type_id', 'through' => 'assignment'),
     );
   }
