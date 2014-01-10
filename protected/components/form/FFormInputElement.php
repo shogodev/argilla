@@ -34,6 +34,14 @@ class FFormInputElement extends CFormInputElement
   }
 
   /**
+   * @param string $value
+   */
+  public function setLabel($value)
+  {
+    $this->_label = $value;
+  }
+
+  /**
    * Alias of getTemplate()
    *
    * @return string

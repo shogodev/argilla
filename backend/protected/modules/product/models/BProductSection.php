@@ -18,7 +18,7 @@
  *
  * @property BProductAssignment[] $productAssignments
  */
-class BProductSection extends BActiveRecord
+class BProductSection extends BProductStructure
 {
   public function behaviors()
   {

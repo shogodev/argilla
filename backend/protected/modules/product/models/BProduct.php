@@ -140,7 +140,7 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
     ]);
 
     $criteria->compare('position', $this->position);
-    $criteria->compare('visible', $this->visible);
+    $criteria->compare('t.visible', $this->visible);
     $criteria->compare('discount', $this->discount);
     $criteria->compare('spec', $this->spec);
     $criteria->compare('novelty', $this->novelty);

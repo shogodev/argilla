@@ -15,7 +15,7 @@
  * @property string  $notice
  * @property integer $visible
  */
-class BProductType extends BActiveRecord
+class BProductType extends BProductStructure
 {
   public $section_id;
 
