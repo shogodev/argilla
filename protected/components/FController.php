@@ -177,7 +177,7 @@ class FController extends CController
   public function getCanonicalUrl()
   {
     // http://help.yandex.ru/webmaster/?id=1111858#canonical
-    $path = Yii::app()->request->getPathInfo();
+    $path = CHtml::encode(Yii::app()->request->getPathInfo());
     $url  = Yii::app()->request->getHostInfo().($path ? '/'.$this->normalizeUrl($path) : '/');
 
     return $url;

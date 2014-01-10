@@ -1,7 +1,7 @@
 /*
 Project:   Template
 CSS Type:  Semantic
-Version:   1.0 (22.03.2013)
+Version:   1.0.2 (13.12.2013)
 Authors:   Grigory Zarubin, Alexander Rubanov, Alexey Efimov (Shogo.RU)
 */
 /*   -=========== Common styles, CSS reset by defaults ===========-   */
@@ -183,57 +183,47 @@ h4, h4 a, .h4, .h4 a {
   border: 0; }
 
 /*   -=========== Forms ===========-   */
+.form .form-row:before, .form .form-row:after {
+  content: " ";
+  display: table; }
+.form .form-row:after {
+  clear: both; }
+.form .lt-ie8 .form-row {
+  zoom: 1; }
 .form label {
   float: left;
   width: 160px;
   padding: 3px 15px 0 0; }
-
-.form .pdb {
+.form .form-field {
   float: left;
   width: 350px; }
-
-.form .pdb label {
-  float: none;
-  width: 100%;
-  padding-right: 0; }
-
-.form .pdb .inp,
-.form .pdb select,
-.form .pdb textarea {
-  width: 100%; }
-
-.form .pdb .form-size-half {
-  width: 48%; }
-
-.form .pdb .form-size-third {
-  width: 32%; }
-
-.form .pdb .form-size-quarter {
-  width: 24%; }
-
-.form .pdb .form-size-auto {
-  width: auto; }
-
+  .form .form-field label {
+    float: none;
+    width: 100%;
+    padding-right: 0; }
+  .form .form-field .inp, .form .form-field select, .form .form-field textarea {
+    width: 100%; }
+  .form .form-field .form-size-half {
+    width: 48%; }
+  .form .form-field .form-size-third {
+    width: 32%; }
+  .form .form-field .form-size-quarter {
+    width: 24%; }
+  .form .form-field .form-size-auto {
+    width: auto; }
 .form .form-separator {
   display: inline-block;
   text-align: center;
   width: 4%; }
-
 .form .form-hint {
   margin: 20px 0 30px 0; }
-
 .form .form-submit {
   text-align: center; }
-
 .form span.required,
 .form .required span {
   color: #950000; }
-
-.form .error input,
-.form .error select,
-.form .error textarea {
+.form .error input, .form .error select, .form .error textarea {
   border: 1px solid #D73E93; }
-
 .form .errorMessage {
   font-size: 12px;
   color: #8A004B;
@@ -245,8 +235,7 @@ h4, h4 a, .h4, .h4 a {
   -moz-border-radius-bottomleft: 3px;
   border-bottom-right-radius: 3px;
   border-bottom-left-radius: 3px; }
-
-.success-message {
+.form .success-message {
   padding: 10px;
   font-weight: bold;
   text-align: center; }
@@ -333,8 +322,18 @@ h4, h4 a, .h4, .h4 a {
 .no-overflow {
   overflow: hidden; }
 
-.lt-ie8 .text-container, .lt-ie8 .nofloat, .lt-ie8 .float-none {
+.lt-ie8 .text-container, .lt-ie8 .nofloat {
   zoom: 1; }
+
+.text-container p {
+  padding-top: 20px; }
+  .text-container p:first-child {
+    padding-top: 0; }
+.text-container ul {
+  padding-top: 20px; }
+  .text-container ul li {
+    list-style: disc outside;
+    margin-bottom: 5px; }
 
 .center {
   text-align: center; }

@@ -73,8 +73,21 @@
   margin-bottom: 10px; }
 .no-overflow {
   overflow: hidden; }
-.lt-ie8 .text-container, .lt-ie8 .nofloat, .lt-ie8 .float-none {
+.lt-ie8 .text-container, .lt-ie8 .nofloat {
   zoom: 1; }
+.text-container {
+  p {
+    padding-top: 20px;
+    &:first-child {
+      padding-top: 0; }
+  }
+  ul {
+    padding-top: 20px;
+    li {
+      list-style: disc outside;
+      margin-bottom: 5px; }
+  }
+}
 
 .center {
   text-align: center; }

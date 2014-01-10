@@ -59,7 +59,6 @@
             if(el.prop('disabled')) {
               el.next().addClass('disabled_'+el.type);
             }
-            el.show().css({'position':'absolute', 'top':'-10000px', 'left':'-10000px', 'visibility':'hidden'});
             el.next().click(function() {
               if(!el.prop('checked') && !el.prop('disabled')) {
                 $('.el-name-'+el.name).removeClass('check_'+el.type);

@@ -34,57 +34,64 @@ h4, h4 a, .h4, .h4 a {
   border: 0; }
 
 /*   -=========== Forms ===========-   */
-.form {}
-.form label {
-  float: left;
-  width: 160px;
-  padding: 3px 15px 0 0; }
-.form .pdb {
-  float: left;
-  width: 350px; }
-.form .pdb label {
-  float: none;
-  width: 100%;
-  padding-right: 0; }
-.form .pdb .inp,
-.form .pdb select,
-.form .pdb textarea {
-  width: 100%; }
-.form .pdb .form-size-half {
-  width: 48%; }
-.form .pdb .form-size-third {
-  width: 32%; }
-.form .pdb .form-size-quarter {
-  width: 24%; }
-.form .pdb .form-size-auto {
-  width: auto; }
-.form .form-separator {
-  display: inline-block;
-  text-align: center;
-  width: 4%; }
-.form .form-hint {
-  margin: 20px 0 30px 0; }
-.form .form-submit {
-  text-align: center; }
-.form span.required,
-.form .required span {
-  color: #950000; }
-.form .error input,
-.form .error select,
-.form .error textarea {
-  border: 1px solid #D73E93; }
-.form .errorMessage {
-  font-size: 12px;
-  color: #8A004B;
-  padding: 5px 20px;
-  background: #F5DCEA;
-  -webkit-border-bottom-right-radius: 3px;
-  -webkit-border-bottom-left-radius: 3px;
-  -moz-border-radius-bottomright: 3px;
-  -moz-border-radius-bottomleft: 3px;
-  border-bottom-right-radius: 3px;
-  border-bottom-left-radius: 3px; }
-.success-message {
-  padding: 10px;
-  font-weight: bold;
-  text-align: center; }
+.form {
+  .form-row:before, .form-row:after {
+    content: " ";
+    display: table; }
+  .form-row:after {
+    clear: both; }
+  .lt-ie8 .form-row {
+    zoom: 1; }
+  label {
+    float: left;
+    width: 160px;
+    padding: 3px 15px 0 0; }
+  .form-field {
+    float: left;
+    width: 350px;
+    label {
+      float: none;
+      width: 100%;
+      padding-right: 0; }
+    .inp, select, textarea {
+      width: 100%; }
+    .form-size-half {
+      width: 48%; }
+    .form-size-third {
+      width: 32%; }
+    .form-size-quarter {
+      width: 24%; }
+    .form-size-auto {
+      width: auto; }
+  }
+  .form-separator {
+    display: inline-block;
+    text-align: center;
+    width: 4%; }
+  .form-hint {
+    margin: 20px 0 30px 0; }
+  .form-submit {
+    text-align: center; }
+  span.required,
+  .required span {
+    color: #950000; }
+  .error {
+    input, select, textarea {
+      border: 1px solid #D73E93; }
+  }
+  .errorMessage {
+    font-size: 12px;
+    color: #8A004B;
+    padding: 5px 20px;
+    background: #F5DCEA;
+    -webkit-border-bottom-right-radius: 3px;
+    -webkit-border-bottom-left-radius: 3px;
+    -moz-border-radius-bottomright: 3px;
+    -moz-border-radius-bottomleft: 3px;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px; }
+  .success-message {
+    padding: 10px;
+    font-weight: bold;
+    text-align: center; }
+}
