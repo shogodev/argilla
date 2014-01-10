@@ -6,6 +6,7 @@
  * @license http://argilla.ru/LICENSE
  * @package frontend.models.product
  *
+ * @property CDbCriteria $criteria
  * @property CDbCacheDependency cacheDependency
  */
 class ProductList extends CComponent
@@ -26,11 +27,6 @@ class ProductList extends CComponent
   public $filters = null;
 
   /**
-   * @var CDbCriteria $criteria
-   */
-  public $criteria;
-
-  /**
    * Параметр, отвечающий за выборку параметров и картинок товаров,
    * можно отключить, если данные эти не используются, чтобы не тратить время на обработку
    *
@@ -39,18 +35,27 @@ class ProductList extends CComponent
   public $fetchContent = true;
 
   public static $sortingRange = array(
-    'position_up' => 'IF(position=0, 1, 0), position DESC ',
-    'position_down' => 'IF(position=0, 1, 0), position ASC ',
+    'popular_up' => 'IF(position=0, 1, 0), position DESC ',
+    'popular_down' => 'IF(position=0, 1, 0), position ASC ',
     'price_up' => 'IF(price=0, 1, 0), price DESC ',
     'price_down' => 'IF(price=0, 1, 0), price ASC',
     'name_up' => 'name DESC',
     'name_down' => 'name ASC',
+    'available_up' => 'dump DESC',
+    'available_down' => 'dump ASC',
   );
 
   /**
    * @var $products FActiveDataProvider
    */
   protected $products;
+
+  /**
+   * @var CDbCriteria $criteria
+   */
+  protected $criteria;
+
+  protected $filteredCriteria;
 
   /**
    * @param CDbCriteria $criteria
@@ -60,35 +65,55 @@ class ProductList extends CComponent
    */
   public function __construct(CDbCriteria $criteria, $sorting = null, $pagination = true, $filters = null)
   {
-    $this->criteria   = $criteria;
-    $this->sorting    = $sorting;
+    $this->sorting = $sorting;
     $this->pagination = $pagination;
+
     if( !empty($filters) )
       $this->filters = is_array($filters) ? $filters : array($filters);
+
+    $this->initCriteria($criteria);
   }
 
   /**
    * @return FActiveDataProvider
    */
-  public function getProducts()
+  public function getDataProvider()
   {
-    //todo: подумать куда это можно вынести
-    $assignment = ProductAssignment::model()->tableName();
-    $this->criteria->join  = 'JOIN '.$assignment.' AS a ON a.product_id = t.id';
-    $this->criteria->order = Arr::get(self::$sortingRange, $this->sorting, Arr::reset(self::$sortingRange));
+    return $this->buildDataProvider($this->getFilterCriteria());
+  }
 
-    if( $this->filters )
-      foreach($this->filters as $filter)
-        $this->criteria = $filter->apply($this->criteria);
+  /**
+   * @return FActiveDataProvider
+   */
+  public function getRandomDataProvider()
+  {
+    $criteria = clone $this->getFilterCriteria();
+    $criteria->condition = '';
+    $criteria->params = array();
 
-    $config = array('criteria' => $this->criteria);
-    if( !$this->pagination )
-      $config['pagination'] = false;
+    $productIds = $this->getProductIds();
 
-    $this->products = new FActiveDataProvider('Product', $config);
-    $this->products->attachEventHandler('onAfterFetchData', array($this, 'afterFetchData'));
+    if( $criteria->limit )
+    {
+      shuffle($productIds);
+      $productIds = array_slice($productIds, 0, $criteria->limit);
+    }
 
-    return $this->products;
+    $criteria->addInCondition('t.id', $productIds);
+
+    return $this->buildDataProvider($criteria);
+  }
+
+  /**
+   * @return array
+   */
+  public function getProductIds()
+  {
+    $productModel = Product::model();
+    $builder = new CDbCommandBuilder(Yii::app()->db->getSchema());
+    $command = $builder->createFindCommand($productModel->tableName(), $this->getFilterCriteria());
+
+    return CHtml::listData($command->queryAll(),'id', 'id') ;
   }
 
   public function getCacheKey()
@@ -108,6 +133,45 @@ class ProductList extends CComponent
   public function getCacheDependency()
   {
     return new CDbCacheDependency("SELECT `value` FROM `{{settings}}` WHERE `param` = 'products_cache'");
+  }
+
+  public function getFilterCriteria()
+  {
+    if( $this->filteredCriteria == null )
+    {
+      $filteredCriteria = clone $this->criteria;
+
+      if( $this->filters )
+        foreach($this->filters as $filter)
+          $filteredCriteria = $filter->apply($filteredCriteria);
+
+      $this->filteredCriteria = $filteredCriteria;
+    }
+
+    return $this->filteredCriteria;
+  }
+
+  protected function initCriteria(CDbCriteria $criteria)
+  {
+    $assignment = ProductAssignment::model()->tableName();
+    $criteria->join  = 'JOIN '.$assignment.' AS a ON a.product_id = t.id';
+    $criteria->order = Arr::get(self::$sortingRange, $this->sorting, Arr::reset(self::$sortingRange));
+    $criteria->compare('t.visible', 1);
+    $criteria->compare('a.visible', 1);
+
+    $this->criteria = $criteria;
+  }
+
+  protected function buildDataProvider(CDbCriteria $criteria)
+  {
+    $config = array('criteria' => $criteria);
+    if( !$this->pagination )
+      $config['pagination'] = false;
+
+    $this->products = new FActiveDataProvider('Product', $config);
+    $this->products->attachEventHandler('onAfterFetchData', array($this, 'afterFetchData'));
+
+    return $this->products;
   }
 
   protected function afterFetchData($event)
@@ -163,5 +227,40 @@ class ProductList extends CComponent
     }
 
     ProductParameter::model()->setParameterValues($parameters);
+  }
+
+  protected function setRelations($relationName, $sortFunction = null)
+  {
+    $p = new Product();
+    $md = $p->getMetaData();
+    $relation = $md->relations[$relationName];
+    $className = $relation->className;
+
+    $criteria = new CDbCriteria();
+    $criteria->addInCondition('product_id', $this->products->getKeys());
+    $relatedModels = $className::model()->findAll($criteria);
+
+    $models = array();
+    foreach($relatedModels as $model)
+    {
+      $models[$model['product_id']][] = $model;
+    }
+
+    /**
+     * @var $product Product
+     */
+    foreach($this->products->getData() as $product)
+    {
+      if( !empty($models[$product->id]) )
+      {
+        if( is_callable($sortFunction) )
+          usort($models[$product->id], $sortFunction);
+
+        foreach($models[$product->id] as $model)
+        {
+          $product->addRelatedRecord($relationName, $model, true);
+        }
+      }
+    }
   }
 }
