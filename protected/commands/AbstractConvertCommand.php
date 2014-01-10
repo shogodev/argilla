@@ -102,10 +102,10 @@ abstract class AbstractConvertCommand extends CConsoleCommand
    * if( $product )
    *   return true;
    *
-   * $product       = new Product('convert');
+   * $product       = new BProduct('convert');
    * $product->id   = $data['id'];
    * $product->name = $data['name'];
-   * return $product->save($product);
+   * return $this->save($product);
    */
   abstract protected function create($data);
 }

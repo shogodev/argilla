@@ -139,9 +139,6 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
       'select' => false,
     ]);
 
-    $criteria->compare('assignment.section_id', '='.$this->section_id);
-    $criteria->compare('assignment.type_id', '='.$this->type_id);
-
     $criteria->compare('position', $this->position);
     $criteria->compare('visible', $this->visible);
     $criteria->compare('discount', $this->discount);
@@ -150,6 +147,9 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
     $criteria->compare('main', $this->main);
 
     $criteria->compare('name', $this->name, true);
+
+    foreach(BProductAssignment::model()->getFields() as $key => $field)
+      $criteria->compare('assignment.'.$key, '='.$this->$key);
 
     return $criteria;
   }
@@ -164,6 +164,7 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
 
     return $variants;
   }
+
   public function attributeLabels()
   {
     return CMap::mergeArray(parent::attributeLabels(), array(
