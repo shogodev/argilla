@@ -38,25 +38,13 @@ else
 
 <script type="text/javascript">
 //<![CDATA[
-  $('.resize-pic').click(function(e){
+  $('.image-column > img').click(function(e){
     e.preventDefault();
 
     // Блок с картинкой для ресайза
     var popupBlock = $('<div/>').addClass('img-resize-popup').html(
-                        '<span class="img-resize-inner">'
-                      +   '<img src="' + $(this).parent().find('img').attr('src') + '" alt="" id="raw-image" /><br />'
-                      +   '<div style="float: left">'
-                      +     '<div><label style="float: left;">W <input id="preview-width" type="text" name="preview-width" size="4" style="width: 32px; margin-bottom: 0;"></label>'
-                      +     '<label>H <input id="preview-height" type="text" name="preview-height" size="4" style="width: 32px; margin-bottom: 0;"></label></div>'
-                      +     '<input type="checkbox" id="img-resize-squared-lock" style="float: left;" />'
-                      +     '<label for="img-resize-squared-lock" style="float: left; margin: 2px 0 0 5px;">Квадратные превью</label>'
-                      +   '</div>'
-                      +   '<div style="float: right; margin-top: 24px;">'
-                      +     '<button class="btn btn-primary" name="preview-submit" id="preview-submit" type="submit">Применить</button> '
-                      +     '<a class="btn close-popup btn-danger" href="">Закрыть</a>'
-                      +   '</div>'
-                      + '</span>'
-                      );
+      '<span class="img-resize-inner"><img src="' + $(this).attr('src') + '" alt="" id="raw-image" /></span>'
+    );
 
     // Вызов оверлея и попапа для ресайза картинки
     $('body').append( $('<div/>').addClass('overlay-white') )
@@ -124,9 +112,14 @@ else
   });
 
   // Клик по кнопке закрыть
-  $('.img-resize-popup .close-popup').live('click', function(e){
+  $('.img-resize-popup').live('click', function(e){
     e.preventDefault();
     closeResizePopup();
+  });
+
+  $('.img-resize-popup .img-resize-inner').live('click', function(e){
+    e.stopPropagation();
+    e.preventDefault();
   });
 
   // Закрытие попапа для ресайза картинки

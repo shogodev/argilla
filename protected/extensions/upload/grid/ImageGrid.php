@@ -46,8 +46,8 @@ class ImageGrid
       'header'              => 'Изоб.',
       'class'               => 'EImageColumn',
       'imagePathExpression' => '!empty($data["thmb"]) ? $data["thmb"] : $data["path"]',
-      'htmlOptions'         => array('class' => 'center', 'style' => 'width:6.5%'),
-      'style'               => 'max-width: 20px;',
+      'htmlOptions'         => array('class' => 'center image-column', 'style' => 'width:6.5%'),
+      'style'               => 'max-width: 20px; cursor: pointer',
     );
   }
 
