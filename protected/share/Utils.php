@@ -195,7 +195,7 @@ class Utils
     $url .= isset($parts['user']) ? $parts['user'] . (isset($parts['pass'])) ? ':' . $parts['pass'] : '' .'@' : '';
     $url .= isset($parts['port']) ? ':' . $parts['port'] : '';
     $url .= isset($parts['path']) ? $parts['path'] : '';
-    $url .= isset($parts['query']) ? '?' . $parts['query'] : '';
+    $url .= !empty($parts['query']) ? '?' . (is_array($parts['query']) ? http_build_query($parts['query']) : $parts['query']) : '';
     $url .= isset($parts['fragment']) ? '#' . $parts['fragment'] : '';
 
     return $url;
