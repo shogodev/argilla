@@ -56,7 +56,8 @@ class CriteriaBuilder
     $criteria->distinct = true;
     $criteria->select = implode(',', CMap::mergeArray($properties, array('p.param_id', 'p.variant_id', 'p.value')));
     $criteria->group  = $criteria->select;
-    $criteria->compare('visible', '=1');
+    $criteria->compare('t.visible', 1);
+    $criteria->compare('a.visible', 1);
 
     $assignment = ProductAssignment::model()->tableName();
     $parameters = ProductParameter::model()->tableName();
