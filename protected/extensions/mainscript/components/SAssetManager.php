@@ -1,6 +1,8 @@
 <?php
 
 Yii::import('ext.mainscript.*');
+Yii::import('ext.mainscript.creators.*');
+Yii::import('ext.mainscript.helpers.*');
 
 /**
  * @author Nikita Melnikov <melnikov@shogo.ru>

@@ -244,4 +244,20 @@ class Utils
 
     return implode('.', array_slice($elements,  $level * -1));
   }
+
+  /**
+   * @param $number
+   * @param array|string $titles
+   * @return string
+   */
+  public static function plural($number, $titles = array())
+  {
+    if( !is_array($titles) )
+    {
+      $delimiter = strpos($titles, '|') !== false ? '|' : ',';
+      $titles = explode($delimiter, $titles);
+    }
+
+    return Yii::t('app', implode('|', $titles), $number);
+  }
 }
