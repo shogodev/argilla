@@ -55,18 +55,6 @@
         <?php }?>
       </p>
     <?php }?>
-    <?php if( $contact->getFields('email') ) {?>
-    <div class="m5">
-      <div class="m3">
-        <span class="bb">E-mail:</span>
-      </div>
-      <?php foreach($contact->getFields('email') as $email) {?>
-        <p style="padding-left:10px;">
-          <a href="mailto:<?php echo $email?>"><?php echo $email?></a>
-        </p>
-      <?php }?>
-    </div>
-    <?php }?>
   </div>
   <div class="right">
     <?php if( !empty($contact->map) ) {?>
