@@ -8,16 +8,37 @@
  *
  * @property integer $selectedMin;
  * @property integer $selectedMax;
+ * @property integer $minValue;
+ * @property integer $maxValue;
  */
 class ProductFilterElementRange extends ProductFilterElement
 {
+  const MAX_RANGE = 9999999;
+
   public $round = true;
 
   public $borderRange = 0;
 
+  public $ranges = array(
+    '0' => array(0, 9999),
+    '10000' => array(10000, 49999),
+    '50000' => array(50000, self::MAX_RANGE),
+  );
+
   protected $minValue = null;
 
   protected $maxValue = null;
+
+  public function init($parent)
+  {
+    if( empty($this->itemLabels) )
+    {
+      foreach($this->ranges as $values)
+      {
+        $this->itemLabels[implode('-', $values)] = $this->toString($values[0], '', '');
+      }
+    }
+  }
 
   public function getSelectedMin()
   {
@@ -103,7 +124,53 @@ class ProductFilterElementRange extends ProductFilterElement
   {
     $range = $range ? $range : $this->borderRange;
 
-    return $this->maxValue + ($range ? $this->maxValue%$range : 0);
+    return $this->maxValue + ($range ? $range - $this->maxValue%$range : 0);
+  }
+
+  /**
+   * @param mixed $value
+   * @param string $prefix
+   * @param string $postfix
+   *
+   * @return string
+   */
+  public function toString($value, $prefix = '', $postfix = '')
+  {
+    $range = is_array($value) ? $value : $this->getRange($value);
+    $data = array($prefix);
+
+    if( !empty($range[0]) )
+    {
+      $data[] = 'от '.Yii::app()->format->formatNumber($range[0]).' '.$postfix;
+    }
+
+    if( $range[1] < self::MAX_RANGE )
+    {
+      $data[] = 'до '.Yii::app()->format->formatNumber($range[1] + ($range[1]%100 ? 1 : 0)).' '.$postfix;
+    }
+    else
+    {
+      $data[1] = 'свыше '.Yii::app()->format->formatNumber($range[0]).' '.$postfix;
+    }
+
+    return Utils::ucfirst(trim(preg_replace('/\s+/', ' ', implode(' ', $data))));
+  }
+
+  /**
+   * @param integer $value
+   * @return mixed
+   */
+  protected function getRange($value)
+  {
+    foreach($this->ranges as $range)
+    {
+      if( $value >= $range[0] && $value <= $range[1] )
+      {
+        return $range;
+      }
+    }
+
+    return end($this->ranges);
   }
 
   protected function propertyCondition($value)

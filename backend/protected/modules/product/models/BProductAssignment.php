@@ -10,14 +10,14 @@
  * @method static BProductAssignment model(string $class = __CLASS__)
  *
  * @property integer $product_id
+ * @property integer $visible
  */
 class BProductAssignment extends BActiveRecord
 {
   public function getFields()
   {
     $fields = $this->getMetaData()->columns;
-    unset($fields['id']);
-    unset($fields['product_id']);
+    unset($fields['id'], $fields['product_id'], $fields['visible']);
 
     return $fields;
   }
@@ -189,5 +189,37 @@ class BProductAssignment extends BActiveRecord
     $criteria->addInCondition("id", $ids);
 
     return $criteria;
+  }
+
+  protected function beforeSave()
+  {
+    $this->visible = true;
+
+    foreach(array_keys($this->getFields()) as $row)
+    {
+      $class = 'BProduct'.ucfirst($this->toToAssignmentAttribute($row));
+      /**
+       * @var BActiveRecord $model
+       */
+      $model = new $class;
+
+      if( !($model instanceof BProductStructure) )
+      {
+        throw new CException('Model '.$model.' must implement BProductStructure class');
+      }
+
+      if( $this->{$row} && $model = $model->findByPk($this->{$row}) )
+      {
+        $this->visible = $this->visible && $model->visible;
+      }
+
+      if( !$this->visible )
+      {
+        break;
+      }
+    }
+
+    $this->visible = intval($this->visible);
+    return parent::beforeSave();
   }
 }

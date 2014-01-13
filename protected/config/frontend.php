@@ -31,6 +31,7 @@ return array_replace_recursive(array(
     'frontend.models.user.*',
     'frontend.models.info.*',
     'frontend.models.order.*',
+    'frontend.models.xml.*',
 
     'frontend.components.*',
     'frontend.components.session.*',

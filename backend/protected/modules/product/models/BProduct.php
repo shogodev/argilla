@@ -105,6 +105,8 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
       'associations' => array(self::HAS_MANY, 'BAssociation', 'src_id', 'on' => 'src="bproduct"'),
       'products' => array(self::HAS_MANY, 'BProduct', 'dst_id', 'on' => 'dst="product"', 'through' => 'associations'),
       'section' => array(self::HAS_ONE, 'BProductSection', 'section_id', 'through' => 'assignment'),
+      'category' => array(self::HAS_ONE, 'BProductCategory', 'category_id', 'through' => 'assignment'),
+      'collection' => array(self::HAS_ONE, 'BProductCollection', 'collection_id', 'through' => 'assignment'),
       'type' => array(self::HAS_ONE, 'BProductType', 'type_id', 'through' => 'assignment'),
     );
   }
@@ -139,17 +141,17 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
       'select' => false,
     ]);
 
-    $criteria->compare('assignment.section_id', '='.$this->section_id);
-    $criteria->compare('assignment.type_id', '='.$this->type_id);
-
     $criteria->compare('position', $this->position);
-    $criteria->compare('visible', $this->visible);
+    $criteria->compare('t.visible', $this->visible);
     $criteria->compare('discount', $this->discount);
     $criteria->compare('spec', $this->spec);
     $criteria->compare('novelty', $this->novelty);
     $criteria->compare('main', $this->main);
 
     $criteria->compare('name', $this->name, true);
+
+    foreach(BProductAssignment::model()->getFields() as $key => $field)
+      $criteria->compare('assignment.'.$key, '='.$this->$key);
 
     return $criteria;
   }
@@ -164,6 +166,7 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
 
     return $variants;
   }
+
   public function attributeLabels()
   {
     return CMap::mergeArray(parent::attributeLabels(), array(

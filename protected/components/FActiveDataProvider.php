@@ -42,4 +42,12 @@ class FActiveDataProvider extends CActiveDataProvider
   {
     $this->raiseEvent('onAfterFetchData', $event);
   }
+
+  public function getDataRandom($refresh = false)
+  {
+    $data = parent::getData($refresh);
+    shuffle($data);
+
+    return $data;
+  }
 }

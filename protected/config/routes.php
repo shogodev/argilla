@@ -7,6 +7,9 @@ return array(
   // search
   'search' => array('search/index', 'pattern' => 'search/<page:\d+>', 'defaultParams' => array('page' => 1)),
 
+  // xml
+  'xmlExport' => array('xmlExport/index', 'pattern' => '<id:\w+>_xml'),
+
   // news
   'newsSection' => array('news/section', 'pattern' => '<url:(news|articles|reviews)>/<page:\d+>', 'defaultParams' => array('page' => 1)),
   'newsOne'     => array('news/one',     'pattern' => 'news/<url:\w+>.html'),

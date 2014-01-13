@@ -23,7 +23,7 @@ class AbstractProductFilter extends CComponent
    */
   protected $state = array();
 
-  protected $saveState;
+  public $saveState;
 
   /**
    * @param string $filterKey - уникальный ключ фильтра
@@ -56,7 +56,7 @@ class AbstractProductFilter extends CComponent
       }
     }
 
-    if( $setStateAuto && (Arr::cut($state, 'submit') || Yii::app()->request->isAjaxRequest ) )
+    if( $setStateAuto && is_array($state) && Arr::cut($state, 'submit') )
     {
       $this->setState($state);
     }

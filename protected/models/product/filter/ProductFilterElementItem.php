@@ -10,6 +10,7 @@
  * @property string $name
  * @property string $cssId
  * @property string $url
+ * @property string $image
  * @property ProductFilter $filter
  */
 class ProductFilterElementItem extends CComponent
@@ -21,8 +22,6 @@ class ProductFilterElementItem extends CComponent
   public $selected = false;
 
   public $amount = 0;
-
-  public $image;
 
   protected $label;
 
@@ -106,6 +105,11 @@ class ProductFilterElementItem extends CComponent
     $this->url = $url;
   }
 
+  public function getImage()
+  {
+    return new FSingleImage($this->parent->id.'_'.$this->id.'.png', 'upload/images/color');
+  }
+
   /**
    * @return string
    */
@@ -119,7 +123,7 @@ class ProductFilterElementItem extends CComponent
 
     $state = Arr::mergeAssoc($this->filter->state, $this->getItemState($this));
 
-    if( $this->isSelected() )
+    if( $this->isSelected() && $this->parent->type ==! 'select' )
     {
       $this->parent->isMultiple() ? Arr::cut($state[$this->parent->id], $this->id) : Arr::cut($state, $this->parent->id);
       unset($path[array_search('{'.$this->parent->id.'}', $this->filter->urlPattern)]);
@@ -158,11 +162,14 @@ class ProductFilterElementItem extends CComponent
   protected function pathToFilterMode($state, $path, $element)
   {
     $state = $this->sortUrlState($state);
-    $key   = array_search('{'.$element->id.'}', $this->filter->urlPattern);
+    $key   = Arr::search('{'.$element->id.'}', $this->filter->urlPattern);
     $value = Arr::get($path, $key);
+    $id    = array_search($value, $element->itemUrls);
 
-    $id = array_search($value, $element->itemUrls);
-    $path[$key] = '';
+    if( $key && !isset($path[$key]) )
+    {
+      $path[$key] = '';
+    }
 
     if( $element->isMultiple() )
     {
@@ -208,7 +215,13 @@ class ProductFilterElementItem extends CComponent
       unset($state[$key]);
     }
 
-    $path[array_search('{'.$key.'}', $this->filter->urlPattern)] = Arr::get($element->itemUrls, $id, '').'/';
+    $pos = Arr::search('{'.$key.'}', $this->filter->urlPattern);
+    $url = Arr::get($element->itemUrls, $id, '');
+
+    if( $url && $pos && empty($path[$pos]) )
+    {
+      $path[$pos] = $url.'/';
+    }
 
     return array($state, $path);
   }

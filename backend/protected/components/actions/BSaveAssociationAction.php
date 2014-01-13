@@ -6,6 +6,7 @@
  * @license http://argilla.ru/LICENSE
  * @package backend.components.actions
  */
+Yii::import('backend.modules.product.components.*');
 Yii::import('backend.modules.product.models.*');
 Yii::import('backend.modules.info.models.*');
 
