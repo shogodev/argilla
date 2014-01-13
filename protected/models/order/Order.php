@@ -105,58 +105,7 @@ class Order extends FActiveRecord
     if( !$this->isNewRecord )
       return parent::afterSave();
 
-    foreach($this->basket as $product)
-    {
-      $orderProduct = new OrderProduct();
-      $orderProduct->attributes = [
-        'order_id' => $this->primaryKey,
-        'name' => $product->name,
-        'price' => $product->price,
-        'count' => $product->collectionAmount,
-        'discount' => $product->discount,
-        'sum' => $product->sum,
-      ];
-
-      if( !$orderProduct->save() )
-        throw new CHttpException(500, 'Can`t save '.get_class($orderProduct).' model');
-
-      $image = $product->getImages('main');
-      $orderProductHistory = new OrderProductHistory();
-      $orderProductHistory->attributes = array('order_product_id' => $orderProduct->getPrimaryKey(),
-        'product_id' => $product->id,
-        'url' => $product->url,
-        'img' => isset($image[0]->pre) ? $image[0]->pre : '',
-        'articul' => $product->articul);
-
-      if( !$orderProductHistory->save() )
-        throw new CHttpException(500, 'Can`t save '.get_class($orderProductHistory).' model');
-
-
-      if( !isset($product->collectionItems['service']) || $product->collectionItems['service']->isEmpty() )
-        continue;
-
-      foreach($product->collectionItems['service'] as $item)
-      {
-        /**
-         * @var $item Service
-         */
-        $productItem = new OrderProductItem();
-        $productItem->attributes = array(
-          'order_product_id' => $orderProduct->primaryKey,
-          'type' => get_class($item),
-          'pk' => $item->primaryKey,
-          'name' => 'Услуга',
-          'amount' => $item->collectionAmount,
-          'price' => $item->price,
-          'value' => $item->name,
-        );
-
-        if( !$productItem->save() )
-          throw new CHttpException(500, 'Can`t save '.get_class($productItem).' model');
-      }
-    }
-
-    parent::afterSave();
+    $this->saveProducts();
   }
 
   public function afterFind()
@@ -227,5 +176,63 @@ class Order extends FActiveRecord
       return Yii::app()->controller->fastOrderBasket;
 
     return Yii::app()->controller->basket;
+  }
+
+  protected function saveProducts()
+  {
+    foreach($this->basket as $product)
+    {
+      $orderProduct = new OrderProduct();
+      $orderProduct->attributes = [
+        'order_id' => $this->primaryKey,
+        'name' => $product->name,
+        'price' => $product->price,
+        'count' => $product->collectionAmount,
+        'discount' => $product->discount,
+        'sum' => $product->sum,
+      ];
+
+      if( !$orderProduct->save() )
+        throw new CHttpException(500, 'Can`t save '.get_class($orderProduct).' model');
+
+      $image = $product->getImages('main');
+      $orderProductHistory = new OrderProductHistory();
+      $orderProductHistory->attributes = array('order_product_id' => $orderProduct->getPrimaryKey(),
+                                               'product_id' => $product->id,
+                                               'url' => $product->url,
+                                               'img' => isset($image[0]->pre) ? $image[0]->pre : '',
+                                               'articul' => $product->articul);
+
+      if( !$orderProductHistory->save() )
+        throw new CHttpException(500, 'Can`t save '.get_class($orderProductHistory).' model');
+
+      $this->saveServices($product, $orderProduct);
+    }
+  }
+
+  protected function saveServices($product, $orderProduct)
+  {
+    if( $product->isEmptyCollectionItems('services') )
+      return;
+
+    foreach($product->collectionItems['service'] as $item)
+    {
+      /**
+       * @var $item Service
+       */
+      $productItem = new OrderProductItem();
+      $productItem->attributes = array(
+        'order_product_id' => $orderProduct->primaryKey,
+        'type' => get_class($item),
+        'pk' => $item->primaryKey,
+        'name' => 'Услуга',
+        'amount' => $item->collectionAmount,
+        'price' => $item->price,
+        'value' => $item->name,
+      );
+
+      if( !$productItem->save() )
+        throw new CHttpException(500, 'Can`t save '.get_class($productItem).' model');
+    }
   }
 }

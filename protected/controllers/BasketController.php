@@ -30,11 +30,12 @@ class BasketController extends FController
   public function actionCheckOut()
   {
     if( $this->basket->isEmpty() )
-      Yii::app()->request->redirect($this->basket->url);
+ Yii::app()->request->redirect($this->createUrl('basket/index'));
 
     $this->breadcrumbs = array('Корзина');
 
     $orderForm = new FForm('Order', new Order());
+    $orderForm->loadFromSession = true;
     $orderForm->autocomplete = true;
     $orderForm->ajaxValidation();
 
@@ -51,8 +52,7 @@ class BasketController extends FController
       ));
 
       Yii::app()->session['orderSuccess'] = true;
-
-      Yii::app();
+      Yii::app()->end();
     }
     else
     {
@@ -72,10 +72,11 @@ class BasketController extends FController
   public function actionSuccess()
   {
     if( $this->basket->isEmpty() && !Yii::app()->session->get('orderSuccess', false) )
-      Yii::app()->request->redirect($this->basket->url);
+      Yii::app()->request->redirect($this->createUrl('basket/index'));
 
     Yii::app()->session->remove('orderSuccess');
 
+  $this->breadcrumbs = array('Корзина');
     $this->render('success');
   }
 
@@ -89,8 +90,8 @@ class BasketController extends FController
 
     if( !$this->fastOrderBasket->isEmpty() && $form->save() )
     {
-      Yii::app()->notification->send('OrderBackend', array('model' => $form->model));
-      Yii::app()->notification->send($form->model, array(), $form->model->email);
+      Yii::app()->notification->send('FastOrderBackend', array('model' => $form->model));
+      Yii::app()->notification->send('FastOrder', array('model' => $form->model), $form->model->email);
 
       echo CJSON::encode(array(
         'status' => 'ok',
@@ -140,7 +141,7 @@ class BasketController extends FController
         case 'changeAmount':
           if( !$this->basket->getElementByIndex($data['id']) )
             throw new CHttpException(500, 'Продукт не найден. Обновите страницу.');
-          $this->basket->change($data['id'], intval($data['amount']));
+          $this->basket->changeAmount($data['id'], intval($data['amount']));
         break;
 
         case 'add':
