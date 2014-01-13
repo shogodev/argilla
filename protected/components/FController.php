@@ -188,6 +188,11 @@ class FController extends CController
     return $this->createUrl($this->id."/".$this->action->id, $this->getActionParams(true));
   }
 
+  public function getCurrentAbsoluteUrl()
+  {
+    return $this->createAbsoluteUrl($this->id."/".$this->action->id, $this->getActionParams(true));
+  }
+
   public function getActionParams($cutDefaultParams = false)
   {
     $params = $_GET;
