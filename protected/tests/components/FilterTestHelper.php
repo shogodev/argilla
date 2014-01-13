@@ -145,7 +145,7 @@ class FilterTestHelper
     $criteria->compare('price', '>0');
     $productList = new ProductList($criteria, null, false, $filter);
 
-    $products = $productList->getProducts();
+    $products = $productList->getDataProvider();
     /**
      * @var Product[] $data
      */
