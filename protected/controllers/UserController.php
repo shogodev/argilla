@@ -58,7 +58,7 @@ class UserController extends FController
   public function actionLogout()
   {
     $returnUrl = Yii::app()->user->returnUrl;
-    Yii::app()->user->logout();
+    Yii::app()->user->logout(false);
     $this->redirect($returnUrl);
     Yii::app()->end();
   }
