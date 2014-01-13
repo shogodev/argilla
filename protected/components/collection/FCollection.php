@@ -12,28 +12,29 @@ class FCollection extends SplObjectStorage
 
   public $externalIndexStorage = array();
 
-  protected $mergeByKey;
+  protected $compareByItemKeys;
 
   protected $index = 0;
 
   protected $autoSave;
 
   protected $arrayParentElements = array();
+
   /**
    * @param $keyCollection ключ колекции
-   * @param array $mergeByKey объединять элементы с указаными одинаковыми параметрами
+   * @param array $compareByItemKeys объединять элементы с указаными одинаковыми параметрами
    * @param array $allowedModels сприсок разрешенных моделей для которых нужно создать объект
    * @param bool $autoSave автоматисеская запись и чтение из сессии
    *
    * пример:
    * $collection = new FCollection('basket', array('id', 'size'), array('Product', 'Option'), true)
    */
-  public function __construct($keyCollection, $mergeByKey = array(), $allowedModels = array(), $autoSave = true)
+  public function __construct($keyCollection, $compareByItemKeys = array(), $allowedModels = array(), $autoSave = true)
   {
     $this->keyCollection = $keyCollection;
     $this->allowedModels = $allowedModels;
 
-    $this->mergeByKey = $mergeByKey;
+    $this->compareByItemKeys = $compareByItemKeys;
     $this->autoSave = $autoSave;
 
     if( $this->autoSave )
@@ -49,6 +50,9 @@ class FCollection extends SplObjectStorage
 
   public function add($collectionData)
   {
+    if( empty($collectionData) )
+      throw new CHttpException(500, 'Ошибка! Невозможно добавить пустой элемент в коллекцию.');
+
     $object = $this->createObject($collectionData);
 
     $this->merge($object, true);
@@ -83,6 +87,7 @@ class FCollection extends SplObjectStorage
   {
     $element = $this->getElementByIndex($index);
     $element->parentCollection->detach($element);
+
     unset($this->externalIndexStorage[$element->collectionExternalIndex]);
 
     if( $this->autoSave )
@@ -105,6 +110,7 @@ class FCollection extends SplObjectStorage
     $this->removeAll($this);
     $this->load();
   }
+
   public function countAmount()
   {
     $amount = 0;
@@ -115,15 +121,42 @@ class FCollection extends SplObjectStorage
     return $amount;
   }
 
-  public function change($index, $amount = null, $items = null)
+  public function changeAmount($index, $amount = null)
   {
     $element = $this->getElementByIndex($index);
 
     if( $amount !== null )
       $element->collectionAmount = $amount;
 
+    $this->merge($element);
+
+    if( $this->autoSave )
+      $this->save();
+  }
+
+  public function changeItems($index, $items)
+  {
+    $element = $this->getElementByIndex($index);
+
     if( $items !== null )
       $element->collectionItems = $this->createObjectsItems($items);
+
+    $this->merge($element);
+
+    if( $this->autoSave )
+      $this->save();
+  }
+
+  public function changeItemsPartial($index, $items)
+  {
+    $element = $this->getElementByIndex($index);
+
+    if( $items === null )
+      return;
+
+    $itemsArray = $element->collectionItemsToArray();
+
+    $element->collectionItems = $this->createObjectsItems(Arr::mergeAssoc($itemsArray, $items));
 
     $this->merge($element);
 
@@ -144,7 +177,7 @@ class FCollection extends SplObjectStorage
 
   public function isInCollectionData($type, $id)
   {
-    return in_array($this->pathToString(array($type, $id)), $this->arrayParentElements);
+    return in_array($this->pathToString(array(Utils::toSnakeCase($type), $id)), $this->arrayParentElements);
   }
 
   public function isInCollectionClass($class)
@@ -152,7 +185,6 @@ class FCollection extends SplObjectStorage
     return $this->isInCollectionData(get_class($class), $class->primaryKey);
   }
 
-  //todo: если при создании колекции $autoSave всегда true createPathsRecursive можно сделать приватным
   public function createPathsRecursive($collection = null, $path = array(), $rootCollection = null)
   {
     if( empty($path) )
@@ -211,18 +243,18 @@ class FCollection extends SplObjectStorage
 
     $data = array();
 
-  foreach($items as $key => $item)
-  {
-    if( is_object($item) )
+    foreach($items as $key => $item)
     {
-      if( $item instanceof FCollection )
-        $data[$key] = $this->toArray($item);
+      if( is_object($item) )
+      {
+        if( $item instanceof FCollection )
+          $data[$key] = $this->toArray($item);
+        else
+          $data[$item->collectionIndex !== null ? $item->collectionIndex : $key] = $item->toArray();
+      }
       else
-        $data[$item->collectionIndex] = $item->toArray();
+        $data[$key] = $item;
     }
-    else
-      $data[$key] = $item;
-  }
 
     return $data;
   }
@@ -231,9 +263,10 @@ class FCollection extends SplObjectStorage
    * Ищет элементы не принадлежащие текущей коллекции в коллекции.
    * Если входной параметр элемент текущей коллекции, то вернет null
    * @param $element объект или массив
-   * @return mixed
+   * @param array $compareByItemKeys масив ключей items которые нужно сравнить
+   * @return FCollectionElement
    */
-  public function findElement($element)
+  public function findElement($element, $compareByItemKeys = array())
   {
     if( !is_object($element) )
       $element = $this->createObject($element);
@@ -243,12 +276,17 @@ class FCollection extends SplObjectStorage
       if( $item->collectionIndex === $element->collectionIndex )
         continue;
 
-      //if( $item->parentCollection == $element->parentCollection  && $item->primaryKey == $element->primaryKey && $this->compareItems($item, $element) )
-      if( get_class($item) == get_class($element) && $item->primaryKey == $element->primaryKey && $this->compareItems($item, $element) )
+      if( get_class($item) == get_class($element) && $item->primaryKey == $element->primaryKey && $this->compareItems($item, $element, $compareByItemKeys) )
         return $item;
     }
 
     return null;
+  }
+
+  public function firstElement()
+  {
+    $this->rewind();
+    return $this->current();
   }
 
   protected function incrementIndex()
@@ -286,7 +324,7 @@ class FCollection extends SplObjectStorage
     {
       $className = Utils::toCamelCase($data['type']);
       /**
-       * @var FActiveRecord $model
+       * @var FActiveRecord|FCollectionElement $model
        */
       $model = $className::model()->findByPk($data['id']);
 
@@ -300,11 +338,13 @@ class FCollection extends SplObjectStorage
       if( isset($data['items']) && is_array($data['items']) )
         $model->collectionItems = $this->createObjectsItems($data['items']);
 
+      $model->afterCreateCollection();
+
       return $model;
     }
     else if( is_array($data) && $this->isObject(reset($data)) )
     {
-      $collection = new FCollection($innerCollectionKey, $this->mergeByKey, $this->allowedModels, false);
+      $collection = new FCollection($innerCollectionKey, $this->compareByItemKeys, $this->allowedModels, false);
 
       foreach($data as $value)
         $collection->add($value);
@@ -341,7 +381,7 @@ class FCollection extends SplObjectStorage
 
   protected function merge($newElement, $addNewElement = false)
   {
-    $collectionElement = $this->findElement($newElement);
+    $collectionElement = $this->findElement($newElement, $this->compareByItemKeys);
 
     if( $collectionElement )
     {
@@ -354,50 +394,83 @@ class FCollection extends SplObjectStorage
       $this->attachElement($newElement);
   }
 
-  /**
-   * Сравнивает содержимое collectionItems 2-х элементов колеуции на совпадение mergeByKey.
-   * Не будет работать если в collectionItems по ключу из mergeByKey окажется массив.
-   * @param $element1
-   * @param $element2
-   * @return bool
-   */
-  protected function compareItems($element1, $element2)
-  {
-    if( empty($this->mergeByKey) )
-      return true;
-
-    if( empty($element1->collectionItems) && empty($element2->collectionItems) )
-      return true;
-
-    //todo: Сделать проверку вложенных массивов, тогда можно будет сравнивать элемнты содержащие в collectionItems объекты
-    $items1 = $this->toArray($element1->collectionItems);
-    $items2 = $this->toArray($element2->collectionItems);
-
-    $mergeItems1 = array();
-    $mergeItems2 = array();
-
-    foreach($this->mergeByKey as $key)
-    {
-      if( isset($items1[$key]) )
-        $mergeItems1[$key] = $items1[$key];
-
-      if( isset($items2[$key]) )
-        $mergeItems2[$key] = $items2[$key];
-    }
-
-    $diff = array_diff_assoc($mergeItems1, $mergeItems2);
-
-    if( empty($diff) )
-      return true;
-
-    return false;
-  }
-
   protected function attachElement($element)
   {
     if( $element->collectionIndex === null )
       $element->collectionIndex = $this->incrementIndex();
 
     $this->attach($element);
+  }
+
+  /**
+   * @param FCollectionElement $element1
+   * @param FCollectionElement $element2
+   * @param array $compareByItemKeys
+   * @return bool
+   */
+  protected function compareItems($element1, $element2, $compareByItemKeys)
+  {
+    if( empty($compareByItemKeys) )
+      return true;
+
+    if( empty($element1->collectionItems) && empty($element2->collectionItems) )
+      return true;
+
+    $arrayItems1 = $element1->collectionItemsToArray();
+    $arrayItems2 = $element2->collectionItemsToArray();
+
+    foreach($compareByItemKeys as $key)
+    {
+      if( !$this->compareItemsArray($arrayItems1, $arrayItems2, $key) )
+        return false;
+    }
+
+    return true;
+  }
+
+  protected function compareItemsArray($items1, $items2, $itemName)
+  {
+    if( empty($items1[$itemName]) && empty($items2[$itemName]) )
+      return true;
+
+    if( !isset($items1[$itemName]) && !isset($items2[$itemName]) )
+      return true;
+
+    if( isset($items1[$itemName]) && !isset($items2[$itemName]) )
+      return false;
+
+    if( !isset($items1[$itemName]) && isset($items2[$itemName]) )
+      return false;
+
+    $dataForCompare1 = $this->preparationDataForCompare($items1[$itemName]);
+    $dataForCompare2 = $this->preparationDataForCompare($items2[$itemName]);
+
+    return $dataForCompare1 == $dataForCompare2;
+  }
+
+  protected function preparationDataForCompare($data)
+  {
+    if( !is_array($data) )
+      return $data;
+
+    $ids = array();
+    foreach($data as $key => $item)
+    {
+      if( $this->isObject($item) )
+      {
+        $uniqueKey = $item['id'].'_'.$item['amount'];
+        $ids[$uniqueKey] = $uniqueKey;
+      }
+      else
+      {
+        if( is_array($item) )
+          asort($item);
+
+        $ids[$key] = $item;
+      }
+    }
+
+    ksort($ids);
+    return $ids;
   }
 }

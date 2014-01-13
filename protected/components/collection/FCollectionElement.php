@@ -48,10 +48,18 @@ class FCollectionElement extends CBehavior
     return array(
       'id' => $this->owner->primaryKey,
       'type' => Utils::toSnakeCase(get_class($this->owner)),
-      'amount' => $this->owner->collectionAmount,
-      'index' => $this->owner->collectionIndex,
-      'items' => !empty($this->owner->collectionItems) ? $this->parentCollection->toArray($this->owner->collectionItems) : array()
+      'amount' => $this->collectionAmount,
+      'index' => $this->collectionIndex,
+      'items' => $this->collectionItemsToArray()
     );
+  }
+
+  public function collectionItemsToArray()
+  {
+    if( empty($this->collectionItems) )
+      return array();
+
+    return $this->parentCollection instanceof FCollection ? $this->parentCollection->toArray($this->collectionItems) : $this->collectionItems;
   }
 
   /**
@@ -61,15 +69,26 @@ class FCollectionElement extends CBehavior
    *
    * @return array
    */
-  public function getCollectionValues($index, $key, $value)
+  public function collectionItemsListData($index, $key, $value)
   {
     $values = array();
 
-    if( isset($this->collectionItems[$index]) )
-    {
-      $values = Chtml::listData($this->collectionItems[$index], $key, $value);
-    }
+    if( !$this->isEmptyCollectionItems($index) )
+      $values = CHtml::listData($this->collectionItems[$index], $key, $value);
 
     return $values;
+  }
+
+  public function isEmptyCollectionItems($index)
+  {
+    return !isset($this->owner->collectionItems[$index]) || !($this->owner->collectionItems[$index] instanceof FCollection) || $this->owner->collectionItems[$index]->isEmpty();
+  }
+
+  /**
+   * Метод вызывается после создания обекта колекции
+   */
+  public function afterCreateCollection()
+  {
+
   }
 }

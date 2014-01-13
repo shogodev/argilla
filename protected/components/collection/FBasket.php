@@ -8,36 +8,36 @@
  */
 class FBasket extends FCollection
 {
-  public $url;
-  public $panelUrl;
-  public $listViewClass = '{collectionKey}-list';
+  public $classListView = '{collectionKey}-list';
 
   public $classAdd = 'to-{collectionKey}';
-  public $classInCollection = 'already-in-{collectionKey}';
+
+  public $classAlreadyInCollection = 'already-in-{collectionKey}';
+
+  public $classForbidAddInCollection = 'forbid-add-{collectionKey}';
+
   public $classFastOrder = 'fast-order';
 
   protected $classRemove = 'remove-{collectionKey}';
+
   protected $classAmount = 'amount-{collectionKey}';
+
   protected $classChangeAmount = 'change-amount-{collectionKey}';
 
   protected $submitFunctionName;
 
   public function init()
   {
-    $controller = Yii::app()->controller;
-    $this->url = $controller->createUrl('basket/index');
-    $this->panelUrl = $controller->createUrl('basket/panel');
+    foreach(get_object_vars($this) as $name => $value)
+    {
+      if( is_string($value) )
+        $this->{$name} = strtr($value, array('{collectionKey}' => $this->keyCollection));
+    }
 
-    $this->listViewClass = strtr($this->listViewClass, array('{collectionKey}' => $this->keyCollection));
-    $this->classAdd = strtr($this->classAdd, array('{collectionKey}' => $this->keyCollection));
-    $this->classInCollection = strtr($this->classInCollection, array('{collectionKey}' => $this->keyCollection));
-    $this->classRemove = strtr($this->classRemove, array('{collectionKey}' => $this->keyCollection));
-    $this->classAmount = strtr($this->classAmount, array('{collectionKey}' => $this->keyCollection));
-    $this->classChangeAmount = strtr($this->classChangeAmount, array('{collectionKey}' => $this->keyCollection));
+    $this->submitFunctionName = 'send'.Utils::toCamelCase($this->keyCollection).'Data';
 
-    $this->submitFunctionName = 'submitData'.Utils::ucfirst($this->keyCollection);
-
-	  $this->registerRemoveButtonScript();
+    $this->registerRemoveButtonScript();
+    $this->registerAddButtonScript();
   }
 
   public function sum()
@@ -54,11 +54,19 @@ class FBasket extends FCollection
   {
     $sum = 0;
 
+    /**
+     * @var FCollectionElement $element
+     */
     foreach($this as $element)
     {
-      if( isset($element->collectionItems['service']) )
-        foreach($element->collectionItems['service'] as $service)
-          $sum += $service->sum;
+      if( $element->isEmptyCollectionItems('services') )
+        continue;
+
+      foreach($element->collectionItems['services'] as $service)
+      {
+        $service->setProduct($element);
+        $sum += $service->sum * $element->getAmount();
+      }
     }
 
     return $sum;
@@ -90,22 +98,47 @@ class FBasket extends FCollection
    * Пример: echo $this->basket->addButton('Добавить в корзину', array('class' => 'btn green-btn to-basket-btn', 'data-id' => $data->id, 'data-amount' => 1))
    * @param string $text
    * @param array $htmlOptions
-   * @param $checkInCollection добавлять в коллекцию 1 раз
+   * @param array $defaultItems
+   * @param $forbidAddAgainInCollection запретить добавлять в коллекцию одинаковый элемент несколько раз
    * @return string
    */
-  public function addButton($text = '', $htmlOptions = array(), $checkInCollection = true)
+  public function addButton($text = '', $htmlOptions = array(), $defaultItems = array(), $forbidAddAgainInCollection = true)
   {
-    $htmlOptions['class'] = empty($htmlOptions['class']) ? $this->classAdd :  $htmlOptions['class'].' '.$this->classAdd;
-
-    if( empty($htmlOptions['data-type']) )
-      $htmlOptions['data-type'] = 'product';
+    $classes = isset($htmlOptions['class']) ? array($htmlOptions['class']) : array();
+    $classes[] = $this->classAdd;
+    $linkText = is_array($text) ? Arr::reset($text) : $text;
 
     if( $this->isInCollectionData($htmlOptions['data-type'], $htmlOptions['data-id']) )
-      $htmlOptions['class'] .= ' '.$this->classInCollection;
+    {
+      $classes[] = $this->classAlreadyInCollection;
 
-    $this->registerAddButtonScript($checkInCollection);
+      if( $forbidAddAgainInCollection )
+        $classes[] = $this->classForbidAddInCollection;
 
-    return CHtml::link($text, '#', $htmlOptions);
+      if( is_array($text) )
+        $linkText = is_array($text) ? Arr::get($text, 1) : $text;
+    }
+
+    if( !empty($defaultItems) )
+      $htmlOptions['data-items'] = CJSON::encode($defaultItems);
+
+    $htmlOptions['data-type'] = Utils::toSnakeCase($htmlOptions['data-type']);
+    $htmlOptions['class'] = implode(' ', $classes);
+
+    $this->registerAddButtonScript();
+
+    return CHtml::link($linkText, '#', $htmlOptions);
+  }
+
+  public function addButtonModel($text = '', $model, $htmlOptions = array(), $defaultItems = array(), $forbidAddAgainInCollection = true)
+  {
+    if( empty($htmlOptions['data-id']) )
+      $htmlOptions['data-id'] = $model->id;
+
+    if( empty($htmlOptions['data-type']) )
+      $htmlOptions['data-type'] = get_class($model);
+
+    return $this->addButton($text, $htmlOptions, $defaultItems, $forbidAddAgainInCollection);
   }
 
   public function removeButton($element, $text = '', $htmlOptions = array(), $confirm = true)
@@ -156,21 +189,17 @@ class FBasket extends FCollection
     $this->registerSubmitScript();
   }
 
-  protected function registerAddButtonScript($checkInCollection)
+  protected function registerAddButtonScript()
   {
-    if( $checkInCollection )
-      $script = "$('body').on('click', '.{$this->classAdd}:not(.{$this->classInCollection})', function(e){";
-    else
-      $script = "$('body').on('click', '.{$this->classAdd}', function(e){";
-
-    $script .= "
+    $script = "$('body').on('click', '.{$this->classAdd}', function(e){
       e.preventDefault();
+
+      if( $(this).hasClass('$this->classForbidAddInCollection') )
+        return;
+
       if( !$(this).hasClass('waitAction') )
         $(this).addClass('waitAction');
       {$this->submitFunctionName}($(this).data(), 'add');
-    });
-    $('body').on('click', '.{$this->classAdd}.{$this->classInCollection}', function(e){
-      e.preventDefault();
     });";
 
     Yii::app()->clientScript->registerScript('AddButtonScript#'.$this->keyCollection, $script, CClientScript::POS_END);
@@ -189,37 +218,6 @@ class FBasket extends FCollection
 
     Yii::app()->clientScript->registerScript('ChangeAmountScript#'.$this->keyCollection, $script, CClientScript::POS_END);
     $this->registerSubmitScript();
-
-    // key коды  http://www.hiox.org/32037-javascript-char-codes-key-codes.php
-/*    $keyScript = "$('body').on('keydown','.{$this->classChangeAmount}',function(e){
-
-      $(this).data('old-value', this.value) ;
-
-      var keyCode = e.keyCode;
-
-      if( (keyCode >= 48 && keyCode <= 57) // 0 - 9
-          || (keyCode >= 96 && keyCode <= 105) // 0 - 9 numpad
-          || keyCode == 8 // backspace
-          || keyCode == 46 // delete
-          || keyCode == 37 // left arrow
-          || keyCode == 39 // right arrow
-          || keyCode == 35 // end
-          || keyCode == 36 // home
-          || keyCode == 45  // insert
-         ) return true;
-
-       e.preventDefault();
-       return false;
-    });
-
-    $('body').on('keyup','.{$this->classChangeAmount}',function(e){
-      if( this.value == '' || $(this).data('old-value') == this.value )
-        return;
-       }
-    );";*/
-
-    //Yii::app()->clientScript->registerScript('ChangeAmountKeyboardScript', $keyScript, CClientScript::POS_END);
-
   }
 
   protected function registerRemoveButtonScript()
@@ -252,7 +250,7 @@ class FBasket extends FCollection
     );
 
     $script = "var {$this->submitFunctionName} = function(data, action) {
-      var list = $('.{$this->listViewClass}');
+      var list = $('.{$this->classListView}');
       if( list.length )
         list.yiiListView.update(list.attr('id'), ".CJavaScript::encode($params).");
     };";
