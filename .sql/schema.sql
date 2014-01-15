@@ -942,6 +942,8 @@ CREATE TABLE `argilla_product_param_name` (
   `key` varchar(50) DEFAULT NULL,
   `product` tinyint(1) DEFAULT NULL,
   `section` tinyint(1) DEFAULT NULL,
+  `section_list` tinyint(1) NOT NULL DEFAULT '0',
+  `selection` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `parent` (`parent`),
   CONSTRAINT `argilla_product_param_name_ibfk_2` FOREIGN KEY (`parent`) REFERENCES `argilla_product_param_name` (`id`)
