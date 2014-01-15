@@ -13,17 +13,12 @@
  * @property string $url
  * @property string $name
  * @property string $notice
- * @property string $img
  * @property integer $visible
  *
  * @property BProductAssignment[] $productAssignments
  */
 class BProductSection extends BProductStructure
 {
-  public function behaviors()
-  {
-    return array('uploadBehavior' => array('class' => 'UploadBehavior', 'validAttributes' => 'img'));
-  }
 
   public function rules()
   {
