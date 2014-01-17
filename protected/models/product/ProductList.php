@@ -210,9 +210,9 @@ class ProductList extends CComponent
      */
     $products = $this->products->getData();
     $criteria = new CDbCriteria();
-    $criteria->compare('t.section', '1');
+    $criteria->addColumnCondition(array('t.section' => 1, 't.section_list' => 1), 'OR');
 
-    $names      = ProductParameterName::model()->setGroupCriteria($criteria)->search();
+    $names = ProductParameterName::model()->search($criteria);
     $parameters = array();
 
     foreach($products as $product)

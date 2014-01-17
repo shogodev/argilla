@@ -181,7 +181,7 @@ $this->assertTrue($this->fth->checkFilterForData(
     $criteria->compare('`key`', 'filter');
 
     $model = new ProductParameterName();
-    $parameters = $model->setGroupCriteria($criteria)->search($criteria);
+    $parameters = $model->setGroupCriteria($criteria)->search();
 
     $this->assertNotEmpty($parameters);
 
