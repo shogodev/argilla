@@ -1,12 +1,11 @@
 <?php
 return array(
-  'class' => 'form personal-form centered-form',
-  'layout' => "{title}\n{errors}\n{elements}{description}\n<div class=\"form-submit\">{buttons}</div>\n",
+  'class' => 'form authorization-form',
 
   'elements' => array(
 
     'login' => array(
-      'type' => 'text',
+      'type'   => 'text',
     ),
 
     'password' => array(
@@ -26,8 +25,9 @@ return array(
   'buttons' => array(
     'submit' => array(
       'type'  => 'submit',
-      'class' => 'btn red-btn wide-paddings-btn',
-      'value' => 'Войти'
+      'class' => 'fl btn red-btn enter-btn',
+      'value' => 'Войти',
     ),
+    "<a href=\"".Yii::app()->controller->createUrl('user/registration')."\" class=\"fr btn red-btn new-user-btn\">Новый пользователь</a>"
   ),
 );

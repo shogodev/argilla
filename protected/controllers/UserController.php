@@ -32,11 +32,14 @@ class UserController extends FController
 
     $this->breadcrumbs = array('Вход');
 
-    $loginForm = $this->loginForm;
-    $this->loginForm->ajaxValidation();
+    $loginForm = new FForm('LoginForm', new Login());
+    $loginForm->action = Yii::app()->controller->createUrl('user/login');
+    $loginForm->ajaxSubmit = false;
+    $loginForm->autocomplete = true;
+    $loginForm->ajaxValidation();
 
     $attributes = Yii::app()->request->getPost('Login');
-    if( $attributes)
+  if( $attributes )
     {
       $loginForm->model->attributes = $attributes;
 

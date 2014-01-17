@@ -11,7 +11,7 @@ class CommonBehavior extends CommonDataBehavior
   /**
    * @var FForm
    */
-  private $loginForm;
+  private $loginPopupForm;
 
   /**
    * @var FForm
@@ -82,17 +82,17 @@ class CommonBehavior extends CommonDataBehavior
   /**
    * @return FForm
    */
-  public function getLoginForm()
+  public function getLoginPopupForm()
   {
-    if( !$this->loginForm )
+    if( !$this->loginPopupForm )
     {
-      $this->loginForm = new FForm('LoginForm', new Login());
-      $this->loginForm->action = Yii::app()->controller->createUrl('user/login');
-      $this->loginForm->ajaxSubmit = false;
-      $this->loginForm->autocomplete = true;
+      $this->loginPopupForm = new FForm('LoginPopupForm', new Login());
+      $this->loginPopupForm->action = Yii::app()->controller->createUrl('user/login');
+      $this->loginPopupForm->ajaxSubmit = false;
+      $this->loginPopupForm->autocomplete = true;
     }
 
-    return $this->loginForm;
+    return $this->loginPopupForm;
   }
 
   /**
