@@ -110,8 +110,8 @@ class Product extends FActiveRecord
 
   /**
    * @param null $key
-   * @param CDbCriteria $groupCriteria êðèòåðèÿ ãðóïïû ïàðàìåòðîâ
-   * @param CDbCriteria $criteria êðèòåðèÿ ïàðàìåòðîâ
+   * @param CDbCriteria $groupCriteria ÐºÑ€Ð¸Ñ‚ÐµÑ€Ð¸Ñ Ð³Ñ€ÑƒÐ¿Ð¿Ñ‹ Ð¿Ð°Ñ€Ð°Ð¼ÐµÑ‚Ñ€Ð¾Ð²
+   * @param CDbCriteria $criteria ÐºÑ€Ð¸Ñ‚ÐµÑ€Ð¸Ñ Ð¿Ð°Ñ€Ð°Ð¼ÐµÑ‚Ñ€Ð¾Ð²
    *
    * @return ProductParameterName[]
    */
@@ -137,7 +137,7 @@ class Product extends FActiveRecord
       ProductParameter::model()->setParameterValues($this->parameters);
     }
 
-    return isset($key) ? Arr::filter($this->parameters, 'groupKey', $key) : $this->parameters;
+    return isset($key) ? Arr::filter($this->parameters, array('groupKey', 'key'), $key) : $this->parameters;
   }
 
   /**
@@ -246,13 +246,16 @@ class Product extends FActiveRecord
     return $this->getParametersByAttributes(array('section' => 1));
   }
 
-  private function getParametersByAttributes(array $attributes, $notEmptyValue = true)
+  private function getParametersByAttributes(array $attributes, $notEmptyValue = true, $exceptionKeys = array())
   {
     $parameters = array();
 
     foreach($this->getParameters() as $parameter)
     {
       if( $notEmptyValue && empty($parameter->value) )
+        continue;
+
+      if( in_array($parameter->key, $exceptionKeys) )
         continue;
 
       foreach($attributes as $attribute => $value)
