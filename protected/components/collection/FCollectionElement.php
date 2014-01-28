@@ -71,17 +71,46 @@ class FCollectionElement extends CBehavior
    */
   public function collectionItemsListData($index, $key, $value)
   {
-    $values = array();
+    if( $this->isNotEmptyCollection($index) )
+      return CHtml::listData($this->collectionItems[$index], $key, $value);
 
-    if( !$this->isEmptyCollectionItems($index) )
-      $values = CHtml::listData($this->collectionItems[$index], $key, $value);
-
-    return $values;
+    return array();
   }
 
-  public function isEmptyCollectionItems($index)
+  /**
+   * Если collectionItems c индексом $index не пустой, то венет true
+   * @param $index
+   * @return bool
+   */
+  public function isNotEmptyCollectionItems($index)
   {
-    return !isset($this->owner->collectionItems[$index]) || !($this->owner->collectionItems[$index] instanceof FCollection) || $this->owner->collectionItems[$index]->isEmpty();
+    if( isset($this->owner->collectionItems[$index]) && !empty($this->owner->collectionItems[$index]) )
+      return true;
+  }
+
+  /**
+   * Если существует не пустой collectionItems с индексом $index, то венет true
+   * @param $index
+   * @return bool
+   */
+  public function isNotEmptyCollection($index)
+  {
+    if( !$this->isNotEmptyCollectionItems($index) )
+      return false;
+
+    return $this->owner->collectionItems[$index] instanceof FCollection && !$this->owner->collectionItems[$index]->isEmpty();
+  }
+
+  public function getCollectionItems($index, $onlyCollection = false)
+  {
+    if( $onlyCollection )
+    {
+      return $this->isNotEmptyCollection($index) ? $this->owner->collectionItems[$index] : null;
+    }
+    else
+    {
+      return $this->isNotEmptyCollectionItems($index) ? $this->owner->collectionItems[$index] : null;
+    }
   }
 
   /**
@@ -90,5 +119,18 @@ class FCollectionElement extends CBehavior
   public function afterCreateCollection()
   {
 
+  }
+
+  /**
+   * Копирует арибуты поведения FCollectionElement из $object
+   * @param $object
+   * @return $this
+   */
+  public function mergeCollectionAttributes($object)
+  {
+    foreach(get_object_vars($this) as $attribute => $value)
+      $this->owner->{$attribute} = $object->{$attribute};
+
+    return $this->owner;
   }
 }

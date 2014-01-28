@@ -19,18 +19,25 @@ class BasketController extends FController
   {
     $this->breadcrumbs = array('Корзина');
 
-    $this->render('basket');
+    if( Yii::app()->request->isAjaxRequest )
+    {
+      $this->renderPartial('/_compare_basket_header');
+      $this->renderPartial('basket');
+    }
+    else
+      $this->render('basket');
   }
 
-  public function actionPanel()
+  public function actionAdd()
   {
-    $this->renderPartial('/product_panel');
+    $this->renderPartial('/_compare_basket_header');
+    $this->renderPartial('/panel/panel');
   }
 
   public function actionCheckOut()
   {
     if( $this->basket->isEmpty() )
- Yii::app()->request->redirect($this->createUrl('basket/index'));
+      Yii::app()->request->redirect($this->createUrl('basket/index'));
 
     $this->breadcrumbs = array('Корзина');
 
@@ -76,7 +83,7 @@ class BasketController extends FController
 
     Yii::app()->session->remove('orderSuccess');
 
-  $this->breadcrumbs = array('Корзина');
+    $this->breadcrumbs = array('Корзина');
     $this->render('success');
   }
 
@@ -142,6 +149,20 @@ class BasketController extends FController
           if( !$this->basket->getElementByIndex($data['id']) )
             throw new CHttpException(500, 'Продукт не найден. Обновите страницу.');
           $this->basket->changeAmount($data['id'], intval($data['amount']));
+        break;
+
+        case 'changeSize':
+          $element = $this->basket->getElementByIndex($data['index']);
+          if( !$element )
+            throw new CHttpException(500, 'Продукт не найден. Обновите страницу.');
+
+          $this->basket->changeItems($data['index'], array(
+            'size' => array(
+              'id' => Arr::get($data, 'id'),
+              'type' => 'product_parameter'
+            )
+          ));
+          $this->basket->update();
         break;
 
         case 'add':

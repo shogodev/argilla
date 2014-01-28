@@ -283,6 +283,9 @@ class FCollection extends SplObjectStorage
     return null;
   }
 
+  /**
+   * @return FCollectionElement
+   */
   public function firstElement()
   {
     $this->rewind();
@@ -328,8 +331,11 @@ class FCollection extends SplObjectStorage
        */
       $model = $className::model()->findByPk($data['id']);
 
-      if( !$model || !$model->asa('collectionElement') )
-        throw new CHttpException('500', 'Ошибка!');
+      if( !$model )
+        throw new CHttpException('500', 'Ошибка! Не удалось создать модель.');
+
+      if( !$model->asa('collectionElement') )
+        throw new CHttpException('500', 'Ошибка! Не найдено поведение.');
 
       $model->collectionAmount = Arr::cut($data, 'amount', 1);
       $model->collectionIndex = Arr::cut($data, 'index', null);

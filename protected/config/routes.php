@@ -22,10 +22,10 @@ return array(
 
   // compare
   'compare'           => array('compare/index',      'pattern' => 'compare'),
-  'compareAdd'        => array('compare/add',        'pattern' => '<url:compare\/add>/<id:\d+>'),
+  'compareAdd'        => array('compare/add',        'pattern' => 'compare/add'),
+
   'compareRemove'     => array('compare/remove',     'pattern' => '<url:compare\/remove>/<id:\d+>'),
   'compareClear'      => array('compare/clear',      'pattern' => 'compare/clear'),
-  'compareCount'      => array('compare/count',      'pattern' => 'compare/count'),
   'compareClearGroup' => array('compare/clearGroup', 'pattern' => '<url:compare\/clear_group>/<id:\d+>'),
 
   // users
@@ -50,7 +50,10 @@ return array(
   'basketFastOrder' => array('basket/fastOrder', 'pattern' => 'basket/fastorder'),
 
   // favorite
-  'favorite' => array('favorite/index', 'pattern' => 'favorite/index'),
+  'favorite' => array('favorite/index', 'pattern' => 'favorite'),
+
+  // visits
+  'visits' => array('visits/index', 'pattern' => 'visits'),
 
   // products
   'productFastOrder' => array('product/fastOrder', 'pattern' => 'fastorder/<id:\d+>'),

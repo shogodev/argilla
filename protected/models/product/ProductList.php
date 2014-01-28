@@ -46,9 +46,14 @@ class ProductList extends CComponent
   );
 
   /**
+   * @var CDbCriteria
+   */
+  public $parametersCriteria;
+
+  /**
    * @var $products FActiveDataProvider
    */
-  protected $products;
+  protected $dataProvider;
 
   /**
    * @var CDbCriteria $criteria
@@ -72,14 +77,21 @@ class ProductList extends CComponent
       $this->filters = is_array($filters) ? $filters : array($filters);
 
     $this->initCriteria($criteria);
+
+    $this->parametersCriteria = new CDbCriteria();
+    $this->parametersCriteria->addColumnCondition(array('t.section' => 1, 't.section_list' => 1), 'OR');
   }
 
   /**
+   * @param boolean $refresh
    * @return FActiveDataProvider
    */
-  public function getDataProvider()
+  public function getDataProvider($refresh = false)
   {
-    return $this->buildDataProvider($this->getFilterCriteria());
+    if( is_null($this->dataProvider) || $refresh )
+      $this->buildDataProvider($this->getFilterCriteria());
+
+    return $this->dataProvider;
   }
 
   /**
@@ -168,10 +180,10 @@ class ProductList extends CComponent
     if( !$this->pagination )
       $config['pagination'] = false;
 
-    $this->products = new FActiveDataProvider('Product', $config);
-    $this->products->attachEventHandler('onAfterFetchData', array($this, 'afterFetchData'));
+    $this->dataProvider = new FActiveDataProvider('Product', $config);
+    $this->dataProvider->attachEventHandler('onAfterFetchData', array($this, 'afterFetchData'));
 
-    return $this->products;
+    return $this->dataProvider;
   }
 
   protected function afterFetchData($event)
@@ -188,9 +200,9 @@ class ProductList extends CComponent
     /**
      * @var $products Product[]
      */
-    $products = $this->products->getData();
+    $products = $this->dataProvider->getData();
     $criteria = new CDbCriteria();
-    $criteria->addInCondition('parent', $this->products->getKeys());
+    $criteria->addInCondition('parent', $this->dataProvider->getKeys());
     $productImages = ProductImage::model()->findAll($criteria);
 
     $images = array();
@@ -208,11 +220,8 @@ class ProductList extends CComponent
     /**
      * @var $products Product[]
      */
-    $products = $this->products->getData();
-    $criteria = new CDbCriteria();
-    $criteria->addColumnCondition(array('t.section' => 1, 't.section_list' => 1), 'OR');
-
-    $names = ProductParameterName::model()->search($criteria);
+    $products = $this->dataProvider->getData();
+    $names = ProductParameterName::model()->search($this->parametersCriteria);
     $parameters = array();
 
     foreach($products as $product)
@@ -237,7 +246,7 @@ class ProductList extends CComponent
     $className = $relation->className;
 
     $criteria = new CDbCriteria();
-    $criteria->addInCondition('product_id', $this->products->getKeys());
+    $criteria->addInCondition('product_id', $this->dataProvider->getKeys());
     $relatedModels = $className::model()->findAll($criteria);
 
     $models = array();
@@ -249,7 +258,7 @@ class ProductList extends CComponent
     /**
      * @var $product Product
      */
-    foreach($this->products->getData() as $product)
+    foreach($this->dataProvider->getData() as $product)
     {
       if( !empty($models[$product->id]) )
       {

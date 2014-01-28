@@ -40,14 +40,14 @@ class ProductParameterName extends FActiveRecord
   const TYPE_RADIO = 'radio';
 
   /**
-   * @var CDbCriteria $groupCriteria
-   */
-  protected $groupCriteria;
-
-  /**
    * @var ProductParameterVariant[]
    */
   protected $values = array();
+
+  /**
+   * @var CDbCriteria $groupCriteria
+   */
+  protected $groupCriteria;
 
   /**
    * @var ProductParameter[]
@@ -128,8 +128,9 @@ class ProductParameterName extends FActiveRecord
     if( $groupProductParameterNameIds = $command->queryColumn() )
     {
       $criteria = !is_null($criteria) ? $criteria : new CDbCriteria();
-      $criteria->with = array('group');
+      $criteria->with = CMap::mergeArray($criteria->with,  array('group'));
       $criteria->addInCondition('t.parent', $groupProductParameterNameIds);
+
       $parameterNames = $this->findAll($criteria);
     }
 

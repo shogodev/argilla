@@ -6,6 +6,7 @@
  * @license http://argilla.ru/LICENSE
  * @package frontend.components.collection
  */
-class FFavorite extends FCollectionUI
+class FVisits extends FCollectionUI
 {
-}
+
+} 
