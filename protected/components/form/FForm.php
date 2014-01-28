@@ -9,7 +9,7 @@ class FForm extends CForm
 
   public $formName;
 
-  public $layout = "{title}\n{elements}\n<div class=\"text-container form-hint\">{description}</div>\n<div class=\"form-submit\">{buttons}</div>\n";
+  public $layout = "{title}\n{elements}\n{description}\n<div class=\"form-submit\">{buttons}</div>\n";
 
   public $inputElementClass = 'FFormInputElement';
 

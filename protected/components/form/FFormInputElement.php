@@ -3,7 +3,7 @@ class FFormInputElement extends CFormInputElement
 {
   public $baseType;
 
-  protected $defaultTemplate = "<div class=\"text-container\">\n{label}\n<div class=\"pdb\"><span class=\"inp_container\">{input}</span>\n{hint}\n{error}</div>\n</div>\n";
+  protected $defaultTemplate = "<div class=\"form-row m25\">\n{label}\n<div class=\"form-field\">{input}\n{hint}\n{error}</div>\n</div>\n";
 
   private $_label;
 
