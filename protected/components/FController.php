@@ -6,13 +6,8 @@
  * @license http://argilla.ru/LICENSE
  * @package frontend.components
  *
- * @method textBlock($key)
- * @method textBlocks($key)
- * @method textBlockRegister($name = null, $content = null, $htmlOptions = array('class' => 'm20 bb red center'))
- * @method Counter[] getCounters($key = 'copyright')
- * @method array getCopyrights()
- * @method array getContacts($groupName = null)
- * @method array getSettings($key = null, $defaultValue = null)
+ * @mixin CommonBehavior
+ * @mixin CommonDataBehavior
  *
  * @property Counter[] $counters
  * @property array $copyrights
@@ -24,7 +19,7 @@
  * @property FFavorite|FCollectionElement[] $favorite
  * @property FForm $fastOrderForm
  * @property FForm $callbackForm
- * @property FForm $loginForm
+ * @property FForm $loginPopupForm
  */
 class FController extends CController
 {
