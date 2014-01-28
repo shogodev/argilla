@@ -39,10 +39,13 @@ class Order extends FActiveRecord
 
   const TYPE_BASKET = 'basket';
 
+  protected $fastOrderBasket;
+
   public function rules()
   {
     return array(
-      array('name, phone', 'required'),
+      array('name, phone', 'required', 'except' => 'fastOrder'),
+      array('phone', 'required', 'on' => 'fastOrder'),
       array('email', 'email'),
       array('name, phone, address, comment', 'length', 'min' => 3, 'max' => 255),
       array('payment_id, delivery_id, sum, delivery', 'safe'),
@@ -52,7 +55,7 @@ class Order extends FActiveRecord
   public function attributeLabels()
   {
     return array(
-      'name' => !$this->isFast() ?  'Имя' : 'Имя получателя',
+      'name' => $this->isFast() ? 'Ваше имя' : 'Имя',
       'email' => 'E-mail',
       'phone' => 'Телефон',
       'address' => 'Адрес доставки',
@@ -83,7 +86,7 @@ class Order extends FActiveRecord
     $this->sum = $this->basket->totalSum();
     $this->ip = ip2long(Yii::app()->request->userHostAddress);
     $this->date_create = date('Y-m-d H:i:s');
-    $this->delivery_id = DirDelivery::SELF_DELIVERY;
+    //$this->delivery_id = DirDelivery::SELF_DELIVERY;
 
     if( $this->isFast() )
       $this->type = self::TYPE_FAST;
@@ -109,6 +112,11 @@ class Order extends FActiveRecord
     return Yii::app()->request->hostInfo.'/backend/order/bOrder/update/'.$this->id;
   }
 
+  public function setFastOrderBasket(FBasket $fastOrderBasket)
+  {
+    $this->fastOrderBasket = $fastOrderBasket;
+  }
+
   protected function isFast()
   {
     return $this->scenario == 'fastOrder';
@@ -117,7 +125,7 @@ class Order extends FActiveRecord
   protected function getBasket()
   {
     if( $this->isFast() )
-      return Yii::app()->controller->fastOrderBasket;
+      return $this->fastOrderBasket;
 
     return Yii::app()->controller->basket;
   }

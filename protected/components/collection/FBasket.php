@@ -8,7 +8,13 @@
  */
 class FBasket extends FCollectionUI
 {
-  public $classFastOrder = 'fast-order';
+  public $classFastOrderButton = 'fast-order-{keyCollection}';
+
+  public $classSubmitFastOrderButton = 'fast-order-submit-{keyCollection}';
+
+  public $fastOrderFormId = 'fast-order-form-{keyCollection}';
+
+  public $fastOrderFormSuccessId = 'fast-order-form-success-{keyCollection}';
 
   public function serviceSum()
   {
@@ -37,29 +43,63 @@ class FBasket extends FCollectionUI
     return $this->sum() + $this->serviceSum();
   }
 
-  public function fastOrderButton($value = '', $htmlOptions = array(), $formId)
+  public function fastOrderButton($text = '', $model = null, $htmlOptions = array())
   {
-    $htmlOptions['class'] = empty($htmlOptions['class']) ? $this->classFastOrder :  $htmlOptions['class'].' '.$this->classFastOrder;
+    $htmlOptions['class'] = empty($htmlOptions['class']) ? $this->classFastOrderButton : $htmlOptions['class'].' '.$this->classFastOrderButton;
 
-    $this->registerFastOrderScript($formId);
+    if( empty($htmlOptions['data-id']) && $model )
+      $htmlOptions['data-id'] = $model->id;
 
-    return CHtml::button($value, $htmlOptions);
+    if( empty($htmlOptions['data-type']) && $model )
+      $htmlOptions['data-type'] = get_class($model);
+
+    return CHtml::link($text, '#', $htmlOptions);
   }
 
-  protected function registerFastOrderScript($formId)
+  public function submitFastOrderButton($text = '', $htmlOptions = array())
   {
-    $script = "$('body').on('click', '.{$this->classFastOrder}', function(e){
+    $htmlOptions['class'] = empty($htmlOptions['class']) ? $this->classSubmitFastOrderButton : $htmlOptions['class'].' '.$this->classSubmitFastOrderButton;
+
+    return CHtml::button($text, $htmlOptions);
+  }
+
+  protected function registerScripts()
+  {
+    parent::registerScripts();
+
+    $this->registerFastOrderButtonScript();
+    $this->registerSubmitFastOrderButtonScript();
+  }
+
+  protected function registerFastOrderButtonScript()
+  {
+    $script = "$('body').on('click', '.{$this->classFastOrderButton}', function(e){
       e.preventDefault();
-      var form = $('#{$formId}');
+
+      $('#{$this->fastOrderFormId}').show();
+      $('#{$this->fastOrderFormSuccessId}').hide();
+
+      var classSubmitButton = '{$this->classSubmitFastOrderButton}';
+      $('.' + classSubmitButton).data($(this).data());
+    });";
+
+    Yii::app()->clientScript->registerScript(__METHOD__.'#'.$this->keyCollection, $script, CClientScript::POS_END);
+  }
+
+  protected function registerSubmitFastOrderButtonScript()
+  {
+    $script = "$('body').on('click', '.{$this->classSubmitFastOrderButton}', function(e){
+      e.preventDefault();
+
+      var form = $('#{$this->fastOrderFormId}');
       var url = form.attr('action');
       var data = {'{$this->keyCollection}' : $(this).data(), 'action' : 'fastOrder'};
-      data = $.param(data) + '&' + form.serialize();
 
-      $.post(url, data, function(resp) {
+      $.post(url, $.param(data) + '&' + form.serialize(), function(resp) {
         checkResponse(resp, form);
       }, 'json');
     });";
 
-    Yii::app()->clientScript->registerScript('FastOrderScript', $script, CClientScript::POS_END);
+    Yii::app()->clientScript->registerScript(__METHOD__.'#'.$this->keyCollection, $script, CClientScript::POS_END);
   }
 }

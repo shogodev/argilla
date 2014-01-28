@@ -90,22 +90,22 @@ class BasketController extends FController
   public function actionFastOrder()
   {
     $form = $this->fastOrderForm;
-
     $form->ajaxValidation();
 
-    $this->fastOrderBasket->add(Yii::app()->request->getPost($this->fastOrderBasket->keyCollection));
+    $fastOrderBasket = new FBasket('fastOrderBasket', array(), array('Product'), false);
+    $fastOrderBasket->add(Yii::app()->request->getPost($this->basket->keyCollection));
+    $form->model->setFastOrderBasket($fastOrderBasket);
 
-    if( !$this->fastOrderBasket->isEmpty() && $form->save() )
+    if( !$fastOrderBasket->isEmpty() && $form->save() )
     {
       Yii::app()->notification->send('FastOrderBackend', array('model' => $form->model));
       Yii::app()->notification->send('FastOrder', array('model' => $form->model), $form->model->email);
 
       echo CJSON::encode(array(
         'status' => 'ok',
-        'hideElements' => array($this->fastOrderForm->id),
-        'showElements' => array('order-submit-success')
+        'hideElements' => array($form->id),
+        'showElements' => array($this->basket->fastOrderFormSuccessId)
       ));
-
       Yii::app()->end();
     }
   }

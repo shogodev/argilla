@@ -15,7 +15,6 @@
  * @property array|string $settings
  *
  * @property FBasket|FCollectionElement[] $basket
- * @property FBasket|FCollectionElement[] $fastOrderBasket
  * @property FFavorite|FCollectionElement[] $favorite
  * @property FForm $fastOrderForm
  * @property FForm $callbackForm

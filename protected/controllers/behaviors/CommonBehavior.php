@@ -23,11 +23,25 @@ class CommonBehavior extends CommonDataBehavior
    */
   private $fastOrderForm;
 
+  /**
+   * @var FBasket
+   */
   private $basket;
 
+  /**
+   * @var FFavorite
+   */
   private $favorite;
 
-  private $fastOrderBasket;
+  /**
+   * @var FVisits
+   */
+  private $visits;
+
+  /**
+   * @var FCompare
+   */
+  private $compare;
 
   private $sectionMenu;
 
@@ -50,15 +64,29 @@ class CommonBehavior extends CommonDataBehavior
     return $this->favorite;
   }
 
-  /**
-   * @return FBasket|null
-   */
-  public function getFastOrderBasket()
+  public function getVisits()
   {
-    if ( $this->fastOrderBasket == null )
-      $this->fastOrderBasket = new FBasket('fastOrderBasket', array('service'), array('Product', 'Service'), false);
+    if ( $this->visits == null )
+    {
+      $this->visits = new FFavorite('visits', array(), array('Product'));
+      $this->visits->ajaxUrl = Yii::app()->controller->createUrl('visits/index');
+    }
+    return $this->visits;
+  }
 
-    return $this->fastOrderBasket;
+  /**
+   * @return FCompare
+   */
+  public function getCompare()
+  {
+    if ( $this->compare == null )
+    {
+      $this->compare = new FCompare('compare', array(), array('Product', 'ProductSection'));
+      $this->compare->ajaxUrl = Yii::app()->controller->createUrl('compare/index');
+      $this->compare->addButtonAjaxUrl = Yii::app()->controller->createUrl('compare/add');
+    }
+
+    return $this->compare;
   }
 
   public function getTopMenu()
