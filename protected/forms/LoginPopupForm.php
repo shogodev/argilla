@@ -13,6 +13,7 @@ return array(
     ),
 
     'rememberMe' => array(
+      'id'              => 'popup_remember_me',
       'label'           => 'Запомнить меня',
       'type'            => 'checkbox',
       'defaultTemplate' => '<div class="nofloat form-hint">

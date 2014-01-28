@@ -1,20 +1,16 @@
 <?php
-/**
- * User: tatarinov
- * Date: 17.10.12
- */
 return array(
   'class' => 'form',
 
-   'elements' => array(
-     'email'  => array('type' => 'text')
-   ),
+  'elements' => array(
+    'email'  => array('type' => 'text')
+  ),
 
-   'buttons'  => array(
-     'submit' => array(
-       'type' => 'submit',
-       'value' => 'Восстановить',
-       'class'  => 'btn order-btn'
-     ),
+  'buttons'  => array(
+    'submit' => array(
+      'type' => 'submit',
+      'value' => 'Р’РѕСЃСЃС‚Р°РЅРѕРІРёС‚СЊ',
+      'class'  => 'center btn red-btn wide-paddings-btn'
+    ),
   )
 );
