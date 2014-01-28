@@ -16,6 +16,10 @@
  */
 class DirDelivery extends FActiveRecord
 {
+  const SELF_DELIVERY = 1;
+
+  const DELIVERY = 2;
+
   public function defaultScope()
   {
     $alias = $this->getTableAlias(false, false);
