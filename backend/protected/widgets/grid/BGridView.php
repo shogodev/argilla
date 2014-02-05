@@ -99,7 +99,7 @@ class BGridView extends TbGridView
   {
     Yii::app()->clientScript->registerScript('notifyGridObservers', "function notifyGridObservers(id, data) {
       if( jQuery.fn.yiiGridView.observers )
-        jQuery.fn.yiiGridView.notifyObservers(id);
+        jQuery.fn.yiiGridView.notifyObservers(id, data);
     }");
 
     $this->addObservers();
