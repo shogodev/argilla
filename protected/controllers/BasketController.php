@@ -19,22 +19,30 @@ class BasketController extends FController
   {
     $this->breadcrumbs = array('Корзина');
 
-    $this->render('basket');
+    if( Yii::app()->request->isAjaxRequest )
+    {
+      $this->renderPartial('/_compare_basket_header');
+      $this->renderPartial('basket');
+    }
+    else
+      $this->render('basket');
   }
 
-  public function actionPanel()
+  public function actionAdd()
   {
-    $this->renderPartial('/product_panel');
+    $this->renderPartial('/_compare_basket_header');
+    $this->renderPartial('/panel/panel');
   }
 
   public function actionCheckOut()
   {
     if( $this->basket->isEmpty() )
-      Yii::app()->request->redirect($this->basket->url);
+      Yii::app()->request->redirect($this->createUrl('basket/index'));
 
     $this->breadcrumbs = array('Корзина');
 
     $orderForm = new FForm('Order', new Order());
+    $orderForm->loadFromSession = true;
     $orderForm->autocomplete = true;
     $orderForm->ajaxValidation();
 
@@ -51,8 +59,7 @@ class BasketController extends FController
       ));
 
       Yii::app()->session['orderSuccess'] = true;
-
-      Yii::app();
+      Yii::app()->end();
     }
     else
     {
@@ -72,32 +79,33 @@ class BasketController extends FController
   public function actionSuccess()
   {
     if( $this->basket->isEmpty() && !Yii::app()->session->get('orderSuccess', false) )
-      Yii::app()->request->redirect($this->basket->url);
+      Yii::app()->request->redirect($this->createUrl('basket/index'));
 
     Yii::app()->session->remove('orderSuccess');
 
+    $this->breadcrumbs = array('Корзина');
     $this->render('success');
   }
 
   public function actionFastOrder()
   {
     $form = $this->fastOrderForm;
-
     $form->ajaxValidation();
 
-    $this->fastOrderBasket->add(Yii::app()->request->getPost($this->fastOrderBasket->keyCollection));
+    $fastOrderBasket = new FBasket('fastOrderBasket', array(), array('Product'), false);
+    $fastOrderBasket->add(Yii::app()->request->getPost($this->basket->keyCollection));
+    $form->model->setFastOrderBasket($fastOrderBasket);
 
-    if( !$this->fastOrderBasket->isEmpty() && $form->save() )
+    if( !$fastOrderBasket->isEmpty() && $form->save() )
     {
-      Yii::app()->notification->send('OrderBackend', array('model' => $form->model));
-      Yii::app()->notification->send($form->model, array(), $form->model->email);
+      Yii::app()->notification->send('FastOrderBackend', array('model' => $form->model));
+      Yii::app()->notification->send('FastOrder', array('model' => $form->model), $form->model->email);
 
       echo CJSON::encode(array(
         'status' => 'ok',
-        'hideElements' => array($this->fastOrderForm->id),
-        'showElements' => array('order-submit-success')
+        'hideElements' => array($form->id),
+        'showElements' => array($this->basket->fastOrderFormSuccessId)
       ));
-
       Yii::app()->end();
     }
   }
@@ -140,7 +148,21 @@ class BasketController extends FController
         case 'changeAmount':
           if( !$this->basket->getElementByIndex($data['id']) )
             throw new CHttpException(500, 'Продукт не найден. Обновите страницу.');
-          $this->basket->change($data['id'], intval($data['amount']));
+          $this->basket->changeAmount($data['id'], intval($data['amount']));
+        break;
+
+        case 'changeSize':
+          $element = $this->basket->getElementByIndex($data['index']);
+          if( !$element )
+            throw new CHttpException(500, 'Продукт не найден. Обновите страницу.');
+
+          $this->basket->changeItems($data['index'], array(
+            'size' => array(
+              'id' => Arr::get($data, 'id'),
+              'type' => 'product_parameter'
+            )
+          ));
+          $this->basket->update();
         break;
 
         case 'add':

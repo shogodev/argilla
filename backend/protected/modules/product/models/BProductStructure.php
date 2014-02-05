@@ -41,7 +41,8 @@ class BProductStructure extends BActiveRecord
 
   protected function beforeSave()
   {
-    $this->previousState = $this->findByPk($this->getPrimaryKey())->visible;
+    $model = $this->findByPk($this->getPrimaryKey());
+    $this->previousState = $model ? $model->visible : 0;
     return parent::beforeSave();
   }
 

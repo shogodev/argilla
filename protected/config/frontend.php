@@ -112,17 +112,6 @@ return array_replace_recursive(array(
       'errorAction' => 'error/error',
     ),
 
-    'format' => array(
-      'class' => 'SFormatter',
-      'datetimeFormat' => 'd.m.Y H:i:s',
-      'dateFormat'     => 'd.m.Y',
-      'timeFormat'     => 'H:i:s',
-      'numberFormat'   => array(
-        'decimals'          => 0,
-        'decimalSeparator'  => ',',
-        'thousandSeparator' => ' ')
-    ),
-
     'log' => array(
       'class' => 'CLogRouter',
       'enabled' => true,

@@ -53,7 +53,7 @@ class CommonDataBehavior extends CBehavior
     if( $name === null )
       $location = $this->owner->route;
     else
-      $location = $this->owner->id.'/'.Utils::translite($name);
+      $location = Utils::translite($name);
 
     if( $this->textBlock($location) === false )
     {

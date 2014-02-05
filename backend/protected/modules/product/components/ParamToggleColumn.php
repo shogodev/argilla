@@ -12,7 +12,9 @@ class ParamToggleColumn extends JToggleColumn
 {
   protected function renderButton($button, $row, $data)
   {
-    if( $this->name == 'visible' || $data->isGroup() )
-      parent::renderButton($button, $row, $data);
+    if( $data->isGroup() )
+      return;
+
+    parent::renderButton($button, $row, $data);
   }
 }

@@ -17,10 +17,12 @@
  * @property string $key
  * @property integer $product
  * @property integer $section
+ *
+ * @method BProductParamName groups()
  */
 class BProductParamName extends BActiveRecord
 {
-  CONST ROOT_ID = 1;
+  const ROOT_ID = 1;
 
   /**
    * @var integer $section_id Привязка параметра к дереву каталога
@@ -47,7 +49,7 @@ class BProductParamName extends BActiveRecord
   {
     return array(
       array('name, type', 'required'),
-      array('parent, position, visible, product, section', 'numerical', 'integerOnly' => true),
+      array('parent, position, visible, product, section, section_list, selection', 'numerical', 'integerOnly' => true),
       array('name', 'length', 'max' => 1024),
       array('type, key', 'length', 'max' => 50),
       array('notice', 'safe'),
@@ -67,7 +69,18 @@ class BProductParamName extends BActiveRecord
     return array(
       'assignment' => array(self::HAS_ONE, 'BProductParamAssignment', 'param_id'),
       'children'   => array(self::HAS_MANY, 'BProductParamName', 'parent', 'order' => 'position'),
-      'variants'   => array(self::HAS_MANY, 'BProductParamVariant', 'param_id', 'order' => 'variants.position'),
+      'variants'   => array(self::HAS_MANY, 'BProductParamVariant', 'param_id', 'order' => 'p.position', 'alias' => 'p'),
+    );
+  }
+
+  public function scopes()
+  {
+    $alias = $this->getTableAlias();
+
+    return array(
+      'groups' => array(
+        'condition' => $alias.'.parent='.self::ROOT_ID.' AND id!='.self::ROOT_ID,
+      ),
     );
   }
 
@@ -81,8 +94,11 @@ class BProductParamName extends BActiveRecord
     return CMap::mergeArray(parent::attributeLabels(), array(
       'type' => 'Тип параметра',
       'product' => 'Выводить в карточке товара',
-      'section' => 'Выводить на разводной',
+      'section' => 'На разводной в режиме "плитка"',
+      'section_list' => 'На разводной в режиме "список"',
       'variants' => 'Варианты',
+      'parent' => 'Группа',
+      'selection' => 'Участвует в подборе',
     ));
   }
 

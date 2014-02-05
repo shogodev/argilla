@@ -10,6 +10,8 @@
  */
 class FHttpSession extends CHttpSession
 {
+  protected  $_keyPrefix;
+
   public function getIterator()
   {
     return new FHttpSessionIterator;
@@ -91,6 +93,19 @@ class FHttpSession extends CHttpSession
     $this->remove($offset);
   }
 
+  public function getStateKeyPrefix()
+  {
+    if($this->_keyPrefix!==null)
+      return $this->_keyPrefix;
+    else
+      return $this->_keyPrefix=md5('Yii.'.get_class($this).'.'.Yii::app()->getId());
+  }
+
+  public function setStateKeyPrefix($value)
+  {
+    $this->_keyPrefix=$value;
+  }
+
   protected function session($key = null)
   {
     $session = Arr::get($_SESSION, $this->stateKeyPrefix, array());
@@ -104,10 +119,5 @@ class FHttpSession extends CHttpSession
   protected function sessionSet($key, $value)
   {
     $_SESSION[$this->stateKeyPrefix][$key] = $value;
-  }
-
-  protected function getStateKeyPrefix()
-  {
-    return Yii::app()->user->stateKeyPrefix;
   }
 }

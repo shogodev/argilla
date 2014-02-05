@@ -122,7 +122,7 @@ class ProductCompare
     $productList = new ProductList($criteria, null, false);
     $productList->fetchProductParameters = true;
 
-    return $this->products = $productList->getProducts()->getData();
+    return $this->products = $productList->getDataProvider()->getData();
   }
 
   /**

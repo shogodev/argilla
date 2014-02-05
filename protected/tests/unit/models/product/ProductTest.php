@@ -38,5 +38,17 @@ class ProductTest extends CDbTestCase
 
     $this->assertEquals('variant 14', $parameters1[1]->values[14]);
     $this->assertEquals('variant 15', $parameters1[1]->values[15]);
+
+
+    $criteria = new CDbCriteria();
+    $criteria->addInCondition('t.`key`', array('weight'));
+
+    /**
+     * @var Product $product1
+     */
+    $product1 = Product::model()->findByPk(17);
+    $parameters1 = $product1->getParameters(null, null, $criteria);
+    $this->assertCount(1, $parameters1);
+    $this->assertEquals('value17', $parameters1[0]->value);
   }
 }

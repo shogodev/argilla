@@ -6,13 +6,8 @@
  * @license http://argilla.ru/LICENSE
  * @package frontend.components
  *
- * @method textBlock($key)
- * @method textBlocks($key)
- * @method textBlockRegister($name = null, $content = null, $htmlOptions = array('class' => 'm20 bb red center'))
- * @method Counter[] getCounters($key = 'copyright')
- * @method array getCopyrights()
- * @method array getContacts($groupName = null)
- * @method array getSettings($key = null, $defaultValue = null)
+ * @mixin CommonBehavior
+ * @mixin CommonDataBehavior
  *
  * @property Counter[] $counters
  * @property array $copyrights
@@ -20,11 +15,10 @@
  * @property array|string $settings
  *
  * @property FBasket|FCollectionElement[] $basket
- * @property FBasket|FCollectionElement[] $fastOrderBasket
  * @property FFavorite|FCollectionElement[] $favorite
  * @property FForm $fastOrderForm
  * @property FForm $callbackForm
- * @property FForm $loginForm
+ * @property FForm $loginPopupForm
  */
 class FController extends CController
 {
@@ -186,6 +180,11 @@ class FController extends CController
   public function getCurrentUrl()
   {
     return $this->createUrl($this->id."/".$this->action->id, $this->getActionParams(true));
+  }
+
+  public function getCurrentAbsoluteUrl()
+  {
+    return $this->createAbsoluteUrl($this->id."/".$this->action->id, $this->getActionParams(true));
   }
 
   public function getActionParams($cutDefaultParams = false)

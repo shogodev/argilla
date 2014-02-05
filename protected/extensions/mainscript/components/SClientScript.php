@@ -15,6 +15,8 @@ class SClientScript extends CClientScript
    */
   public function render(&$output)
   {
+    $this->raiseEvent('onBeforeRenderClientScript', new CEvent($this));
+
     $this->prepareScripts();
 
     parent::render($output);
@@ -34,6 +36,10 @@ class SClientScript extends CClientScript
     unset($this->scriptFiles[$position][$url]);
 
     return $this;
+  }
+
+  public function onBeforeRenderClientScript(CEvent $event)
+  {
   }
 
   /**

@@ -1,22 +1,16 @@
 <?php
-/**
- * User: tatarinov
- * Date: 17.10.12
- */
 return array(
-  'class' => 'form m20',
-  'layout' => "{title}<div class=\"l-main\">\n{errors}\n{elements}\n<div class=\"text-container form-hint\">{description}</div>\n<div class=\"form-submit\">{buttons}</div>\n</div>\n",
+  'class' => 'form personal-form centered-form',
+  'layout' => "{title}\n{errors}\n{elements}{description}\n<div class=\"form-submit\">{buttons}</div>\n",
 
   'elements' => array(
 
     'login' => array(
-      'label'  => 'Логин',
-      'type'   => 'text',
+      'type' => 'text',
     ),
 
     'password' => array(
-      'label'           => 'Пароль',
-      'type'            => 'password',
+      'type' => 'password',
     ),
 
     'rememberMe' => array(
@@ -32,7 +26,7 @@ return array(
   'buttons' => array(
     'submit' => array(
       'type'  => 'submit',
-      'class' => 'btn btn-red btn-submit',
+      'class' => 'btn red-btn wide-paddings-btn',
       'value' => 'Войти'
     ),
   ),

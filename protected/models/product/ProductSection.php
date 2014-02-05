@@ -26,14 +26,16 @@ class ProductSection extends FActiveRecord
     );
   }
 
+  /**
+   * @return ProductSection[]
+   */
   public function getSections()
   {
     $product    = Product::model()->tableName();
     $assignment = ProductAssignment::model()->tableName();
 
     $criteria            = new CDbCriteria();
-
-    $criteria->select = 't.id, t.name, t.notice, t.url';
+    $criteria->select    = 't.id, t.name, t.notice, t.url';
     $criteria->join      = 'JOIN '.$assignment.' AS a ON t.id = a.section_id ';
     $criteria->join     .= 'JOIN '.$product.' AS p ON p.id = a.product_id';
     $criteria->condition = 'p.visible=1';
@@ -48,12 +50,14 @@ class ProductSection extends FActiveRecord
     $sections = $this->getSections($criteria);
 
     foreach($sections as $section)
+    {
       $menu[$section->id] = array(
         'id' => $section->id,
         'label' => $section->name,
-        'url' => array('product/section', 'section' => $section->url));
+        'url' => array('product/section', 'section' => $section->url)
+      );
+    }
 
     return $menu;
   }
-
 }

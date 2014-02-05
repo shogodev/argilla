@@ -336,17 +336,35 @@ class Arr
   }
 
   /**
-   * @param $array
-   * @param $key
+   * @param $array - масив элементы которого нужно отфильтровать
+   * @param string|array $keys - ключ или массив ключей элементов $array которые нужно сравнить с $value
    * @param $value
+   * @param $condition - OR или AND условие срамнения нескольких ключей
    *
    * @return array
    */
-  public static function filter($array, $key, $value)
+  public static function filter($array, $keys, $value, $condition = 'OR')
   {
-    return array_filter($array, function($element) use ($key, $value)
+    $keys = !is_array($keys) ? array($keys) : $keys;
+    $condition = strtolower($condition);
+
+    return array_filter($array, function($element) use ($keys, $value, $condition)
     {
-      return isset($element[$key]) && $element[$key] === $value;
+      foreach($keys as $key)
+      {
+        if( !isset($element[$key]) )
+          continue;
+
+        $result = $element[$key] === $value ? true : false;
+
+        if( $condition == 'or' && $result )
+          return true;
+
+        if( $condition == 'and' && !$result )
+          return false;
+      }
+
+      return false;
     });
   }
 }

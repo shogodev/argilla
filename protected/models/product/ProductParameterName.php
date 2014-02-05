@@ -15,6 +15,8 @@
  * @property string $key
  * @property integer $product
  * @property integer $section
+ * @property integer $section_line
+ * @property integer $selection
  *
  * @property CDbCriteria $groupCriteria
  * @property ProductParameterName $group
@@ -38,14 +40,14 @@ class ProductParameterName extends FActiveRecord
   const TYPE_RADIO = 'radio';
 
   /**
-   * @var CDbCriteria
-   */
-  protected $groupCriteria;
-
-  /**
    * @var ProductParameterVariant[]
    */
   protected $values = array();
+
+  /**
+   * @var CDbCriteria $groupCriteria
+   */
+  protected $groupCriteria;
 
   /**
    * @var ProductParameter[]
@@ -108,27 +110,28 @@ class ProductParameterName extends FActiveRecord
   }
 
   /**
+   * @param CDbCriteria|null $criteria
    * @return ProductParameterName[]
    */
-  public function search()
+  public function search(CDbCriteria $criteria = null)
   {
-    $parameterNames  = array();
+    $groupCriteria = $this->getGroupCriteria();
+    $groupCriteria->compare('parent', $this->getRootId());
+    $groupCriteria->select = 'id';
     $assignmentTable = ProductParameterAssignment::model()->tableName();
-
-    $this->groupCriteria->compare('parent', $this->getRootId());
-    $this->groupCriteria->select = 'id';
-    $this->groupCriteria->join   = 'LEFT OUTER JOIN '.$assignmentTable.' AS assignment ON assignment.param_id = t.id';
+    $groupCriteria->join   = 'LEFT OUTER JOIN '.$assignmentTable.' AS assignment ON assignment.param_id = t.id';
 
     $builder = new CDbCommandBuilder(Yii::app()->db->getSchema());
-    $command = $builder->createFindCommand($this->tableName(), $this->groupCriteria);
+    $command = $builder->createFindCommand($this->tableName(), $groupCriteria);
 
-    if( $nameIds = $command->queryColumn() )
+    $parameterNames  = array();
+    if( $groupProductParameterNameIds = $command->queryColumn() )
     {
-      $nameCriteria = new CDbCriteria();
-      $nameCriteria->with = array('group');
-      $nameCriteria->addInCondition('t.parent', $nameIds);
+      $criteria = !is_null($criteria) ? $criteria : new CDbCriteria();
+      $criteria->with = CMap::mergeArray($criteria->with,  array('group'));
+      $criteria->addInCondition('t.parent', $groupProductParameterNameIds);
 
-      $parameterNames = $this->findAll($nameCriteria);
+      $parameterNames = $this->findAll($criteria);
     }
 
     return $parameterNames;
@@ -143,13 +146,13 @@ class ProductParameterName extends FActiveRecord
   {
     foreach($assignedParameters as $key => $value)
     {
-      $this->groupCriteria->addCondition(
+      $this->getGroupCriteria()->addCondition(
         "assignment.{$key} = :{$key}
         OR assignment.{$key} IS NULL
         OR assignment.{$key} = 0"
       );
 
-      $this->groupCriteria->params[':'.$key] = $value;
+      $this->getGroupCriteria()->params[':'.$key] = $value;
     }
   }
 
