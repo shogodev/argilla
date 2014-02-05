@@ -7,6 +7,11 @@
  */
 class ProductImageGrid extends ImageGrid
 {
+  /**
+   * @var BProduct
+   */
+  protected $model;
+
   protected function gridColumns()
   {
     parent::gridColumns();

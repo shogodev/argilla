@@ -247,6 +247,11 @@ class BActiveForm extends TbActiveForm
    * @param array $gridOptions
    *
    * @return string
+   *
+   * Example:
+   *
+   * $form->uploadRow($model, 'product_img', true, array(), array('class' => 'ProductImageGrid'));
+   * $form->uploadRow($model, 'product_img', true, array('id' => 'BProductImg'), array('class' => 'ProductImageGrid'));
    */
   public function uploadRow($model, $attribute, $multiple = true, $htmlOptions = array(), $gridOptions = array())
   {
