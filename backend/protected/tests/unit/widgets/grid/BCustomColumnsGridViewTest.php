@@ -30,7 +30,7 @@ class BCustomColumnsGridViewTest extends CDbTestCase
       'columns' => array(
         array(
           'name' => 'BProduct',
-          'class' => 'BAssociationColumn'
+          'class' => 'BPopupColumn'
         ),
       ),
     );
@@ -49,7 +49,7 @@ class BCustomColumnsGridViewTest extends CDbTestCase
     $this->assertArrayHasKey('BButtonColumn', $classes);
     $this->assertArrayHasKey('BPkColumn', $classes);
     $this->assertArrayHasKey('OnFlyEditField', $classes);
-    $this->assertArrayHasKey('BAssociationColumn', $classes);
+    $this->assertArrayHasKey('BPopupColumn', $classes);
     $this->assertArrayNotHasKey('BEditColumn', $classes);
   }
 }

@@ -127,7 +127,7 @@ class BGridView extends TbGridView
         $this->columns[$i]['class'] = 'BDataColumn';
       else if( Yii::app()->controller->popup )
       {
-        if( in_array($column['class'], array('BButtonColumn', 'JToggleColumn', 'BAssociationColumn')) )
+        if( in_array($column['class'], array('BButtonColumn', 'JToggleColumn', 'BPopupColumn')) )
           unset($this->columns[$i]);
       }
     }

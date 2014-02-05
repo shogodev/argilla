@@ -4,11 +4,13 @@
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
- * @package backend.widgets.BAssociationColumn
+ * @package backend.widgets.BPopupColumn
  */
-class BAssociationColumn extends BDataColumn
+class BPopupColumn extends BDataColumn
 {
   public $filter = false;
+
+  public $widget = 'BAssociationButton';
 
   public $iframeAction;
 
@@ -23,7 +25,7 @@ class BAssociationColumn extends BDataColumn
     if( $this->closeOperation === null )
       $this->closeOperation = '$.fn.yiiGridView.update("'.$this->grid->id.'");';
 
-    Yii::app()->controller->widget('BAssociationButton', array(
+    Yii::app()->controller->widget($this->widget, array(
       'name' => $this->name,
       'parameters' => $this->parameters,
       'iframeAction' => $this->iframeAction,

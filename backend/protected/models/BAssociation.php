@@ -87,4 +87,14 @@ class BAssociation extends BActiveRecord
   {
     return get_class($model);
   }
+
+  public function getChecked($parameters)
+  {
+    $criteria = new CDbCriteria();
+
+    foreach($parameters as $key => $value)
+      $criteria->compare($key, $value);
+
+    return $this->count($criteria) ? true : false;
+  }
 }
