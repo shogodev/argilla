@@ -1,5 +1,23 @@
 <?php
 return array(
+  'aliases' => array(
+    'share' => 'frontend.share',
+    'ext' => 'frontend.extensions',
+    'nestedset' => 'frontend.extensions.nested-set-behavior',
+  ),
+
+  'preload' => array(
+    'log',
+  ),
+
+  'import' => array(
+    'share.*',
+    'share.behaviors.*',
+    'share.formatters.*',
+    'share.helpers.*',
+    'share.validators.*',
+  ),
+
   'components' => array(
     'format' => array(
       'class' => 'share.formatters.SFormatter',
@@ -10,6 +28,20 @@ return array(
         'decimals'          => 0,
         'decimalSeparator'  => ',',
         'thousandSeparator' => ' ')
+    ),
+
+    'phpThumb' => array(
+      'class' => 'ext.phpthumb.EPhpThumb',
+      'options' => array()
+    ),
+
+    'email' => array(
+      'class'    => 'ext.email.Email',
+      'delivery' => 'php',
+    ),
+
+    'notification' => array(
+      'class' => 'share.SNotification',
     ),
   ),
 );
