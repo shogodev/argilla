@@ -6,7 +6,7 @@
  * @license http://argilla.ru/LICENSE
  * @package frontend.controllers.behaviors
  */
-class CommonBehavior extends CommonDataBehavior
+class FControllerBehavior extends CBehavior
 {
   /**
    * @var FForm

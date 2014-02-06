@@ -63,7 +63,11 @@ class FController extends CController
 
   public function behaviors()
   {
-    return array('common' => array('class' => 'CommonBehavior'));
+    return array(
+      'seo' => array('class' => 'SeoBehavior'),
+      'controller' => array('class' => 'FControllerBehavior'),
+      'common' => array('class' => 'CommonBehavior'),
+    );
   }
 
   public function actions()

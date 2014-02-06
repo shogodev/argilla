@@ -25,6 +25,13 @@ abstract class BController extends CController
 
   public $popup = false;
 
+  public function behaviors()
+  {
+    return array(
+      'common' => array('class' => 'CommonBehavior'),
+    );
+  }
+
   public function getViewPath()
   {
     if( ($module = $this->getModule()) === null )
