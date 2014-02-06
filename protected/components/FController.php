@@ -7,7 +7,8 @@
  * @package frontend.components
  *
  * @mixin CommonBehavior
- * @mixin CommonDataBehavior
+ * @mixin SeoBehavior
+ * @mixin FControllerBehavior
  *
  * @property Counter[] $counters
  * @property array $copyrights

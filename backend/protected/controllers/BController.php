@@ -5,6 +5,8 @@
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
  * @package backend.controllers
+ *
+ * @mixin CommonBehavior
  */
 abstract class BController extends CController
 {
