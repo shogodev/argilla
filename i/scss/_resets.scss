@@ -14,9 +14,6 @@ article, aside, details, figcaption, figure, footer, header, hgroup, nav, sectio
   display: block; }
 audio, canvas, video {
   display: inline-block; }
-.lt-ie8 audio, .lt-ie8 canvas, .lt-ie8 video {
-  display: inline;
-  zoom: 1; }
 audio:not([controls]) {
   display: none;
   height: 0; }
@@ -29,7 +26,6 @@ img {
 svg:not(:root) {
   overflow: hidden; }
 * {
-  font-family: $fonts;
   font-size: 100%;
   margin: 0;
   padding: 0; }
@@ -69,8 +65,6 @@ legend {
   border: 0;
   padding: 0;
   white-space: normal; }
-.lt-ie8 legend {
-  margin-left: -7px; }
 button, input, select, textarea {
   vertical-align: top; }
 button, input {
@@ -78,15 +72,10 @@ button, input {
 button, html input[type="button"], input[type="reset"], input[type="submit"] {
   -webkit-appearance: button;
   cursor: pointer; }
-.lt-ie8 button, html.lt-ie8 input[type="button"], .lt-ie8 input[type="reset"], .lt-ie8 input[type="submit"] {
-  overflow: visible; }
 button[disabled], input[disabled] {
   cursor: default; }
 input[type="checkbox"], input[type="radio"] {
   box-sizing: border-box; }
-.lt-ie8 input[type="checkbox"], .lt-ie8 input[type="radio"] {
-  width: 13px;
-  height: 13px; }
 button::-moz-focus-inner, input::-moz-focus-inner {
   border: 0;
   padding: 0; }

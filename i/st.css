@@ -1,7 +1,7 @@
 /*
 Project:   Template
 CSS Type:  Semantic
-Version:   1.0.2 (13.12.2013)
+Version:   1.1.0 (10.02.2014)
 Authors:   Grigory Zarubin, Alexander Rubanov, Alexey Efimov (Shogo.RU)
 */
 /*   -=========== Common styles, CSS reset by defaults ===========-   */
@@ -25,10 +25,6 @@ article, aside, details, figcaption, figure, footer, header, hgroup, nav, sectio
 audio, canvas, video {
   display: inline-block; }
 
-.lt-ie8 audio, .lt-ie8 canvas, .lt-ie8 video {
-  display: inline;
-  zoom: 1; }
-
 audio:not([controls]) {
   display: none;
   height: 0; }
@@ -45,7 +41,6 @@ svg:not(:root) {
   overflow: hidden; }
 
 * {
-  font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif;
   font-size: 100%;
   margin: 0;
   padding: 0; }
@@ -91,9 +86,6 @@ legend {
   padding: 0;
   white-space: normal; }
 
-.lt-ie8 legend {
-  margin-left: -7px; }
-
 button, input, select, textarea {
   vertical-align: top; }
 
@@ -104,18 +96,11 @@ button, html input[type="button"], input[type="reset"], input[type="submit"] {
   -webkit-appearance: button;
   cursor: pointer; }
 
-.lt-ie8 button, html.lt-ie8 input[type="button"], .lt-ie8 input[type="reset"], .lt-ie8 input[type="submit"] {
-  overflow: visible; }
-
 button[disabled], input[disabled] {
   cursor: default; }
 
 input[type="checkbox"], input[type="radio"] {
   box-sizing: border-box; }
-
-.lt-ie8 input[type="checkbox"], .lt-ie8 input[type="radio"] {
-  width: 13px;
-  height: 13px; }
 
 button::-moz-focus-inner, input::-moz-focus-inner {
   border: 0;
@@ -177,19 +162,19 @@ h4, h4 a, .h4, .h4 a {
   -moz-box-sizing: border-box;
   box-sizing: border-box;
   font-size: 11px;
-  color: #541458;
+  color: black;
   padding: 3px 5px;
-  background: #B89DB9;
+  background: white;
   border: 0; }
 
 /*   -=========== Forms ===========-   */
+.form * {
+  font-family: Tahoma, Verdana, Arial, Helvetica, sans-serif; }
 .form .form-row:before, .form .form-row:after {
   content: " ";
   display: table; }
 .form .form-row:after {
   clear: both; }
-.form .lt-ie8 .form-row {
-  zoom: 1; }
 .form label {
   float: left;
   width: 160px;
@@ -221,9 +206,9 @@ h4, h4 a, .h4, .h4 a {
   text-align: center; }
 .form span.required,
 .form .required span {
-  color: #950000; }
+  color: #d51c21; }
 .form .error input, .form .error select, .form .error textarea {
-  border: 1px solid #D73E93; }
+  border: 1px solid #d51c21; }
 .form .errorMessage {
   font-size: 12px;
   color: #8A004B;
@@ -258,11 +243,11 @@ h4, h4 a, .h4, .h4 a {
 
 .left {
   float: left;
-  margin: 0 15px 10px 0; }
+  margin: 0 15px 0 0; }
 
 .right {
   float: right;
-  margin: 0 0 10px 15px; }
+  margin: 0 0 0 15px; }
 
 .fl {
   float: left; }
@@ -275,7 +260,6 @@ h4, h4 a, .h4, .h4 a {
   height: auto; }
 
 .mrk1 {
-  background: url(mrk1.gif) no-repeat 0 4px;
   padding-left: 12px; }
 
 .hr1 {
@@ -291,7 +275,7 @@ h4, h4 a, .h4, .h4 a {
   margin-right: 2%; }
 
 .r-main {
-  float: left;
+  float: right;
   width: 49%; }
 
 .block-center {
@@ -322,9 +306,6 @@ h4, h4 a, .h4, .h4 a {
 .no-overflow {
   overflow: hidden; }
 
-.lt-ie8 .text-container, .lt-ie8 .nofloat {
-  zoom: 1; }
-
 .text-container p {
   padding-top: 20px; }
   .text-container p:first-child {
@@ -347,6 +328,12 @@ h4, h4 a, .h4, .h4 a {
 
 .bb {
   font-weight: bold; }
+
+.italic {
+  font-style: italic; }
+
+.uppercase {
+  text-transform: uppercase; }
 
 .m0 {
   margin-bottom: 0px; }
@@ -493,9 +480,13 @@ h4, h4 a, .h4, .h4 a {
 /*   -=========== HTML5 structure ===========-   */
 #structure {
   position: relative;
+  min-height: 100%; }
+
+.wrapper {
   width: 990px;
-  min-height: 100%;
-  margin: 0 auto; }
+  margin-left: auto;
+  margin-right: auto;
+  position: relative; }
 
 #content {
   padding-bottom: 130px; }
@@ -511,10 +502,8 @@ section#main {
 
 footer {
   clear: both;
-  background: #FFFFFF;
   position: relative;
-  width: 990px;
-  margin: -90px auto 0 auto;
+  margin-top: -90px;
   height: 90px; }
 
 /*   -=========== Blocks ===========-   */
@@ -529,40 +518,57 @@ footer {
   overflow: hidden;
   margin: 0;
   padding: 0; }
-.lt-ie8 .pager ul {
-  zoom: 1; }
-.pager ul li {
-  display: inline-block;
-  margin: 0;
-  padding: 0;
-  list-style: none; }
-.lt-ie8 .pager ul li {
-  display: inline;
-  zoom: 1; }
-.pager ul li a {
-  color: #666666;
-  text-decoration: none; }
-.pager ul li a:hover {
-  text-decoration: underline; }
-.pager ul li.page.selected a {
-  color: #FFFFFF; }
-.pager ul li.page.previous a,
-.pager ul li.page.next a {
-  background: url(forward.png) no-repeat 0 0; }
-.pager ul li.page.next a {
-  background: url(backward.png) no-repeat 0 0; }
+  .pager ul li {
+    display: inline-block;
+    margin: 0;
+    padding: 0;
+    list-style: none; }
+    .pager ul li a {
+      color: black;
+      text-decoration: none; }
+      .pager ul li a:hover {
+        text-decoration: underline; }
+    .pager ul li.page.selected a {
+      color: white; }
 
 footer .counters {
   float: left;
   width: 200px;
   padding: 0 85px 0 0; }
-
-footer .counters img {
-  float: left;
-  margin-right: 10px; }
-
+  footer .counters img {
+    float: left;
+    margin-right: 10px; }
 footer .copyright {
   float: left;
   font-size: 10px;
   line-height: 120%;
   color: #788A91; }
+
+/*   -=========== Menu classes ===========-   */
+.menu ul li {
+  list-style: none; }
+  .menu ul li a {
+    text-decoration: none; }
+
+/*   -=========== Popup classes ===========-   */
+.popup {
+  display: none;
+  position: absolute;
+  z-index: 9999; }
+  .popup .close {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0; }
+
+/*   -=========== Buttons ===========-   */
+.btn {
+  display: inline-block;
+  vertical-align: middle;
+  border: none;
+  text-decoration: none;
+  text-align: center; }
+
+/*   -=========== Specific mobile styles ===========-   */
+.mobile body {
+  min-width: 1020px; }

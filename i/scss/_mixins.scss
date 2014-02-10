@@ -1,0 +1,60 @@
+@mixin box-shadow($shadow-1, $shadow-2:0) {
+  @if $shadow-2 == 0 {
+    -moz-box-shadow: $shadow-1;
+    -webkit-box-shadow: $shadow-1;
+    box-shadow: $shadow-1;
+  } @else {
+    -moz-box-shadow: $shadow-1, $shadow-2;
+    -webkit-box-shadow: $shadow-1, $shadow-2;
+    box-shadow: $shadow-1, $shadow-2;
+  }
+}
+@mixin transition($transition-params) {
+  -moz-transition: $transition-params;
+  -o-transition: $transition-params;
+  -webkit-transition: $transition-params;
+  transition: $transition-params; }
+@mixin transition-property($transition-prop-1,
+                           $transition-prop-2:0,
+                           $transition-prop-3:0) {
+  @if $transition-prop-3 == 0 {
+    @if $transition-prop-2 == 0 {
+      -moz-transition-property: $transition-prop-1;
+      -o-transition-property: $transition-prop-1;
+      -webkit-transition-property: $transition-prop-1;
+      transition-property: $transition-prop-1;
+      } @else {
+        -moz-transition-property: $transition-prop-1, $transition-prop-2;
+        -o-transition-property: $transition-prop-1, $transition-prop-2;
+        -webkit-transition-property: $transition-prop-1, $transition-prop-2;
+        transition-property: $transition-prop-1, $transition-prop-2;
+      }
+  } @else {
+    -moz-transition-property: $transition-prop-1, $transition-prop-2, $transition-prop-3;
+    -o-transition-property: $transition-prop-1, $transition-prop-2, $transition-prop-3;
+    -webkit-transition-property: $transition-prop-1, $transition-prop-2, $transition-prop-3;
+    transition-property: $transition-prop-1, $transition-prop-2, $transition-prop-3;
+  }
+}
+@mixin transform($transform-params) {
+  -moz-transform: $transform-params;
+  -ms-transform: $transform-params;
+  -o-transform: $transform-params;
+  -webkit-transform: $transform-params;
+  transform: $transform-params; }
+@mixin triangle($size, $color, $direction) {
+  height: 0;
+  width: 0;
+  border-color: transparent;
+  border-style: solid;
+  border-width: $size / 2;
+
+  @if $direction == up {
+    border-bottom-color: $color; }
+  @else if $direction == right {
+    border-left-color:   $color; }
+  @else if $direction == down {
+    border-top-color:    $color; }
+  @else if $direction == left {
+    border-right-color:  $color; }
+}

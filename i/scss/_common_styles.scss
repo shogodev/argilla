@@ -28,20 +28,20 @@ h4, h4 a, .h4, .h4 a {
      -moz-box-sizing: border-box;
           box-sizing: border-box;
   font-size: 11px;
-  color: #541458;
+  color: $black;
   padding: 3px 5px;
-  background: #B89DB9;
+  background: $white;
   border: 0; }
 
 /*   -=========== Forms ===========-   */
 .form {
+  * {
+    font-family: $fonts; }
   .form-row:before, .form-row:after {
     content: " ";
     display: table; }
   .form-row:after {
     clear: both; }
-  .lt-ie8 .form-row {
-    zoom: 1; }
   label {
     float: left;
     width: 160px;
@@ -74,10 +74,10 @@ h4, h4 a, .h4, .h4 a {
     text-align: center; }
   span.required,
   .required span {
-    color: #950000; }
+    color: $red; }
   .error {
     input, select, textarea {
-      border: 1px solid #D73E93; }
+      border: 1px solid $red; }
   }
   .errorMessage {
     font-size: 12px;

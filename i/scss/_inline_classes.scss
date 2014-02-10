@@ -20,10 +20,10 @@
 
 .left {
   float: left;
-  margin: 0 15px 10px 0; }
+  margin: 0 15px 0 0; }
 .right {
   float: right;
-  margin: 0 0 10px 15px; }
+  margin: 0 0 0 15px; }
 .fl {
   float: left; }
 .fr {
@@ -33,7 +33,7 @@
   height: auto; }
 
 .mrk1 {
-  background: url(mrk1.gif) no-repeat 0 4px;
+  //background: url(mrk1.gif) no-repeat 0 4px;
   padding-left: 12px; }
 
 .hr1 {
@@ -48,7 +48,7 @@
   width: 49%;
   margin-right: 2%; }
 .r-main {
-  float: left;
+  float: right;
   width: 49%; }
 
 .block-center {
@@ -73,8 +73,6 @@
   margin-bottom: 10px; }
 .no-overflow {
   overflow: hidden; }
-.lt-ie8 .text-container, .lt-ie8 .nofloat {
-  zoom: 1; }
 .text-container {
   p {
     padding-top: 20px;
@@ -99,6 +97,10 @@
   font-weight: normal; }
 .bb {
   font-weight: bold; }
+.italic {
+  font-style: italic; }
+.uppercase {
+  text-transform: uppercase; }
 @for $i from 0 through 10 {
   .m#{$i * 5} { margin-bottom: 5px * $i; }
 }

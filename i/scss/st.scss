@@ -1,11 +1,13 @@
 /*
 Project:   Template
 CSS Type:  Semantic
-Version:   1.0.2 (13.12.2013)
+Version:   1.1.0 (10.02.2014)
 Authors:   Grigory Zarubin, Alexander Rubanov, Alexey Efimov (Shogo.RU)
 */
 
-@import "prefixes";
+//@import "jquery-fancybox/jquery.fancybox.css";
+//@import "alertify/alertify.core.css";
+@import "mixins";
 @import "const";
 //@import "colorzilla_gradients";
 @import "resets";
@@ -16,9 +18,12 @@ Authors:   Grigory Zarubin, Alexander Rubanov, Alexey Efimov (Shogo.RU)
 /*   -=========== HTML5 structure ===========-   */
 #structure {
   position: relative;
+  min-height: 100%; }
+.wrapper {
   width: $wrapper-width;
-  min-height: 100%;
-  margin: 0 auto; }
+  margin-left: auto;
+  margin-right: auto;
+  position: relative; }
 header {}
 #content {
   padding-bottom: $footer-height + 40px; }
@@ -31,10 +36,8 @@ section#main {
   padding-left: 30px; }
 footer {
   clear: both;
-  background: #FFFFFF;
   position: relative;
-  width: $wrapper-width;
-  margin: -$footer-height auto 0 auto;
+  margin-top: -$footer-height;
   height: $footer-height; }
 
 /*   -=========== Blocks ===========-   */
@@ -52,42 +55,88 @@ footer {
   ul {
     overflow: hidden;
     margin: 0;
-    padding: 0; }
-  .lt-ie8 & ul {
-    zoom: 1; }
-  ul li {
-    display: inline-block;
-    margin: 0;
     padding: 0;
-    list-style: none; }
-  .lt-ie8 & ul li {
-    display: inline;
-    zoom: 1; }
-  ul li a {
-    color: #666666;
-    text-decoration: none; }
-  ul li a:hover {
-    text-decoration: underline; }
-  ul li.page.selected a {
-    color: #FFFFFF; }
-  ul li.page.previous a,
-  ul li.page.next a {
-    background: url(forward.png) no-repeat 0 0; }
-  ul li.page.next a {
-    background: url(backward.png) no-repeat 0 0; }
+    li {
+      display: inline-block;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      a {
+        color: $black;
+        text-decoration: none;
+        &:hover {
+          text-decoration: underline; }
+      }
+      &.page {
+        &.selected {
+          a {
+            color: $white; }
+        }
+      }
+      &.previous, &.next {
+        a {}
+      }
+      &.previous {
+        //background: url(backward.png) no-repeat 0 0;
+      }
+      &.next {
+        //background: url(forward.png) no-repeat 0 0;
+      }
+    }
+  }
 }
 .pager-header {}
 .pager-footer {}
 
-footer .counters {
-  float: left;
-  width: 200px;
-  padding: 0 85px 0 0; }
-footer .counters img {
-  float: left;
-  margin-right: 10px; }
-footer .copyright {
-  float: left;
-  font-size: 10px;
-  line-height: 120%;
-  color: #788A91; }
+footer {
+  .counters {
+    float: left;
+    width: 200px;
+    padding: 0 85px 0 0;
+    img {
+      float: left;
+      margin-right: 10px; }
+  }
+  .copyright {
+    float: left;
+    font-size: 10px;
+    line-height: 120%;
+    color: #788A91; }
+}
+
+/*   -=========== Menu classes ===========-   */
+.menu {
+  ul {
+    li {
+      list-style: none;
+      a {
+        text-decoration: none; }
+    }
+  }
+}
+
+/*   -=========== Popup classes ===========-   */
+.popup {
+  display: none;
+  position: absolute;
+  z-index: 9999;
+  .close {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0; }
+}
+
+/*   -=========== Buttons ===========-   */
+.btn {
+  display: inline-block;
+  vertical-align: middle;
+  border: none;
+  text-decoration: none;
+  text-align: center; }
+
+/*   -=========== Specific mobile styles ===========-   */
+.mobile {
+  body {
+    min-width: $wrapper-width + 30px; }
+}
