@@ -9,7 +9,7 @@ Backend.modules.onFly = function(box) {
     bindTextFields($);
 
     // Привязать drop down'ы.
-    $('body').on('change', 'select.onfly-edit-dropdown', function() {
+    $('body').off('change', 'select.onfly-edit-dropdown').on('change', 'select.onfly-edit-dropdown', function() {
       handler($, $(this));
     });
   };

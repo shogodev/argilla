@@ -297,7 +297,7 @@ class BInputHorizontal extends BInput
     echo $this->widget('UploadWidget', array('model'       => $this->model,
                                              'attribute'   => $this->attribute,
                                              'multiple'    => $this->data['multiple'],
-                                             'gridClass'   => isset($this->data['gridOptions']) ? $this->data['gridOptions'] : null,
+                                             'gridOptions' => isset($this->data['gridOptions']) ? $this->data['gridOptions'] : array(),
                                              'htmlOptions' => $this->htmlOptions,
                                             ), true);
 

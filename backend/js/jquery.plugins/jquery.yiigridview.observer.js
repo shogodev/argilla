@@ -18,8 +18,9 @@ $( function($) {
 
     /**
      * @param id
+     * @param data
      */
-    $.fn.yiiGridView.notifyObservers = function(id)
+    $.fn.yiiGridView.notifyObservers = function(id, data)
     {
       if( !$.fn.yiiGridView.observers[id] )
         return;
@@ -29,7 +30,7 @@ $( function($) {
         if( $.fn.yiiGridView.observers[id].hasOwnProperty(i) )
         {
           if( typeof $.fn.yiiGridView.observers[id][i] === 'function'  )
-            $.fn.yiiGridView.observers[id][i](id);
+            $.fn.yiiGridView.observers[id][i](id, data);
         }
       }
     };

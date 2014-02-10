@@ -1,26 +1,17 @@
 <?php
 return array(
-  'class' => 'form form-popup',
-  'description' => 'Поля <span class="required">*</span> - обязательны для заполнения.',
+  'class' => 'form callback-form',
 
   'elements' => array(
-    'name' => array('type' => 'text'),
     'phone' => array('type' => 'text'),
-    'time' => array('type' => 'text'),
-
-    'content' => array(
-      'type' => 'textarea',
-      'attributes' => array(
-        'cols' => 5,
-        'rows' => 5
-      )
-    ),
+    'name' => array('type' => 'text'),
   ),
 
   'buttons' => array(
     'submit' => array(
-      'type' => 'image',
-      'src' => 'i/btn_send.png'
+      'type' => 'button',
+      'class' => 'btn red-btn',
+      'value' => 'Заказать звонок'
     )
   ),
 );

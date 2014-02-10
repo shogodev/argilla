@@ -23,9 +23,22 @@ $this->widget('BGridView', array(
     array('name' => 'type', 'header' => 'Тип', 'filter' => false, 'value' => '$data->isGroup() ? "" : $data->types[$data->type]'),
 
     array('class' => 'ParamToggleColumn', 'name' => 'visible', 'header' => 'Вид'),
-    array('class' => 'ParamToggleColumn', 'name' => 'product', 'header' => 'Товар', 'filter' => false),
-    array('class' => 'ParamToggleColumn', 'name' => 'section', 'header' => 'Разводная', 'filter' => false),
+    array('class' => 'ParamToggleColumn', 'name' => 'product', 'header' => '<span data-original-title="Параметр отображается в карточке товара">Карточка</span>', 'filter' => false, 'headerHtmlOptions' => array('rel' => 'tooltip')),
+    array('class' => 'ParamToggleColumn', 'name' => 'section', 'header' => '<span data-original-title="Параметр отображается на разводной в режиме \'Плитка\'">Плитка</span>', 'filter' => false, 'headerHtmlOptions' => array('rel' => 'tooltip')),
+    array('class' => 'ParamToggleColumn', 'name' => 'section_list', 'header' => '<span data-original-title="Параметр отображается на разводной в режиме \'Список\'">Список</span>', 'filter' => false, 'headerHtmlOptions' => array('rel' => 'tooltip')),
+    array('class' => 'ParamToggleColumn', 'name' => 'selection', 'header' => '<span data-original-title="Параметр участвует в подборе">Подбор</span>', 'filter' => false, 'headerHtmlOptions' => array('rel' => 'tooltip')),
 
     array('class' => 'ParamButtons'),
   ),
 ));
+?>
+
+<script>
+  //<![CDATA[
+  $(function () {
+    var headerTooltips = function(){$('th[rel="tooltip"] > span').tooltip().css('border-bottom', '1px dashed');};
+    $.fn.yiiGridView.addObserver('yw0', headerTooltips);
+    headerTooltips();
+  });
+  //]]>
+</script>

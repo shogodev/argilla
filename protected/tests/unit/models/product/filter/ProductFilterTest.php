@@ -181,7 +181,7 @@ $this->assertTrue($this->fth->checkFilterForData(
     $criteria->compare('`key`', 'filter');
 
     $model = new ProductParameterName();
-    $parameters = $model->setGroupCriteria($criteria)->search($criteria);
+    $parameters = $model->setGroupCriteria($criteria)->search();
 
     $this->assertNotEmpty($parameters);
 
@@ -207,7 +207,7 @@ $this->assertTrue($this->fth->checkFilterForData(
     $criteria->compare('price', '>0');
     $productList = new ProductList($criteria, null, false, $productFilter);
 
-    $products = $productList->getProducts();
+    $products = $productList->getDataProvider();
     $data = $products->getData();
 
     $this->assertCount(10, $data);

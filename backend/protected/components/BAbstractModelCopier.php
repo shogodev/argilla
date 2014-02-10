@@ -32,6 +32,7 @@ abstract class BAbstractModelCopier
     $copy->isNewRecord = true;
     $this->unsetAttributes($copy, $unsetAttributes);
     $this->setAttributes($copy, $setAttributes);
+    $copy->setScenario('copy');
     $copy->save(false);
 
     return $model->findByPk($copy->getPrimaryKey());

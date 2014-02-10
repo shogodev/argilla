@@ -7,6 +7,7 @@
  * @package frontend.models.product.filter
  *
  * @property string $name
+ * @property array $htmlOptions
  * @property ProductFilter $parent
  */
 abstract class ProductFilterElement extends CComponent
@@ -33,6 +34,8 @@ abstract class ProductFilterElement extends CComponent
 
   public $disabled = array();
 
+  public $itemClass = 'ProductFilterElementItem';
+
   protected $htmlOptions = array();
 
   /**
@@ -40,6 +43,9 @@ abstract class ProductFilterElement extends CComponent
    */
   public $items = array();
 
+  /**
+   * @var array
+   */
   public $itemLabels = array();
 
   public $itemUrls = array();
@@ -48,6 +54,11 @@ abstract class ProductFilterElement extends CComponent
    * @var ProductFilter
    */
   protected $parent;
+
+  public function init($parent)
+  {
+
+  }
 
   /**
    * @param $availableValues
@@ -164,6 +175,13 @@ abstract class ProductFilterElement extends CComponent
     return false;
   }
 
+  public function getItems()
+  {
+    return array_filter($this->items, function(ProductFilterElementItem $item){
+      return !$item->isDisabled();
+    });
+  }
+
   public function isParameter()
   {
     return is_numeric($this->id);
@@ -183,7 +201,7 @@ abstract class ProductFilterElement extends CComponent
       $newItems[$itemId] = Yii::createComponent(
         array(
           'id' => $itemId,
-          'class' => 'ProductFilterElementItem',
+          'class' => $this->itemClass,
           'parent' => $this,
         )
       );

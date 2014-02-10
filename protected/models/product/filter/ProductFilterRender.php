@@ -50,6 +50,8 @@ class ProductFilterRender extends CComponent
 
   public function registerOnChangeScript($ajaxUpdate = false)
   {
+    $ajaxUpdate = intval($ajaxUpdate);
+
     $form   = "form[name={$this->parent->filterKey}]";
     $script = "
       $('body').on('change', '{$form} select, {$form} input', function(e)
@@ -62,26 +64,21 @@ class ProductFilterRender extends CComponent
       {
         data += (data ? '&' : '') + encodeURIComponent('{$this->parent->filterKey}[submit]') + '=1';
         var action = form.attr('action').split('?');
-        return action[0] + '?' + data;
+        return [action[0], decodeURIComponent(data)];
       };
 
       var submitForm_{$this->parent->filterKey} = function(data, url)
       {
-        url = decodeURIComponent(url ? url : buildUrl($('{$form}'), data));
+        url = url ? [url, ''] : buildUrl($('{$form}'), data);
+        var ajaxUpdate = {$ajaxUpdate} && window.History.enabled;
 
-        var ajaxUpdate = '{$ajaxUpdate}' && window.History.enabled;
-        var changeUrl  = url && url.match(/\?/) ? false : true;
-
-        if( ajaxUpdate && changeUrl )
+        if( ajaxUpdate )
         {
-          window.History.pushState(null, document.title, url);
+          window.History.pushState($.deparam(url[1]), document.title, url[0]);
         }
         else
         {
-          if( changeUrl )
-            document.location.href = url;
-          else
-            $('#yw0').yiiListView.update('yw0', {'url' : url});
+          $('#product_list').yiiListView.update('product_list', {'url' : url[0], 'data' : $.deparam(url[1])});
         }
       };
 
@@ -103,31 +100,23 @@ class ProductFilterRender extends CComponent
   {
     $form = "form[name={$this->parent->filterKey}]";
 
-    $script = "$('body').on('click', '.removeElement', function(e) {
+    $script = "$('body').on('click', '.remove-btn', function(e) {
       e.preventDefault();
+      element = $(this);
+      var id = element.data('remove');
 
-      var id = $(this).data('remove');
-
-      if( $('#' + id).length )
+      if( $('#' + id).length && $('#' + id).attr('type') !== 'hidden' )
       {
         $('#' + id).click();
       }
       else
       {
         var form = $('{$form}');
-        var data = $(this).attr('name') + '=' + $(this).val() + '&{$this->parent->filterKey}[remove]=1';
-
-        $.post(form.attr('action'), data, function(resp) {
-          if(typeof {$this->finishCallback} == 'function')
-          {
-            {$this->finishCallback}(resp);
-          }
-          else
-           location.reload();
-        }, 'html');
+        form.find('#' + element.data('remove')).val('');
+        form.submit();
       }
     });";
 
-    Yii::app()->clientScript->registerScript('removeElementsScript_'.$this->parent->filterKey, $script, CClientScript::POS_LOAD);
+    Yii::app()->clientScript->registerScript('removeElementsScript_'.$this->parent->filterKey, $script, CClientScript::POS_READY);
   }
 }

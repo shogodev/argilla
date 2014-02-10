@@ -11,5 +11,3 @@
 <?php echo $form->dropDownListDefaultRow($assignmentModel, 'section_id', CHtml::listData(BProductSection::model()->findAll(), 'id', 'name')); ?>
 
 <?php echo $form->textFieldRow($model, 'key', array('class' => 'span4'));?>
-
-<?php echo $form->checkBoxRow($model, 'visible');?>

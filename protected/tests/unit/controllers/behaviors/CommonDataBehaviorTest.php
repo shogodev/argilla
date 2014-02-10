@@ -78,13 +78,13 @@ class CommonDataBehaviorTest extends CDbTestCase
     $this->clearTextBlocksCache();
 
     Yii::app()->controller->textBlockRegister('Сообщение', 'Сообщение успешно отправлено');
-    $textBlock = TextBlock::model()->findByAttributes(array('location' => 'index/'.Utils::translite('Сообщение')));
+    $textBlock = TextBlock::model()->findByAttributes(array('location' => Utils::translite('Сообщение')));
     $this->assertRegExp('/сообщение успешно отправлено/iu', $textBlock->content);
 
     $this->clearTextBlocksCache();
 
     Yii::app()->controller->textBlockRegister('Регистрация', 'Успешная регистрация', array('class' => 'test_class', 'id' => 'message'));
-    $textBlock = TextBlock::model()->findByAttributes(array('location' => 'index/'.Utils::translite('Регистрация')));
+    $textBlock = TextBlock::model()->findByAttributes(array('location' => Utils::translite('Регистрация')));
     $this->assertRegExp('/Успешная регистрация/iu', $textBlock->content);
     $this->assertRegExp('/class="test_class"/iu', $textBlock->content);
     $this->assertRegExp('/id="message"/iu', $textBlock->content);

@@ -3,7 +3,7 @@ class FFormInputElement extends CFormInputElement
 {
   public $baseType;
 
-  protected $defaultTemplate = "<div class=\"text-container\">\n{label}\n<div class=\"pdb\"><span class=\"inp_container\">{input}</span>\n{hint}\n{error}</div>\n</div>\n";
+  protected $defaultTemplate = "<div class=\"form-row m25\">\n{label}\n<div class=\"form-field\">{input}\n{hint}\n{error}</div>\n</div>\n";
 
   private $_label;
 
@@ -31,6 +31,14 @@ class FFormInputElement extends CFormInputElement
       return $this->_label;
     else
       return $this->getParent()->getModel()->getAttributeLabel(preg_replace('/(\[\w+\])?(\w+)/', '$2', $this->name));
+  }
+
+  /**
+   * @param string $value
+   */
+  public function setLabel($value)
+  {
+    $this->_label = $value;
   }
 
   /**

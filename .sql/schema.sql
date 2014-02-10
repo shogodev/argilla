@@ -769,13 +769,15 @@ CREATE TABLE `argilla_product_assignment` (
   `type_id` int(10) unsigned NOT NULL,
   `category_id` int(10) unsigned NOT NULL,
   `collection_id` int(10) unsigned NOT NULL,
+  `visible` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `product_id` (`product_id`),
   KEY `section_id` (`section_id`),
   KEY `category_id` (`category_id`),
-  KEY `year_id` (`collection_id`),
+  KEY `collection_id` (`collection_id`),
   KEY `type_id` (`type_id`),
-  CONSTRAINT `argilla_product_assignment_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `argilla_product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  KEY `visible` (`visible`),
+  KEY `common` (`section_id`,`category_id`,`collection_id`,`type_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -940,6 +942,8 @@ CREATE TABLE `argilla_product_param_name` (
   `key` varchar(50) DEFAULT NULL,
   `product` tinyint(1) DEFAULT NULL,
   `section` tinyint(1) DEFAULT NULL,
+  `section_list` tinyint(1) NOT NULL DEFAULT '0',
+  `selection` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `parent` (`parent`),
   CONSTRAINT `argilla_product_param_name_ibfk_2` FOREIGN KEY (`parent`) REFERENCES `argilla_product_param_name` (`id`)

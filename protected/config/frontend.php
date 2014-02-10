@@ -31,6 +31,7 @@ return array_replace_recursive(array(
     'frontend.models.user.*',
     'frontend.models.info.*',
     'frontend.models.order.*',
+    'frontend.models.xml.*',
 
     'frontend.components.*',
     'frontend.components.session.*',
@@ -109,17 +110,6 @@ return array_replace_recursive(array(
 
     'errorHandler' => array(
       'errorAction' => 'error/error',
-    ),
-
-    'format' => array(
-      'class' => 'SFormatter',
-      'datetimeFormat' => 'd.m.Y H:i:s',
-      'dateFormat'     => 'd.m.Y',
-      'timeFormat'     => 'H:i:s',
-      'numberFormat'   => array(
-        'decimals'          => 0,
-        'decimalSeparator'  => ',',
-        'thousandSeparator' => ' ')
     ),
 
     'log' => array(

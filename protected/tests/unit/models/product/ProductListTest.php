@@ -24,7 +24,7 @@ class ProductListTest extends CDbTestCase
     /**
      * @var Product[] $products
      */
-    $products = $productList->getProducts()->getData();
+    $products = $productList->getDataProvider()->getData();
 
     $this->assertCount(2, $products);
     $parameters0 = $products[0]->getParameters('page');

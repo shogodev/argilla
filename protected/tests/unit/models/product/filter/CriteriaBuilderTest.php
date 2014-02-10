@@ -13,7 +13,7 @@ class CriteriaBuilderTest extends CTestCase
     $filter = $this->getFilter();
     $criteria = new CDbCriteria();
     $productList = new ProductList($criteria, null, false, $filter);
-    $productList->getProducts();
+    $productList->getDataProvider();
 
     $cb = new CriteriaBuilder($criteria);
 

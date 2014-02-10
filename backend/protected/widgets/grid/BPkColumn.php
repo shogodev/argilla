@@ -16,7 +16,11 @@ class BPkColumn extends BDataColumn
 
   public $header = '#';
 
+  public $ajaxAction = 'association';
+
   public $ajaxUrl;
+
+  public $associationClass = 'BAssociation';
 
   protected $popup = false;
 
@@ -36,7 +40,7 @@ class BPkColumn extends BDataColumn
     if( $this->ajaxUrl === null )
     {
       $this->ajaxUrl = Yii::app()->controller->createUrl(
-        'association', array('srcId' => $this->assocSrcId, 'src' => $this->assocSrc, 'dst' => $this->assocDst)
+        $this->ajaxAction, array('srcId' => $this->assocSrcId, 'src' => $this->assocSrc, 'dst' => $this->assocDst)
       );
 
       $this->registerScript();
@@ -55,11 +59,10 @@ class BPkColumn extends BDataColumn
 
   protected function renderPkCheckboxContent(CActiveRecord $data)
   {
-    $criteria = new CDbCriteria();
-    $criteria->compare('src', '='.$this->assocSrc);
-    $criteria->compare('src_id', '='.$this->assocSrcId);
-    $criteria->compare('dst', '='.strtolower(get_class($data)));
-    $criteria->compare('dst_id', '='.$data->getPrimaryKey());
+    $parameters['src'] = $this->assocSrc;
+    $parameters['src_id'] = $this->assocSrcId;
+    $parameters['dst'] = $this->assocDst;
+    $parameters['dst_id'] = $data->getPrimaryKey();
 
     $options = array(
       'type' => 'checkbox',
@@ -67,7 +70,9 @@ class BPkColumn extends BDataColumn
       'id' => 'pk_'.$data->getPrimaryKey(),
     );
 
-    if( BAssociation::model()->find($criteria) )
+    $class = new $this->associationClass;
+
+    if( $class->getChecked($parameters) )
       $options['checked'] = 'checked';
 
     echo CHtml::tag('input', $options);

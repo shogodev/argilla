@@ -12,6 +12,9 @@
  * @property string $value
  *
  * @method static ProductParameter model(string $class = __CLASS__)
+ *
+ * @property ProductParameterName $parameterName
+ * @property ProductParameterVariant $variant
  */
 class ProductParameter extends FActiveRecord
 {

@@ -99,7 +99,7 @@ class BGridView extends TbGridView
   {
     Yii::app()->clientScript->registerScript('notifyGridObservers', "function notifyGridObservers(id, data) {
       if( jQuery.fn.yiiGridView.observers )
-        jQuery.fn.yiiGridView.notifyObservers(id);
+        jQuery.fn.yiiGridView.notifyObservers(id, data);
     }");
 
     $this->addObservers();
@@ -127,7 +127,7 @@ class BGridView extends TbGridView
         $this->columns[$i]['class'] = 'BDataColumn';
       else if( Yii::app()->controller->popup )
       {
-        if( in_array($column['class'], array('BButtonColumn', 'JToggleColumn', 'BAssociationColumn')) )
+        if( in_array($column['class'], array('BButtonColumn', 'JToggleColumn', 'BPopupColumn')) )
           unset($this->columns[$i]);
       }
     }

@@ -21,6 +21,8 @@ class ProductFilter extends AbstractProductFilter
 
   public $urlPattern;
 
+  public $repairAvailableValues = true;
+
   /**
    * @var ProductFilterElement[]
    */
@@ -65,7 +67,8 @@ class ProductFilter extends AbstractProductFilter
     /**
      * @var $element ProductFilterElement
      */
-    $element = Yii::createComponent(CMap::mergeArray(array('parent' => $this, 'items' => $items), $filterElement));
+    $element = Yii::createComponent(CMap::mergeArray(array('parent' => $this, 'items' => $items), $filterElement), $this);
+    $element->init($this);
 
     $this->elements[$filterElement['id']] = $element;
   }
@@ -192,6 +195,9 @@ class ProductFilter extends AbstractProductFilter
 
       foreach($data as $row)
       {
+        if( $element->isParameter() && $element->id != $row['param_id'] )
+          continue;
+
         $value = $row['variant_id'] == null ? $row['value'] : $row['variant_id'];
 
         $itemId = $element->prepareAvailableValues($value);
@@ -237,9 +243,13 @@ class ProductFilter extends AbstractProductFilter
       }
     }
 
-    // возможно потребуется рекурсия
-    $this->checkOldState($actionCriteria, $selectedStates, $availableValues);
-    $filteredCriteria = $this->createFilteredCriteria($actionCriteria, $availableValues);
+    // Пытаемся установить любое из доступных значений фильтра, скидывая один из его параметров
+    if( $this->repairAvailableValues )
+    {
+      // возможно потребуется рекурсия
+      $this->checkOldState($actionCriteria, $selectedStates, $availableValues);
+      $filteredCriteria = $this->createFilteredCriteria($actionCriteria, $availableValues);
+    }
 
     // Чтобы правильно считалось количество важно, чтобы выделенные элементы обрабатывались раньше невыделенных
     $this->processSelectedStates($actionCriteria, $selectedStates, $availableValues);
@@ -258,13 +268,26 @@ class ProductFilter extends AbstractProductFilter
 
       if( $this->issetValues($actionCriteria, $otherSelectedStates) )
       {
-        unset($this->state[$id]);
-        unset($selectedStates[$id]);
-        unset($availableValues[$id][$selectedValue]);
-        unset($this->elements[$id]->items[$selectedValue]);
+        $this->clearOldState($id, $selectedValue, $selectedStates, $availableValues);
         return;
       }
     }
+
+    foreach(array_reverse($selectedStates, true) as $id => $selectedValue)
+      $this->clearOldState($id, $selectedValue, $selectedStates, $availableValues);
+  }
+
+  protected function clearOldState($id, $selectedValue, &$selectedStates, &$availableValues)
+  {
+    unset($this->state[$id]);
+    unset($selectedStates[$id]);
+    $arraySelectedValue = is_array($selectedValue) ? $selectedValue : array($selectedValue);
+    foreach($arraySelectedValue as $selectedValue)
+    {
+      unset($availableValues[$id][$selectedValue]);
+      unset($this->elements[$id]->items[$selectedValue]);
+    }
+
   }
 
   protected function issetValues($actionCriteria, $selectedStates)
@@ -332,8 +355,12 @@ class ProductFilter extends AbstractProductFilter
       $this->elements[$id]->disabled = !empty($disablingValues[$id]) ? array_diff($allValues[$id], $disablingValues[$id]) : (isset($allValues[$id]) ? $allValues[$id] : array());
 
       foreach($this->elements[$id]->disabled as $disabled)
-        if( isset($this->state[$id][$disabled]) )
+      {
+        if( isset($this->state[$id][$disabled]) && is_array($this->state[$id]) )
+        {
           unset($this->state[$id][$disabled]);
+        }
+      }
     }
   }
 

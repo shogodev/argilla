@@ -7,6 +7,9 @@ return array(
   // search
   'search' => array('search/index', 'pattern' => 'search/<page:\d+>', 'defaultParams' => array('page' => 1)),
 
+  // xml
+  'xmlExport' => array('xmlExport/index', 'pattern' => '<id:\w+>_xml'),
+
   // news
   'newsSection' => array('news/section', 'pattern' => '<url:(news|articles|reviews)>/<page:\d+>', 'defaultParams' => array('page' => 1)),
   'newsOne'     => array('news/one',     'pattern' => 'news/<url:\w+>.html'),
@@ -19,10 +22,10 @@ return array(
 
   // compare
   'compare'           => array('compare/index',      'pattern' => 'compare'),
-  'compareAdd'        => array('compare/add',        'pattern' => '<url:compare\/add>/<id:\d+>'),
+  'compareAdd'        => array('compare/add',        'pattern' => 'compare/add'),
+
   'compareRemove'     => array('compare/remove',     'pattern' => '<url:compare\/remove>/<id:\d+>'),
   'compareClear'      => array('compare/clear',      'pattern' => 'compare/clear'),
-  'compareCount'      => array('compare/count',      'pattern' => 'compare/count'),
   'compareClearGroup' => array('compare/clearGroup', 'pattern' => '<url:compare\/clear_group>/<id:\d+>'),
 
   // users
@@ -47,7 +50,10 @@ return array(
   'basketFastOrder' => array('basket/fastOrder', 'pattern' => 'basket/fastorder'),
 
   // favorite
-  'favorite' => array('favorite/index', 'pattern' => 'favorite/index'),
+  'favorite' => array('favorite/index', 'pattern' => 'favorite'),
+
+  // visits
+  'visits' => array('visits/index', 'pattern' => 'visits'),
 
   // products
   'productFastOrder' => array('product/fastOrder', 'pattern' => 'fastorder/<id:\d+>'),
