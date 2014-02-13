@@ -102,7 +102,21 @@ class CheckDbTask extends Task
       $this->connect();
     }
 
-    $this->_privilegeChecker = new PrivilegeChecker(PrivilegeChecker::getShowGrantsOutput($this->pdo));
+    try
+    {
+      $this->_privilegeChecker = new PrivilegeChecker(PrivilegeChecker::getShowGrantsOutput($this->pdo));
+    }
+    catch(Exception $e)
+    {
+      if( strpos($e->getMessage(), 'The MySQL server is running with the --skip-grant-tables') !== false )
+      {
+        return;
+      }
+      else
+      {
+        throw $e;
+      }
+    }
 
     if( $this->checkTriggers )
     {
@@ -210,11 +224,17 @@ class PrivilegeChecker
    *
    * @param PDO $connection Соединение с базой данных.
    *
+   * @throws BadMethodCallException
    * @return array Результат команды SHOW GRANTS;
    */
   public static function getShowGrantsOutput(PDO $connection)
   {
-    return $connection->query('SHOW GRANTS;')->fetchAll();
+    if( !$query = $connection->query('SHOW GRANTS;') )
+    {
+      throw new BadMethodCallException($connection->errorInfo()[2], $connection->errorInfo()[1]);
+    }
+
+    return $query->fetchAll();
   }
 
   /**
@@ -259,7 +279,7 @@ class PrivilegeChecker
   /**
    * Выполняет предварительную обработку для результата команды SHOW GRANTS;
    *
-   * @param $showGrantsRawOutput Результат команды SHOW GRANTS;
+   * @param string $showGrantsRawOutput Результат команды SHOW GRANTS;
    *
    * @return string[] Массив GRANT команд.
    */
