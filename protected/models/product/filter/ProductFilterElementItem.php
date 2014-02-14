@@ -110,6 +110,13 @@ class ProductFilterElementItem extends CComponent
     return new FSingleImage($this->parent->id.'_'.$this->id.'.png', 'upload/images/color');
   }
 
+  public function render()
+  {
+    echo CHtml::checkBox($this->name, $this->isSelected(), CMap::mergeArray(array('id' => $this->cssId, 'value' => $this->id), $this->parent->isUrlDependence() ? array('data-url' => $this->getUrl()) : array()));
+    echo '&nbsp;';
+    echo CHtml::label($this->parent->isUrlDependence() ? CHtml::tag('a', array('href' => $this->getUrl()), $this->getLabel()) : $this->getLabel(), $this->cssId);
+  }
+
   /**
    * @return string
    */

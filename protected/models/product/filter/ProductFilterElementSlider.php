@@ -10,17 +10,27 @@ class ProductFilterElementSlider extends ProductFilterElementRange
 {
   public function __construct($parent)
   {
-    if( isset($parent->state[Product::FILTER_PRICE]) )
+    if( isset($parent->state[ProductFilter::FILTER_PRICE]) )
     {
       $this->itemLabels = array(
-        $parent->state[Product::FILTER_PRICE] => $this->toString(explode('-', $parent->state[Product::FILTER_PRICE])),
+        $parent->state[ProductFilter::FILTER_PRICE] => $this->toString(explode('-', $parent->state[ProductFilter::FILTER_PRICE])),
       );
     }
   }
 
   public function render()
   {
-    $value = $this->selected ? $this->selected : '';
-    echo CHtml::hiddenField($this->name, $value, array('class' => 'price-input', 'data-value' => $value));
+    $value = $this->selected ? $this->selected : null;
+    echo CHtml::hiddenField($this->name, $value, array('id' => 'filter-price-input', 'data-value' => $value));
+  }
+
+  public function getRanges()
+  {
+    return CJavaScript::jsonEncode(array(
+      $this->minValue,
+      $this->maxValue,
+      $this->selectedMin,
+      $this->selectedMax,
+    ));
   }
 }

@@ -155,9 +155,16 @@ class AbstractProductFilter extends CComponent
       unset($this->elements[$elementId]);
   }
 
-  public function getElements()
+  /**
+   * @param array $exclude
+   *
+   * @return ProductFilterElement[]
+   */
+  public function getElements(array $exclude = array())
   {
-    return $this->elements;
+    return array_filter($this->elements, function(ProductFilterElement $element) use ($exclude) {
+      return !in_array($element->id, $exclude) && count($element->getItems());
+    });
   }
 
   public function getElementByKey($key)

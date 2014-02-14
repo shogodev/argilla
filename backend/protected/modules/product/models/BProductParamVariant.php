@@ -22,6 +22,7 @@ class BProductParamVariant extends BActiveRecord
     return array(
       array('param_id, name', 'required'),
       array('param_id, position', 'length', 'max' => 10),
+      array('notice', 'length', 'max' => 255),
     );
   }
 
@@ -30,5 +31,17 @@ class BProductParamVariant extends BActiveRecord
     return array(
       'param' => array(self::BELONGS_TO, 'BProductParamName', 'param_id'),
     );
+  }
+
+  public function getImage()
+  {
+    $path = 'f/upload/images/color/'.$this->param_id.'_'.$this->id.'.png';
+
+    return file_exists('../'.$path) ? '/'.$path : '/i/sp.gif';
+  }
+
+  public function getAlt()
+  {
+    return $this->param_id.'_'.$this->id.'.png';
   }
 }

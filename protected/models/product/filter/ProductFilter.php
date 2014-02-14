@@ -12,6 +12,8 @@
  */
 class ProductFilter extends AbstractProductFilter
 {
+  const FILTER_PRICE = 'price';
+
   public $emptyElementValue = array('' => 'Не задано');
 
   /**

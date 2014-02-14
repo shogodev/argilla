@@ -175,6 +175,9 @@ abstract class ProductFilterElement extends CComponent
     return false;
   }
 
+  /**
+   * @return ProductFilterElementItem[]
+   */
   public function getItems()
   {
     return array_filter($this->items, function(ProductFilterElementItem $item){
