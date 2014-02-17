@@ -5,7 +5,10 @@
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.settings
- *
+ */
+Yii::import('backend.modules.product.models.*');
+
+/**
  * @method static BGridSettings model(string $class = __CLASS__)
  * @method static BGridSettings visible()
  *
@@ -18,9 +21,6 @@
  * @property integer $filter
  * @property integer $visible
  */
-
-Yii::import('backend.modules.product.models.*');
-
 class BGridSettings extends BActiveRecord
 {
   public $gridModel = 'BProduct';
@@ -93,14 +93,17 @@ class BGridSettings extends BActiveRecord
     );
   }
 
-  public function getSearchCriteria()
+  /**
+   * @param CDbCriteria $criteria
+   *
+   * @return CDbCriteria
+   */
+  protected function getSearchCriteria(CDbCriteria $criteria)
   {
-    $criteria = new CDbCriteria;
-
     $criteria->compare('id', $this->id, true);
     $criteria->compare('position', $this->position);
     $criteria->compare('filter', $this->filter);
-    $criteria->compare('visible', $this->filter);
+    $criteria->compare('visible', $this->visible);
     $criteria->compare('name', $this->name, true);
     $criteria->compare('header', $this->header, true);
 

@@ -1,12 +1,16 @@
 <?php
-/* @var BResponseController $this */
-/* @var BResponse $model  */
+/**
+ * @var BResponseController $this
+ * @var BResponse $model
+ * @var BActiveDataProvider $dataProvider
+ */
+?>
 
-Yii::app()->breadcrumbs->show();
+<?php Yii::app()->breadcrumbs->show();
 
 $this->widget('BGridView', array(
   'filter' => $model,
-  'dataProvider' => $model->search(),
+  'dataProvider' => $dataProvider,
   'columns' => array(
     array('name' => 'id', 'htmlOptions' => array('class' => 'center span1'), 'filter' => false),
     array('name' => 'date', 'class' => 'BDatePickerColumn', 'type' => 'datetime', 'value' => 'strtotime($data->date)'),

@@ -1,13 +1,16 @@
 <?php
-/* @var OrderController $this */
-/* @var BVacancy $model */
+/**
+ * @var BVacancyController $this
+ * @var BVacancy $model
+ * @var BActiveDataProvider $dataProvider
+ */
 ?>
 
 <?php Yii::app()->breadcrumbs->show();?>
 
 <?php $this->widget('BGridView', array(
   'filter' => $model,
-  'dataProvider' => $model->search(),
+  'dataProvider' => $dataProvider,
   'columns' => array(
     array('name' => 'id', 'htmlOptions' => array('class' => 'center span1'), 'filter' => false),
     array('name' => 'date', 'class' => 'BDatePickerColumn'),

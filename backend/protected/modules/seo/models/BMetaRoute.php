@@ -35,17 +35,6 @@ class BMetaRoute extends BActiveRecord
     );
   }
 
-  public function getSearchCriteria()
-  {
-    $criteria = new CDbCriteria;
-
-    $criteria->compare('route', $this->route, true);
-    $criteria->compare('title', $this->title, true);
-    $criteria->compare('visible', $this->visible);
-
-    return $criteria;
-  }
-
   public function afterFind()
   {
     if( !empty($this->clips) )
@@ -153,6 +142,20 @@ class BMetaRoute extends BActiveRecord
     }
 
     return $variables;
+  }
+
+  /**
+   * @param CDbCriteria $criteria
+   *
+   * @return CDbCriteria
+   */
+  protected function getSearchCriteria(CDbCriteria $criteria)
+  {
+    $criteria->compare('route', $this->route, true);
+    $criteria->compare('title', $this->title, true);
+    $criteria->compare('visible', $this->visible);
+
+    return $criteria;
   }
 
   /**

@@ -2,17 +2,17 @@
 /**
  * @var $this BGalleryController
  * @var $model BGallery
- * @var $dataProvider BActiveDataProvider
- * @var $model BGallery
+ * @var BActiveDataProvider $dataProvider
  */
+?>
 
-Yii::app()->breadcrumbs->show();
+<?php Yii::app()->breadcrumbs->show();
 
 $this->widget('BGridView', array(
-  'dataProvider' => $model->search(),
   'filter' => $model,
+  'dataProvider' => $dataProvider,
   'columns' => array(
-    array('name' => 'id', 'htmlOptions' => array('class' => 'center span1'), 'filter' => false),
+    array('name' => 'id', 'class' => 'BPkColumn'),
     array('name' => 'name', 'htmlOptions' => array('class' => 'center')),
     array('name' => 'url', 'htmlOptions' => array('class' => 'center')),
     array('name' => 'type', 'htmlOptions' => array('class' => 'center')),

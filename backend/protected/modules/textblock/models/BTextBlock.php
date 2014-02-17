@@ -42,9 +42,13 @@ class BTextBlock extends BActiveRecord
     $this->auto_created = 0;
   }
 
-  public function getSearchCriteria()
+  /**
+   * @param CDbCriteria $criteria
+   *
+   * @return CDbCriteria
+   */
+  protected function getSearchCriteria(CDbCriteria $criteria)
   {
-    $criteria = new CDbCriteria;
     $criteria->compare('location', $this->location, true);
 
     return $criteria;

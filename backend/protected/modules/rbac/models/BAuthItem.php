@@ -46,10 +46,13 @@ abstract class BAuthItem extends BActiveRecord
     );
   }
 
-  public function getSearchCriteria()
+  /**
+   * @param CDbCriteria $criteria
+   *
+   * @return CDbCriteria
+   */
+  protected function getSearchCriteria(CDbCriteria $criteria)
   {
-    $criteria = new CDbCriteria();
-
     $criteria->compare('title', $this->title, true);
     $criteria->compare('name', $this->name, true);
 

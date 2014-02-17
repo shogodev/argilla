@@ -6,6 +6,9 @@
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.settings
  *
+ * @property string $param
+ * @property string $value
+ * @property string $notice
  */
 class BSettings extends BActiveRecord
 {
@@ -18,14 +21,6 @@ class BSettings extends BActiveRecord
     );
   }
 
-  public function getSearchCriteria()
-  {
-    $criteria = new CDbCriteria;
-    $criteria->compare('param', $this->param, true);
-
-    return $criteria;
-  }
-
   public function attributeLabels()
   {
     return CMap::mergeArray(parent::attributeLabels(), array(
@@ -33,5 +28,17 @@ class BSettings extends BActiveRecord
       'value' => 'Значение',
       'notice' => 'Описание',
     ));
+  }
+
+  /**
+   * @param CDbCriteria $criteria
+   *
+   * @return CDbCriteria
+   */
+  protected function getSearchCriteria(CDbCriteria $criteria)
+  {
+    $criteria->compare('param', $this->param, true);
+
+    return $criteria;
   }
 }

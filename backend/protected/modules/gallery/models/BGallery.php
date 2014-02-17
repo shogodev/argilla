@@ -49,12 +49,12 @@ class BGallery extends BActiveRecord
   }
 
   /**
+   * @param CDbCriteria $criteria
+   *
    * @return CDbCriteria
    */
-  public function getSearchCriteria()
+  protected function getSearchCriteria(CDbCriteria $criteria)
   {
-    $criteria = new CDbCriteria();
-
     $criteria->compare('name', $this->name, true);
     $criteria->compare('url', $this->url, true);
     $criteria->compare('type', $this->type, true);

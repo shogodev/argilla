@@ -41,12 +41,14 @@ class BNewsSection extends BActiveRecord
   }
 
   /**
+   * @param CDbCriteria $criteria
+   *
    * @return CDbCriteria
    */
-  public function getSearchCriteria()
+  protected function getSearchCriteria(CDbCriteria $criteria)
   {
     $criteria = new CDbCriteria;
-    $criteria->compare('visible', '='.$this->visible);
+    $criteria->compare('visible', $this->visible);
     $criteria->compare('name', $this->name, true);
 
     return $criteria;

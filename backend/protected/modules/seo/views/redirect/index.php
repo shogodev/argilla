@@ -1,12 +1,15 @@
 <?php
 /**
- * @var BController $this
+ * @var BRedirectController $this
  * @var BRedirect $model
+ * @var BActiveDataProvider $dataProvider
  */
-Yii::app()->breadcrumbs->show();
+?>
+
+<?php Yii::app()->breadcrumbs->show();
 
 $this->widget('BGridView', array(
-  'dataProvider' => $model->search(),
+  'dataProvider' => $dataProvider,
   'filter' => $model,
   'columns' => array(
     array('name' => 'id', 'htmlOptions' => array('class' => 'center span1'), 'filter' => false),

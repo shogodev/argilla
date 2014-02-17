@@ -1,11 +1,16 @@
 <?php
-/* @var BController $this */
-/* @var BMetaMask $model */
-Yii::app()->breadcrumbs->show();
+/**
+ * @var BMetaMaskController $this
+ * @var BMetaMask $model
+ * @var BActiveDataProvider $dataProvider
+ */
+?>
+
+<?php Yii::app()->breadcrumbs->show();
 
 $this->widget('BGridView', array(
   'filter' => $model,
-  'dataProvider' => $model->search(),
+  'dataProvider' => $dataProvider,
   'columns' => array(
     array('name' => 'id', 'htmlOptions' => array('class' => 'center span1'), 'filter' => false),
     array('name' => 'url_mask'),

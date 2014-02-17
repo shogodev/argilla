@@ -59,9 +59,11 @@ class BNotification extends BActiveRecord
   }
 
   /**
+   * @param CDbCriteria $criteria
+   *
    * @return CDbCriteria
    */
-  public function getSearchCriteria()
+  protected function getSearchCriteria(CDbCriteria $criteria)
   {
     $criteria = new CDbCriteria;
 

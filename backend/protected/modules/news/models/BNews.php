@@ -76,15 +76,15 @@ class BNews extends BActiveRecord
   }
 
   /**
+   * @param CDbCriteria $criteria
+   *
    * @return CDbCriteria
    */
-  public function getSearchCriteria()
+  protected function getSearchCriteria(CDbCriteria $criteria)
   {
-    $criteria = new CDbCriteria;
-
-    $criteria->compare('section_id', '='.$this->section_id);
-    $criteria->compare('visible', '='.$this->visible);
-    $criteria->compare('main', '='.$this->main);
+    $criteria->compare('section_id', $this->section_id);
+    $criteria->compare('visible', $this->visible);
+    $criteria->compare('main', $this->main);
     $criteria->compare('name', $this->name, true);
 
     if( !empty($this->date_from) || !empty($this->date_to) )

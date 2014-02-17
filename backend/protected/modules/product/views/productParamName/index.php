@@ -1,13 +1,16 @@
 <?php
-/* @var BProductParamNameController $this */
-/* @var BActiveDataProvider $dataProvider */
-/* @var BProductParamName $model */
+/**
+ * @var BProductParamNameController $this
+ * @var BProductParamName $model
+ * @var BActiveDataProvider $dataProvider
+ */
+?>
 
-Yii::app()->breadcrumbs->show();
+<?php Yii::app()->breadcrumbs->show();
 
 $this->widget('BGridView', array(
   'filter' => $model,
-  'dataProvider' => $model->search(),
+  'dataProvider' => $dataProvider,
   'buttonsTemplate' => '_form_button_create',
   'rowCssClassExpression' => '$data->isGroup() ? "group" : ($row % 2 ? "odd" : "even" )',
   'columns' => array(

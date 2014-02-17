@@ -102,9 +102,13 @@ class BFrontendUser extends BActiveRecord
     return preg_replace("/\s+/", " ", trim($fullName));
   }
 
-  public function getSearchCriteria()
+  /**
+   * @param CDbCriteria $criteria
+   *
+   * @return CDbCriteria
+   */
+  protected function getSearchCriteria(CDbCriteria $criteria)
   {
-    $criteria = new CDbCriteria;
     $criteria->together = true;
     $criteria->with     = array('user');
 

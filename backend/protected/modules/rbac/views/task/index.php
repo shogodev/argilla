@@ -14,7 +14,7 @@
 Yii::app()->breadcrumbs->show();
 
 $this->widget('BGridView', array(
-  'dataProvider' => $model->search(),
+  'dataProvider' => $dataProvider,
   'filter' => $model,
   'columns' => array(
     array('name' => 'title', 'htmlOptions' => ['class' => 'span4']),

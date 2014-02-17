@@ -82,10 +82,13 @@ class BLink extends BActiveRecord
     );
   }
 
-  public function getSearchCriteria()
+  /**
+   * @param CDbCriteria $criteria
+   *
+   * @return CDbCriteria
+   */
+  protected function getSearchCriteria(CDbCriteria $criteria)
   {
-    $criteria = new CDbCriteria;
-
     $criteria->compare('url', $this->url, true);
     $criteria->compare('visible', $this->visible);
     $criteria->compare('section_id', $this->section_id);

@@ -107,11 +107,12 @@ class BComment extends BActiveRecord
   }
 
   /**
+   * @param CDbCriteria $criteria
+   *
    * @return CDbCriteria
    */
-  public function getSearchCriteria()
+  protected function getSearchCriteria(CDbCriteria $criteria)
   {
-    $criteria = new CDbCriteria;
     $criteria->compare('model', $this->model);
     $criteria->compare('visible', $this->visible);
     $criteria->compare('user_id', $this->user_id);

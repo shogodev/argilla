@@ -52,13 +52,17 @@ class BProductType extends BProductStructure
     ));
   }
 
-  public function getSearchCriteria()
+  /**
+   * @param CDbCriteria $criteria
+   *
+   * @return CDbCriteria
+   */
+  protected function getSearchCriteria(CDbCriteria $criteria)
   {
-    $criteria = new CDbCriteria;
     $criteria->together = true;
     $criteria->with = array('section');
 
-    $criteria->compare('section.id', '='.$this->section_id);
+    $criteria->compare('section.id', $this->section_id);
 
     return $criteria;
   }

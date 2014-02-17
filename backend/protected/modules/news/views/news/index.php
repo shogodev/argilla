@@ -2,12 +2,15 @@
 /**
  * @var BNewsController $this
  * @var BNews $model
+ * @var BActiveDataProvider $dataProvider
  */
-Yii::app()->breadcrumbs->show();
+?>
+
+<?php Yii::app()->breadcrumbs->show();
 
 $this->widget('BGridView', array(
   'filter' => $model,
-  'dataProvider' => $model->search(),
+  'dataProvider' => $dataProvider,
   'columns' => array(
     array('name' => 'id', 'class' => 'BPkColumn'),
     array('name' => 'date', 'class' => 'BDatePickerColumn'),

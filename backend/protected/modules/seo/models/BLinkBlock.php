@@ -49,10 +49,13 @@ class BLinkBlock extends BActiveRecord
     ));
   }
 
-  public function getSearchCriteria()
+  /**
+   * @param CDbCriteria $criteria
+   *
+   * @return CDbCriteria
+   */
+  protected function getSearchCriteria(CDbCriteria $criteria)
   {
-    $criteria = new CDbCriteria;
-
     $criteria->compare('name', $this->name, true);
     $criteria->compare('visible', $this->visible);
 

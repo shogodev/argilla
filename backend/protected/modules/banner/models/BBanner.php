@@ -78,12 +78,12 @@ class BBanner extends BActiveRecord
   }
 
   /**
+   * @param CDbCriteria $criteria
+   *
    * @return CDbCriteria
    */
-  public function getSearchCriteria()
+  protected function getSearchCriteria(CDbCriteria $criteria)
   {
-    $criteria = new CDbCriteria;
-
     $criteria->compare('title', $this->title, true);
     $criteria->compare('visible', '='.$this->visible);
     $criteria->compare('location', $this->location, true);

@@ -22,6 +22,8 @@
  * @property string  $children
  * @property string  $menu
  * @property string  $sitemap
+ *
+ * @mixin NestedSetBehavior
  */
 class BInfo extends BAbstractMenuEntry
 {
@@ -57,6 +59,7 @@ class BInfo extends BAbstractMenuEntry
   {
     return CMap::mergeArray(parent::attributeLabels(), array(
       'info_files' => 'Дополнительные файлы',
+      'parent' => 'Родитель',
     ));
   }
 
@@ -101,12 +104,12 @@ class BInfo extends BAbstractMenuEntry
   }
 
   /**
+   * @param CDbCriteria $criteria
+   *
    * @return CDbCriteria
    */
-  public function getSearchCriteria()
+  protected function getSearchCriteria(CDbCriteria $criteria)
   {
-    $criteria = new CDbCriteria;
-
     $criteria->compare('visible', '='.$this->visible);
     $criteria->compare('name', $this->name, true);
 

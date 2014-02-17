@@ -50,12 +50,12 @@ class BResponse extends BActiveRecord
   }
 
   /**
+   * @param CDbCriteria $criteria
+   *
    * @return CDbCriteria
    */
-  public function getSearchCriteria()
+  protected function getSearchCriteria(CDbCriteria $criteria)
   {
-    $criteria = new CDbCriteria;
-
     $criteria->compare('visible', '='.$this->visible);
     $criteria->compare('name', $this->email, true);
 

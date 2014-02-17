@@ -1,11 +1,15 @@
 <?php
-/* @var $this BContactController */
-/* @var $dataProvider BActiveDataProvider */
+/**
+ * @var BContactController $this
+ * @var BContactTextBlock $model
+ * @var $dataProvider BActiveDataProvider
+ */
 ?>
 
-<?php Yii::app()->breadcrumbs->show();?>
+<?php Yii::app()->breadcrumbs->show();
 
-<?php $this->widget('BGridView', array(
+$this->widget('BGridView', array(
+  'filter' => $model,
   'dataProvider' => $dataProvider,
   'columns' => array(
     array('name' => 'name', 'htmlOptions' => array('class' => 'center span1')),
@@ -15,4 +19,4 @@
     array('class' => 'JToggleColumn', 'name' => 'visible'),
     array('class' => 'BButtonColumn'),
   ),
-)); ?>
+));

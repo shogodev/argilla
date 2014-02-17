@@ -94,25 +94,6 @@ class BOrder extends BActiveRecord
   }
 
   /**
-   * @return CDbCriteria
-   */
-  public function getSearchCriteria()
-  {
-    $criteria = new CDbCriteria;
-
-    $criteria->compare('id', $this->id);
-    $criteria->compare('status_id', $this->status_id);
-    $criteria->compare('sum', $this->sum);
-
-    $this->addUserCondition($criteria);
-
-    if( !empty($this->date_create_from) || !empty($this->date_create_to) )
-      $criteria->addBetweenCondition('date_create', Utils::dayBegin($this->date_create_from), Utils::dayEnd($this->date_create_to));
-
-    return $criteria;
-  }
-
-  /**
    * @return array
    */
   public function getProducts()
@@ -192,5 +173,26 @@ class BOrder extends BActiveRecord
       BOrderStatusHistory::model()->add($oldModel, $status);
       Yii::app()->notification->send('Order'.Utils::toCamelCase($status->sysname).'Backend', array('model' => $this), $this->email);
     }
+  }
+
+  /**
+   * @param CDbCriteria $criteria
+   *
+   * @return CDbCriteria
+   */
+  protected function getSearchCriteria(CDbCriteria $criteria)
+  {
+    $criteria = new CDbCriteria;
+
+    $criteria->compare('id', $this->id);
+    $criteria->compare('status_id', $this->status_id);
+    $criteria->compare('sum', $this->sum);
+
+    $this->addUserCondition($criteria);
+
+    if( !empty($this->date_create_from) || !empty($this->date_create_to) )
+      $criteria->addBetweenCondition('date_create', Utils::dayBegin($this->date_create_from), Utils::dayEnd($this->date_create_to));
+
+    return $criteria;
   }
 }

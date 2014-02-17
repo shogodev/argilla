@@ -1,13 +1,16 @@
 <?php
-/* @var $this BProductTypeController */
-/* @var $dataProvider BActiveDataProvider */
-/* @var $model BProductType */
+/**
+ * @var BProductTypeController $this
+ * @var BProductType $model
+ * @var BActiveDataProvider $dataProvider
+ */
+?>
 
-Yii::app()->breadcrumbs->show();
+<?php Yii::app()->breadcrumbs->show();
 
 $this->widget('BGridView', array(
   'filter' => $model,
-  'dataProvider' => $model->search(),
+  'dataProvider' => $dataProvider,
   'columns' => array(
     array('name' => 'id', 'htmlOptions' => array('class' => 'center span1'), 'filter' => false),
     array('name' => 'position', 'class' => 'OnFlyEditField', 'htmlOptions' => array('class' => 'span1'), 'header' => 'Позиция'),

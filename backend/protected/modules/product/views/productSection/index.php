@@ -1,10 +1,15 @@
 <?php
-/* @var BProductSectionController $this */
-/* @var BActiveDataProvider $dataProvider */
+/**
+ * @var BProductSectionController $this
+ * @var BProductSection $model
+ * @var BActiveDataProvider $dataProvider
+ */
+?>
 
-Yii::app()->breadcrumbs->show();
+<?php Yii::app()->breadcrumbs->show();
 
 $this->widget('BGridView', array(
+  'filter' => $model,
   'dataProvider' => $dataProvider,
   'columns' => array(
     array('name' => 'id', 'htmlOptions' => array('class' => 'center span1')),

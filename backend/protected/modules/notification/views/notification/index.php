@@ -1,11 +1,15 @@
 <?php
-/* @var $this BNotificationController */
-/* @var $dataProvider CActiveDataProvider */
-/* @var $model BNotification */
+/**
+ * @var $this BNotificationController
+ * @var $model BNotification
+ * @var $dataProvider CActiveDataProvider
+ */
 ?>
-<?php Yii::app()->breadcrumbs->show();?>
-<?php $this->widget('BGridView', array(
-  'dataProvider' => $model->search(),
+
+<?php Yii::app()->breadcrumbs->show();
+
+$this->widget('BGridView', array(
+  'dataProvider' => $dataProvider,
   'filter' => $model,
   'columns' => array(
     array('name' => 'id', 'htmlOptions' => array('class' => 'center span1'), 'filter' => false),
@@ -14,4 +18,4 @@
     array('class' => 'JToggleColumn', 'name' => 'visible'),
     array('class' => 'BButtonColumn'),
   ),
-)); ?>
+));

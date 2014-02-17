@@ -1,14 +1,18 @@
 <?php
-/* @var BTextBlockController $this */
-/* @var BTextBlock $model */
+/**
+ * @var BTextBlockController $this
+ * @var BTextBlock $model
+ * @var BActiveDataProvider $dataProvider
+ */
+?>
 
-Yii::app()->breadcrumbs->show();
+<?php Yii::app()->breadcrumbs->show();
 
 $this->widget('BGridView', array(
   'filter' => $model,
-  'dataProvider' => $model->search(),
+  'dataProvider' => $dataProvider,
   'columns' => array(
-    array('name' => 'id', 'htmlOptions' => array('class' => 'center span1'), 'filter' => false),
+    array('name' => 'id', 'class' => 'BPkColumn'),
     array('name' => 'position', 'htmlOptions' => array('class' => 'span1'), 'class' => 'OnFlyEditField', 'header' => 'Позиция', 'filter' => false),
     array('name' => 'location', 'htmlOptions' => array('class' => 'span3')),
 

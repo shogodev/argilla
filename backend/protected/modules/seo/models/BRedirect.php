@@ -95,10 +95,13 @@ class BRedirect extends BActiveRecord
     return $string;
   }
 
-  public function getSearchCriteria()
+  /**
+   * @param CDbCriteria $criteria
+   *
+   * @return CDbCriteria
+   */
+  protected function getSearchCriteria(CDbCriteria $criteria)
   {
-    $criteria = new CDbCriteria;
-
     $criteria->compare('base', $this->base, true);
     $criteria->compare('target', $this->target, true);
     $criteria->compare('type_id', $this->type_id);

@@ -159,11 +159,11 @@ abstract class BController extends CController
 
   public function actionIndex()
   {
-    $dataProvider = new BActiveDataProvider($this->modelClass);
+    $model = $this->createFilterModel();
 
     $this->render('index', array(
-      'model' => $this->createFilterModel(),
-      'dataProvider' => $dataProvider,
+      'model' => $model,
+      'dataProvider' => $model->search(),
     ));
   }
 

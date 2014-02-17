@@ -155,22 +155,31 @@ abstract class BActiveRecord extends CActiveRecord
   }
 
   /**
+   * @param CDbCriteria $criteria
+   *
    * @return BActiveDataProvider
    */
-  public function search()
+  public function search(CDbCriteria $criteria = null)
   {
-    $criteria = $this->getSearchCriteria();
+    if( !isset($criteria) )
+      $criteria = new CDbCriteria();
+
+    $this->onBeforeSearch(new CEvent($this, array('criteria' => $criteria)));
+
+    $criteria = $this->getSearchCriteria($criteria);
     $params = $this->getSearchParams();
 
-    return new BActiveDataProvider($this, CMap::mergeArray(array('criteria' => $criteria), $params));
+    return new BActiveDataProvider($this, CMap::mergeArray(array(
+      'criteria' => $criteria), $params
+    ));
   }
 
   /**
-   * @return CDbCriteria
+   * @param $event
    */
-  public function getSearchCriteria()
+  public function onBeforeSearch($event)
   {
-    return new CDbCriteria();
+    $this->raiseEvent('onBeforeSearch', $event);
   }
 
   public function attributeLabels()
@@ -292,6 +301,16 @@ abstract class BActiveRecord extends CActiveRecord
     $hints = $this->hints;
 
     return isset($hints[$attribute]) ? $hints[$attribute] : null;
+  }
+
+  /**
+   * @param CDbCriteria $criteria
+   *
+   * @return CDbCriteria
+   */
+  protected function getSearchCriteria(CDbCriteria $criteria)
+  {
+    return $criteria;
   }
 
   /**

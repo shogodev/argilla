@@ -256,19 +256,18 @@ class BFrontendMenu extends BAbstractMenuEntry
   }
 
   /**
+   * @param CDbCriteria $criteria
+   *
    * @return CDbCriteria
    */
-  public function getSearchCriteria()
+  protected function getSearchCriteria(CDbCriteria $criteria)
   {
-    $criteria = new CDbCriteria;
-
     $criteria->compare('name', $this->name, true);
     $criteria->compare('sysname', $this->sysname, true);
     $criteria->compare('url', $this->url, true);
 
     return $criteria;
   }
-
 
   /**
    * Удаление из доступных элементов для добавления уже добавленных

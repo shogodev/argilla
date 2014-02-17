@@ -1,14 +1,18 @@
 <?php
-/* @var BHintController $this */
-/* @var BHint $model */
+/**
+ * @var BHint $model
+ * @var BHintController $this
+ * @var BActiveDataProvider $dataProvider
+ */
+?>
 
-Yii::app()->breadcrumbs->show();
+<?php Yii::app()->breadcrumbs->show();
 
 $this->widget('BGridView', array(
   'filter' => $model,
-  'dataProvider' => $model->search(),
+  'dataProvider' => $dataProvider,
   'columns' => array(
-    array('name' => 'id', 'htmlOptions' => array('class' => 'center span1'), 'filter' => false),
+    array('name' => 'id', 'class' => 'BPkColumn'),
     array('name' => 'model', 'htmlOptions' => array('class' => 'span3')),
     array('name' => 'attribute', 'htmlOptions' => array('class' => 'span3')),
     array('name' => 'content', 'type' => 'html', 'filter' => false),

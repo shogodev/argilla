@@ -1,14 +1,18 @@
 <?php
-/* @var BController $this */
-/* @var BMetaRoute $model */
-Yii::app()->breadcrumbs->show();
+/**
+ * @var BMetaRouteController $this
+ * @var BMetaRoute $model
+ * @var BActiveDataProvider $dataProvider
+ */
+?>
+
+<?php Yii::app()->breadcrumbs->show();
 
 $this->widget('BGridView', array(
   'filter' => $model,
-  'dataProvider' => $model->search(),
-
+  'dataProvider' => $dataProvider,
   'columns' => array(
-    array('name' => 'id', 'htmlOptions' => array('class' => 'center span1'), 'filter' => false),
+    array('name' => 'id', 'class' => 'BPkColumn'),
     array('name' => 'route'),
     array('name' => 'title'),
     array('class' => 'JToggleColumn', 'name' => 'visible'),

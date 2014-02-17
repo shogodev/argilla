@@ -119,10 +119,13 @@ class BUser extends BActiveRecord
     ));
   }
 
-  public function getSearchCriteria()
+  /**
+   * @param CDbCriteria $criteria
+   *
+   * @return CDbCriteria
+   */
+  protected function getSearchCriteria(CDbCriteria $criteria)
   {
-    $criteria = new CDbCriteria();
-
     $criteria->compare('visible', $this->visible);
     $criteria->compare('username', $this->username, true);
 

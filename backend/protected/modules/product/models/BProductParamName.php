@@ -128,6 +128,11 @@ class BProductParamName extends BActiveRecord
    */
   public function search()
   {
+    if( !isset($criteria) )
+      $criteria = new CDbCriteria();
+
+    $this->onBeforeSearch(new CEvent($this, array('criteria' => $criteria)));
+
     $criteria           = new CDbCriteria;
     $criteria->together = true;
     $criteria->with     = array('assignment', 'variants');

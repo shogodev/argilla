@@ -35,17 +35,15 @@ class BDirPayment extends BActiveRecord
   }
 
   /**
-   * @return SActiveDataProvider
+   * @param CDbCriteria $criteria
+   *
+   * @return CDbCriteria
    */
-  public function search()
+  protected function getSearchCriteria(CDbCriteria $criteria)
   {
-    $criteria = new CDbCriteria();
-
     $criteria->compare('name', $this->name, true);
     $criteria->compare('visible', $this->visible);
 
-    return new BActiveDataProvider($this, array(
-      'criteria' => $criteria,
-    ));
+    return $criteria;
   }
 }

@@ -1,15 +1,18 @@
 <?php
-/* @var BNewsSectionController $this */
-/* @var BNewsSection $model */
+/**
+ * @var BNewsSection $model
+ * @var BNewsSectionController $this
+ * @var BActiveDataProvider $dataProvider
+ */
 ?>
 
 <?php Yii::app()->breadcrumbs->show();?>
 
 <?php $this->widget('BGridView', array(
   'filter' => $model,
-  'dataProvider' => $model->search(),
+  'dataProvider' => $dataProvider,
   'columns' => array(
-    array('name' => 'id', 'htmlOptions' => array('class' => 'center span1'), 'filter' => false),
+    array('name' => 'id', 'class' => 'BPkColumn'),
     array('name' => 'position', 'htmlOptions' => array('class' => 'span1'), 'class' => 'OnFlyEditField', 'filter' => false),
     array('name' => 'name', 'htmlOptions' => array()),
     array('name' => 'notice', 'type' => 'html', 'htmlOptions' => array(), 'filter' => false),

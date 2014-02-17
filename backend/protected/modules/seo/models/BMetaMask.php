@@ -33,16 +33,6 @@ class BMetaMask extends BActiveRecord
     return parent::beforeSave();
   }
 
-  public function getSearchCriteria()
-  {
-    $criteria = new CDbCriteria;
-
-    $criteria->compare('url_mask', $this->url_mask, true);
-    $criteria->compare('visible', $this->visible);
-
-    return $criteria;
-  }
-
   public function attributeLabels()
   {
     return CMap::mergeArray(parent::attributeLabels(), array(
@@ -51,6 +41,18 @@ class BMetaMask extends BActiveRecord
     ));
   }
 
+  /**
+   * @param CDbCriteria $criteria
+   *
+   * @return CDbCriteria
+   */
+  protected function getSearchCriteria(CDbCriteria $criteria)
+  {
+    $criteria->compare('url_mask', $this->url_mask, true);
+    $criteria->compare('visible', $this->visible);
+
+    return $criteria;
+  }
 
   protected function cutDomain($url)
   {

@@ -1,8 +1,5 @@
 <?php
 /**
- * User: Nikita Melnikov <melnikov@shogo.ru>
- * Date: 1/6/13
- *
  * @var BCommentController $this
  * @var BComment $model
  * @var BActiveDataProvider $dataProvider
@@ -13,7 +10,7 @@
 
 <?php $this->widget('BGridView', array(
   'filter' => $model,
-  'dataProvider' => $model->search(),
+  'dataProvider' => $dataProvider,
   'columns' => array(
     array('name' => 'id', 'htmlOptions' => array('class' => 'center span1'), 'filter' => false),
     array(

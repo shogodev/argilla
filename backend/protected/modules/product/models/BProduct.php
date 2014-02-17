@@ -128,32 +128,8 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
   {
     return array(
       'main' => 'Основное',
+      'gallery' => 'Галерея'
     );
-  }
-
-  public function getSearchCriteria()
-  {
-    $criteria           = new CDbCriteria;
-    $criteria->together = true;
-    $criteria->distinct = true;
-
-    $criteria->with = array('assignment' => [
-      'select' => false,
-    ]);
-
-    $criteria->compare('position', $this->position);
-    $criteria->compare('t.visible', $this->visible);
-    $criteria->compare('discount', $this->discount);
-    $criteria->compare('spec', $this->spec);
-    $criteria->compare('novelty', $this->novelty);
-    $criteria->compare('main', $this->main);
-
-    $criteria->compare('name', $this->name, true);
-
-    foreach(BProductAssignment::model()->getFields() as $key => $field)
-      $criteria->compare('assignment.'.$key, '='.$this->$key);
-
-    return $criteria;
   }
 
   public function getParameterVariants($key)
@@ -181,5 +157,33 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
   public function getFrontendModelName()
   {
     return 'Product';
+  }
+
+  /**
+   * @param CDbCriteria $criteria
+   *
+   * @return CDbCriteria
+   */
+  protected function getSearchCriteria(CDbCriteria $criteria)
+  {
+    $criteria->together = true;
+    $criteria->distinct = true;
+
+    $criteria->with = array('assignment' => [
+      'select' => false,
+    ]);
+
+    $criteria->compare('position', $this->position);
+    $criteria->compare('t.visible', $this->visible);
+    $criteria->compare('spec', $this->spec);
+    $criteria->compare('novelty', $this->novelty);
+    $criteria->compare('main', $this->main);
+
+    $criteria->compare('name', $this->name, true);
+
+    foreach(BProductAssignment::model()->getFields() as $key => $field)
+      $criteria->compare('assignment.'.$key, '='.$this->$key);
+
+    return $criteria;
   }
 }

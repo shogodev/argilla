@@ -52,11 +52,11 @@ class BInfoController extends BController
 
   public function actionList()
   {
-    $dataProvider = new BActiveDataProvider($this->modelClass);
+    $model = $this->createFilterModel();
 
     $this->render('list', array(
-      'model' => $this->createFilterModel(),
-      'dataProvider' => $dataProvider,
+      'model' => $model,
+      'dataProvider' => $model->search(),
     ));
   }
 
