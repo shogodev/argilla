@@ -85,10 +85,13 @@ class BProductStructure extends BActiveRecord
     $builder = new CDbCommandBuilder(Yii::app()->db->getSchema());
     $ids = $builder->createFindCommand($this->assignmentTable, $criteria)->queryColumn();
 
-    $criteria = new CDbCriteria();
-    $criteria->addInCondition('id', $ids);
-    $command = $builder->createUpdateCommand($this->assignmentTable, array('visible' => 1), $criteria);
-    $command->query();
+    if( !empty($ids) )
+    {
+      $criteria = new CDbCriteria();
+      $criteria->addInCondition('id', $ids);
+      $command = $builder->createUpdateCommand($this->assignmentTable, array('visible' => 1), $criteria);
+      $command->query();
+    }
   }
 
   /**

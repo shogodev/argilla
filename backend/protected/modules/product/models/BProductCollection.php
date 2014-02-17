@@ -37,6 +37,6 @@ class BProductCollection extends BProductStructure
   public function afterDelete()
   {
     BProductTreeAssignment::assignToModel($this, 'category')->delete();
-    return parent::afterDelete();
+    parent::afterDelete();
   }
 }

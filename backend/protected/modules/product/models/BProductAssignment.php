@@ -205,7 +205,7 @@ class BProductAssignment extends BActiveRecord
 
       if( !($model instanceof BProductStructure) )
       {
-        throw new CException('Model '.$model.' must implement BProductStructure class');
+        throw new CException('Model '.get_class($model).' must implement BProductStructure class');
       }
 
       if( $this->{$row} && $model = $model->findByPk($this->{$row}) )
