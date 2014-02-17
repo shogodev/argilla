@@ -49,6 +49,15 @@ class BPkColumn extends BDataColumn
     parent::init();
   }
 
+  public function renderFilterCell()
+  {
+    if( $this->popup && $this->filter !== false )
+    {
+      echo CHtml::activeLabel($this->grid->filter, 'Привязанные', array('id' => false));
+      echo CHtml::activeDropDownList($this->grid->filter, 'associated', CHtml::listData($this->grid->filter->yesNoList(), 'id', 'name'), array('id' => false, 'prompt' => ''));
+    }
+  }
+
   protected function renderDataCellContent($row, $data)
   {
     if( !$this->popup )

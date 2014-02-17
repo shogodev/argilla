@@ -97,4 +97,19 @@ class BAssociation extends BActiveRecord
 
     return $this->count($criteria) ? true : false;
   }
+
+  public function getAssociatedKeys($data = null)
+  {
+    if( !isset($data) )
+    {
+      $data = Arr::extract($_GET, array('src', 'dst', 'srcId'));
+    }
+
+    if( isset($data['srcId']) )
+    {
+      $data['src_id'] = Arr::cut($data, 'srcId');
+    }
+
+    return CHtml::listData(BAssociation::model()->findAllByAttributes($data), 'dst_id', 'dst_id');
+  }
 }
