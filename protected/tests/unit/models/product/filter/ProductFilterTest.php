@@ -874,9 +874,9 @@ $this->assertTrue($this->fth->checkFilterForData(
       ), false
     );
 
-    $element = $productFilter->elements[$elementId];
-
-    $this->assertInstanceOf('ProductFilterElement'.Utils::ucfirst($type),  $element);
+    $element = $productFilter->getElementByKey($elementId);
+    
+    $this->assertInstanceOf('ProductFilterElement'.Utils::ucfirst($type), $element);
     $this->assertEquals($label, $element->label);
 
     foreach($modelForItemLabels as $section)
