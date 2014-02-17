@@ -42,7 +42,7 @@ class ProductParameterName extends FActiveRecord
   /**
    * @var ProductParameterVariant[]
    */
-  protected $values = array();
+  public $values = array();
 
   /**
    * @var CDbCriteria $groupCriteria
@@ -119,16 +119,16 @@ class ProductParameterName extends FActiveRecord
     $groupCriteria->compare('parent', $this->getRootId());
     $groupCriteria->select = 'id';
     $assignmentTable = ProductParameterAssignment::model()->tableName();
-    $groupCriteria->join   = 'LEFT OUTER JOIN '.$assignmentTable.' AS assignment ON assignment.param_id = t.id';
+    $groupCriteria->join = 'LEFT OUTER JOIN '.$assignmentTable.' AS assignment ON assignment.param_id = t.id';
 
     $builder = new CDbCommandBuilder(Yii::app()->db->getSchema());
     $command = $builder->createFindCommand($this->tableName(), $groupCriteria);
 
-    $parameterNames  = array();
+    $parameterNames = array();
     if( $groupProductParameterNameIds = $command->queryColumn() )
     {
-      $criteria = !is_null($criteria) ? $criteria : new CDbCriteria();
-      $criteria->with = CMap::mergeArray($criteria->with,  array('group'));
+      $criteria = isset($criteria) ? $criteria : new CDbCriteria();
+      $criteria->with = CMap::mergeArray($criteria->with, array('group'));
       $criteria->addInCondition('t.parent', $groupProductParameterNameIds);
 
       $parameterNames = $this->findAll($criteria);
@@ -257,7 +257,8 @@ class ProductParameterName extends FActiveRecord
    */
   public function getGroupKey()
   {
-    return $this->group->key;
+    $group = $this->group;
+    return $group ? $this->group->key : null;
   }
 
   /**

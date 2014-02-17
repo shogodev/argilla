@@ -192,24 +192,22 @@ class ProductList extends CComponent
     {
       $this->setImages();
       $this->setParameters();
+      $this->setAssignments();
     }
   }
 
   protected function setImages()
   {
-    /**
-     * @var $products Product[]
-     */
-    $products = $this->dataProvider->getData();
-    $criteria = new CDbCriteria();
-    $criteria->addInCondition('parent', $this->dataProvider->getKeys());
-    $productImages = ProductImage::model()->findAll($criteria);
+    $productImages = $this->findRecords('parent', 'ProductImage');
 
     $images = array();
     foreach($productImages as $image)
       $images[$image['parent']][$image['type']][] = $image;
 
-    foreach($products as $product)
+    /**
+     * @var $product Product
+     */
+    foreach($this->dataProvider->getData() as $product)
       if( isset($images[$product->id]) )
         foreach($images[$product->id] as $type => $imgs)
           $product->setImages($imgs, $type);
@@ -238,37 +236,98 @@ class ProductList extends CComponent
     ProductParameter::model()->setParameterValues($parameters);
   }
 
-  protected function setRelations($relationName, $sortFunction = null)
+  protected function setAssignments()
   {
-    $p = new Product();
-    $md = $p->getMetaData();
-    $relation = $md->relations[$relationName];
-    $className = $relation->className;
-
-    $criteria = new CDbCriteria();
+    $assignments = array('category', 'type');
+    $criteria = new CDbCriteria(array('select' => 't.product_id'));
     $criteria->addInCondition('product_id', $this->dataProvider->getKeys());
-    $relatedModels = $className::model()->findAll($criteria);
 
-    $models = array();
-    foreach($relatedModels as $model)
+    $productAssignments = ProductAssignment::model()->getAssignments($criteria);
+    ProductAssignment::model()->setAssignments(null);
+
+    foreach($assignments as $assignment)
     {
-      $models[$model['product_id']][] = $model;
+      $this->setAssignment($productAssignments, $assignment);
+    }
+  }
+
+  protected function setAssignment($productAssignments, $modelName)
+  {
+    $models = array();
+    $assignments = CHtml::listData($productAssignments, 'product_id', $modelName.'_id');
+    $keys = array_unique(array_values($assignments));
+    $records = $this->findRecords('id', 'Product'.ucfirst($modelName), $keys, new CDbCriteria(array('index' => 'id')));
+
+    foreach($assignments as $product => $assignment)
+    {
+      $models[$product] = Arr::get($records, $assignment, null);
     }
 
+    $this->setRecords($modelName, $models);
+  }
+
+  protected function setRelations($relationName)
+  {
+    $models = array();
+    $relation = Product::model()->getMetaData()->relations[$relationName];
+    $records = $this->findRecords('product_id', $relation->className);
+
+    foreach($records as $record)
+    {
+      if( get_class($relation) === 'CHasOneRelation' )
+      {
+        $models[$record['product_id']] = $record;
+      }
+      else
+      {
+        $models[$record['product_id']][] = $record;
+      }
+    }
+
+    $this->setRecords($relationName, $models);
+  }
+
+  /**
+   * @param string $fk
+   * @param string $className
+   * @param array $keys
+   * @param CDbCriteria $criteria
+   *
+   * @return FActiveRecord[]
+   */
+  protected function findRecords($fk, $className, array $keys = null, CDbCriteria $criteria = null)
+  {
+    if( !isset($criteria) )
+    {
+      $criteria = new CDbCriteria();
+    }
+
+    $criteria->addInCondition($fk, isset($keys) ? $keys : $this->dataProvider->getKeys());
+    return $className::model()->findAll($criteria);
+  }
+
+  /**
+   * @param string $modelName
+   * @param FActiveRecord[] $models
+   */
+  protected function setRecords($modelName, array $models)
+  {
     /**
      * @var $product Product
      */
     foreach($this->dataProvider->getData() as $product)
     {
-      if( !empty($models[$product->id]) )
-      {
-        if( is_callable($sortFunction) )
-          usort($models[$product->id], $sortFunction);
+      $records = Arr::get($models, $product->id, array(null));
 
-        foreach($models[$product->id] as $model)
-        {
-          $product->addRelatedRecord($relationName, $model, true);
-        }
+      if( is_object($records) )
+      {
+        $useIndex = false;
+        $records = array($records);
+      }
+
+      foreach($records as $model)
+      {
+        $product->addRelatedRecord($modelName, $model, isset($useIndex) ? $useIndex : true);
       }
     }
   }

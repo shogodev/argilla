@@ -38,6 +38,7 @@ class BSettings extends BActiveRecord
   protected function getSearchCriteria(CDbCriteria $criteria)
   {
     $criteria->compare('param', $this->param, true);
+    $criteria->compare('value', $this->value, true);
 
     return $criteria;
   }
