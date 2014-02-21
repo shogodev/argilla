@@ -99,6 +99,7 @@ class FController extends CController
   public function createUrl($route, $params = array(), $ampersand = '&')
   {
     $absPattern = '{HTTP_HOST}';
+    $externalUrl = '{EXTERNAL_URL:';
 
     if( isset($params['url']) && strpos($params['url'], $absPattern) !== false )
     {
@@ -107,8 +108,13 @@ class FController extends CController
     }
     else
     {
-      $url = RedirectedUrlCreator::init(parent::createUrl($route, $params, $ampersand))->create();
-      $url = parent::createUrl($url);
+      if(isset($params['url']) && strpos($params['url'], $externalUrl) !== false)
+        $url = str_replace($externalUrl, '', $params['url']);
+      else
+      {
+        $url = RedirectedUrlCreator::init(parent::createUrl($route, $params, $ampersand))->create();
+        $url = parent::createUrl($url);
+      }
     }
 
     return $this->normalizeUrl($url);
