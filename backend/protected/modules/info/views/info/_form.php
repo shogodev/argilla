@@ -35,6 +35,18 @@ $form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId())); ?
   <?php echo $form->textFieldRow($model, 'name'); ?>
 
   <?php echo $form->textFieldRow($model, 'url', array('rel' => 'extender', 'data-extender' => 'translit', 'data-source' => 'input[name*="name"]')); ?>
+  <tr>
+    <td colspan="2">
+      <div style="padding-left: 50px; font-size: 10px">
+        <p>Допустимые значения переменных:</p>
+        <p><b>{HTTP_HOST}</b> - используется при построении ссылки на текущий доменный адрес.<br>
+          Пример: <b>{HTTP_HOST}/faq/</b> . Получаем: <b><?php echo Yii::app()->getRequest()->getHostInfo()?>/faq/ </b><br>
+          <b>{EXTERNAL_URL:<i>some_url</i></b> - используется для построения ссылок на внешние ресурсы<br>
+          Пример: <b>{EXTERNAL_URL:http://www.shogo.ru</b>. Получаем открытие внешнего ресурса <b>http://www.shogo.ru</b>
+        </p>
+      </div>
+    </td>
+  </tr>
 
   <?php echo $form->ckeditorRow($model, 'notice'); ?>
 
