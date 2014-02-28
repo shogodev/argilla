@@ -13,10 +13,6 @@ $config = array_replace_recursive(
         'class' => 'SFixtureManager',
       ),
     ),
-    'aliases' => array(
-
-      'bootstrap' => 'ext.bootstrap'
-    ),
     'params' => array(
       'mode' => 'test'
     )

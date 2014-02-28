@@ -5,9 +5,9 @@
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
- * @package frontend.controllers.behaviors
+ * @package frontend.share.behaviors
  */
-class CommonDataBehavior extends CBehavior
+class CommonBehavior extends CBehavior
 {
   /**
    * @var TextBlock[] $textBlocks
@@ -17,6 +17,20 @@ class CommonDataBehavior extends CBehavior
   private $contacts;
 
   private $settings;
+
+  public function attach($owner)
+  {
+    parent::attach($owner);
+
+    Yii::import('frontend.components.ar.FActiveRecord');
+    Yii::import('frontend.components.image.FSingleImage');
+    Yii::import('frontend.components.image.ImageInterface');
+
+    Yii::import('frontend.models.TextBlock');
+    Yii::import('frontend.models.contact.*');
+    Yii::import('frontend.models.Settings');
+  }
+
 
   /**
    * @param $key
@@ -83,27 +97,6 @@ class CommonDataBehavior extends CBehavior
     }
 
     return $this->textBlock($location)->content;
-  }
-
-  /**
-   * @return Counter[]
-   */
-  public function getCounters()
-  {
-    $criteria = new CDbCriteria();
-
-    if( !($this->owner->action->id === $this->owner->id && $this->owner->id === 'index') )
-      $criteria->compare('main', '<>1');
-
-    return Counter::model()->findAll($criteria);
-  }
-
-  public function getCopyrights($key = 'copyright')
-  {
-    $url        = Yii::app()->request->requestUri;
-    $copyrights = LinkBlock::model()->getLinks($key, $url);
-
-    return $copyrights;
   }
 
   public function getContacts()

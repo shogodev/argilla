@@ -5,6 +5,8 @@
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
  * @package backend.controllers
+ *
+ * @mixin CommonBehavior
  */
 abstract class BController extends CController
 {
@@ -24,6 +26,13 @@ abstract class BController extends CController
   public $modelClass = 'BActiveRecord';
 
   public $popup = false;
+
+  public function behaviors()
+  {
+    return array(
+      'common' => array('class' => 'CommonBehavior'),
+    );
+  }
 
   public function getViewPath()
   {
