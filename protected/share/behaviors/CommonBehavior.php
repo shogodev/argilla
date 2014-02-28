@@ -69,7 +69,7 @@ class CommonBehavior extends CBehavior
     else
       $location = Utils::translite($name);
 
-    if( $this->textBlock($location) === false )
+    if( !$this->textBlock($location) )
     {
       $textBlock = new TextBlock();
       $textBlock->attributes = array(
