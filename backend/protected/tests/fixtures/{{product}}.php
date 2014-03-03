@@ -23,4 +23,7 @@ return [
 
   'copier1' => ['id' => '14', 'name' => 'Новый товар14', 'url' => 'new_product14'],
   'copier2' => ['id' => '15', 'name' => 'Новый товар15', 'url' => 'new_product15'],
+
+  'structure1' => ['id' => '16', 'name' => 'Новый товар16', 'url' => 'new_product16'],
+  'structure2' => ['id' => '17', 'name' => 'Новый товар17', 'url' => 'new_product17'],
 ];
