@@ -99,7 +99,8 @@ class BProductAssignment extends BActiveRecord
 
   public function saveAssignments($product, $assignments)
   {
-    $this->deleteAssignments($product);
+    $savedIds = array();
+
     $arrays = array();
 
     foreach($assignments as $key => $item)
@@ -114,35 +115,26 @@ class BProductAssignment extends BActiveRecord
 
         for($i = 0; $i < $count; $i++)
         {
-          $model = new BProductAssignment();
-          $model->product_id = $product->id;
-
+          $attributes = array('product_id' => $product->id);
           foreach($assignments as $param => $value)
           {
             $value = is_array($value) ? current($assignments[$paramKey]) : $value;
-            $model->setAttribute($param, $value);
+            $attributes[$param] = $value;
           }
-          $model->save();
+          $model = $this->saveAssignment($product, $assignments);
+          $savedIds[] = $model->id;
           next($assignments[$paramKey]);
         }
       }
     }
     else
     {
-      $model = new BProductAssignment();
-      $model->setAttributes($assignments, false);
-      $model->product_id = $product->id;
-      if( !$model->save() )
-      {
-        throw new CHttpException(500, 'Не могу сохранить модель привязок продукта');
-      }
+      $model = $this->saveAssignment($product, $assignments);
+      $savedIds[] = $model->id;
     }
-  }
 
-  public function deleteAssignments($product)
-  {
-    BProductAssignment::model()->deleteAllByAttributes(array('product_id' => $product->id));
-  }
+    $this->deleteAssignments($product, $savedIds);
+   }
 
   public function toProductAttribute($attribute)
   {
@@ -162,6 +154,34 @@ class BProductAssignment extends BActiveRecord
   public function getTypes($criteria = null)
   {
     return BProductType::model()->findAll($criteria);
+  }
+
+  /**
+   * @param BProduct $product
+   * @param array $attributes
+   * @return BProductAssignment|CActiveRecord
+   * @throws CHttpException
+   */
+  protected function saveAssignment(BProduct $product, array $attributes)
+  {
+    $attributes['product_id'] = $product->id;
+
+    if( !$model = $this->findByAttributes($attributes) )
+      $model = new BProductAssignment();
+
+    $model->setAttributes($attributes, false);
+    if( !$model->save() )
+      throw new CHttpException(500, 'Не удается сохранить модель привязок продукта');
+
+    return $model;
+  }
+
+  protected function deleteAssignments($product, array $savedIds)
+  {
+    $criteria = new CDbCriteria();
+    $criteria->compare('product_id', $product->id);
+    $criteria->addNotInCondition('id', $savedIds);
+    $this->deleteAll($criteria);
   }
 
   /**
