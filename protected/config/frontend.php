@@ -6,17 +6,15 @@ defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', true);
 $frontend = realpath(__DIR__.'/..');
 $backend = realpath(__DIR__.'/../../backend/protected');
 
-return array_replace_recursive(array(
+return array_merge_recursive(array(
   'basePath' => $frontend,
   'name' => 'argilla.ru',
   'defaultController' => 'index',
-  'preload'  => array('log', 'seoRedirect'),
+  'preload'  => array('seoRedirect'),
 
   'aliases' => array(
     'backend' => $backend,
     'frontend' => $frontend,
-    'nestedset' => 'ext.nested-set-behavior',
-    'share' => 'frontend.share',
   ),
 
   'import' => array(
@@ -50,10 +48,6 @@ return array_replace_recursive(array(
     'frontend.controllers.*',
     'frontend.controllers.behaviors.*',
     'frontend.widgets.*',
-
-    'share.*',
-    'share.validators.*',
-    'share.formatters.*',
   ),
 
   'modules' => array(),
@@ -78,10 +72,6 @@ return array_replace_recursive(array(
     'mainscript' => array(
       'class' => 'ext.mainscript.ScriptsFactory',
       'debug' => YII_DEBUG,
-    ),
-
-    'compare' => array(
-      'class' => 'frontend.models.ProductCompare',
     ),
 
     'urlCollection' => array(
@@ -128,23 +118,9 @@ return array_replace_recursive(array(
       ),
     ),
 
-    'email' => array(
-      'class'    => 'ext.email.Email',
-      'delivery' => 'php',
-    ),
-
-    'notification' => array(
-      'class' => 'share.SNotification',
-    ),
-
     'seoRedirect' => array(
       'class' => 'RedirectHelper',
       'cacheUrls' => false,
-    ),
-
-    'phpThumb' => array(
-      'class' => 'ext.phpthumb.EPhpThumb',
-      'options' => array()
     ),
 
     'cache' => array(

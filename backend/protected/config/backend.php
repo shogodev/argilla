@@ -6,7 +6,7 @@ defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', true);
 $backend = realpath(__DIR__.'/..');
 $frontend = realpath(__DIR__.'/../../../protected');
 
-return array_replace_recursive(array(
+return array_merge_recursive(array(
   'name' => 'backend',
   'basePath' => $backend,
   'controllerPath' => $backend.'/controllers',
@@ -17,15 +17,8 @@ return array_replace_recursive(array(
   'aliases' => array(
     'backend' => $backend,
     'frontend' => $frontend,
-    'ext' => 'frontend.extensions',
-    'nestedset' => 'ext.nested-set-behavior',
-    'upload' => 'ext.upload',
-    'share' => 'frontend.share',
-    'bootstrap' => 'ext.bootstrap',
-  ),
-
-  'preload' => array(
-    'log',
+    'upload' => 'frontend.extensions.upload',
+    'bootstrap' => 'frontend.extensions.bootstrap',
   ),
 
   'import' => array(
@@ -44,10 +37,6 @@ return array_replace_recursive(array(
     'backend.modules.rbac.components.*',
     'backend.modules.rbac.models.*',
     'backend.modules.menu.components.*',
-
-    'share.*',
-    'share.validators.*',
-    'share.formatters.*',
 
     'ext.*',
     'ext.jtogglecolumn.*',
@@ -128,11 +117,6 @@ return array_replace_recursive(array(
       'class' => 'BBreadcrumbsManager',
     ),
 
-    'phpThumb' => array(
-      'class' => 'ext.phpthumb.EPhpThumb',
-      'options' => array()
-    ),
-
     'errorHandler' => array(
       'errorAction' => 'base/error',
     ),
@@ -150,15 +134,6 @@ return array_replace_recursive(array(
           'ipFilters' => array('192.168.*'),
         ),
       ),
-    ),
-
-    'email' => array(
-      'class'    => 'ext.email.Email',
-      'delivery' => 'php',
-    ),
-
-    'notification' => array(
-      'class' => 'share.SNotification',
     ),
   ),
 
