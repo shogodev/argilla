@@ -6,7 +6,7 @@
  * @license http://argilla.ru/LICENSE
  * @package frontend.models.product
  *
- * @property string $id
+ * @property integer $id
  * @property string $param_id
  * @property string $name
  * @property string $position
@@ -22,6 +22,13 @@ class ProductParameterVariant extends FActiveRecord
     return '{{product_param_variant}}';
   }
 
+  public function defaultScope()
+  {
+    return array(
+      'order' => 'IF(position=0, 1, 0), position ASC, name'
+    );
+  }
+
   public function __toString()
   {
     return $this->name;
@@ -32,22 +39,37 @@ class ProductParameterVariant extends FActiveRecord
    */
   public function setVariants(array $parameterNames)
   {
-    $variants   = array();
     $variantIds = array();
-
     foreach($parameterNames as $name)
-    {
       $variantIds = CMap::mergeArray($variantIds, $name->getVariantKeys());
+
+    $variants = $this->findAllByAttributes(array('id' => $variantIds), new CDbCriteria(array('index' => 'id')));
+
+    foreach($parameterNames as $parameterName)
+    {
+      $parameterName->setVariants($variants);
+      $this->sortParameters($parameterName);
+    }
+  }
+
+  protected function sortParameters(ProductParameterName $parameterName)
+  {
+    $sortedParameters = array();
+
+    $sortedIndexes = array();
+    foreach($parameterName->values as $index => $variant)
+    {
+      if( isset($parameterName->parameters[$index]) )
+      {
+        $sortedParameters[$index] = $parameterName->parameters[$index];
+        $sortedIndexes[] = $index;
+      }
     }
 
-    foreach($this->findAllByPk($variantIds) as $variant)
-    {
-      $variants[$variant['id']] = $variant;
-    }
+    foreach($parameterName->parameters as $index => $parameter)
+      if( !in_array($index, $sortedIndexes) )
+        $sortedParameters[$index] = $parameterName->parameters[$index];
 
-    foreach($parameterNames as $parameter)
-    {
-      $parameter->setVariants($variants);
-    }
+    $parameterName->parameters = $sortedParameters;
   }
 }
