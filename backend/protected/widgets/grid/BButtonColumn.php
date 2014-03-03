@@ -14,7 +14,7 @@ class BButtonColumn extends TbButtonColumn
 
   public $header   = 'Действия';
 
-  protected function renderFilterCellContent()
+  public function renderFilterCell()
   {
     return;
   }

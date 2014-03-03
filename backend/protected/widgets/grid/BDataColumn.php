@@ -19,8 +19,8 @@ class BDataColumn extends TbDataColumn
   {
     if( $this->grid->filterPosition !== BGridView::FILTER_POS_SEPARATE )
       parent::renderFilterCell();
-
-    $this->renderFilterDivContent();
+    else
+      $this->renderFilterDivContent();
   }
 
   public function renderDataCell($row)
