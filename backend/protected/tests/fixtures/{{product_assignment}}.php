@@ -21,4 +21,8 @@ return [
 
   'asgn2' => array('product_id' => 14, 'section_id' => 333, 'type_id' => 1, 'category_id' => 1, 'collection_id' => 1),
   'asgn3' => array('product_id' => 15, 'section_id' => 444, 'type_id' => 1, 'category_id' => 1, 'collection_id' => 1),
+
+  'structure1' => array('product_id' => 16, 'section_id' => 5, 'type_id' => 5, 'category_id' => 0, 'collection_id' => 0, 'visible' => 0),
+  'structure2' => array('product_id' => 17, 'section_id' => 6, 'type_id' => 6, 'category_id' => 0, 'collection_id' => 0, 'visible' => 0),
+  'structure3' => array('product_id' => 18, 'section_id' => 7, 'type_id' => 7, 'category_id' => 0, 'collection_id' => 0, 'visible' => 0),
 ];

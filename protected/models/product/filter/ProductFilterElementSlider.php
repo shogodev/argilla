@@ -8,6 +8,10 @@
  */
 class ProductFilterElementSlider extends ProductFilterElementRange
 {
+  public $itemClass = 'ProductFilterElementItemSlider';
+
+  public $hiddenInputId = 'filter-price-input';
+
   public function __construct($parent)
   {
     if( isset($parent->state[ProductFilter::FILTER_PRICE]) )
@@ -21,7 +25,7 @@ class ProductFilterElementSlider extends ProductFilterElementRange
   public function render()
   {
     $value = $this->selected ? $this->selected : null;
-    echo CHtml::hiddenField($this->name, $value, array('id' => 'filter-price-input', 'data-value' => $value));
+    echo CHtml::hiddenField($this->name, $value, array('id' => $this->hiddenInputId, 'data-value' => $value));
   }
 
   public function getRanges()

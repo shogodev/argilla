@@ -56,48 +56,44 @@ class BProductStructure extends BActiveRecord
     parent::afterSave();
   }
 
-  protected function updateVisibility()
+  private function updateVisibility()
   {
     $pk = $this->getPrimaryKey();
     !empty($this->visible) ? $this->setVisible($pk) : $this->unsetVisible($pk);
   }
 
   /**
-   * @param $pk
+   * @param integer $pk
    */
-  protected function setVisible($pk)
+  private function setVisible($pk)
   {
-    $criteria = new CDbCriteria();
-    $criteria->select = 't.id';
-    $criteria->distinct = true;
-    $criteria->compare($this->getRowName(get_called_class()), $pk);
+    $builder = new CDbCommandBuilder(Yii::app()->db->getSchema());
+    $command = $builder->createFindCommand($this->assignmentTable, $this->buildVisibleCriteria($pk));
+    $values = array();
 
-    foreach(array_keys($this->assignmentModel->getFields()) as $row)
+    foreach($command->queryAll() as $row)
     {
-      $class = $this->getModelName($row);
-      /**
-       * @var BActiveRecord $model
-       */
-      $model = new $class;
-      $criteria->join .= 'JOIN '.$model->tableName().' AS '.$class.' ON t.'.$row.' = '.$class.'.id AND '.$class.'.visible=1 ';
+      $id = Arr::cut($row, 'id');
+
+      if( !in_array('0', $row, true) )
+      {
+        $values[] = $id;
+      }
     }
 
-    $builder = new CDbCommandBuilder(Yii::app()->db->getSchema());
-    $ids = $builder->createFindCommand($this->assignmentTable, $criteria)->queryColumn();
-
-    if( !empty($ids) )
+    if( !empty($values) )
     {
       $criteria = new CDbCriteria();
-      $criteria->addInCondition('id', $ids);
+      $criteria->addInCondition('id', $values);
       $command = $builder->createUpdateCommand($this->assignmentTable, array('visible' => 1), $criteria);
       $command->query();
     }
   }
 
   /**
-   * @param $pk
+   * @param integer $pk
    */
-  protected function unsetVisible($pk)
+  private function unsetVisible($pk)
   {
     $criteria = new CDbCriteria();
     $criteria->compare($this->getRowName(get_called_class()), $pk);
@@ -108,11 +104,39 @@ class BProductStructure extends BActiveRecord
   }
 
   /**
+   * @param $pk
+   *
+   * @return CDbCriteria
+   */
+  private function buildVisibleCriteria($pk)
+  {
+    $criteria = new CDbCriteria();
+    $criteria->select = array('t.id');
+    $criteria->distinct = true;
+    $criteria->compare($this->getRowName(get_called_class()), $pk);
+
+    foreach(array_keys($this->assignmentModel->getFields()) as $row)
+    {
+      $class = $this->getModelName($row);
+      /**
+       * @var BActiveRecord $model
+       */
+      $model = new $class;
+      $criteria->select[] = $class.'.visible AS '.$row.'_visible';
+      $criteria->join[] = 'LEFT OUTER JOIN '.$model->tableName().' AS '.$class.' ON t.'.$row.' = '.$class.'.id';
+    }
+
+    $criteria->join = implode(' ', $criteria->join);
+
+    return $criteria;
+  }
+
+  /**
    * @param $class
    *
    * @return string
    */
-  protected function getRowName($class)
+  private function getRowName($class)
   {
     return lcfirst(str_replace($this->classPrefix, '', $class)).'_id';
   }
@@ -122,7 +146,7 @@ class BProductStructure extends BActiveRecord
    *
    * @return string
    */
-  protected function getModelName($row)
+  private function getModelName($row)
   {
     return $this->classPrefix.ucfirst(str_replace('_id', '', $row));
   }

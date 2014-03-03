@@ -81,6 +81,7 @@ class YandexDataProvider
       'url'         => $this->getUrl($product),
       'categoryId'  => $product->type->id,
       'vendor'      => $product->category->name,
+      'vendorCode'  => $product->vendor_code,
       'model'       => XmlHelper::escape($product->name),
       'description' => XmlHelper::escape(strip_tags($product->content)),
       'picture'     => $this->getImage($product),
