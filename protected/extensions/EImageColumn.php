@@ -49,6 +49,11 @@ class EImageColumn extends CGridColumn
    */
   public $belowText = '';
 
+  public function renderFilterCell()
+  {
+    $this->renderFilterCellContent();
+  }
+
   /**
    * Renders the data cell content.
    *

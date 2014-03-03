@@ -62,7 +62,7 @@ class ImageGrid
   protected function buttonColumn()
   {
     $this->columns[] = array(
-      'class'           => 'bootstrap.widgets.TbButtonColumn',
+      'class'           => 'BButtonColumn',
       'template'        => '{delete}',
       'deleteButtonUrl' => function ($data){
         return Yii::app()->controller->createUrl('upload', array(

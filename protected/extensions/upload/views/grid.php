@@ -14,6 +14,7 @@ if( $this->multiple )
     'dataProvider'    => $this->model->getUploadedFiles(),
     'buttonsTemplate' => false,
     'columns'         => $this->gridClass->getColumns(),
+    'enableHistory'   => false,
   ));
 }
 else
@@ -32,6 +33,7 @@ else
                               td.find('.fileupload-files').show();
                               td.find('.fileupload-buttonbar').show();}}",
     'columns'         => $this->gridClass->getColumns(),
+    'enableHistory'   => false,
   ));
 }
 ?>
