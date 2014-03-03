@@ -25,6 +25,7 @@ return array_merge_recursive(array(
     'frontend.models.contact.*',
     'frontend.models.menu.*',
     'frontend.models.product.*',
+    'frontend.models.product.behaviors.*',
     'frontend.models.product.filter.*',
     'frontend.models.user.*',
     'frontend.models.info.*',

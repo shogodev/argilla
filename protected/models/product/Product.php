@@ -26,7 +26,7 @@
  *
  * @property ProductSection $section
  * @property ProductType $type
- * @property BProductCategory $category
+ * @property ProductCategory $category
  * @property ProductParameterName[] $parameters
  *
  * collectionElement behavior
@@ -34,6 +34,8 @@
  * @property integer $collectionIndex
  * @property integer $collectionAmount
  * @property integer $collectionItems
+ *
+ * @mixin ParametersBehavior
  */
 class Product extends FActiveRecord
 {
@@ -42,16 +44,14 @@ class Product extends FActiveRecord
    */
   protected $relatedProduct;
 
-  /**
-   * @var ProductParameterName[]
-   */
-  protected $parameters;
-
   protected $images;
 
   public function behaviors()
   {
-    return array('collectionElement' => array('class' => 'FCollectionElement'));
+    return array(
+      'collectionElement' => array('class' => 'FCollectionElement'),
+      'productParametersBehavior' => array('class' => 'ProductParametersBehavior'),
+    );
   }
 
   public function relations()
@@ -109,71 +109,13 @@ class Product extends FActiveRecord
   }
 
   /**
-   * @param null $key
-   * @param CDbCriteria $groupCriteria критерия группы параметров
-   * @param CDbCriteria $criteria критерия параметров
-   *
-   * @return ProductParameterName[]
-   */
-  public function getParameters($key = null, CDbCriteria $groupCriteria = null, CDbCriteria $criteria = null)
-  {
-    if( !isset($this->parameters) )
-    {
-      $productParamNames = ProductParameterName::model();
-      if( !is_null($groupCriteria) )
-        $productParamNames->setGroupCriteria($groupCriteria);
-
-      $productParamNames->addAssignmentCondition(array('section_id' => $this->section->id));
-
-      if( $criteria === null )
-        $criteria = new CDbCriteria();
-
-      $criteria->compare('t.product', '1');
-      $this->parameters = $productParamNames->search($criteria);
-
-      foreach($this->parameters as $parameter)
-        $parameter->setProductId($this->id);
-
-      ProductParameter::model()->setParameterValues($this->parameters);
-    }
-
-    return isset($key) ? Arr::filter($this->parameters, array('groupKey', 'key'), $key) : $this->parameters;
-  }
-
-  /**
-   * @param array $parameters
-   *
-   * @return $this
-   */
-  public function setParameters($parameters)
-  {
-    $this->parameters = $parameters;
-    return $this;
-  }
-
-  /**
-   * @param $parameter
-   */
-  public function addParameter($parameter)
-  {
-    $this->parameters[] = $parameter;
-  }
-
-  /**
    * @param string $type
    *
    * @return ProductImage
    */
   public function getImage($type = 'main')
   {
-    return ProductImage::model()->findByAttributes(
-      array(
-        'type' => $type,
-        'parent' => $this->id,
-      ),
-      array(
-        'order' => 'IF(position, position, 999999999)'
-      ));
+    return Arr::reset($this->getImages($type));
   }
 
   /**
@@ -220,51 +162,5 @@ class Product extends FActiveRecord
       $this->relatedProduct = $this->findAllThroughAssociation(new Product(), false);
 
     return $this->relatedProduct;
-  }
-
-  /**
-   * @return ProductParameterName[]
-   */
-  public function getProductOneParameters()
-  {
-    return $this->getParametersByAttributes(array('product' => 1));
-  }
-
-  /**
-   * @return ProductParameterName[]
-   */
-  public function getProductLineParameters()
-  {
-    return $this->getParametersByAttributes(array('section_list' => 1));
-  }
-
-  /**
-   * @return ProductParameterName[]
-   */
-  public function getProductTabletParameters()
-  {
-    return $this->getParametersByAttributes(array('section' => 1));
-  }
-
-  private function getParametersByAttributes(array $attributes, $notEmptyValue = true, $exceptionKeys = array())
-  {
-    $parameters = array();
-
-    foreach($this->getParameters() as $parameter)
-    {
-      if( $notEmptyValue && empty($parameter->value) )
-        continue;
-
-      if( in_array($parameter->key, $exceptionKeys) )
-        continue;
-
-      foreach($attributes as $attribute => $value)
-      {
-        if( isset($parameter->{$attribute}) && $parameter->{$attribute} == $value )
-          $parameters[] = $parameter;
-      }
-    }
-
-    return $parameters;
   }
 }
