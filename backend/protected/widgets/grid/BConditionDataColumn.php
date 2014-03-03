@@ -35,7 +35,7 @@ class BConditionDataColumn extends BDataColumn
     {
       foreach(array('name', 'header', 'htmlOptions') as $value)
       {
-        if( !isset($column[$value]) )
+        if( $this->issetProperty($column['class'], $value) && !isset($column[$value]) )
           $column[$value] = $this->{$value};
       }
 
@@ -56,5 +56,20 @@ class BConditionDataColumn extends BDataColumn
   {
     $index = $this->evaluateExpression($this->condition, array('row' => $row, 'data' => $data));
     $this->columns[$index]->renderDataCellContent($row, $data);
+  }
+
+  protected function issetProperty($className, $property)
+  {
+    try
+    {
+      $reflectionProperty = new ReflectionProperty($className, $property);
+      if ($reflectionProperty->isPublic() )
+        return true;
+    }
+    catch(ReflectionException $e)
+    {
+     return false;
+    }
+    return false;
   }
 }
