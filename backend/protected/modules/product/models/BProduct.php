@@ -186,4 +186,9 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
 
     return $criteria;
   }
+
+  protected function getSearchParams()
+  {
+    return array('sort' => array('defaultOrder' => 't.id ASC'));
+  }
 }
