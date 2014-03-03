@@ -87,7 +87,7 @@ class YandexMarketXml extends AbstractXml
       $offer->addAttribute('available', !empty($value['available']) ? 'true' : 'false');
       $offer->addAttribute('type', 'vendor.model');
 
-      foreach(array('url', 'price', 'currencyId', 'categoryId', 'picture', 'typePrefix', 'vendor', 'vendor_code', 'model', 'description', 'manufacturer_warranty') as $child)
+      foreach(array('url', 'price', 'currencyId', 'categoryId', 'picture', 'typePrefix', 'vendor', 'vendorCode', 'model', 'description', 'manufacturer_warranty') as $child)
       {
         if( !empty($value[$child]))
         {
