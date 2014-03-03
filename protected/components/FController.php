@@ -101,24 +101,6 @@ class FController extends CController
     }
   }
 
-  public function createUrl($route, $params = array(), $ampersand = '&')
-  {
-    $absPattern = '{HTTP_HOST}';
-
-    if( isset($params['url']) && strpos($params['url'], $absPattern) !== false )
-    {
-      $params['url'] = str_replace($absPattern, '', $params['url']);
-      $url           = Yii::app()->getRequest()->getHostInfo().$params['url'];
-    }
-    else
-    {
-      $url = RedirectedUrlCreator::init(parent::createUrl($route, $params, $ampersand))->create();
-      $url = parent::createUrl($url);
-    }
-
-    return $this->normalizeUrl($url);
-  }
-
   /**
    * @param string $modelClass
    * @param int $id

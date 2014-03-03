@@ -19,4 +19,6 @@ return array(
 
   'product19' => array('id' => 19, 'name' => 'Тесты для параметров 19', 'url' => 'product_19_url', 'visible' => 1, 'price' => 0),
   'product20' => array('id' => 20, 'name' => 'Тесты для параметров 20', 'url' => 'product_20_url', 'visible' => 1, 'price' => 0),
+
+  'product21' => array('id' => 21, 'name' => 'Тесты DBRule', 'url' => 'product_21_url', 'visible' => 1, 'price' => 0),
 );

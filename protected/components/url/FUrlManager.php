@@ -4,66 +4,48 @@
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
- * @package frontend.components
+ * @package frontend.components.url
  */
 class FUrlManager extends CUrlManager
 {
   public $urlRuleClass = 'FUrlRule';
 
-  public $isDefaultParamsUsed = false;
+  /**
+   * @var bool Использовались ли при построении ссылки параметры по-умолчанию
+   */
+  private $defaultParamsUsed = false;
 
   protected function createUrlRule($route, $pattern)
   {
-    if(is_array($route) && isset($route['class']))
+    if( is_array($route) && isset($route['class']) )
       return new $route['class']($route, $pattern);
     else
       return new $this->urlRuleClass($route, $pattern);
   }
-}
 
-class FUrlRule extends CUrlRule
-{
-  /**
-   * @param FUrlManager $manager
-   * @param CHttpRequest $request
-   * @param string $pathInfo
-   * @param string $rawPathInfo
-   *
-   * @return mixed
-   */
-  public function parseUrl($manager, $request, $pathInfo, $rawPathInfo)
+  public function getDefaultParamsUsed()
   {
-    $result = parent::parseUrl($manager, $request, $pathInfo, $rawPathInfo);
-
-    if( $result === false && !empty($this->defaultParams) )
-    {
-      // добавляем из маршрута параметры по-умолчанию и снова проверяем правило с ними
-      foreach($this->defaultParams as $param)
-        $pathInfo .= '/'.$param;
-
-      if( $result = parent::parseUrl($manager, $request, $pathInfo, $rawPathInfo) )
-      {
-        $manager->isDefaultParamsUsed = true;
-      }
-    }
-
-    return $result;
+    return $this->defaultParamsUsed;
   }
 
-  public function createUrl($manager, $route, $params, $ampersand)
+  public function setDefaultParamsUsed($value)
   {
-    // если в параметрах построения ссылки не заданы какие-то параметры по-умолчанию, то добавляем их
-    foreach($this->defaultParams as $key => $value)
-      if( !isset($params[$key]) )
-        $params[$key] = '';
+    $this->defaultParamsUsed = $value;
+  }
 
-    // временно скидываем параметры по-умолчанию, так как все недостающие уже перенесены в параметры построения
-    // и в родительском методе проверка на них не нужна
-    $defaultParams       = $this->defaultParams;
-    $this->defaultParams = array();
+  public function createUrl($route, $params = array(), $ampersand = '&')
+  {
+    $pattern = '{HTTP_HOST}';
 
-    $url                 = parent::createUrl($manager, $route, $params, $ampersand);
-    $this->defaultParams = $defaultParams;
+    if( isset($params['url']) && strpos($params['url'], $pattern) !== false )
+    {
+      $params['url'] = trim(str_replace($pattern, '', $params['url']), '/');
+      $url = Yii::app()->getRequest()->getHostInfo().parent::createUrl($route, $params, $ampersand);
+    }
+    else
+    {
+      $url = RedirectedUrlCreator::init(parent::createUrl($route, $params, $ampersand))->create();
+    }
 
     return $url;
   }
