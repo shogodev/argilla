@@ -92,7 +92,7 @@ class BMetaRoute extends BActiveRecord
     foreach($routes as $value)
     {
       $key = reset($value);
-      $data[$key]['id']   = $key;
+      $data[$key]['id']= $key;
       $data[$key]['name'] = $key;
     }
 
@@ -102,7 +102,7 @@ class BMetaRoute extends BActiveRecord
   public function getRoutesListOptions()
   {
     $existRoutes = array();
-    $data        = $this->findAll();
+    $data = $this->findAll();
 
     if( !empty($data) )
       foreach($data as $value)
@@ -117,26 +117,26 @@ class BMetaRoute extends BActiveRecord
    */
   public function getModelVariables()
   {
-    $variables = array();
-
     if( empty($this->models) )
       return array();
 
     $this->importFrontendModels();
+
+    $variables = array();
+
     $models = explode(',', $this->models);
-
-    foreach($models as $value)
+    foreach($models as $model)
     {
-      $model = $value::model();
-      if( is_a($model, 'CModel') )
-      {
-        $reflection = new ReflectionClass($model);
-        $parse_vars = $this->parsePhpDocs($reflection->getDocComment());
+      $reflection = new ReflectionClass($model);
 
-        foreach($parse_vars as $var)
+      if( $this->isModel($reflection) )
+      {
+        $findVariables = $this->parsePhpDocs($reflection->getDocComment());
+
+        foreach($findVariables as $var)
         {
-          $var_name = substr($var, 1);
-          $variables[$value][] = count($models) > 1 ? '{'.$value.':'.$var_name.'}' : '{'.$var_name.'}';
+          $variableName = substr($var, 1);
+          $variables[$model][] = count($models) > 1 ? '{'.$model.':'.$variableName.'}' : '{'.$variableName.'}';
         }
       }
     }
@@ -182,5 +182,17 @@ class BMetaRoute extends BActiveRecord
         Yii::import($import);
 
     Yii::import('frontend.components.ar.*');
+  }
+
+  private function isModel($reflection)
+  {
+    while( $parent = $reflection->getParentClass() )
+    {
+      if( $parent->name == 'CModel' )
+        return true;
+      $reflection = $parent;
+    }
+
+    return false;
   }
 }
