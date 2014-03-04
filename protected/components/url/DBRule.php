@@ -6,6 +6,8 @@
  * @license http://argilla.ru/LICENSE
  * @package frontend.components.url
  */
+Yii::import('CUrlManager', true);
+
 class DBRule extends CUrlRule
 {
   public $models = array();

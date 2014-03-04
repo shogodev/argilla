@@ -12,10 +12,6 @@ $config = array(
     'frontend' => $frontend,
   ),
 
-  'import' => array(
-    'frontend.extensions.api-docs.*'
-  ),
-
   'components' => array(
     'db' => CMap::mergeArray(require($frontend.'/config/db.php'),
       array()

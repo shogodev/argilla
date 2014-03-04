@@ -7,6 +7,7 @@
  * @package frontend.commands
  */
 Yii::import('frontend.share.helpers.Arr');
+Yii::import('frontend.extensions.api-docs.*');
 
 class ApiDocsCommand extends ApiCommand
 {
@@ -81,9 +82,21 @@ class ApiDocsCommand extends ApiCommand
 
     if( Arr::get($args, '0') == 'check' )
     {
+      $frontendFiles = CFileHelper::findFiles(Yii::getPathOfAlias('frontend'), $this->frontendOptions);
+      $backendFiles = CFileHelper::findFiles(Yii::getPathOfAlias('backend'), $this->backendOptions);
       $model = new ApiModel;
-      $model->check(CFileHelper::findFiles(Yii::getPathOfAlias('frontend'), $this->frontendOptions));
-      $model->check(CFileHelper::findFiles(Yii::getPathOfAlias('backend'), $this->backendOptions));
+
+      if( in_array(Arr::get($args, '1', 'param'), array('all', 'param')) )
+      {
+        $model->check($frontendFiles);
+        $model->check($backendFiles);
+      }
+
+      if( in_array(Arr::get($args, '1', 'pack'), array('all', 'pack')) )
+      {
+        $model->checkPackages($frontendFiles);
+        $model->checkPackages($backendFiles);
+      }
       exit();
     }
 
@@ -95,14 +108,20 @@ class ApiDocsCommand extends ApiCommand
     return <<<EOD
 USAGE
   createapidocs build
-  createapidocs check
+  createapidocs check [mode]
 
 DESCRIPTION
   This command generates API documentation for the Argilla.
 
 PARAMETERS
   * build: generate API documentation
-  * check: check PHPDoc for proper @param syntax
+  * check: check PHPDoc
+  * mode: 'param', 'pack' or 'all' (default).
+          'param' - check PHPDoc for proper @param syntax
+          'pack'  - check PHPDoc for proper @package syntax
+          'all' - check @param and @package
+  [mode]
+
 
 EXAMPLES
   * createapidocs build - builds api documentation in folder build/docs
@@ -135,5 +154,10 @@ EOD;
       foreach($config['import'] as  $file)
         Yii::import($file);
     }
+  }
+
+  protected function checkPackages($sourceFiles)
+  {
+
   }
 }

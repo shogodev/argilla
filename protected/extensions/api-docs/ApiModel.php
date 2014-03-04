@@ -27,6 +27,47 @@ class ApiModel
 		$this->processClasses();
 	}
 
+  /*
+   * Calls checkSource for every file in $sourceFiles
+   * @param array $sourceFiles array of source file path that we need to check
+   */
+  public function check($sourceFiles)
+  {
+    echo "Checking PHPDoc @param in source files ...\n";
+    foreach($sourceFiles as $no=>$sourceFile)
+    {
+      $this->checkSource($sourceFile);
+    }
+    echo "Done.\n\n";
+  }
+
+  public function checkPackages($sourceFiles)
+  {
+    echo "Checking PHPDoc @package in source files ...\n";
+    foreach($sourceFiles as $sourceFile)
+    {
+      $fileContent = file($sourceFile);
+
+      foreach($fileContent as $no=>$line)
+      {
+        if( preg_match('/^\s*\*\s*@package\s*([\w\.]+)/', $line, $matches, PREG_OFFSET_CAPTURE) )
+        {
+          if( Yii::getPathOfAlias($matches[1][0]) == dirname($sourceFile))
+            continue;
+
+          $docLine = $no + 1;
+          $docName = $matches[1][0];
+
+          echo "ERROR.............: Package path not valid!\n";
+          echo "Source file.......: ".$sourceFile."\n";
+          echo "Parameter line....: ".$docLine."\n";
+          echo "Parameter value....: ".$docName."\n\n";
+        }
+      }
+    }
+    echo "Done.\n\n";
+  }
+
 	protected function findClasses($sourceFiles)
 	{
 		$this->classes=array();
@@ -592,20 +633,6 @@ class ApiModel
 	}
 
 	/*
-	 * Calls checkSource for every file in $sourceFiles
-	 * @param array $sourceFiles array of source file path that we need to check
-	 */
-	public function check($sourceFiles)
-	{
-		echo "Checking PHPDoc @param in source files ...\n";
-		foreach($sourceFiles as $no=>$sourceFile)
-		{
-			$this->checkSource($sourceFile);
-		}
-		echo "Done.\n\n";
-	}
-
-	/*
 	 * Checks @param directives in a source file
 	 * Detects:
 	 *    missing @param directive (there is no @param directive for a function parameter)
@@ -709,7 +736,6 @@ class ApiModel
 			}
 		}
 	}
-
 }
 
 class BaseDoc
