@@ -43,6 +43,7 @@ return array_merge_recursive(array(
     'ext.wysiwyg.*',
     'ext.upload.components.*',
     'ext.upload.models.*',
+    'ext.upload.grid.*',
     'ext.upload.*',
     'ext.onflyedit.*',
   ),
