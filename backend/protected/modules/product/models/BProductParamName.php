@@ -124,9 +124,10 @@ class BProductParamName extends BActiveRecord
   }
 
   /**
-   * @return CActiveDataProvider
+   * @param CDbCriteria $criteria
+   * @return BActiveDataProvider|CArrayDataProvider
    */
-  public function search()
+  public function search(CDbCriteria $criteria = null)
   {
     if( !isset($criteria) )
       $criteria = new CDbCriteria();
