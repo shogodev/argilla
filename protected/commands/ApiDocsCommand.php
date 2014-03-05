@@ -119,7 +119,7 @@ PARAMETERS
   * mode: 'param', 'pack' or 'all' (default).
           'param' - check PHPDoc for proper @param syntax
           'pack'  - check PHPDoc for proper @package syntax
-          'all' - check @param and @package
+          'all'   - check @param and @package
   [mode]
 
 

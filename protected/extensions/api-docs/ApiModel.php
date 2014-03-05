@@ -175,6 +175,7 @@ class ApiModel
     if( preg_match_all('/^\s*@(author|link|copyright|license|package).*/m',$comment ,$matches) )
     {
       $comment = strtr(trim(preg_replace('/^\s*@(author|link|copyright|license|package).*$/m', '', $comment)),"\r",'');
+      $comment .= "\n";
       foreach($matches[0] as $meta)
         $comment .= $meta."\n";
     }
@@ -799,6 +800,7 @@ class ClassDoc extends BaseDoc
 
 	public $package;
 	public $version;
+  public $author;
 }
 
 class PropertyDoc extends BaseDoc
