@@ -74,11 +74,6 @@ return array_merge_recursive(array(
       'debug' => YII_DEBUG,
     ),
 
-    'urlCollection' => array(
-      'class' => 'frontend.components.UrlCollection',
-      'collectUrls' => false,
-    ),
-
     'user' => array(
       'class'          => 'FWebUser',
       'allowAutoLogin' => true,
@@ -116,11 +111,6 @@ return array_merge_recursive(array(
           'enabled'   => false,
         ),
       ),
-    ),
-
-    'seoRedirect' => array(
-      'class' => 'RedirectHelper',
-      'cacheUrls' => false,
     ),
 
     'cache' => array(

@@ -10,17 +10,24 @@ class FUrlManager extends CUrlManager
 {
   public $urlRuleClass = 'FUrlRule';
 
+  public $urlCreatorClass = 'ReplacedUrlCreator';
+
+  /**
+   * @var ReplacedUrlCreator
+   */
+  protected $urlCreator;
+
   /**
    * @var bool Использовались ли при построении ссылки параметры по-умолчанию
    */
   private $defaultParamsUsed = false;
 
-  protected function createUrlRule($route, $pattern)
+  public function init()
   {
-    if( is_array($route) && isset($route['class']) )
-      return new $route['class']($route, $pattern);
-    else
-      return new $this->urlRuleClass($route, $pattern);
+    parent::init();
+
+    $this->urlCreator = Yii::createComponent($this->urlCreatorClass);
+    $this->urlCreator->init();
   }
 
   public function getDefaultParamsUsed()
@@ -28,6 +35,9 @@ class FUrlManager extends CUrlManager
     return $this->defaultParamsUsed;
   }
 
+  /**
+   * @param $value
+   */
   public function setDefaultParamsUsed($value)
   {
     $this->defaultParamsUsed = $value;
@@ -35,18 +45,19 @@ class FUrlManager extends CUrlManager
 
   public function createUrl($route, $params = array(), $ampersand = '&')
   {
-    $pattern = '{HTTP_HOST}';
-
-    if( isset($params['url']) && strpos($params['url'], $pattern) !== false )
+    if( $this->hasStaticPatterns($params) )
     {
-      $params['url'] = trim(str_replace($pattern, '', $params['url']), '/');
-      $url = Yii::app()->getRequest()->getHostInfo().parent::createUrl($route, $params, $ampersand);
+      return $this->urlCreator->getStaticUrl($params['url']);
     }
     else
     {
-      $url = RedirectedUrlCreator::init(parent::createUrl($route, $params, $ampersand))->create();
+      $url = parent::createUrl($route, $params, $ampersand);
+      return $this->urlCreator->getUrl($url);
     }
+  }
 
-    return $url;
+  private function hasStaticPatterns(array $params)
+  {
+    return isset($params['url']) && $this->urlCreator->hasStaticPatterns($params['url']);
   }
 }
