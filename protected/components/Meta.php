@@ -205,6 +205,7 @@ class Meta extends CComponent
    */
   private function clear($string)
   {
+    $string = html_entity_decode($string);
     $string = $this->replaceCommands($string);
     $string = preg_replace(self::$VARS_PATTERN, '', $string);
     $string = preg_replace('/\s+/', ' ', $string);
