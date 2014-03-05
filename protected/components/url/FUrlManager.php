@@ -4,7 +4,7 @@
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
- * @package frontend.components
+ * @package frontend.components.url
  */
 class FUrlManager extends CUrlManager
 {

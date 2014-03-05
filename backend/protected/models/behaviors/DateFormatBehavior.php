@@ -4,14 +4,36 @@
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
- * @package backend.controllers.behaviors
+ * @package backend.models.behaviors
  *
- * @property string $attr
+ * Поведение преобразует формат даты.<br/>
+ * После чтения преобразует из YYYY-MM-DD в DD.MM.YYY<br/>
+ * Перед записью преобразует DD.MM.YYY в YYYY-MM-DD
+ *
+ * $attribute - атрибут поля даты<br/>
+ * $defaultNow - флаг может быть true или false, при пустом значении записывает в $attribute текущую дату. По умолчанию false
+ *
+ * Пример:
+ * <pre>
+ *  'dateFormatBehavior' => array(
+ *    'class' => 'DateFormatBehavior',
+ *    'attribute' => 'date',
+ *    'defaultNow' => true
+ *  )
+ * </pre>
+ *
+ * @property bool $defaultNow
  */
 class DateFormatBehavior extends CActiveRecordBehavior
 {
+  /**
+   * @var string атрибут поля даты
+   */
   public $attribute;
 
+  /**
+   * @var bool флаг может быть true или false, при пустом значении записывает в $attribute текущую дату. По умолчанию false
+   */
   public $defaultNow = false;
 
   public function attach($owner)

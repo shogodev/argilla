@@ -4,15 +4,15 @@
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
- * @package backend.modules.gallery
+ * @package backend.modules.gallery.models
+ *
+ * @method static BGallery model(string $class = __CLASS__)
  *
  * @property integer $id
  * @property string $name
  * @property string $url
  * @property string $type
  * @property integer $visible
- *
- * @method static BGallery model(string $class = __CLASS__)
  */
 class BGallery extends BActiveRecord
 {

@@ -6,14 +6,16 @@
  * @license http://argilla.ru/LICENSE
  * @package backend.models.behavios
  *
- * @property BActiveRecord $owner
  *
  * пример:
+ * <pre>
  *  'topRadioToggleBehavior' => array(
  *    'class' => 'RadioToggleBehavior',
  *     'conditionAttribute' => 'section_id',
  *     'toggleAttribute' => 'top'
  *   );
+ * </pre>
+ * @property BActiveRecord $owner
  */
 class RadioToggleBehavior extends CModelBehavior
 {

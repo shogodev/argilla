@@ -4,7 +4,7 @@
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
- * @package backend.widgets.form.BInputHorizontal
+ * @package backend.widgets.form
  */
 Yii::import('bootstrap.widgets.input.BootInput');
 

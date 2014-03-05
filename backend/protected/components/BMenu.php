@@ -5,14 +5,13 @@
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
  * @package backend.components
+ *
+ * Класс для работы с модулями бэкенда.
+ * Методы используются для построения меню групп, для построения меню отдельных групп
  */
 Yii::import('backend.modules.brac.components.AccessHelper');
 Yii::import('backend.modules.brac.models');
 
-/**
- * Класс для работы с модулями бэкенда.
- * Методы используются для построения меню групп, для построения меню отдельных групп
- */
 class BMenu extends CComponent
 {
   public $groupNames = array(

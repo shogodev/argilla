@@ -4,7 +4,9 @@
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
- * @package backend.modules.comment
+ * @package backend.modules.comment.models
+ *
+ * @method static BComment model(string $class = __CLASS__)
  *
  * @property integer $id
  * @property integer $user_id
@@ -12,8 +14,6 @@
  * @property integer $item
  * @property string $message
  * @property integer $visible
- *
- * @method static BComment model(string $class = __CLASS__)
  */
 class BComment extends BActiveRecord
 {

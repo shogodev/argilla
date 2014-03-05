@@ -4,15 +4,15 @@
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
- * @package backend.components.BBreadcrumbsManager
+ * @package backend.components
  *
- * Для использования необходимо в шаблоне вызвать метод show()
+ * Для использования необходимо в шаблоне вызвать метод show().
  * Хлебные крошки автоматически сформируются в зависимости от модуля, контроллера, действия и модели
  *
- * @example
- * <code>
+ * Пример:
+ * <pre>
  *   Yii::app()->breadcrumbs->show();
- * </code>
+ * </pre>
  */
 class BBreadcrumbsManager
 {

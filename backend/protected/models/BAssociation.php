@@ -4,7 +4,7 @@
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
- * @package backend.models.Association
+ * @package backend.models
  *
  * @method static BAssociation model(string $class = __CLASS__)
  *
