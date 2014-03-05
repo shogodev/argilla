@@ -800,7 +800,6 @@ class ClassDoc extends BaseDoc
 
 	public $package;
 	public $version;
-  public $author;
 }
 
 class PropertyDoc extends BaseDoc
