@@ -4,7 +4,7 @@
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
- * @package frontend.models.behaviors
+ * @package frontend.models.product.behaviors
  *
  * Поведение для работы с параметрами продукта
  *

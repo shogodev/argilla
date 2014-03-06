@@ -1,7 +1,10 @@
 <?php
 /**
- * User: tatarinov
- * Date: 02.10.12
+ * @author Alexey Tatarivov <tatarinov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2014 Shogo
+ * @license http://argilla.ru/LICENSE
+ * @package frontend.models.user
  *
  * @property string        $header
  * @property int           $id

@@ -1,14 +1,16 @@
 <?php
+/**
+ * @author Nikita Melnikov <melnikov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2014 Shogo
+ * @license http://argilla.ru/LICENSE
+ * @package frontend.commands
+ */
 
 Yii::import('ext.mainscript.*');
 Yii::import('ext.mainscript.helpers.*');
 Yii::import('ext.mainscript.creators.*');
 
-/**
- * @author Nikita Melnikov <melnikov@shogo.ru>
- * @date 26.09.12
- * @package mainscript
- */
 class ScriptsCommand extends CConsoleCommand
 {
   private $scriptCreator;
@@ -17,11 +19,10 @@ class ScriptsCommand extends CConsoleCommand
   /**
    * Создание на фронтенде склееного файла скриптов
    *
-   * @example
-   * <code>
+   * <pre>
    *  //console
    *  ./yiic scripts pack
-   * </code>
+   * </pre>
    *
    * @return void
    */

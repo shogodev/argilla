@@ -2,10 +2,11 @@
 /**
  * @author Sergey Glagolev <glagolev@shogo.ru>
  * @link https://github.com/shogodev/argilla/
- * @copyright Copyright &copy; 2003-2013 Shogo
+ * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
- * @package backend.widgets.form.BInput
+ * @package backend.widgets.form
  */
+
 Yii::import('bootstrap.widgets.input.TbInput');
 Yii::import('backend.modules.settings.models.BHint');
 

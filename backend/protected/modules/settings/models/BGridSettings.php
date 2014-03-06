@@ -2,13 +2,10 @@
 /**
  * @author Sergey Glagolev <glagolev@shogo.ru>
  * @link https://github.com/shogodev/argilla/
- * @copyright Copyright &copy; 2003-2013 Shogo
+ * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
- * @package backend.modules.settings
- */
-Yii::import('backend.modules.product.models.*');
-
-/**
+ * @package backend.modules.settings.models
+ *
  * @method static BGridSettings model(string $class = __CLASS__)
  * @method static BGridSettings visible()
  *
@@ -21,6 +18,9 @@ Yii::import('backend.modules.product.models.*');
  * @property integer $filter
  * @property integer $visible
  */
+
+Yii::import('backend.modules.product.models.*');
+
 class BGridSettings extends BActiveRecord
 {
   public $gridModel = 'BProduct';

@@ -1,12 +1,11 @@
 <?php
 /**
- * @author Nikita Melnikov <nickswdit@gmail.com>
- * @author Vladimir Utenkov <utenkov@shogo.ru>
+ * @author Nikita Melnikov <nickswdit@gmail.com>, Vladimir Utenkov <utenkov@shogo.ru>
  * @link https://github.com/shogodev/argilla/
- * @copyright Copyright &copy; 2003-2013 Shogo
+ * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
- */
-/**
+ * @package frontend.models.seo
+ *
  * Class Link Ссылка на ресурс по теме.
  *
  * @method static Link model(string $className = __CLASS__)

@@ -2,17 +2,16 @@
 /**
  * @author Nikita Melnikov <melnikov@shogo.ru>
  * @link https://github.com/shogodev/argilla/
- * @copyright Copyright &copy; 2003-2013 Shogo
+ * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
- * @package backend.widgets.BAutoBuildingActiveForm
+ * @package backend.widgets.form
  *
- * @example
- * <code>
- *   // In view
+ * Пример:
+ * <pre>
  *   $form = $this->beginWidget('BAutoBuildingActiveForm', array('id' => $model->getFormId()));
  *   $form->show($model);
  *   $this->endWidget();
- * </code>
+ * </pre>
  */
 class BAutoBuildingActiveForm extends BActiveForm
 {

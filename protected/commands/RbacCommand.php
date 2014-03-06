@@ -1,4 +1,11 @@
 <?php
+/**
+ * @author Nikita Melnikov <melnikov@shogo.ru>, Sergey Glagolev <glagolev@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2014 Shogo
+ * @license http://argilla.ru/LICENSE
+ * @package frontend.commands
+ */
 
 Yii::import('backend.components.*');
 Yii::import('backend.components.interfaces.*');
@@ -6,13 +13,6 @@ Yii::import('backend.components.auth.*');
 Yii::import('backend.components.db.*');
 Yii::import('backend.controllers.*');
 
-/**
- * @author Nikita Melnikov <melnikov@shogo.ru>
- * @link https://github.com/shogodev/argilla/
- * @copyright Copyright &copy; 2003-2013 Shogo
- * @license http://argilla.ru/LICENSE
- * @package frontend.commands
- */
 class RbacCommand extends CConsoleCommand
 {
   /**

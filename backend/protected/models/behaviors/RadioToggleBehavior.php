@@ -4,8 +4,9 @@
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
- * @package backend.models.behavios
+ * @package backend.models.behaviors
  *
+ * Поведение позволяет использовать JToggleColumn как radioButton, при выборе нового значения сбрасывает прежнее
  *
  * пример:
  * <pre>
@@ -15,6 +16,7 @@
  *     'toggleAttribute' => 'top'
  *   );
  * </pre>
+ *
  * @property BActiveRecord $owner
  */
 class RadioToggleBehavior extends CModelBehavior

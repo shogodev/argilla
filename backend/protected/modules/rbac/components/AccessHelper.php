@@ -2,39 +2,39 @@
 /**
  * @author Nikita Melnikov <melnikov@shogo.ru>
  * @link https://github.com/shogodev/argilla/
- * @copyright Copyright &copy; 2003-2013 Shogo
+ * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
- * @package backend.modules.rbac
+ * @package backend.modules.rbac.components
  *
  * @example
  * В контроллере, доступ на который необходимо проверить
- * <code>
+ * <pre>
  *  $access = new AccessHelper();
  *  $access->checkAccess();
- * </code>
+ * </pre>
  *
  * Будет происходить проверка по шаблону module:controller
  *
  * Для проверки на доступ к текущему экшену:
  * @example
- * <code>
+ * <pre>
  *  $access = new AccessHelper();
  *  $access->checkAccess(true);
- * </code>
+ * </pre>
  *
  *
  * Для того, чтобы проверить удаленный контроллер
  * @example
- * <code>
+ * <pre>
  *  $access = new AccessHelper($module, $controller, $action)
- * </code>
+ * </pre>
  *
  * Так же можно получить объект класса через статический метод init()
  *
  * @example
- * <code>
+ * <pre>
  *  AccessHelper::init($module, $controller, $action)->checkAccess();
- * </code>
+ * </pre>
  */
 class AccessHelper
 {

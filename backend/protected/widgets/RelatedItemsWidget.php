@@ -2,12 +2,12 @@
 /**
  * @author Sergey Glagolev <glagolev@shogo.ru>
  * @link https://github.com/shogodev/argilla/
- * @copyright Copyright &copy; 2003-2013 Shogo
+ * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
- * @package backend.widgets.RelatedItemsWidget
+ * @package backend.widgets
  *
  * Examples:
- *
+ * <pre>
  * echo $form->relatedItemsRow($model, 'steps', array(
  *   'position' => array('class' => 'span1'),
  *   'content' => array('class' => 'span8'),
@@ -25,7 +25,7 @@
  *     echo CHtml::dropDownList(Arr::cut($options, 'name'), Arr::cut($options, 'value'), CHtml::listData(Section::model()->findAll(), 'id', 'name'), $options);
  *   }),
  * ));
- *
+ * </pre>
  */
 class RelatedItemsWidget extends CWidget
 {

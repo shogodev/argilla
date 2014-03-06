@@ -2,12 +2,12 @@
 /**
  * @author Sergey Glagolev <glagolev@shogo.ru>
  * @link https://github.com/shogodev/argilla/
- * @copyright Copyright &copy; 2003-2013 Shogo
+ * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
- * @package backend.widgets.grid.BCustomColumnsGridView
+ * @package backend.widgets.grid
  *
  * Example:
- *
+ * <pre>
  * $this->widget('BCustomColumnsGridView', array(
  *   'dataProvider' => $model->search(),
  *   'filter' => $model,
@@ -20,6 +20,7 @@
  *     ),
  *   ),
  * ));
+ * </pre>
  */
 
 Yii::import('backend.modules.settings.models.BGridSettings');

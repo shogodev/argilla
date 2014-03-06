@@ -1,9 +1,10 @@
 <?php
-
 /**
- * @data 17.09.12
  * @author Nikita Melnikov <melnikov@shogo.ru>
- * @package Contact
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2014 Shogo
+ * @license http://argilla.ru/LICENSE
+ * @package frontend.models.contact
  *
  * @property integer $id
  * @property integer $contact_id
@@ -15,7 +16,7 @@
  *
  * The followings are the available model relations:
  * @property Contact $contact
- * @property ContactFgroup $group
+ * @property ContactGroup $group
  */
 class ContactField extends FActiveRecord
 {

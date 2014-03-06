@@ -1,7 +1,10 @@
 <?php
 /**
- * User: Nikita Melnikov <melnikov@shogo.ru>
- * Date: 1/11/13
+ * @author Nikita Melnikov <melnikov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2014 Shogo
+ * @license http://argilla.ru/LICENSE
+ * @package backend.components.interfaces
  */
 interface IHasCoordinates
 {

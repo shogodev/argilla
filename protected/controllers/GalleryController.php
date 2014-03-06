@@ -1,12 +1,14 @@
 <?php
+/**
+ * @author Nikita Melnikov <melnikov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2014 Shogo
+ * @license http://argilla.ru/LICENSE
+ * @package frontend.controllers
+ */
 
 Yii::import('application.models.gallery.*');
 
-/**
- * @author Nikita Melnikov <melnikov@shogo.ru>
- * @date 24.10.12
- * @package Gallery
- */
 class GalleryController extends FController
 {
   public function actionIndex()
