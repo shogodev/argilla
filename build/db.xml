@@ -106,11 +106,12 @@
   </target>
 
   <target name="createDump" depends="getDbSettings" description="Создать дамп">
+    <input message="Введите имя файла дампа" propertyName="dumpFileName" defaultValue="${db.dbname}.sql"/>
     <if>
-      <available file="${sqlFolder}/${db.dbname}.sql"/>
+      <available file="${sqlFolder}/${dumpFileName}"/>
       <then>
         <property name="dumpExists" value="1"/>
-        <input propertyName="overwrite" defaultValue="y">File already exists. Overwrite?</input>
+        <input message="File '${dumpFileName}' already exists. Overwrite?" propertyName="overwrite" defaultValue="y"/>
       </then>
     </if>
     <if>
@@ -121,8 +122,8 @@
         <equals arg1="${overwrite}" arg2="y"/>
       </or>
       <then>
-        <exec command="mysqldump --dump-date --routines -u${db.username} -p${db.password} -h${db.host} ${db.dbname} > ${sqlFolder}/${db.dbname}.sql"/>
-        <fixDump file="${sqlFolder}/${db.dbname}.sql"/>
+        <exec command="mysqldump --dump-date --routines -u${db.username} -p${db.password} -h${db.host} ${db.dbname} > ${sqlFolder}/${dumpFileName}"/>
+        <fixDump file="${sqlFolder}/${dumpFileName}"/>
       </then>
     </if>
   </target>
