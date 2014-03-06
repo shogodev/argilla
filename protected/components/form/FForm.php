@@ -6,7 +6,7 @@
  * @license http://argilla.ru/LICENSE
  * @package frontend.components.form
  *
- * Компонент для раюоты с формами
+ * Компонент для работы с формами
  *
  * @property string returnUrl
  * @property string successMessage

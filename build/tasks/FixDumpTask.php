@@ -5,7 +5,7 @@
  * Заменяется дефайнер у вьюх и триггеров на CURRENT_USER
  * @author Fedor A Borshev <fedor@shogo.ru>
  * @link https://github.com/shogodev/argilla/
- * @copyright Copyright &copy; 2003-2013 Shogo
+ * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
  * @package build.tasks.FixDumpTask
  *
