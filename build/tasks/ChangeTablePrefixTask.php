@@ -13,7 +13,7 @@ require_once 'build/tasks/DumpWorkerTask.php';
 
 class ChangeTablePrefixTask extends DumpWorkerTask
 {
-  private $originalPrefix = 'argilla_';
+  private $originalPrefix;
 
   private $newPrefix;
 
@@ -29,6 +29,17 @@ class ChangeTablePrefixTask extends DumpWorkerTask
 
   protected function parse($fileData)
   {
+    if( is_null($this->originalPrefix) )
+      $this->originalPrefix = $this->findPrefix($fileData);
+
+    if( is_null($this->originalPrefix) || is_null($this->newPrefix) )
+      return $fileData;
+
+    if( $this->originalPrefix == $this->newPrefix )
+      return $fileData;
+
+    echo "changing dump prefix to '{$this->newPrefix}'...".PHP_EOL;
+
     $result = array();
 
     foreach($fileData as $str)
@@ -38,5 +49,16 @@ class ChangeTablePrefixTask extends DumpWorkerTask
     }
 
     return $result;
+  }
+
+  protected function findPrefix($fileData)
+  {
+    foreach($fileData as $string)
+    {
+      if( preg_match('/^--?\sTablePrefix:?\s(\w+)/', $string, $matches) )
+        return trim($matches[1]);
+    }
+
+    return null;
   }
 }
