@@ -52,7 +52,7 @@
     <fixSchema file="${dbSchemaLocation}"/>
   </target>
 
-  <target name="applySchema" depends="createDb" description="Накатить схему на БД">
+  <target name="applySchema" depends="createDb, dropTablesAll" description="Накатить схему на БД">
     <available file="${dbSchemaLocation}" property="schema_exists" value="1"/>
     <fail unless="schema_exists" message="Schema file does not exist in specified location (${dbSchemaLocation})"/>
 
@@ -81,7 +81,7 @@
     <exec command="protected/yiic migrate" passthru="true"/>
   </target>
 
-  <target name="applyDump" depends="createDb" description="Накатить дамп">
+  <target name="applyDump" depends="createDb, dropTablesAll" description="Накатить дамп">
     <echo message="${db.prefix}"/>
 
     <php expression="str_replace('.sql/', '', implode('  ', glob('.sql/*')))" returnProperty="fileList"/>
@@ -133,9 +133,53 @@
     </if>
   </target>
 
-  <target name="revertSchema" description="Восстановить схему (ну типа не прокатило)">
+  <target name="revertSchema" description="Восстановить прежнюю схему">
     <echo message="git checkout -- .sql/schema.sql"/>
     <exec command="git checkout -- .sql/schema.sql" passthru="true"/>
+  </target>
+
+  <target name="dropTablesAll" depends="getDbSettings" >
+    <echo message="Deleting existing tables..."/>
+
+    <copy file="build/sql/show_tables.sql" tofile="build/tmp/show_tables.sql">
+      <filterchain>
+        <replaceregexp>
+          <regexp pattern="DB_NAME" replace="${db.dbname}"/>
+        </replaceregexp>
+      </filterchain>
+    </copy>
+
+    <copy file="build/sql/use.sql" tofile="build/tmp/use.sql">
+      <filterchain>
+        <replaceregexp>
+          <regexp pattern="DB_NAME" replace="${db.dbname}"/>
+        </replaceregexp>
+      </filterchain>
+    </copy>
+
+    <pdosqlexec url="${db.driver}:host=${db.host}" userid="${db.username}" password="${db.password}">
+      <fileset dir="build/tmp" >
+        <include name="show_tables.sql"/>
+      </fileset>
+      <formatter type="plain" outfile="build/tmp/table_list.sql" showheaders="false"/>
+    </pdosqlexec>
+
+    <copy file="build/tmp/table_list.sql" tofile="build/tmp/drop_table_list.sql">
+      <filterchain>
+        <replaceregexp>
+          <regexp pattern="(\w+)" replace="DROP TABLE IF EXISTS `\1`;" ignoreCase="true"/>
+        </replaceregexp>
+      </filterchain>
+    </copy>
+
+    <pdosqlexec url="${db.driver}:host=${db.host};dbname=${db.dbname}" userid="${db.username}" password="${db.password}">
+      <filelist dir="build" files="tmp/use.sql, sql/checks_off.sql, tmp/drop_table_list.sql, sql/checks_on.sql"/>
+    </pdosqlexec>
+
+    <delete file="build/tmp/use.sql" quiet="yes" failonerror="false"/>
+    <delete file="build/tmp/table_list.sql" quiet="yes" failonerror="false"/>
+    <delete file="build/tmp/drop_table_list.sql" quiet="yes" failonerror="false"/>
+    <delete file="build/tmp/show_tables.sql" quiet="yes" failonerror="false"/>
   </target>
 
   <target name="clean">
