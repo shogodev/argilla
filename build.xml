@@ -87,10 +87,10 @@
   <target name = "coverage" description = "Собрать code-coverage">
 	  <phing phingFile = "build/coverage.xml" />
   </target>
-  <target name = "jsPack" description = "Упаковать JS">
+  <target name = "jsPack" description = "Pack JS">
     <phing phingFile = "build/bootstrap.xml" target = "packJS" />
   </target>
-  <target name = "jsCompile" description = "Склеить JS">
+  <target name = "jsCompile" description = "Compile JS">
     <phing phingFile = "build/bootstrap.xml" target = "compileJS" />
   </target>
   <target name = "addPassword" description = "Добавить пароль для пользователя">

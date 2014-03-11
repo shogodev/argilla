@@ -5,10 +5,10 @@
   <php expression="dirName(getcwd())" returnProperty="projectDirectory"/>
 
   <target name="bootstrap" depends="symlinkYii, createBaseHtaccess, createDBConfig" />
-  <target name="packJS" description="Упаковать JS">
+  <target name="packJS" description="Pack JS">
     <exec command="protected/yiic scripts pack" passthru="true"/>
   </target>
-  <target name="compileJS" description="Скомпилировать JS" depends="packJS">
+  <target name="compileJS" description="Compile JS" depends="packJS">
     <if>
       <not>
         <isset property="jsCompiler"/>
@@ -17,7 +17,7 @@
         <property name="jsCompiler" value="${argilla.defaultJsCompiler}"/>
       </then>
     </if>
-    <echo message="Компилируем javascript компилятором '${jsCompiler}'..."/>
+    <echo message="Compiling javascript with '${jsCompiler}' compiler..."/>
     <if>
       <equals arg1="${jsCompiler}" arg2="yui"/>
       <then>
@@ -37,19 +37,19 @@
         <available file="build/tmp/compiled.js"/>
       </not>
       <then>
-        <fail message="Компиляция javascript не прошла: файл не создан"/>
+        <fail message="Failed compiling javascript: can't create file"/>
       </then>
     </if>
     <filesize file="build/tmp/compiled.js" propertyName="compiledJsFileSize"/>
     <if>
       <equals arg1="${compiledJsFileSize}" arg2="0"/>
       <then>
-        <fail message="Компиляция javascript не прошла: файл имеет нулевой размер"/>
+        <fail message="Failed compiling javascript: compiled filesize is null"/>
       </then>
     </if>
 
     <php expression="floor(${compiledJsFileSize}/1024)" returnProperty="compiledJsFileSize"/>
-    <echo message="Компиляция завершена. Файл build/tmp/compiled.js размером ${compiledJsFileSize}K. Копируем в js/compiled.js..."/>
+    <echo message="Compilation finished. File build/tmp/compiled.js filesize ${compiledJsFileSize}K. Copying to js/compiled.js..."/>
 
     <copy file="build/tmp/compiled.js" tofile="js/compiled.js" overwrite="true"/>
   </target>
@@ -58,13 +58,13 @@
     <if>
       <not><available property="checkSymlink"  file="${projectDirectory}/yii" followSymlinks="true"/></not>
       <then>
-        <input message="Симлинк ${argilla.yiiStorage}/${argilla.yiiVersion} на yii не создан, желаете создать? (y/n)" defaultValue="y" propertyName="confirmCreateYiiSymlink"/>
+        <input message="Symlink ${argilla.yiiStorage}/${argilla.yiiVersion} for yii was not created, do want to create it? (y/n)" defaultValue="y" propertyName="confirmCreateYiiSymlink"/>
         <if>
           <equals arg1="${confirmCreateYiiSymlink}" arg2="y"/>
           <then><exec checkreturn="true" passthru="true" command="ln -s ${argilla.yiiStorage}/${argilla.yiiVersion} ${projectDirectory}/yii"/></then>
         </if>
       </then>
-      <else><echo message="Симлинк с именем yii уже существует"/></else>
+      <else><echo message="Symlink with name yii already exists"/></else>
     </if>
   </target>
   <target name="checkYiiAvailability" depends="getYiiVersion">
@@ -73,7 +73,7 @@
         <available property="checkDir" file="${argilla.yiiStorage}/${argilla.yiiVersion}/framework" type="dir"/>
       </not>
       <then>
-        <fail message="Yii версии '${argilla.yiiVersion}' не найден по пути '${argilla.yiiStorage}/${argilla.yiiVersion}'"/>
+        <fail message="Yii version '${argilla.yiiVersion}' was not found in path '${argilla.yiiStorage}/${argilla.yiiVersion}'"/>
       </then>
     </if>
   </target>
@@ -86,13 +86,13 @@
     <if>
       <not><available property="checkFile" file="${projectDirectory}/.htaccess" type="file"/></not>
       <then>
-        <input message="Файл ${projectDirectory}/.htaccess не создан, желаете создать? (y/n)" defaultValue="y" propertyName="confirmCreateBaseHtaccess"/>
+        <input message="File ${projectDirectory}/.htaccess was not created, do you want to create it? (y/n)" defaultValue="y" propertyName="confirmCreateBaseHtaccess"/>
         <if>
           <equals arg1="${confirmCreateBaseHtaccess}" arg2="y"/>
           <then><createHtaccessFile dir="${projectDirectory}/"/></then>
         </if>
       </then>
-      <else><echo message="Файл ${projectDirectory}/.htaccess уже существует"></echo></else>
+      <else><echo message="File ${projectDirectory}/.htaccess already exists"></echo></else>
     </if>
   </target>
 
@@ -101,10 +101,10 @@
       <not><available property="checkFile" file="protected\config\db.php" type="file"/></not>
       <then>
         <php expression="preg_replace('/[^\w]/', '_',basename('${projectDirectory}'))" returnProperty="defaultDbName"/>
-        <input message="Введите имя базы" propertyName="dbName" defaultValue="${defaultDbName}"/>
-        <input message="Введите префикс таблиц" propertyName="dbTablePrefix" defaultValue="${defaultDbName}_"/>
-        <input message="Введите имя пользователя" propertyName="dbUser" defaultValue="prog"/>
-        <input message="Введите пароль" propertyName="dbPassword" defaultValue="123"/>
+        <input message="Enter database name" propertyName="dbName" defaultValue="${defaultDbName}"/>
+        <input message="Enter table prefix" propertyName="dbTablePrefix" defaultValue="${defaultDbName}_"/>
+        <input message="Enter username" propertyName="dbUser" defaultValue="prog"/>
+        <input message="Enter password" propertyName="dbPassword" defaultValue="123"/>
         <copy file="protected\config\db.php.sample" tofile="protected\config\db.php">
           <filterchain>
             <replaceregexp>
@@ -116,7 +116,7 @@
           </filterchain>
         </copy>
       </then>
-      <else><echo message="Файл ${projectDirectory}/protected\config\db.php уже существует"></echo></else>
+      <else><echo message="File ${projectDirectory}/protected/config/db.php already exists"></echo></else>
     </if>
   </target>
 
