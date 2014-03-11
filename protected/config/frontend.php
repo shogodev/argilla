@@ -10,7 +10,7 @@ return array_merge_recursive(array(
   'basePath' => $frontend,
   'name' => 'argilla.ru',
   'defaultController' => 'index',
-  'preload'  => array('seoRedirect'),
+  'preload'  => array('requestRedirect'),
 
   'aliases' => array(
     'backend' => $backend,
@@ -91,6 +91,10 @@ return array_merge_recursive(array(
       'useStrictParsing' => true,
       'showScriptName'   => false,
       'rules'            => require(__DIR__.'/routes.php'),
+    ),
+
+    'requestRedirect' => array(
+      'class' => 'RequestRedirectComponent',
     ),
 
     'errorHandler' => array(

@@ -5,6 +5,12 @@
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.seo
+ */
+
+Yii::import('frontend.components.redirect.RedirectHelper');
+
+/**
+ * Class BRedirect
  *
  * @method static BRedirect model(string $class = __CLASS__)
  *
@@ -84,7 +90,9 @@ class BRedirect extends BActiveRecord
     $string = '';
 
     if( !empty($parts['path']) )
-      $string .= '/'.trim($parts['path'], '/');
+    {
+      $string .= '/'.ltrim($parts['path'], '/').(RedirectHelper::needTrailingSlash($parts['path']) ? '/' : '');
+    }
 
     if( !empty($parts['query']) )
       $string .= '?'.$parts['query'];

@@ -5,21 +5,21 @@
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
  */
-class ReplacedUrlCreatorTest extends CDbTestCase
+class ReplaceRedirectComponentTest extends CDbTestCase
 {
   protected $fixtures = array(
     'seo_redirect' => 'Redirect'
   );
 
   /**
-   * @var ReplacedUrlCreator
+   * @var ReplaceRedirectComponent
    */
   private $creator;
 
   protected function setUp()
   {
     parent::setUp();
-    $this->creator = Yii::createComponent('ReplacedUrlCreator');
+    $this->creator = Yii::createComponent('ReplaceRedirectComponent');
     $this->creator->init();
   }
 

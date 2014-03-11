@@ -10,10 +10,10 @@ class FUrlManager extends CUrlManager
 {
   public $urlRuleClass = 'FUrlRule';
 
-  public $urlCreatorClass = 'ReplacedUrlCreator';
+  public $urlCreatorClass = 'ReplaceRedirectComponent';
 
   /**
-   * @var ReplacedUrlCreator
+   * @var ReplaceRedirectComponent
    */
   protected $urlCreator;
 
@@ -54,6 +54,20 @@ class FUrlManager extends CUrlManager
       $url = parent::createUrl($route, $params, $ampersand);
       return $this->urlCreator->getUrl($url);
     }
+  }
+
+  /**
+   * @param mixed $route
+   * @param string $pattern
+   *
+   * @return FUrlRule
+   */
+  protected function createUrlRule($route, $pattern)
+  {
+    if( is_array($route) && isset($route['class']) )
+      return new $route['class']($route, $pattern);
+    else
+      return new $this->urlRuleClass($route, $pattern);
   }
 
   private function hasStaticPatterns(array $params)
