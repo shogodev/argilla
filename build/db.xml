@@ -20,7 +20,7 @@
     <checkDb triggers="true" views="true" routines="true" lockTables="true" tmpTables="true" innoDb="true"/>
   </target>
 
-  <target name="createDb" depends="clean, getDbSettings" description="Создать БД">
+  <target name="createDb" depends="clean, getDbSettings" description="Create DB">
     <copy file="build/sql/create_db.sql" tofile="build/tmp/create_db.sql">
       <filterchain>
         <replaceregexp><regexp pattern="DB_NAME" replace="${db.dbname}"/></replaceregexp>
@@ -33,7 +33,7 @@
     </pdosqlexec>
   </target>
 
-  <target name="createDbTest" depends="getDbSettings" description="Создать БД для тестов">
+  <target name="createDbTest" depends="getDbSettings" description="Create DB for tests">
     <copy file="build/sql/create_db.sql" tofile="build/tmp/create_db_test.sql">
       <filterchain>
         <replaceregexp><regexp pattern="DB_NAME" replace="${db.dbname}_test"/></replaceregexp>
@@ -46,13 +46,13 @@
     </pdosqlexec>
   </target>
 
-  <target name="createSchema" depends="getDbSettings" description="Залить схему БД">
+  <target name="createSchema" depends="getDbSettings" description="Create DB schema">
     <exec command="mysqldump --dump-date --routines --no-data -u${db.username} -p${db.password} -h${db.host} ${db.dbname} > ${dbSchemaLocation}"/>
     <changeTablePrefix file="${dbSchemaLocation}" originalPrefix="${db.prefix}" newPrefix="argilla_"/>
     <fixSchema file="${dbSchemaLocation}"/>
   </target>
 
-  <target name="applySchema" depends="createDb, dropTablesAll" description="Накатить схему на БД">
+  <target name="applySchema" depends="createDb, dropTablesAll" description="Apply DB schema">
     <available file="${dbSchemaLocation}" property="schema_exists" value="1"/>
     <fail unless="schema_exists" message="Schema file does not exist in specified location (${dbSchemaLocation})"/>
 
@@ -62,7 +62,7 @@
 
     <exec checkreturn="true" passthru="true" command="mysql -u${db.username} -p${db.password} -h${db.host} ${db.dbname} &lt; build/tmp/schemaApplying.sql"/>
 
-    <input propertyName="applyForTestBase" defaultValue="y">Apply for test base?</input>
+    <input propertyName="applyForTestBase" defaultValue="y">Apply schema for tests' DB?</input>
     <if>
       <equals arg1="${applyForTestBase}" arg2="y"/>
       <then>
@@ -74,19 +74,19 @@
     <phingcall target="clean"/>
   </target>
 
-  <target name="migrate" description="Накатить миграции">
+  <target name="migrate" description="Apply migrations">
     <available file="${dbSchemaLocation}" property="schema_exists" value="1"/>
     <fail unless="schema_exists" message="Schema file does not exist in specified location (${dbSchemaLocation})"/>
 
     <exec command="protected/yiic migrate" passthru="true"/>
   </target>
 
-  <target name="applyDump" depends="createDb, dropTablesAll" description="Накатить дамп">
+  <target name="applyDump" depends="createDb, dropTablesAll" description="Apply DB dump">
     <echo message="${db.prefix}"/>
 
     <php expression="str_replace('.sql/', '', implode('  ', glob('.sql/*')))" returnProperty="fileList"/>
     <echo message="${fileList}"/>
-    <input message="Введите имя дампа" defaultValue="${db.dbname}.sql" propertyName="dumpFileName"/>
+    <input message="Enter dump filename" defaultValue="${db.dbname}.sql" propertyName="dumpFileName"/>
 
     <available file="${sqlFolder}/${dumpFileName}" property="dump_exists" value="1"/>
     <fail unless="dump_exists" message="Dump file does not exists in specified location (${sqlFolder}/${dumpFileName})"/>
@@ -97,7 +97,7 @@
       <then>
         <copy file="${sqlFolder}/${dumpFileName}" tofile="build/tmp/dumpApplying.sql"/>
 
-        <echo message="preparing dump file..."/>
+        <echo message="Preparing dump file..."/>
         <prepareDump file="build/tmp/dumpApplying.sql"/>
 
         <changeTablePrefix file="build/tmp/dumpApplying.sql" newPrefix="${db.prefix}"/>
@@ -110,8 +110,8 @@
     </if>
   </target>
 
-  <target name="createDump" depends="getDbSettings" description="Создать дамп">
-    <input message="Введите имя файла дампа" propertyName="dumpFileName" defaultValue="${db.dbname}.sql"/>
+  <target name="createDump" depends="getDbSettings" description="Create DB dump">
+    <input message="Enter dump filename" propertyName="dumpFileName" defaultValue="${db.dbname}.sql"/>
     <if>
       <available file="${sqlFolder}/${dumpFileName}"/>
       <then>
@@ -133,7 +133,7 @@
     </if>
   </target>
 
-  <target name="revertSchema" description="Восстановить прежнюю схему">
+  <target name="revertSchema" description="Restore previous schema">
     <echo message="git checkout -- .sql/schema.sql"/>
     <exec command="git checkout -- .sql/schema.sql" passthru="true"/>
   </target>
