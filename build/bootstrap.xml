@@ -4,7 +4,7 @@
   <property name="argilla.yiiStorage" value="/usr/local/yii"/>
   <php expression="dirName(getcwd())" returnProperty="projectDirectory"/>
 
-  <target name="bootstrap" depends="symlinkYii, createBaseHtaccess, createDBConfig" />
+  <target name="bootstrap" depends="symlinkYii, createDBConfig" />
   <target name="packJS" description="Pack JS">
     <exec command="protected/yiic scripts pack" passthru="true"/>
   </target>
@@ -79,21 +79,6 @@
   </target>
   <target name="getYiiVersion">
     <php expression="require('protected/config/version.php');" returnProperty="argilla.yiiVersion"/>
-  </target>
-
-  <taskdef name="createHtaccessFile" classname="build.tasks.CreateBaseHtaccessTask"/>
-  <target name="createBaseHtaccess">
-    <if>
-      <not><available property="checkFile" file="${projectDirectory}/.htaccess" type="file"/></not>
-      <then>
-        <input message="File ${projectDirectory}/.htaccess was not created, do you want to create it? (y/n)" defaultValue="y" propertyName="confirmCreateBaseHtaccess"/>
-        <if>
-          <equals arg1="${confirmCreateBaseHtaccess}" arg2="y"/>
-          <then><createHtaccessFile dir="${projectDirectory}/"/></then>
-        </if>
-      </then>
-      <else><echo message="File ${projectDirectory}/.htaccess already exists"></echo></else>
-    </if>
   </target>
 
   <target name="createDBConfig">
