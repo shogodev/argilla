@@ -2,19 +2,19 @@
 <project name="shogocms" basedir="." default="build">
   <property name = "coverage.database" value = "build/logs/cover.db" />
   <target name="build" description="Сборка" depends="clearCache, clean, test, phpcs, phpmd, phpcpd, phploc"/>
-  <target name="createSchema" description="Записать схему БД">
+  <target name="createSchema" description="Create DB schema">
     <phing phingfile="build/db.xml" target="createSchema"/>
   </target>
-  <target name="applySchema" description="Применить схему БД">
+  <target name="applySchema" description="Apply DB schema">
     <phing phingfile="build/db.xml" target="applySchema"/>
   </target>
-  <target name="createDump" description="Сделать дамп базы">
+  <target name="createDump" description="Create DB dump">
     <phing phingfile="build/db.xml" target="createDump"/>
   </target>
-  <target name="applyDump" description="Накатить дамп">
+  <target name="applyDump" description="Apply DB dump">
     <phing phingfile="build/db.xml" target="applyDump"/>
   </target>
-  <target name="migrate" description="Накатить миграции">
+  <target name="migrate" description="Apply migrations">
     <phing phingfile="build/db.xml" target="migrate"/>
   </target>
   <target name="revertSchema" description="Восстановить оригинальный файл схемы (git)">

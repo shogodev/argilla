@@ -15,11 +15,17 @@ require_once 'build/tasks/DumpWorkerTask.php';
 
 class FixDumpTask extends DumpWorkerTask
 {
+  protected $tablePrefix;
+
+  public function setTablePrefix($tablePrefix)
+  {
+    $this->tablePrefix = $tablePrefix;
+  }
 
   protected function parse($fileData)
   {
     $result = array();
-    
+
     foreach ($fileData as $str)
     {
       if($this->isTriggerOrRoutine($str) or $this->isView($str))
@@ -28,8 +34,15 @@ class FixDumpTask extends DumpWorkerTask
       }
 
       array_push($result, $str);
+      $this->appendTablePrefix($result, $str);
     }
+
     return $result;
   }
 
+  protected function appendTablePrefix(&$outputArray, $currentString)
+  {
+    if( !is_null($this->tablePrefix) && preg_match('/^--?\sHost:/', $currentString) )
+      array_push($outputArray, '-- TablePrefix: '.$this->tablePrefix.PHP_EOL);
+  }
 }
