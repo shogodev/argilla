@@ -14,8 +14,12 @@ $.widget('argilla.filterSlider', {
       tooltipButton  : '#filter-tooltip-button',
       tooltipCounter : '#filter-tooltip-counter',
       filterButton   : '#filter-submit'
-    }
+    },
+    keyPressDelay : 600,
+    tooltipDelay : 3000
   },
+
+  timers : {},
 
   _create: function() {
 
@@ -51,6 +55,26 @@ $.widget('argilla.filterSlider', {
     this.controls.maxInput.on('change', function(e) {
       widget._setSliderValue();
     });
+
+    this.controls.minInput.on('keyup', function(e) {
+      widget._startTimer(
+        'minInputKeyPress',
+        function(){
+          widget._setSliderValue();
+        },
+        widget.options.keyPressDelay
+      );
+    });
+
+    this.controls.maxInput.on('keyup', function(e) {
+      widget._startTimer(
+        'maxInputKeyPress',
+        function(){
+          widget._setSliderValue();
+        },
+        widget.options.keyPressDelay
+      );
+    });
   },
 
   /**
@@ -76,13 +100,19 @@ $.widget('argilla.filterSlider', {
   },
 
   _setSliderValue : function() {
+    this._stopTimer('minInputKeyPress');
+    this._stopTimer('maxInputKeyPress');
+
     var minInput = this.controls.minInput,
-      maxInput = this.options.maxInput;
+      maxInput = this.controls.maxInput;
+
+    if( minInput.val() == ''|| maxInput.val() == '' )
+      return;
 
     if ( !isNaN(minInput.val()) && !isNaN(maxInput.val()) ) {
       if ( minInput.val() > maxInput.val() ) return;
-      this.controls.container.slider('values', 0, minInput.val() );
-      this.controls.container.slider('values', 1, maxInput.val() );
+      this.element.slider('values', 0, minInput.val() );
+      this.element.slider('values', 1, maxInput.val() );
       this._stopSlide();
     }
   },
@@ -92,23 +122,36 @@ $.widget('argilla.filterSlider', {
    * @private
    */
   _slideCallback : function(response) {
-    var tooltip = this.controls.tooltip,
-      tooltipDelay = 3000,
-      tooltipTimeout = null;
-
+    var tooltip = this.controls.tooltip;
     var toggle = response && response['amount'] > 0;
+
     this.controls.filterButton.toggle(toggle);
     this.controls.tooltipButton.toggle(toggle);
-
     this.controls.tooltipCounter.html(response['amount']);
+
+    var self = this;
     tooltip.stop(true, true).fadeIn(function(){
-      if (tooltipTimeout) {
-        clearTimeout(tooltipTimeout);
-      }
-      tooltipTimeout = setTimeout(function(){
-        tooltip.fadeOut();
-      }, tooltipDelay);
+      self._startTimer(
+        'tooltipTimer',
+        function() {
+          tooltip.fadeOut();
+          self._stopTimer('tooltipTimer');
+        },
+        self.options.tooltipDelay
+      );
     });
+  },
+
+  _startTimer : function(timerIndex, callback, delay) {
+    this._stopTimer(timerIndex);
+    this.timers[timerIndex] = setTimeout(callback, delay);
+  },
+  _stopTimer : function(timerIndex) {
+    if( this.timers[timerIndex] !== undefined )
+    {
+      clearTimeout(this.timers[timerIndex]);
+      delete this.timers[timerIndex];
+    }
   },
 
   destroy: function() {
