@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="shogocms" basedir="." default="build">
-	<property name = "coverage.database" value = "build/logs/cover.db" />
+  <property name = "coverage.database" value = "build/logs/cover.db" />
   <target name="build" description="Сборка" depends="clearCache, clean, test, phpcs, phpmd, phpcpd, phploc"/>
   <target name="createSchema" description="Записать схему БД">
     <phing phingfile="build/db.xml" target="createSchema"/>
@@ -87,10 +87,10 @@
   <target name = "coverage" description = "Собрать code-coverage">
 	  <phing phingFile = "build/coverage.xml" />
   </target>
-  <target name = "jsPack" description = "Упаковать JS">
+  <target name = "jsPack" description = "Pack JS">
     <phing phingFile = "build/bootstrap.xml" target = "packJS" />
   </target>
-  <target name = "jsCompile" description = "Склеить JS">
+  <target name = "jsCompile" description = "Compile JS">
     <phing phingFile = "build/bootstrap.xml" target = "compileJS" />
   </target>
   <target name = "addPassword" description = "Добавить пароль для пользователя">
@@ -98,6 +98,7 @@
   </target>
   <target name = "bootstrap" description = "Do a bootstrap process">
     <phing phingFile = "build/bootstrap.xml" />
+    <echo message="bootstrap done"/>
   </target>
 
 </project>

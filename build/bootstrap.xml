@@ -1,72 +1,108 @@
-<!-- Цели phing, которые используются при первоначальном разворачивании приложения. Возможны ссылки сюда и при деплое -->
-<project name = "shogocms_bootstrap" basedir = "." default = "bootstrap">
-  <property name = "shogocms.defaultJsCompiler" value = "closure" />
-  <property name = "shogocms.yiiStorage" value = "/usr/local/yii" />
-  <target name = "bootstrap" depends = "symlinkYii" />
-  <target name = "packJS" description = "Упаковать JS">
-    <exec command = "protected/yiic scripts pack" passthru = "true"/>
+<!--Цели phing, которые используются при первоначальном разворачивании приложения. Возможны ссылки сюда и при деплое -->
+<project name="argilla_bootstrap" basedir="." default="bootstrap">
+  <property name="argilla.defaultJsCompiler" value="closure"/>
+  <property name="argilla.yiiStorage" value="/usr/local/yii"/>
+  <php expression="dirName(getcwd())" returnProperty="projectDirectory"/>
+
+  <target name="bootstrap" depends="symlinkYii, createDBConfig" />
+  <target name="packJS" description="Pack JS">
+    <exec command="protected/yiic scripts pack" passthru="true"/>
   </target>
-  <target name = "compileJS" description = "Скомпилировать JS" depends = "packJS">
+  <target name="compileJS" description="Compile JS" depends="packJS">
     <if>
       <not>
-        <isset property = "jsCompiler" />
+        <isset property="jsCompiler"/>
       </not>
       <then>
-        <property name = "jsCompiler" value = "${shogocms.defaultJsCompiler}" />
+        <property name="jsCompiler" value="${argilla.defaultJsCompiler}"/>
       </then>
     </if>
-    <echo message = "Компилируем javascript компилятором '${jsCompiler}'..."/>
+    <echo message="Compiling javascript with '${jsCompiler}' compiler..."/>
     <if>
-      <equals arg1 = "${jsCompiler}" arg2 = "yui" />
+      <equals arg1="${jsCompiler}" arg2="yui"/>
       <then>
-        <exec command = "java -jar build/compilers/yuicompressor.jar js/packed.js>build/tmp/compiled.js" />
+        <exec command="java -jar build/compilers/yuicompressor.jar js/packed.js>build/tmp/compiled.js"/>
       </then>
     </if>
     <if>
-      <equals arg1 = "${jsCompiler}" arg2 = "closure" />
+      <equals arg1="${jsCompiler}" arg2="closure"/>
       <then>
-        <exec command = "java -jar build/compilers/closure.jar --third_party --warning_level QUIET --js js/packed.js --js_output_file build/tmp/compiled.js" />
+        <exec command="java -jar build/compilers/closure.jar --third_party --warning_level QUIET --js js/packed.js --js_output_file build/tmp/compiled.js"/>
       </then>
     </if>
 
     <!-- проверка результатов компиляции-->
     <if>
       <not>
-        <available file = "build/tmp/compiled.js" />
+        <available file="build/tmp/compiled.js"/>
       </not>
       <then>
-        <fail message = "Компиляция javascript не прошла: файл не создан" />
+        <fail message="Failed compiling javascript: can't create file"/>
       </then>
     </if>
-    <filesize file = "build/tmp/compiled.js" propertyName = "compiledJsFileSize" />
+    <filesize file="build/tmp/compiled.js" propertyName="compiledJsFileSize"/>
     <if>
-      <equals arg1 = "${compiledJsFileSize}" arg2 = "0" />
+      <equals arg1="${compiledJsFileSize}" arg2="0"/>
       <then>
-        <fail message = "Компиляция javascript не прошла: файл имеет нулевой размер" />
+        <fail message="Failed compiling javascript: compiled filesize is null"/>
       </then>
     </if>
 
-    <php expression="floor(${compiledJsFileSize}/1024)" returnProperty="compiledJsFileSize" />
-    <echo message = "Компиляция завершена. Файл build/tmp/compiled.js размером ${compiledJsFileSize}K. Копируем в js/compiled.js..." />
+    <php expression="floor(${compiledJsFileSize}/1024)" returnProperty="compiledJsFileSize"/>
+    <echo message="Compilation finished. File build/tmp/compiled.js filesize ${compiledJsFileSize}K. Copying to js/compiled.js..."/>
 
-    <copy file = "build/tmp/compiled.js" tofile = "js/compiled.js" overwrite = "true" />
-  </target>
-  <target name = "symlinkYii" depends = "checkYiiAvailability">
-    <exec checkreturn="true" passthru="true" command = "ln -s ${shogocms.yiiStorage}/${shogocms.yiiVersion} ../yii" />
+    <copy file="build/tmp/compiled.js" tofile="js/compiled.js" overwrite="true"/>
   </target>
 
-  <target name = "checkYiiAvailability" depends = "getYiiVersion">
+  <target name="symlinkYii" depends="checkYiiAvailability">
+    <if>
+      <not><available property="checkSymlink"  file="${projectDirectory}/yii" followSymlinks="true"/></not>
+      <then>
+        <input message="Symlink ${argilla.yiiStorage}/${argilla.yiiVersion} for yii was not created, do want to create it? (y/n)" defaultValue="y" propertyName="confirmCreateYiiSymlink"/>
+        <if>
+          <equals arg1="${confirmCreateYiiSymlink}" arg2="y"/>
+          <then><exec checkreturn="true" passthru="true" command="ln -s ${argilla.yiiStorage}/${argilla.yiiVersion} ${projectDirectory}/yii"/></then>
+        </if>
+      </then>
+      <else><echo message="Symlink with name yii already exists"/></else>
+    </if>
+  </target>
+  <target name="checkYiiAvailability" depends="getYiiVersion">
     <if>
       <not>
-        <available file = "${shogocms.yiiStorage}/${shogocms.yiiVersion}/framework" type = "dir" />
+        <available property="checkDir" file="${argilla.yiiStorage}/${argilla.yiiVersion}/framework" type="dir"/>
       </not>
       <then>
-        <fail message = "Yii версии '${shogocms.yiiVersion}' не найден по пути '${shogocms.yiiStorage}/${shogocms.yiiVersion}'" />
+        <fail message="Yii version '${argilla.yiiVersion}' was not found in path '${argilla.yiiStorage}/${argilla.yiiVersion}'"/>
       </then>
     </if>
   </target>
-  <target name = "getYiiVersion">
-    <php expression = "require('protected/config/version.php');" returnProperty = "shogocms.yiiVersion" />
+  <target name="getYiiVersion">
+    <php expression="require('protected/config/version.php');" returnProperty="argilla.yiiVersion"/>
+  </target>
+
+  <target name="createDBConfig">
+    <if>
+      <not><available property="checkFile" file="protected\config\db.php" type="file"/></not>
+      <then>
+        <php expression="preg_replace('/[^\w]/', '_',basename('${projectDirectory}'))" returnProperty="defaultDbName"/>
+        <input message="Enter database name" propertyName="dbName" defaultValue="${defaultDbName}"/>
+        <input message="Enter table prefix" propertyName="dbTablePrefix" defaultValue="${defaultDbName}_"/>
+        <input message="Enter username" propertyName="dbUser" defaultValue="prog"/>
+        <input message="Enter password" propertyName="dbPassword" defaultValue="123"/>
+        <copy file="protected\config\db.php.sample" tofile="protected\config\db.php">
+          <filterchain>
+            <replaceregexp>
+              <regexp pattern="DATABASE_NAME" replace="${dbName}" ignoreCase="true"/>
+              <regexp pattern="DATABASE_PREFIX" replace="${dbTablePrefix}" ignoreCase="true"/>
+              <regexp pattern="DATABASE_USER" replace="${dbUser}" ignoreCase="true"/>
+              <regexp pattern="DATABASE_PASSWORD" replace="${dbPassword}" ignoreCase="true"/>
+            </replaceregexp>
+          </filterchain>
+        </copy>
+      </then>
+      <else><echo message="File ${projectDirectory}/protected/config/db.php already exists"></echo></else>
+    </if>
   </target>
 
 </project>
