@@ -40,6 +40,18 @@ class BFrontendUserController extends BController implements ICoordinateSetter
 
   public function actionSearch()
   {
-    $this->actionIndex();
+    /**
+     * @var BFrontendUser $model
+     */
+    $model = $this->createFilterModel();
+
+    $dataProvider = new BActiveDataProvider($this->modelClass, array(
+      'criteria' => $model->getSearchCriteria(new CDbCriteria()),
+    ));
+
+    $this->render('index', array(
+      'model' => $model,
+      'searchDataProvider' => $dataProvider,
+    ));
   }
 }

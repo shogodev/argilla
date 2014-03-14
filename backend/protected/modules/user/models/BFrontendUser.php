@@ -107,7 +107,7 @@ class BFrontendUser extends BActiveRecord
    *
    * @return CDbCriteria
    */
-  protected function getSearchCriteria(CDbCriteria $criteria)
+  public function getSearchCriteria(CDbCriteria $criteria)
   {
     $criteria->together = true;
     $criteria->with     = array('user');

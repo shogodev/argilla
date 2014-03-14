@@ -1,18 +1,16 @@
 <?php
-/**
- * @var UserController $this
- * @var BActiveDataProvider $dataProvider
- * @var BActiveRecord $model
- */
-?>
+/* @var $this UserController */
+/* @var $dataProvider BActiveDataProvider */
+/* @var $model BActiveRecord */
+/* @var $searchDataProvider BActiveDataProvider */
 
-<?php Yii::app()->breadcrumbs->show();
+Yii::app()->breadcrumbs->show();
 
 $this->widget('BGridView', array(
   'filter' => $model,
-  'dataProvider' => $dataProvider,
+  'dataProvider' => isset($searchDataProvider) ? $searchDataProvider : $model->search(),
   'columns'      => array(
-    array('name' => 'id', 'class' => 'BPkColumn', 'ajaxUrl' => false),
+    array('name' => 'id', 'class' => 'BPkColumn', 'ajaxUrl' => false, 'associationClass' => 'BUserAssociation'),
     array('name' => 'date_create', 'type' => 'datetime', 'value' => 'strtotime($data->date_create)', 'filter' => false),
     array('name' => 'login'),
     array('name' => 'fullName', 'value' => '$data->getFullName()', 'header' => 'Имя'),
