@@ -25,6 +25,8 @@ class PackedScriptCreator extends ScriptAbstractCreator
     }
 
     fclose($packed);
+
+    chmod($this->getScript(true), 0664);
   }
 
   /**
