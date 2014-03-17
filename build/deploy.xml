@@ -27,7 +27,7 @@
     <if>
       <not><equals arg1="${production}" arg2="true"></equals></not>
       <then>
-        <echo message="Внимание !!! Режим production выключен!" level="error"/>
+        <echo message="Warning! Production mode is off!" level="warning"/>
       </then>
     </if>
 
@@ -46,7 +46,7 @@
         <contains string="${outputData}" substring="Untracked files:"/>
       </or>
       <then>
-        <echo message="Внимание !!! Имеются не закомиченные изменения!" level="error"/>
+        <echo message="Warning! You have uncommited changes!" level="warning"/>
         <echo message="${outputData}" level="warning"/>
       </then>
     </if>

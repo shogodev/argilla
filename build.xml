@@ -2,7 +2,7 @@
 <project name="argilla" basedir="." default="build">
   <property name="coverage.database" value="build/logs/cover.db"/>
 
-  <target name="build" description="Сборка" depends="clearCache, clean, test, phpcs, phpmd, phpcpd, phploc"/>
+  <target name="build" description="Build project" depends="clearCache, clean, phpunit, phpcs, phpmd, phpcpd, phploc"/>
 
   <target name="createSchema" description="Create DB schema">
     <phing phingfile="build/db.xml" target="createSchema"/>
@@ -24,12 +24,12 @@
     <phing phingfile="build/db.xml" target="migrate"/>
   </target>
 
-  <target name="revertSchema" description="Восстановить оригинальный файл схемы (git)">
+  <target name="revertSchema" description="Recover original schema">
     <phing phingFile="build/db.xml" target="revertSchema"/>
   </target>
 
-  <target name="clearCache" description="Clear assets folders and runtime cache">
-    <echo>Clear assets folders and runtime cache</echo>
+  <target name="clearCache" description="Clean assets and runtime cache directories">
+    <echo message="Cleaning assets and runtime cache directories"/>
     <delete includeemptydirs="true">
       <fileset dir="assets/">
         <include name="**"/>
@@ -43,12 +43,12 @@
     </delete>
   </target>
 
-  <target name="clean" description="Очистить логи Jenkins и папку runtime">
+  <target name="clean" description="Clean Jenkins' logs and runtime directory">
     <!--Удаляем логи Jenkins-->
     <if>
       <available property="checkDirectory" file="build/logs/" type="dir"></available>
       <then>
-        <echo message="Очистка логов Jenkins"/>
+        <echo message="Cleaning Jenkins' logs"/>
         <delete>
           <fileset dir="build/logs/">
             <include name="*.xml"/>
@@ -57,7 +57,7 @@
         </delete>
       </then>
     </if>
-    <echo message="Очистка runtime директорий"/>
+    <echo message="Cleaning runtime directory"/>
     <delete>
       <fileset dir="protected/runtime/">
         <include name="**"/>
@@ -71,7 +71,7 @@
     </delete>
   </target>
 
-  <target name="getCheckingApp">
+  <target name="getCheckingApp" hidden="true">
     <!-- это используется для того, чтобы можно было говорить phing -Dfrontend или phing -Dbackend, указывая фингу с каким приложением мы работаем -->
     <if>
       <and>
@@ -115,25 +115,23 @@
     </phing>
   </target>
 
-  <target name="phploc" depends="getCheckingApp" description="Снятие метрик phploc">
+  <target name="phploc" depends="getCheckingApp" description="Get phploc's metriks">
     <phing phingFile="build/runners/checker.xml">
       <property name="whatToCheck" value="phploc"/>
     </phing>
   </target>
 
-  <target name="phpunit" description="PHPUnit" depends="getCheckingApp">
+  <target name="phpunit" depends="getCheckingApp" description="Run PHPunit tests">
     <phing phingFile="build/runners/checker.xml">
       <property name="whatToCheck" value="phpunit"/>
     </phing>
   </target>
 
-  <target name="test" depends="phpunit" description="Запуск тестов"/>
-
-  <target name="fixAccessRights" description="Починить права доступа">
+  <target name="fixAccessRights" description="Set access rights to files and directories">
     <phing phingFile="build/chmod.xml"/>
   </target>
 
-  <target name="coverage" description="Собрать code-coverage">
+  <target name="coverage" description="Build code-coverage report">
     <phing phingFile="build/coverage.xml"/>
   </target>
 
@@ -145,7 +143,7 @@
     <phing phingFile="build/bootstrap.xml" target="compileJS"/>
   </target>
 
-  <target name="addPassword" description="Добавить пароль для пользователя">
+  <target name="addPassword" description="Add backend user">
     <phing phingFile="build/passwords.xml" target="addPassword"/>
   </target>
 
@@ -154,15 +152,15 @@
     <echo message="bootstrap done"/>
   </target>
 
-  <target name="deploy" description="Make deploy">
+  <target name="deploy" description="Deploy project">
     <phing phingFile="build/deploy.xml"/>
   </target>
 
-  <target name="production" description="Включает и выключает режим production">
+  <target name="production" description="Turns on/off production mode">
     <if>
       <available property="production" file="protected/config/production.php" type="file"></available>
       <then>
-        <input message="Желаете выключить режим production [y/n]?" propertyName="answer" defaultValue="n"></input>
+        <input message="Do you want to turn on production mode [y/n]?" propertyName="answer" defaultValue="n"></input>
         <if>
           <equals arg1="${answer}" arg2="y"></equals>
           <then>
@@ -171,7 +169,7 @@
         </if>
       </then>
       <else>
-        <input message="Желаете включить режим production [y/n]?" propertyName="answer" defaultValue="n"></input>
+        <input message="Do you want to turn off production mode [y/n]?" propertyName="answer" defaultValue="n"></input>
         <if>
           <equals arg1="${answer}" arg2="y"></equals>
           <then>
