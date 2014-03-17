@@ -133,7 +133,7 @@
     </if>
   </target>
 
-  <target name="revertSchema" description="Restore previous schema">
+  <target name="revertSchema" description="Recover original schema">
     <echo message="git checkout -- .sql/schema.sql"/>
     <exec command="git checkout -- .sql/schema.sql" passthru="true"/>
   </target>

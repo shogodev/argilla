@@ -1,104 +1,182 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="shogocms" basedir="." default="build">
-  <property name = "coverage.database" value = "build/logs/cover.db" />
-  <target name="build" description="Сборка" depends="clearCache, clean, test, phpcs, phpmd, phpcpd, phploc"/>
+<project name="argilla" basedir="." default="build">
+  <property name="coverage.database" value="build/logs/cover.db"/>
+
+  <target name="build" description="Build project" depends="clearCache, clean, phpunit, phpcs, phpmd, phpcpd, phploc"/>
+
   <target name="createSchema" description="Create DB schema">
     <phing phingfile="build/db.xml" target="createSchema"/>
   </target>
+
   <target name="applySchema" description="Apply DB schema">
     <phing phingfile="build/db.xml" target="applySchema"/>
   </target>
+
   <target name="createDump" description="Create DB dump">
     <phing phingfile="build/db.xml" target="createDump"/>
   </target>
+
   <target name="applyDump" description="Apply DB dump">
     <phing phingfile="build/db.xml" target="applyDump"/>
   </target>
+
   <target name="migrate" description="Apply migrations">
     <phing phingfile="build/db.xml" target="migrate"/>
   </target>
-  <target name="revertSchema" description="Восстановить оригинальный файл схемы (git)">
+
+  <target name="revertSchema" description="Recover original schema">
     <phing phingFile="build/db.xml" target="revertSchema"/>
   </target>
-  <target name="clearCache">
-    <echo>Clear assets folders</echo>
-    <exec command="rm -rf *" dir="assets/"/>
-    <exec command="rm -rf *" dir="backend/assets/"/>
+
+  <target name="clearCache" description="Clean assets and runtime cache directories">
+    <echo message="Cleaning assets and runtime cache directories"/>
+    <delete includeemptydirs="true">
+      <fileset dir="assets/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="backend/assets/">
+        <include name="**"/>
+      </fileset>
+      <fileset dir="protected/runtime/cache/">
+        <include name="**"/>
+      </fileset>
+    </delete>
   </target>
-  <target name = "clean">
-    <exec command = "rm build/logs/*.xml" />
-    <exec command = "rm build/logs/*.csv" />
-    <exec command = "rm -Rf *" dir = "protected/runtime" />
+
+  <target name="clean" description="Clean Jenkins' logs and runtime directory">
+    <!--Удаляем логи Jenkins-->
+    <if>
+      <available property="checkDirectory" file="build/logs/" type="dir"></available>
+      <then>
+        <echo message="Cleaning Jenkins' logs"/>
+        <delete>
+          <fileset dir="build/logs/">
+            <include name="*.xml"/>
+            <include name="*.csv"/>
+          </fileset>
+        </delete>
+      </then>
+    </if>
+    <echo message="Cleaning runtime directory"/>
+    <delete>
+      <fileset dir="protected/runtime/">
+        <include name="**"/>
+      </fileset>
+    </delete>
+    <!--todo: Ждем Yii 1.1.15, тогда failonerror="false" можно убрать -->
+    <delete failonerror="false">
+      <fileset dir="backend/protected/runtime/">
+        <include name="**"/>
+      </fileset>
+    </delete>
   </target>
-  <target name = "getCheckingApp">
+
+  <target name="getCheckingApp" hidden="true">
     <!-- это используется для того, чтобы можно было говорить phing -Dfrontend или phing -Dbackend, указывая фингу с каким приложением мы работаем -->
     <if>
       <and>
-        <isset property = "frontend" />
+        <isset property="frontend"/>
         <not>
-          <isset property = "backend" />
+          <isset property="backend"/>
         </not>
       </and>
       <then>
-        <property name = "noBackend" value = "1" />
+        <property name="noBackend" value="1"/>
       </then>
     </if>
     <if>
       <and>
-        <isset property = "backend" />
+        <isset property="backend"/>
         <not>
-          <isset property = "frontend" />
+          <isset property="frontend"/>
         </not>
       </and>
       <then>
-        <property name = "noFrontend" value = "1" />
+        <property name="noFrontend" value="1"/>
       </then>
     </if>
   </target>
-  <target name = "phpcs" description="PHP Codesniffer" depends = "getCheckingApp">
-    <phing phingFile = "build/runners/checker.xml">
-      <property name = "whatToCheck" value = "phpcs" />
+
+  <target name="phpcs" description="PHP Codesniffer" depends="getCheckingApp">
+    <phing phingFile="build/runners/checker.xml">
+      <property name="whatToCheck" value="phpcs"/>
     </phing>
   </target>
-  <target name = "phpmd" description = "PHP Mess Detector" depends = "getCheckingApp">
-    <phing phingFile = "build/runners/checker.xml">
-      <property name = "whatToCheck" value = "phpmd" />
+
+  <target name="phpmd" description="PHP Mess Detector" depends="getCheckingApp">
+    <phing phingFile="build/runners/checker.xml">
+      <property name="whatToCheck" value="phpmd"/>
     </phing>
   </target>
-  <target name = "phpcpd" description = "PHP Copy-Paste detector" depends = "getCheckingApp">
-    <phing phingFile = "build/runners/checker.xml">
-      <property name = "whatToCheck" value = "phpcpd" />
+
+  <target name="phpcpd" description="PHP Copy-Paste detector" depends="getCheckingApp">
+    <phing phingFile="build/runners/checker.xml">
+      <property name="whatToCheck" value="phpcpd"/>
     </phing>
   </target>
-  <target name = "phploc" depends = "getCheckingApp" description = "Снятие метрик phploc">
-    <phing phingFile = "build/runners/checker.xml">
-      <property name = "whatToCheck" value = "phploc" />
+
+  <target name="phploc" depends="getCheckingApp" description="Get phploc's metriks">
+    <phing phingFile="build/runners/checker.xml">
+      <property name="whatToCheck" value="phploc"/>
     </phing>
   </target>
-  <target name = "phpunit" description = "PHPUnit" depends = "getCheckingApp">
-	  <phing phingFile = "build/runners/checker.xml">
-      <property name = "whatToCheck" value = "phpunit" />
+
+  <target name="phpunit" depends="getCheckingApp" description="Run PHPunit tests">
+    <phing phingFile="build/runners/checker.xml">
+      <property name="whatToCheck" value="phpunit"/>
     </phing>
   </target>
-  <target name = "test" depends = "phpunit" description = "Запуск тестов" />
-  <target name="fixAccessRights" description="Починить права доступа">
-	  <phing phingFile = "build/chmod.xml" />
+
+  <target name="fixAccessRights" description="Set access rights to files and directories">
+    <phing phingFile="build/chmod.xml"/>
   </target>
-  <target name = "coverage" description = "Собрать code-coverage">
-	  <phing phingFile = "build/coverage.xml" />
+
+  <target name="coverage" description="Build code-coverage report">
+    <phing phingFile="build/coverage.xml"/>
   </target>
-  <target name = "jsPack" description = "Pack JS">
-    <phing phingFile = "build/bootstrap.xml" target = "packJS" />
+
+  <target name="jsPack" description="Pack JS">
+    <phing phingFile="build/bootstrap.xml" target="packJS"/>
   </target>
-  <target name = "jsCompile" description = "Compile JS">
-    <phing phingFile = "build/bootstrap.xml" target = "compileJS" />
+
+  <target name="jsCompile" description="Compile JS">
+    <phing phingFile="build/bootstrap.xml" target="compileJS"/>
   </target>
-  <target name = "addPassword" description = "Добавить пароль для пользователя">
-    <phing phingFile = "build/passwords.xml" target = "addPassword" />
+
+  <target name="addPassword" description="Add backend user">
+    <phing phingFile="build/passwords.xml" target="addPassword"/>
   </target>
-  <target name = "bootstrap" description = "Do a bootstrap process">
-    <phing phingFile = "build/bootstrap.xml" />
+
+  <target name="bootstrap" description="Do a bootstrap process">
+    <phing phingFile="build/bootstrap.xml"/>
     <echo message="bootstrap done"/>
   </target>
 
+  <target name="deploy" description="Deploy project">
+    <phing phingFile="build/deploy.xml"/>
+  </target>
+
+  <target name="production" description="Turns on/off production mode">
+    <if>
+      <available property="production" file="protected/config/production.php" type="file"></available>
+      <then>
+        <input message="Do you want to turn on production mode [y/n]?" propertyName="answer" defaultValue="n"></input>
+        <if>
+          <equals arg1="${answer}" arg2="y"></equals>
+          <then>
+            <delete file="protected/config/production.php"></delete>
+          </then>
+        </if>
+      </then>
+      <else>
+        <input message="Do you want to turn off production mode [y/n]?" propertyName="answer" defaultValue="n"></input>
+        <if>
+          <equals arg1="${answer}" arg2="y"></equals>
+          <then>
+            <copy file="protected/config/production.php.sample" tofile="protected/config/production.php"></copy>
+          </then>
+        </if>
+      </else>
+    </if>
+  </target>
 </project>
