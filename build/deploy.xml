@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="argilla_deploy" basedir="." default="deploy">
+  <import file="build.xml"/>
+
+  <target name="deploy" description="Deploy">
+
+    <available property="production" file="protected/config/production.php" type="file"></available>
+
+    <phingcall target="pull"></phingcall>
+
+    <phing phingfile="build.xml" target="migrate" haltonfailure="true"/>
+
+    <if>
+      <equals arg1="${production}" arg2="true"></equals>
+      <then>
+        <phing phingfile="build.xml" target="jsCompile" haltonfailure="true"/>
+      </then>
+      <else>
+        <phing phingfile="build.xml" target="jsPack" haltonfailure="true"/>
+      </else>
+    </if>
+
+    <phing phingfile="build.xml" target="clearCache" haltonfailure="true"/>
+
+    <phingcall target="checkNotCommittedChanges"></phingcall>
+
+    <if>
+      <not><equals arg1="${production}" arg2="true"></equals></not>
+      <then>
+        <echo message="Внимание !!! Режим production выключен!" level="error"/>
+      </then>
+    </if>
+
+  </target>
+
+  <target name="pull">
+    <exec command="git pull origin master" logoutput="true" passthru="true" checkreturn="true"/>
+  </target>
+
+  <target name="checkNotCommittedChanges">
+    <exec command="git status" checkreturn="true" passthru="false" outputProperty="outputData"/>
+
+    <if>
+      <or>
+        <contains string="${outputData}" substring="Changes not staged for commit:"/>
+        <contains string="${outputData}" substring="Untracked files:"/>
+      </or>
+      <then>
+        <echo message="Внимание !!! Имеются не закомиченные изменения!" level="error"/>
+        <echo message="${outputData}" level="warning"/>
+      </then>
+    </if>
+
+  </target>
+
+</project>
