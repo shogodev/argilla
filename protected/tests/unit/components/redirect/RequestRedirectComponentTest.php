@@ -46,7 +46,7 @@ class RequestRedirectComponentTest extends CDbTestCase
 
   /**
    * @expectedException TRedirectException
-   * @expectedExceptionMessage Location: http://unittests.dev.shogo.ru/
+   * @expectedExceptionMessage Location: /
    */
   public function testMakeIndexRedirect1()
   {
@@ -56,7 +56,7 @@ class RequestRedirectComponentTest extends CDbTestCase
 
   /**
    * @expectedException TRedirectException
-   * @expectedExceptionMessage Location: http://unittests.dev.shogo.ru/
+   * @expectedExceptionMessage Location: /
    */
   public function testMakeIndexRedirect2()
   {
@@ -66,7 +66,7 @@ class RequestRedirectComponentTest extends CDbTestCase
 
   /**
    * @expectedException TRedirectException
-   * @expectedExceptionMessage Location: http://unittests.dev.shogo.ru/testUrl/
+   * @expectedExceptionMessage Location: /testUrl/
    */
   public function testMakeIndexRedirect()
   {
@@ -76,7 +76,7 @@ class RequestRedirectComponentTest extends CDbTestCase
 
   /**
    * @expectedException TRedirectException
-   * @expectedExceptionMessage Location: http://unittests.dev.shogo.ru/elki_palki/
+   * @expectedExceptionMessage Location: /elki_palki/
    * @expectedExceptionCode 301
    */
   public function testFindByKey()
@@ -88,7 +88,7 @@ class RequestRedirectComponentTest extends CDbTestCase
 
   /**
    * @expectedException TRedirectException
-   * @expectedExceptionMessage Location: http://unittests.dev.shogo.ru/
+   * @expectedExceptionMessage Location: /
    * @expectedExceptionCode 301
    */
   public function testIndexRedirect()

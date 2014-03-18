@@ -43,13 +43,13 @@ class FUrlManagerTest extends CTestCase
     $this->assertEquals('/info/about.html', $url);
 
     $url = $this->manager->createUrl('info/index', array('url' => '{HTTP_HOST}/about'), '&');
-    $this->assertEquals('http://unittests.dev.shogo.ru/about', $url);
+    $this->assertEquals(Yii::app()->request->getHostInfo().'/about', $url);
 
     $url = $this->manager->createUrl('info/index', array('url' => '{HTTP_HOST}/about/'), '&');
-    $this->assertEquals('http://unittests.dev.shogo.ru/about/', $url);
+    $this->assertEquals(Yii::app()->request->getHostInfo().'/about/', $url);
 
     $url = $this->manager->createUrl('info/index', array('url' => '{HTTP_HOST}/about.html'), '&');
-    $this->assertEquals('http://unittests.dev.shogo.ru/about.html', $url);
+    $this->assertEquals(Yii::app()->request->getHostInfo().'/about.html', $url);
 
     $url = $this->manager->createUrl('info/index', array('url' => 'http://host/about/'), '&');
     $this->assertEquals('http://host/about/', $url);
