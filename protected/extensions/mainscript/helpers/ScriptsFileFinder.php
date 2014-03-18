@@ -30,12 +30,12 @@ class ScriptsFileFinder
 
     'plugins' => array(
       'dir_name' => '/js/jquery.plugins',
-      'pattern'  => '/.+\.js/'
+      'pattern'  => '/^.+\.js$/'
     ),
 
     'base' => array(
       'dir_name' => '/js',
-      'pattern'  => '/.+\.js/'
+      'pattern'  => '/^.+\.js$/'
     ),
   );
 
@@ -94,11 +94,12 @@ class ScriptsFileFinder
 
       foreach( $files as $file )
       {
-        $filePathParts = explode(DIRECTORY_SEPARATOR, $file);
-        $fileName = end($filePathParts);
+        $fileName = pathinfo($file, PATHINFO_BASENAME);
 
         if( preg_match($script['pattern'], $fileName) && !in_array($fileName, ScriptAbstractCreator::$scripts) )
+        {
           $this->files[$file] = $file;
+        }
       }
     }
   }
