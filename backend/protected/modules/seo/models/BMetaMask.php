@@ -9,6 +9,7 @@
  * @method static BMetaMask model(string $class = __CLASS__)
  *
  * @property string $url_mask
+ * @property string $visible
  */
 class BMetaMask extends BActiveRecord
 {
@@ -29,7 +30,8 @@ class BMetaMask extends BActiveRecord
 
   public function beforeSave()
   {
-    $this->url_mask = $this->cutDomain($this->url_mask);
+    $this->url_mask = Utils::getRelativeUrl($this->url_mask);
+
     return parent::beforeSave();
   }
 
@@ -52,17 +54,5 @@ class BMetaMask extends BActiveRecord
     $criteria->compare('visible', $this->visible);
 
     return $criteria;
-  }
-
-  protected function cutDomain($url)
-  {
-    $parse_url = parse_url($url);
-    $path      = !empty($parse_url['path']) ? $parse_url['path'] : $url;
-    $path      = !preg_match('/^\/.*/', $path) ? '/'.$path : $path;
-
-    if( strlen($path) > 1 && substr($path, -1) == '/' )
-      $path = substr($path, 0, strlen($path) - 1);
-
-    return $path;
   }
 }

@@ -12,10 +12,10 @@ return array(
 
   // news
   'newsSection' => array('news/section', 'pattern' => '<url:(news|articles|reviews)>/<page:\d+>', 'defaultParams' => array('page' => 1)),
-  'newsOne'     => array('news/one',     'pattern' => 'news/<url:\w+>.html'),
+  'newsOne'     => array('news/one',     'pattern' => 'news/<url:\w+>', 'urlSuffix' => '.html'),
 
   // info
-  'info' => array('info/index', 'pattern' => 'info/<url:\w+>.html'),
+  'info' => array('info/index', 'pattern' => 'info/<url:\w+>'),
 
   // contacts
   'contact' => array('contact/index', 'pattern' => 'contact'),
