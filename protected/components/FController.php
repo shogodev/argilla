@@ -40,28 +40,6 @@ class FController extends CController
    */
   protected $rememberThisPage;
 
-  /**
-   * @param CAction $action
-   *
-   * @return void
-   */
-  protected function afterAction($action)
-  {
-    $excludedPages = array(
-      'user/login',
-      'user/logout',
-      'user/registration',
-      'user/restore',
-      'user/profile',
-      'user/data',
-    );
-
-    if( !Yii::app()->request->isAjaxRequest && !in_array(Yii::app()->request->pathInfo, $excludedPages) && $this->shouldRememberReturnUrl() )
-      Yii::app()->user->setReturnUrl($this->getCurrentUrl());
-
-    parent::afterAction($action);
-  }
-
   public function behaviors()
   {
     return array(
@@ -155,97 +133,89 @@ class FController extends CController
     return $this->clips[$id];
   }
 
+  /**
+   * http://help.yandex.ru/webmaster/?id=1111858#canonical
+   *
+   * @return string
+   */
   public function getCanonicalUrl()
   {
-    // http://help.yandex.ru/webmaster/?id=1111858#canonical
     $path = CHtml::encode(Yii::app()->request->getPathInfo());
-    $url  = Yii::app()->request->getHostInfo().($path ? '/'.$this->normalizeUrl($path) : '/');
+    $url  = Yii::app()->request->getHostInfo().($path ? '/'.Utils::normalizeUrl($path) : '/');
 
     return $url;
   }
 
+  /**
+   * @return string
+   */
   public function getCurrentUrl()
   {
-    return $this->createUrl($this->id."/".$this->action->id, $this->getActionParams(true));
+    return $this->createUrl($this->id.'/'.$this->action->id, $this->getActionParams(true));
   }
 
+  /**
+   * @return string
+   */
   public function getCurrentAbsoluteUrl()
   {
-    return $this->createAbsoluteUrl($this->id."/".$this->action->id, $this->getActionParams(true));
+    return $this->createAbsoluteUrl($this->id.'/'.$this->action->id, $this->getActionParams(true));
   }
 
+  /**
+   * @param bool $cutDefaultParams
+   *
+   * @return array
+   */
   public function getActionParams($cutDefaultParams = false)
   {
     $params = $_GET;
 
     if( $cutDefaultParams )
     {
-      $defaultParams = array();
-
-      $rules = Yii::app()->urlManager->rules;
-
-      foreach($rules as $rule)
-      {
-        if( Yii::app()->controller->route == Arr::get($rule, 0) )
-        {
-          if( isset($rule['defaultParams']) )
-            $defaultParams = $rule['defaultParams'];
-
-          break;
-        }
-      }
-
-      if( !empty($defaultParams) )
-        foreach($defaultParams as $key => $value)
-          unset($params[$key]);
+      $rule = Arr::get(Yii::app()->urlManager->rules, Yii::app()->urlManager->ruleIndex);
+      foreach(Arr::get($rule, 'defaultParams', array()) as $key => $value)
+        unset($params[$key]);
     }
 
     return $params;
   }
 
   /**
-   * Надо ли запоминать текущую страницу
+   * @param CAction $action
+   *
+   * @return void
+   */
+  protected function afterAction($action)
+  {
+    if( $this->shouldRememberReturnUrl() )
+    {
+      Yii::app()->user->setReturnUrl($this->getCurrentUrl());
+    }
+
+    parent::afterAction($action);
+  }
+
+  /**
+   * Запоминаем или нет адрес текущей страницы в сессию пользователя
    *
    * @return bool
    */
   protected function shouldRememberReturnUrl()
   {
-    if( $this->rememberThisPage === null )
-      $this->checkShouldRememberReturnUrl();
+    $excludedPages = array(
+      'user/login',
+      'user/logout',
+      'user/registration',
+      'user/restore',
+      'user/profile',
+      'user/data',
+    );
 
-    return $this->rememberThisPage;
-  }
+    $remember = !in_array(Yii::app()->request->pathInfo, $excludedPages) &&
+                !isset(Yii::app()->errorHandler->error) &&
+                !Yii::app()->request->isAjaxRequest;
 
-  /**
-   * Проверка на необходимость запоминать текущую страницу
-   *
-   * @return void
-   */
-  protected function checkShouldRememberReturnUrl()
-  {
-    $this->rememberThisPage = Yii::app()->errorHandler->error === null;
-  }
-
-  /**
-   * Преобразуем все ссылки к единому формату.
-   *
-   * @param $url
-   *
-   * @return string
-   */
-  protected function normalizeUrl($url)
-  {
-    $url = rtrim($url, '/');
-    $url = str_replace('/?', '?', $url);
-
-    $components = parse_url(rtrim($url, '/'));
-
-    if( !isset($components['path']) )
-      $components['path'] = '';
-
-    $components['path'] .= preg_match("/.+\.\w+$/", $components['path']) ? "" : '/';
-    $components['path']  = preg_replace("/\/+/", "/", $components['path']);
-
-    return Utils::buildUrl($components);
+    return $remember;
   }
 }

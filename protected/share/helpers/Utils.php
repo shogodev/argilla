@@ -201,6 +201,44 @@ class Utils
     return $url;
   }
 
+  /**
+   * Преобразуем ссылку к стандартному формату
+   *
+   * @param $url
+   *
+   * @return string
+   */
+  public static function normalizeUrl($url)
+  {
+    $url = rtrim($url, '/');
+    $url = str_replace('/?', '?', $url);
+
+    $components = parse_url(rtrim($url, '/'));
+
+    if( !isset($components['path']) )
+      $components['path'] = '';
+
+    $components['path'] .= preg_match("/.+\.\w+$/", $components['path']) ? "" : '/';
+    $components['path']  = preg_replace("/\/+/", "/", $components['path']);
+
+    return self::buildUrl($components);
+  }
+
+  /**
+   * Преобразуем абсолютную ссылку в относительную
+   *
+   * @param string $url
+   *
+   * @return string
+   */
+  public static function getRelativeUrl($url)
+  {
+    $parts = Arr::extract(parse_url($url), array('path', 'query', 'fragment'));
+    $parts['path'] = self::normalizeUrl($parts['path']);
+
+    return self::buildUrl($parts);
+  }
+
   public static function generatePassword($length = 8)
   {
     $randKey  = "";

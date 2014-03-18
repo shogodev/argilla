@@ -90,7 +90,7 @@ class FUrlRule extends CUrlRule
     $suffix = $this->urlSuffix === null ? $manager->urlSuffix : $this->urlSuffix;
     $url = strtr($this->template, $tr);
 
-    if( empty($suffix) )
+    if( empty($suffix) && !empty($url) )
       $url = trim($url, '/').'/';
 
     if( $this->hasHostInfo )

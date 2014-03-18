@@ -30,6 +30,7 @@ class FUrlManagerTest extends CTestCase
       'info' => array('info/index', 'pattern' => 'info/<url:\w+>'),
       'slash' => array('info/slash', 'pattern' => 'info/<url:\w+>/'),
       'article' => array('info/article', 'pattern' => 'info/<url:\w+>', 'urlSuffix' => '.html'),
+      'index' => array('index/index', 'pattern' => '/'),
     ));
 
     $url = $this->manager->createUrl('info/index', array('url' => 'about'), '&');
@@ -55,5 +56,8 @@ class FUrlManagerTest extends CTestCase
 
     $url = $this->manager->createUrl('info/index', array('url' => 'http://host/about'), '&');
     $this->assertEquals('http://host/about', $url);
+
+    $url = $this->manager->createUrl('index/index', array(), '&');
+    $this->assertEquals('/', $url);
   }
 }

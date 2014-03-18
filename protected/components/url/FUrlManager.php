@@ -5,10 +5,17 @@
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
  * @package frontend.components.url
+ *
+ * @property bool $defaultParamsUsed
  */
 class FUrlManager extends CUrlManager
 {
   public $urlRuleClass = 'FUrlRule';
+
+  /**
+   * @var mixed Индекс совпавшего правила из массива rules
+   */
+  public $ruleIndex;
 
   public $urlCreatorClass = 'ReplaceRedirectComponent';
 
@@ -54,6 +61,22 @@ class FUrlManager extends CUrlManager
       $url = parent::createUrl($route, $params, $ampersand);
       return $this->urlCreator->getUrl($url);
     }
+  }
+
+  /**
+   * @param CHttpRequest $request
+   *
+   * @return string route (controllerID/actionID)
+   */
+  public function parseUrl($request)
+  {
+    $route = parent::parseUrl($request);
+
+    foreach($this->rules as $index => $rule)
+      if( Arr::get($rule, 0) === $route )
+        $this->ruleIndex = $index;
+
+    return $route;
   }
 
   /**

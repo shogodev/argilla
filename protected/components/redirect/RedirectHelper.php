@@ -58,19 +58,4 @@ class RedirectHelper
   {
     return preg_match('/^\/index\.php(.*)/', $url, $matches) > 0;
   }
-
-  /**
-   * @param string $template
-   *
-   * @return string
-   */
-  public static function prepareReplacement($template)
-  {
-    $template = preg_replace_callback("/\([^\)]+\)/", function(){
-      static $position = 1;
-      return '$'.$position++;
-    }, trim($template, '#'));
-
-    return $template;
-  }
 }

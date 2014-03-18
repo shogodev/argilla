@@ -35,4 +35,19 @@ class UtilsTest extends CTestCase
       $this->assertEquals($url, $processedUrl);
     }
   }
+
+  public function testGetRelativeUrl()
+  {
+    $urls = array(
+      'http://www.argilla.ru/info/about/' => '/info/about/',
+      'http://www.argilla.ru/info/about' => '/info/about/',
+      'http://www.argilla.ru/contacts.html' => '/contacts.html',
+    );
+
+    foreach($urls as $key => $url)
+    {
+      $processedUrl = Utils::getRelativeUrl($key);
+      $this->assertEquals($url, $processedUrl);
+    }
+  }
 }

@@ -5,7 +5,7 @@
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
  */
-class RequestRedirectTest extends CDbTestCase
+class RequestRedirectComponentTest extends CDbTestCase
 {
   protected $fixtures = array(
     'seo_redirect' => 'Redirect'
@@ -82,6 +82,18 @@ class RequestRedirectTest extends CDbTestCase
   public function testFindByKey()
   {
     $component = new RequestRedirectComponent('/palki/');
+    $component->init();
+    $component->processRequest();
+  }
+
+  /**
+   * @expectedException TRedirectException
+   * @expectedExceptionMessage Location: http://unittests.dev.shogo.ru/
+   * @expectedExceptionCode 301
+   */
+  public function testIndexRedirect()
+  {
+    $component = new RequestRedirectComponent('/argilla/');
     $component->init();
     $component->processRequest();
   }

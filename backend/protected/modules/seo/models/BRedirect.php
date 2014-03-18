@@ -5,6 +5,11 @@
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.seo
+ *
+ * @property string $base
+ * @property string $target
+ * @property integer $type_id
+ * @property integer $visible
  */
 
 Yii::import('frontend.components.redirect.RedirectHelper');
@@ -71,36 +76,10 @@ class BRedirect extends BActiveRecord
    */
   protected function beforeSave()
   {
-    $this->base = $this->prepareUrl($this->base);
-    $this->target = $this->prepareUrl($this->target);
+    $this->base = Utils::getRelativeUrl($this->base);
+    $this->target = Utils::getRelativeUrl($this->target);
 
     return parent::beforeSave();
-  }
-
-  /**
-   * Удаление домента из строки url
-   *
-   * @param string $string
-   *
-   * @return string
-   */
-  public function prepareUrl($string)
-  {
-    $parts = parse_url($string);
-    $string = '';
-
-    if( !empty($parts['path']) )
-    {
-      $string .= '/'.ltrim($parts['path'], '/').(RedirectHelper::needTrailingSlash($parts['path']) ? '/' : '');
-    }
-
-    if( !empty($parts['query']) )
-      $string .= '?'.$parts['query'];
-
-    if( !empty($parts['fragment']) )
-      $string = '#'.$parts['fragment'];
-
-    return $string;
   }
 
   /**

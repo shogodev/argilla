@@ -8,4 +8,5 @@ return array(
   '5' => ['id' => 5, 'base' => '/figurnye/', 'target' => '', 'type_id' => 404, 'visible' => 1],
   '6' => ['id' => 6, 'base' => '#/lyzhnoe_snaryazhenie/(\d*)#', 'target' => '/aksessuary_dlya_lyzh/$1', 'type_id' => 1, 'visible' => 1],
   '7' => ['id' => 7, 'base' => '/lyzhi_begovie/', 'target' => '/begovie/', 'type_id' => 1, 'visible' => 1],
+  '8' => ['id' => 8, 'base' => '/argilla/', 'target' => '/', 'type_id' => 301, 'visible' => 1],
 );
