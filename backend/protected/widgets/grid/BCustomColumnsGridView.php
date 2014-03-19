@@ -35,7 +35,7 @@ class BCustomColumnsGridView extends BGridView
     $this->columns = $this->getGridColumns();
 
     array_push($this->columns, array('class' => 'BButtonColumn'));
-    array_unshift($this->columns, array('name' => 'id', 'class' => 'BPkColumn'));
+    array_unshift($this->columns, array('name' => 'id', 'class' => 'BPkColumn', 'filter' => true));
 
     $this->mergeTemplateColumns($this->templateColumns);
     parent::init();

@@ -39,10 +39,16 @@ class AssociatedFilterBehavior extends CActiveRecordBehavior
      */
     $criteria = $event->params['criteria'];
 
-    if( !empty($this->associated) )
-      $criteria->addInCondition('id', BAssociation::model()->getAssociatedKeys());
-    elseif( $this->associated === '0' )
-      $criteria->addNotInCondition('id', BAssociation::model()->getAssociatedKeys());
+    if( isset($this->associated) )
+    {
+      $field = $this->owner->tableAlias.'.id';
+      $keys = BAssociation::model()->getAssociatedKeys();
+
+      if( !empty($this->associated) )
+        $criteria->addInCondition($field, $keys);
+      elseif( $this->associated === '0' )
+        $criteria->addNotInCondition($field, $keys);
+    }
 
     return $criteria;
   }
