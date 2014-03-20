@@ -5,66 +5,96 @@
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
  * @package frontend.components.url
+ *
+ * @property bool $defaultParamsUsed
  */
 class FUrlManager extends CUrlManager
 {
   public $urlRuleClass = 'FUrlRule';
 
-  public $isDefaultParamsUsed = false;
+  /**
+   * @var mixed Индекс совпавшего правила из массива rules
+   */
+  public $ruleIndex;
 
+  public $urlCreatorClass = 'ReplaceRedirectComponent';
+
+  /**
+   * @var ReplaceRedirectComponent
+   */
+  protected $urlCreator;
+
+  /**
+   * @var bool Использовались ли при построении ссылки параметры по-умолчанию
+   */
+  private $defaultParamsUsed = false;
+
+  public function init()
+  {
+    parent::init();
+
+    $this->urlCreator = Yii::createComponent($this->urlCreatorClass);
+    $this->urlCreator->init();
+  }
+
+  public function getDefaultParamsUsed()
+  {
+    return $this->defaultParamsUsed;
+  }
+
+  /**
+   * @param $value
+   */
+  public function setDefaultParamsUsed($value)
+  {
+    $this->defaultParamsUsed = $value;
+  }
+
+  public function createUrl($route, $params = array(), $ampersand = '&')
+  {
+    if( $this->hasStaticPatterns($params) )
+    {
+      return $this->urlCreator->getStaticUrl($params['url']);
+    }
+    else
+    {
+      $url = parent::createUrl($route, $params, $ampersand);
+      return $this->urlCreator->getUrl($url);
+    }
+  }
+
+  /**
+   * @param CHttpRequest $request
+   *
+   * @return string route (controllerID/actionID)
+   */
+  public function parseUrl($request)
+  {
+    $route = parent::parseUrl($request);
+
+    foreach($this->rules as $index => $rule)
+      if( Arr::get($rule, 0) === $route )
+        $this->ruleIndex = $index;
+
+    return $route;
+  }
+
+  /**
+   * @param mixed $route
+   * @param string $pattern
+   *
+   * @return FUrlRule
+   */
   protected function createUrlRule($route, $pattern)
   {
-    if(is_array($route) && isset($route['class']))
+    if( is_array($route) && isset($route['class']) )
       return new $route['class']($route, $pattern);
     else
       return new $this->urlRuleClass($route, $pattern);
   }
-}
 
-class FUrlRule extends CUrlRule
-{
-  /**
-   * @param FUrlManager $manager
-   * @param CHttpRequest $request
-   * @param string $pathInfo
-   * @param string $rawPathInfo
-   *
-   * @return mixed
-   */
-  public function parseUrl($manager, $request, $pathInfo, $rawPathInfo)
+  private function hasStaticPatterns(array $params)
   {
-    $result = parent::parseUrl($manager, $request, $pathInfo, $rawPathInfo);
-
-    if( $result === false && !empty($this->defaultParams) )
-    {
-      // добавляем из маршрута параметры по-умолчанию и снова проверяем правило с ними
-      foreach($this->defaultParams as $param)
-        $pathInfo .= '/'.$param;
-
-      if( $result = parent::parseUrl($manager, $request, $pathInfo, $rawPathInfo) )
-      {
-        $manager->isDefaultParamsUsed = true;
-      }
-    }
-
-    return $result;
-  }
-
-  public function createUrl($manager, $route, $params, $ampersand)
-  {
-    // если в параметрах построения ссылки не заданы какие-то параметры по-умолчанию, то добавляем их
-    foreach($this->defaultParams as $key => $value)
-      if( !isset($params[$key]) )
-        $params[$key] = '';
-
-    // временно скидываем параметры по-умолчанию, так как все недостающие уже перенесены в параметры построения
-    // и в родительском методе проверка на них не нужна
-    $defaultParams       = $this->defaultParams;
-    $this->defaultParams = array();
-
-    $url                 = parent::createUrl($manager, $route, $params, $ampersand);
-    $this->defaultParams = $defaultParams;
-
-    return $url;
+    return isset($params['url']) && $this->urlCreator->hasStaticPatterns($params['url']);
   }
 }

@@ -10,13 +10,12 @@
  * @property SClientScript $clientScript
  * @property SAssetManager $assetManager
  * @property ScriptsFactory $mainscript
- * @property UrlCollection $urlCollection
  * @property FWebUser $user
  * @property FUrlManager $urlManager
  * @property SFormatter $format
  * @property Email $email
  * @property SNotification $notification
- * @property RedirectHelper $seoRedirect
+ * @property RequestRedirectComponent $requestRedirect
  * @property EPhpThumb $phpThumb
  */
 class FApplication extends CWebApplication
@@ -25,10 +24,16 @@ class FApplication extends CWebApplication
   {
     parent::init();
 
-    if( empty($this->params->project) && isset($_SERVER['SERVER_NAME']) )
-      $this->params->project = preg_replace("/^www./", '', Yii::app()->request->getServerName());
-
+    $this->setProjectName();
     $this->setMbEncoding();
+  }
+
+  protected function setProjectName()
+  {
+    if( empty($this->params->project) && isset($_SERVER['SERVER_NAME']) )
+    {
+      $this->params->project = preg_replace("/^www./", '', Yii::app()->request->getServerName());
+    }
   }
 
   protected function setMbEncoding()
