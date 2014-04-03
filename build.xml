@@ -160,7 +160,7 @@
     <if>
       <available property="production" file="protected/config/production.php" type="file"></available>
       <then>
-        <input message="Do you want to turn on production mode [y/n]?" propertyName="answer" defaultValue="n"></input>
+        <input message="Do you want to turn off production mode [y/n]?" propertyName="answer" defaultValue="n"></input>
         <if>
           <equals arg1="${answer}" arg2="y"></equals>
           <then>
@@ -169,7 +169,7 @@
         </if>
       </then>
       <else>
-        <input message="Do you want to turn off production mode [y/n]?" propertyName="answer" defaultValue="n"></input>
+        <input message="Do you want to turn on production mode [y/n]?" propertyName="answer" defaultValue="n"></input>
         <if>
           <equals arg1="${answer}" arg2="y"></equals>
           <then>
