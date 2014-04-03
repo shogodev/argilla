@@ -69,4 +69,16 @@ class BOrderController extends BController
     else
       throw new CHttpException(404, 'Ошибка! Пользователь не установлен.');
   }
+
+  public function actionUpdatePaymentStatus($orderId)
+  {
+    $paymentSystem = new PlatronSystem($orderId);
+    $paymentSystem->getPaymentStatus();
+  }
+
+  public function actionCapturePayment($orderId)
+  {
+    $paymentSystem = new PlatronSystem($orderId);
+    $paymentSystem->getCapturePayment();
+  }
 }

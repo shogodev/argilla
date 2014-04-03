@@ -224,8 +224,8 @@ CREATE TABLE `argilla_contact_group` (
   `position` int(11) NOT NULL DEFAULT '10',
   `visible` int(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
-  UNIQUE KEY `sysname` (`sysname`),
   KEY `fk_argilla_contact_group_cid` (`contact_id`),
+  KEY `sysname` (`sysname`),
   CONSTRAINT `fk_argilla_contact_group_cid` FOREIGN KEY (`contact_id`) REFERENCES `argilla_contact` (`id`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8 COMMENT='Группы полей контактов';
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -283,40 +283,6 @@ CREATE TABLE `argilla_dir_countries` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `argilla_dir_delivery`
---
-
-DROP TABLE IF EXISTS `argilla_dir_delivery`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `argilla_dir_delivery` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(128) NOT NULL,
-  `position` int(11) DEFAULT '0',
-  `notice` text,
-  `visible` tinyint(1) DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
--- Table structure for table `argilla_dir_payment`
---
-
-DROP TABLE IF EXISTS `argilla_dir_payment`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `argilla_dir_payment` (
-  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(128) NOT NULL,
-  `position` int(11) DEFAULT '0',
-  `notice` text,
-  `visible` tinyint(1) DEFAULT '0',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `argilla_dir_users`
 --
 
@@ -326,6 +292,36 @@ DROP TABLE IF EXISTS `argilla_dir_users`;
 CREATE TABLE `argilla_dir_users` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(128) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `argilla_faceted_parameter`
+--
+
+DROP TABLE IF EXISTS `argilla_faceted_parameter`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `argilla_faceted_parameter` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `parameter` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `argilla_faceted_search`
+--
+
+DROP TABLE IF EXISTS `argilla_faceted_search`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `argilla_faceted_search` (
+  `id` bigint(20) unsigned NOT NULL AUTO_INCREMENT,
+  `product_id` int(10) unsigned NOT NULL,
+  `param_id` varchar(50) NOT NULL,
+  `value` varchar(512) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -605,8 +601,8 @@ CREATE TABLE `argilla_order` (
   `email` varchar(255) NOT NULL,
   `phone` varchar(255) NOT NULL,
   `address` varchar(255) NOT NULL,
-  `delivery_id` int(10) unsigned NOT NULL,
-  `payment_id` int(10) unsigned NOT NULL,
+  `delivery_id` int(10) unsigned DEFAULT NULL,
+  `payment_id` int(10) unsigned DEFAULT NULL,
   `comment` text NOT NULL,
   `type` varchar(255) NOT NULL DEFAULT 'basket',
   `sum` decimal(10,2) NOT NULL,
@@ -619,9 +615,64 @@ CREATE TABLE `argilla_order` (
   KEY `user_id` (`user_id`),
   KEY `delivery_id` (`delivery_id`),
   KEY `payment_id` (`payment_id`),
-  CONSTRAINT `argilla_order_ibfk_1` FOREIGN KEY (`delivery_id`) REFERENCES `argilla_dir_delivery` (`id`) ON UPDATE CASCADE,
-  CONSTRAINT `argilla_order_ibfk_2` FOREIGN KEY (`payment_id`) REFERENCES `argilla_dir_payment` (`id`) ON UPDATE CASCADE,
-  CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `argilla_user` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `argilla_user` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `argilla_order_ibfk_1` FOREIGN KEY (`delivery_id`) REFERENCES `argilla_order_delivery_type` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `argilla_order_ibfk_2` FOREIGN KEY (`payment_id`) REFERENCES `argilla_order_payment_type` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `argilla_order_delivery_type`
+--
+
+DROP TABLE IF EXISTS `argilla_order_delivery_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `argilla_order_delivery_type` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(128) NOT NULL,
+  `position` int(11) DEFAULT '0',
+  `notice` text,
+  `visible` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `argilla_order_payment`
+--
+
+DROP TABLE IF EXISTS `argilla_order_payment`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `argilla_order_payment` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `order_id` int(10) unsigned NOT NULL,
+  `system_id` varchar(255) DEFAULT 'platron',
+  `payment_type_id` int(11) DEFAULT NULL,
+  `payment_id` int(11) DEFAULT NULL,
+  `status` varchar(255) DEFAULT NULL,
+  `captured_status` int(11) DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  KEY `order_id` (`order_id`),
+  CONSTRAINT `argilla_order_payment_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `argilla_order` (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `argilla_order_payment_type`
+--
+
+DROP TABLE IF EXISTS `argilla_order_payment_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `argilla_order_payment_type` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(128) NOT NULL,
+  `position` int(11) DEFAULT '0',
+  `notice` text,
+  `visible` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -721,6 +772,25 @@ CREATE TABLE `argilla_order_status_history` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `argilla_platron_payment_type`
+--
+
+DROP TABLE IF EXISTS `argilla_platron_payment_type`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `argilla_platron_payment_type` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `key` varchar(50) NOT NULL,
+  `name` varchar(128) NOT NULL,
+  `position` int(11) DEFAULT '0',
+  `notice` text,
+  `img` varchar(255) DEFAULT NULL,
+  `visible` tinyint(1) DEFAULT '0',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `argilla_product`
 --
 
@@ -797,7 +867,7 @@ CREATE TABLE `argilla_product_category` (
   `notice` text,
   `content` text,
   `group_id` int(10) unsigned DEFAULT NULL,
-  `visible` tinyint(1) DEFAULT NULL,
+  `visible` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `argilla_product_category_ibfk_1` (`group_id`),
   CONSTRAINT `argilla_product_category_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `argilla_product_category` (`id`)
@@ -834,7 +904,7 @@ CREATE TABLE `argilla_product_collection` (
   `img` varchar(255) DEFAULT NULL,
   `name` varchar(255) NOT NULL DEFAULT '',
   `notice` text,
-  `visible` tinyint(1) DEFAULT NULL,
+  `visible` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -961,6 +1031,7 @@ CREATE TABLE `argilla_product_param_variant` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `param_id` int(10) unsigned NOT NULL,
   `name` text NOT NULL,
+  `notice` varchar(255) DEFAULT NULL,
   `position` int(1) DEFAULT '0',
   PRIMARY KEY (`id`),
   UNIQUE KEY `value` (`param_id`,`name`(64)),
@@ -982,7 +1053,7 @@ CREATE TABLE `argilla_product_section` (
   `url` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `notice` text,
-  `visible` tinyint(1) DEFAULT NULL,
+  `visible` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1032,7 +1103,7 @@ CREATE TABLE `argilla_product_type` (
   `url` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
   `notice` text,
-  `visible` tinyint(1) DEFAULT NULL,
+  `visible` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;

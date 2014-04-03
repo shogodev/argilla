@@ -46,7 +46,7 @@ class BOrderStatus extends BActiveRecord
 
     switch($payment)
     {
-      case BDirPayment::CASH:
+      case BOrderPaymentType::CASH:
         $criteria->addNotInCondition('id', array(
           self::STATUS_WAIT_PAYMENT_NOCASH,
           self::STATUS_WAIT_PAYMENT_PLATRON,
@@ -54,11 +54,11 @@ class BOrderStatus extends BActiveRecord
         ));
       break;
 
-      case BDirPayment::NON_CASH:
+      case BOrderPaymentType::NON_CASH:
         $criteria->addNotInCondition('id', array(self::STATUS_WAIT_PAYMENT_PLATRON));
       break;
 
-      case BDirPayment::EPAY:
+      case BOrderPaymentType::EPAY:
         $criteria->addNotInCondition('id', array(self::STATUS_WAIT_PAYMENT_NOCASH));
       break;
     }

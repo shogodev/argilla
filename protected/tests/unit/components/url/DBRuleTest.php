@@ -5,6 +5,8 @@
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
  */
+Yii::import('frontend.models.behaviors.*');
+
 class DBRuleTest extends CDbTestCase
 {
   protected $fixtures = array(
@@ -18,7 +20,6 @@ class DBRuleTest extends CDbTestCase
 
     parent::setUp();
   }
-
 
   public function testParseUrl()
   {

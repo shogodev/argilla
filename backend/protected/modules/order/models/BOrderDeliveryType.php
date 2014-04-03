@@ -6,7 +6,7 @@
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.order.models
  *
- * @method static BDirDelivery model(string $className = __CLASS__)
+ * @method static BOrderDeliveryType model(string $className = __CLASS__)
  *
  * @property int    $id
  * @property string $name
@@ -14,7 +14,7 @@
  * @property string $notice
  * @property bool   $visible
  */
-class BDirDelivery extends BActiveRecord
+class BOrderDeliveryType extends BActiveRecord
 {
   const SELF_DELIVERY = 1;
 

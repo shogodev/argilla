@@ -41,7 +41,8 @@
  * @property integer $collectionAmount
  * @property integer $collectionItems
  *
- * @mixin ParametersBehavior
+ * @mixin ProductParametersBehavior
+ * @mixin ActiveImageBehavior
  */
 class Product extends FActiveRecord
 {
@@ -50,13 +51,12 @@ class Product extends FActiveRecord
    */
   protected $relatedProduct;
 
-  protected $images;
-
   public function behaviors()
   {
     return array(
       'collectionElement' => array('class' => 'FCollectionElement'),
       'productParametersBehavior' => array('class' => 'ProductParametersBehavior'),
+      'imagesBehavior' => array('class' => 'ActiveImageBehavior', 'imageClass' => 'ProductImage'),
     );
   }
 
@@ -112,51 +112,6 @@ class Product extends FActiveRecord
     }
 
     parent::afterFind();
-  }
-
-  /**
-   * @param string $type
-   *
-   * @return ProductImage
-   */
-  public function getImage($type = 'main')
-  {
-    return Arr::reset($this->getImages($type));
-  }
-
-  /**
-   * @param string $type
-   *
-   * @return ProductImage[]
-   */
-  public function getImages($type = 'main')
-  {
-    if( empty($this->images) )
-    {
-      $images = ProductImage::model()->findAllByAttributes(
-        array('parent' => $this->id),
-        array('order' => 'IF(position, position, 999999999)')
-      );
-
-      $this->setImages($images, $type);
-    }
-
-    return isset($this->images[$type]) ? $this->images[$type] : array();
-  }
-
-  /**
-   * @param array  $images
-   * @param string $type
-   *
-   * @return void
-   */
-  public function setImages($images, $type)
-  {
-    if( !isset($this->images[$type]) )
-      $this->images[$type] = array();
-
-    foreach($images as $image)
-      $this->images[$image['type']][] = $image;
   }
 
   /**
