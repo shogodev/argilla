@@ -108,7 +108,6 @@ class FController extends CController
     {
       $this->meta = new Meta($this->route, $this->getPageTitle());
       $this->meta->findModel($data);
-      $this->meta->registerMetaTags();
     }
 
     return parent::render($view, $data, $return);

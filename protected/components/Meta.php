@@ -43,6 +43,9 @@ class Meta extends CComponent
 
       $this->initMetaData($meta_data, $default_title);
     }
+
+    if( !Yii::app()->clientScript->hasEventHandler('onBeforeRenderClientScript') )
+      Yii::app()->clientScript->attachEventHandler('onBeforeRenderClientScript', array($this, 'registerKeywordsAndDescription'));
   }
 
   /**
@@ -104,15 +107,6 @@ class Meta extends CComponent
     return $this->clear($this->title);
   }
 
-  public function registerMetaTags()
-  {
-    if( !empty($this->description) )
-      Yii::app()->clientScript->registerMetaTag($this->clear($this->description), 'description', null, array(), 'description');
-
-    if( !empty($this->keywords) )
-      Yii::app()->clientScript->registerMetaTag($this->clear($this->keywords), 'keywords', null, array(), 'keywords');
-  }
-
   public function registerClip($id,  $value)
   {
     if( empty($id) )
@@ -123,6 +117,15 @@ class Meta extends CComponent
     $this->title       = strtr($this->title, array("{{$id}}" => $value));
     $this->description = strtr($this->description, array("{{$id}}" => $value));
     $this->keywords    = strtr($this->keywords, array("{{$id}}" => $value));
+  }
+
+  protected function registerKeywordsAndDescription()
+  {
+    if( !empty($this->description) )
+      Yii::app()->clientScript->registerMetaTag($this->clear($this->description), 'description', null, array(), 'description');
+
+    if( !empty($this->keywords) )
+      Yii::app()->clientScript->registerMetaTag($this->clear($this->keywords), 'keywords', null, array(), 'keywords');
   }
 
   /**
