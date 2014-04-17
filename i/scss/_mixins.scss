@@ -58,3 +58,26 @@
   @else if $direction == left {
     border-right-color:  $color; }
 }
+@mixin background-image($gradient) {
+  background-image: -moz-#{$gradient};
+  background-image: -webkit-#{$gradient};
+  background-image: -o-#{$gradient};
+  background-image: $gradient; }
+@mixin filter-gradient($start-color, $end-color, $direction) {
+  @if $direction == vertical {
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr='#{$start-color}', endColorstr='#{$end-color}'); }
+  @else if $direction == horizontal {
+    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=1, startColorstr='#{$start-color}', endColorstr='#{$end-color}'); }
+  .lt-ie8 & {
+    filter: none; }
+}
+@mixin noselect {
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  -webkit-user-select: none;
+  user-select: none; }
+@mixin borderbox {
+  -webkit-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  box-sizing: border-box; }
