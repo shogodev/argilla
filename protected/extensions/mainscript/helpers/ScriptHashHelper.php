@@ -147,7 +147,7 @@ class ScriptHashHelper
       $versionFile = fopen($path, 'w');
       fwrite($versionFile, $this->hash);
       fclose($versionFile);
+      chmod($path, 0664);
     }
   }
-
 }
