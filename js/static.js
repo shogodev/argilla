@@ -67,7 +67,7 @@ function updateElements(data)
 
       if( $(selector).is('input') )
         $(selector).val(data[i]);
-      else if( $('.' + i).hasClass('text') )
+      else if( $(selector).hasClass('text') )
         $(selector).text(data[i]);
       else
       $(selector).replaceWith(data[i]);
@@ -80,8 +80,11 @@ function hideElements(data)
   for(var i in data)
   {
     if( data.hasOwnProperty(i) )
-      if( $('.' + data[i]).length )
-        $('.' + data[i]).hide();
+    {
+      selector = '.' + data[i] + ',#' + data[i];
+      if( $(selector).length )
+        $(selector).hide();
+    }
   }
 }
 

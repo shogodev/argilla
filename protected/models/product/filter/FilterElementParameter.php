@@ -7,9 +7,9 @@
  * @package frontend.models.product.filter
  */
 
-class ProductFilterElementParameter extends ProductFilterElementList
+class FilterElementParameter extends FilterElementCheckbox
 {
-  public $itemClass = 'ProductFilterElementVariant';
+  public $itemClass = 'FilterElementVariant';
 
   /**
    * @var ProductParameterVariant[]

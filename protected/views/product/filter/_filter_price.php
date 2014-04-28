@@ -1,35 +1,43 @@
 <?php
 /**
  * @var ProductController $this
- * @var ProductFilterElementSlider $element
+ * @var FilterElementSlider $element
  */
 ?>
 
-<?php $element->render()?>
-
-<div class="m30">
-  <div class="h3 bb s18 m15">Диапазон цен</div>
-  <div class="nofloat m25">
-    <div class="fl">
-      <span class="s14">от</span>
-      <input id="filter-price-min" class="slider-inp" type="text" value="<?php echo $element->selectedMin?>" />
+<div class="filter-caption m30">Цена <span class="lowercase s14 nn">(руб.)</span></div>
+<div class="m25 filter-block-body">
+  <div class="nofloat m10">
+    <div class="fl helios">
+      <label for="left-filter-price-min" class="s16 white">от</label>
+      <input id="left-filter-price-min" class="slider-inp inp" type="text" value="<?php echo $element->selectedMin?>" />
     </div>
     <div class="fr">
-      <span class="s14">до</span>
-      <input id="filter-price-max" class="slider-inp" type="text" value="<?php echo $element->selectedMax?>" />
+      <label for="left-filter-price-max" class="s16 white">до</label>
+      <input id="left-filter-price-max" class="slider-inp inp" type="text" value="<?php echo $element->selectedMax?>" />
     </div>
   </div>
-  <div class="m25" style="position: relative">
-    <div id="filter-price-slider" class="m5"></div>
-    <div class="price-tooltip" id="filter-price-tooltip">Выбрано моделей: <span id="filter-tooltip-counter"></span> <a href="#" id="filter-tooltip-button">Показать</a></div>
+  <div class="m20" style="position: relative">
+    <div id="left-filter-price-slider" class="m5 filter-price-slider"></div>
+    <?php $element->render()?>
+    <div class="price-tooltip" id="left-filter-price-tooltip">Выбрано товаров: <span id="left-filter-tooltip-counter"></span> <a href="#" id="left-filter-tooltip-button" style="margin-left: 10px">Показать</a></div>
   </div>
-
   <script>
     //<![CDATA[
     $(function(){
-      $('#filter-price-slider').filterSlider({'ranges' : <?php echo $element->getRanges()?>});
+      $('#left-filter-price-slider').filterSlider({
+        'ranges'   :  <?php echo json_encode($element)?>,
+        'controls' : {
+          'hiddenInput'    : '#left-filter-price-input',
+          'minInput'       : '#left-filter-price-min',
+          'maxInput'       : '#left-filter-price-max',
+          'tooltip'        : '#left-filter-price-tooltip',
+          'tooltipButton'  : '#left-filter-tooltip-button',
+          'tooltipCounter' : '#left-filter-tooltip-counter',
+          'filterButton'   : '#left-filter-submit'
+        }
+      });
     });
     //]]>
   </script>
-
 </div>

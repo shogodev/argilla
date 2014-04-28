@@ -2,10 +2,10 @@ $.widget('argilla.filterSlider', {
 
   options : {
     ajaxAction : 'getAmount',
-    ajaxUrl    : document.location.href,
+    ajaxUrl    : null,
+    ajaxMethod : null,
     ranges     : [0, 100000, 0, 100000],
     controls   : {
-      hiddenInput    : '#filter-price-input',
       minInput       : '#filter-price-min',
       maxInput       : '#filter-price-max',
       tooltip        : '#filter-price-tooltip',
@@ -36,13 +36,13 @@ $.widget('argilla.filterSlider', {
 
     options.controls.tooltipButton.on('click', function(e) {
       e.preventDefault();
-      var input = options.controls.hiddenInput;
-      input.val(input.data('value')).change();
+      var input = widget.element.siblings('input');
+      input.val(input.data('value')).trigger('change');
     });
 
     options.controls.filterButton.on('click', function(e) {
       e.preventDefault();
-      options.controls.tooltipButton.click();
+      options.controls.tooltipButton.trigger('click');
     });
 
     options.controls.minInput.on('change', function(e) {
@@ -87,13 +87,25 @@ $.widget('argilla.filterSlider', {
     var widget = this;
     var minInput = widget.options.controls.minInput,
       maxInput = widget.options.controls.maxInput,
-      hiddenInput = widget.options.controls.hiddenInput;
+      hiddenInput = widget.element.siblings('input'),
+      form = hiddenInput.closest('form');
 
-    var value = parseInt(minInput.val()) + '-' + parseInt(maxInput.val()),
-      data = {'action' : widget.options.ajaxAction, 'price' : value};
+    var value = parseInt(minInput.val()) + '-' + parseInt(maxInput.val());
+    var data = form.serializeArray();
+    var ajaxUrl = this.options.ajaxUrl ? this.options.ajaxUrl : form.attr('action');
 
+    for(var i in data)
+      if( data.hasOwnProperty(i) )
+        if( data[i]['name'] == hiddenInput.attr('name') )
+          data[i]['value'] = value;
+
+    data.push({'name' : form.attr('name') + '[submit]', 'value' : 'amount'});
     hiddenInput.data('value', value);
-    $.post(this.options.ajaxUrl, data, function(response){$.proxy(widget._slideCallback(response), widget)}, 'json');
+
+    if( typeof widget.options.ajaxMethod === 'function' )
+      widget.options.ajaxMethod(data);
+    else
+      $.post(ajaxUrl, data, function(response){$.proxy(widget._slideCallback(response), widget)}, 'json');
   },
 
   _setSliderValue : function() {
@@ -107,7 +119,7 @@ $.widget('argilla.filterSlider', {
       return;
 
     if ( !isNaN(minInput.val()) && !isNaN(maxInput.val()) ) {
-      if ( minInput.val() > maxInput.val() ) return;
+      if ( parseInt(minInput.val()) > parseInt(maxInput.val()) ) return;
       this.element.slider('values', 0, minInput.val() );
       this.element.slider('values', 1, maxInput.val() );
       this._stopSlide();

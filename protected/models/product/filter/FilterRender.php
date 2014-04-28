@@ -8,10 +8,10 @@
  *
  * @property string $finishCallback
  */
-class ProductFilterRender extends CComponent
+class FilterRender extends CComponent
 {
   /**
-   * @var ProductFilter $parent
+   * @var Filter $parent
    */
   protected $parent;
 

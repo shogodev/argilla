@@ -8,7 +8,7 @@
  *
  * @var string $notice
  */
-class ProductFilterElementVariant extends ProductFilterElementItem
+class FilterElementVariant extends FilterElementItem
 {
   public $notice;
 }

@@ -7,7 +7,10 @@
  * @package frontend.models.product.filter
  */
 
-class ProductFilterElementList extends ProductFilterElement
+class FilterElementCheckbox extends FilterElement
 {
-
+  protected function getMergeType()
+  {
+    return self::MERGE_TYPE_MULTIPLY_OR;
+  }
 }
