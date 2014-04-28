@@ -105,7 +105,7 @@ class BProductAssignment extends BActiveRecord
 
     foreach($assignments as $key => $item)
       if( is_array($item) )
-        $arrays[$key] = count($item);
+        $arrays[$key] = count($item) === 0 ? 1 : count($item);
 
     if( !empty($arrays) )
     {
@@ -115,13 +115,13 @@ class BProductAssignment extends BActiveRecord
 
         for($i = 0; $i < $count; $i++)
         {
-          $attributes = array('product_id' => $product->id);
+          $attributes = array();
           foreach($assignments as $param => $value)
           {
             $value = is_array($value) ? current($assignments[$paramKey]) : $value;
             $attributes[$param] = $value;
           }
-          $model = $this->saveAssignment($product, $assignments);
+          $model = $this->saveAssignment($product, $attributes);
           $savedIds[] = $model->id;
           next($assignments[$paramKey]);
         }

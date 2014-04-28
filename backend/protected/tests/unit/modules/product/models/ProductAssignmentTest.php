@@ -22,4 +22,20 @@ class ProductAssignmentTest extends CDbTestCase
     foreach($data as $model)
       $this->assertInstanceOf('BProductType', $model);
   }
+
+  public function testSaveAssignments()
+  {
+    $product = BProduct::model()->findByPk(19);
+
+    BProductAssignment::model()->saveAssignments($product, array('section_id' => 1));
+    $productAssignments = BProductAssignment::model()->findByAttributes(array('product_id' => 19));
+    $this->assertEquals(19, $productAssignments->id);
+
+    BProductAssignment::model()->saveAssignments($product, array('section_id' => 2));
+    $this->assertEquals(2, $product->section_id);
+
+    BProductAssignment::model()->saveAssignments($product, array('section_id' => 2, 'type_id' => array(1, 2)));
+    $assignments = BProductAssignment::model()->findAllByAttributes(array('product_id' => 19));
+    $this->assertCount(2, $assignments);
+  }
 }

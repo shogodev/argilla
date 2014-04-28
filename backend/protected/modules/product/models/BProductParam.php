@@ -15,7 +15,7 @@
  * @property string $value
  *
  * @property BProductParamName $param
- * @property BProduct $product
+ * @property BProductParamVariant $variant
  */
 class BProductParam extends BActiveRecord
 {

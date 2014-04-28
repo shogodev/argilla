@@ -25,4 +25,6 @@ return [
   'structure1' => array('product_id' => 16, 'section_id' => 5, 'type_id' => 5, 'category_id' => 0, 'collection_id' => 0, 'visible' => 0),
   'structure2' => array('product_id' => 17, 'section_id' => 6, 'type_id' => 6, 'category_id' => 0, 'collection_id' => 0, 'visible' => 0),
   'structure3' => array('product_id' => 18, 'section_id' => 7, 'type_id' => 7, 'category_id' => 0, 'collection_id' => 0, 'visible' => 0),
+
+  'saveAssign' => array('id' => 19, 'product_id' => 19, 'section_id' => 1, 'type_id' => 0, 'category_id' => 0, 'collection_id' => 0, 'visible' => 0),
 ];
