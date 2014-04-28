@@ -14,14 +14,14 @@
  */
 class ProductAssignment extends FActiveRecord
 {
-  protected $assignments;
+  protected $assignments = array();
 
   public function relations()
   {
     return array(
       'product' => array(self::BELONGS_TO, 'ProductProduct', 'product_id'),
       'section' => array(self::BELONGS_TO, 'ProductSection', 'section_id'),
-      'type' => array(self::BELONGS_TO, 'ProductType', 'type_id'),
+      'collection' => array(self::BELONGS_TO, 'ProductCollection', 'collection_id'),
     );
   }
 
@@ -32,24 +32,17 @@ class ProductAssignment extends FActiveRecord
    */
   public function getAssignments(CDbCriteria $defaultCriteria = null)
   {
-    if( $this->assignments === null )
+    $criteria = $this->buildCriteria($defaultCriteria);
+    $key = md5(serialize($criteria->toArray()));
+
+    if( !isset($this->assignments[$key]) )
     {
-      $criteria = $this->buildCriteria();
-
-      if( $defaultCriteria !== null )
-        $criteria->mergeWith($defaultCriteria);
-
       $builder = new CDbCommandBuilder(Yii::app()->db->getSchema());
-      $command = $builder->createFindCommand(self::tableName(), $criteria);
-      $this->assignments = $command->queryAll();
+      $command = $builder->createFindCommand(self::tableName(), $criteria, 'a');
+      $this->assignments[$key] = $command->queryAll();
     }
 
-    return $this->assignments;
-  }
-
-  public function setAssignments($assignments)
-  {
-    $this->assignments = $assignments;
+    return $this->assignments[$key];
   }
 
   /**
@@ -71,49 +64,44 @@ class ProductAssignment extends FActiveRecord
           'items' => array(),
         );
       }
-
-      if( !isset($menu[$item['section_id']]['items'][$item['type_id']]) )
-      {
-        $menu[$item['section_id']]['items'][$item['type_id']] = array(
-          'label' => $item['type_name'],
-          'url' => array('product/type',
-            'type' => $item['type_url']
-          )
-        );
-      }
     }
 
     return $menu;
   }
 
-  private function buildCriteria()
+  private function buildCriteria(CDbCriteria $defaultCriteria = null)
   {
     $criteria = new CDbCriteria(array('distinct' => true));
 
     $criteria->select = array(
-      't.section_id, t.type_id, t.category_id',
+      'a.section_id, a.collection_id, a.category_id, a.type_id',
       'section.name AS section_name, section.url AS section_url',
       'type.name AS type_name, type.url AS type_url',
     );
 
     $condition = implode(" AND ", array(
+      'a.visible = 1',
       'product.visible = 1',
       'section.visible = 1',
-      'type.visible = 1',
+      '(type.visible IS NULL OR type.visible = 1)',
     ));
 
     $join = array(
       'product' => Product::model()->tableName(),
       'section' => ProductSection::model()->tableName(),
-      'type'    => ProductType::model()->tableName(),
+      'type' => ProductType::model()->tableName(),
     );
 
     array_walk($join, function(&$value, $key){
-      $value = PHP_EOL.'LEFT OUTER JOIN '.$value.' AS '.$key.' ON '.$key.'.id = t.'.$key.'_id';
+      $value = PHP_EOL.'LEFT OUTER JOIN '.$value.' AS '.$key.' ON '.$key.'.id = a.'.$key.'_id';
     });
 
     $criteria->join = implode(" ", $join);
     $criteria->condition = $condition;
+    $criteria->order = 'section.position, type.position';
+
+    if( $defaultCriteria !== null )
+      $criteria->mergeWith($defaultCriteria);
 
     return $criteria;
   }

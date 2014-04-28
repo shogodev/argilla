@@ -128,7 +128,7 @@ class ProductParameterName extends FActiveRecord
     if( $groupProductParameterNameIds = $command->queryColumn() )
     {
       $criteria = isset($criteria) ? $criteria : new CDbCriteria();
-      $criteria->with = CMap::mergeArray($criteria->with, array('group'));
+      $criteria->with = CMap::mergeArray($criteria->with, array('group', 'variants'));
       $criteria->addInCondition('t.parent', $groupProductParameterNameIds);
 
       $parameterNames = $this->findAll($criteria);

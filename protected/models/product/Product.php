@@ -98,30 +98,6 @@ class Product extends FActiveRecord
     if( isset(Yii::app()->controller) )
       $this->url = Yii::app()->controller->createUrl('product/one', array('url' => $this->url));
 
-    $this->price = floatval($this->price);
-    $this->price_old = floatval($this->price_old);
-
-    if( !Yii::app()->user->isGuest )
-    {
-      if( empty($this->price_old) && !empty(Yii::app()->user->discount) )
-      {
-        $this->discount  = Yii::app()->user->discount;
-        $this->price_old = $this->price;
-        $this->price     = $this->price - ($this->price * $this->discount / 100);
-      }
-    }
-
     parent::afterFind();
-  }
-
-  /**
-   * @return Product[]
-   */
-  public function getRelatedProducts()
-  {
-    if( $this->relatedProduct === null )
-      $this->relatedProduct = $this->findAllThroughAssociation(new Product(), false);
-
-    return $this->relatedProduct;
   }
 }
