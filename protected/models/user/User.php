@@ -16,6 +16,7 @@
  * @property string        $type
  * @property int           $visible
  * @property string        $date_create
+ * @property UserDataExtended  $userDataEx
  */
 class User extends UserBase
 {
@@ -54,10 +55,18 @@ class User extends UserBase
   public function rules()
   {
     return array(
-      array('email', 'required'),
+      array('email', 'required', 'except' => 'changePassword'),
+      array('password, password_confirm', 'required', 'on' => 'changePassword'),
       array('email', 'unique'),
       array('password_confirm', 'compare', 'compareAttribute' => 'password', 'message' => 'Поля "Новый пароль" и "Подтверждение пароля" не совпадают'),
       array('password', 'safe'),
+    );
+  }
+
+  public function relation()
+  {
+    return array(
+      'userDataEx' => array(self::HAS_ONE, 'UserDataExtended', 'user_id'),
     );
   }
 

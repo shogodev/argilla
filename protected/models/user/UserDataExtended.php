@@ -128,8 +128,8 @@ class UserDataExtended extends FActiveFileRecord implements JsonSerializable
   public function rules()
   {
     return array(
-      array('name', 'required'),
-      array('last_name, patronymic, address, coordinates, birthday, birth_day, birth_mount, birth_year, avatar', 'safe')
+      array('name', 'required', 'except' => 'registration'),
+      array('name, last_name, patronymic, address, coordinates, birthday, birth_day, birth_mount, birth_year, avatar, phone, sex_id', 'safe')
     );
   }
 
@@ -187,9 +187,20 @@ class UserDataExtended extends FActiveFileRecord implements JsonSerializable
   public function afterFind()
   {
     if( !empty($this->birthday) )
-      $this->birthday = str_replace('-', '.', $this->birthday);
+      $this->birthday = $this->birthday !== '0000-00-00' ? Yii::app()->format->formatDate($this->birthday) : null;
 
-    return parent::afterFind();
+    parent::afterFind();
+  }
+
+  public function beforeSave()
+  {
+    if( !empty($this->birthday) )
+    {
+      $data = new DateTime($this->birthday);
+      $this->birthday = $data->format('Y-m-d');
+    }
+
+    return parent::beforeSave();
   }
 
   public function afterSave()
@@ -257,7 +268,6 @@ class UserDataExtended extends FActiveFileRecord implements JsonSerializable
     $attributes['city']           = $this->getCity();
     $attributes['url']            = Yii::app()->controller->createUrl('user/profile', array('id' => $this->user_id));
     $attributes['href']           = Yii::app()->controller->createUrl('user/profile', array('id' => $this->user_id));
-    //$attributes['link']           = str_replace("http://", "", $attributes['href']);
     $attributes['coordinates']    = explode(',', $this->coordinates);
 
     return $attributes;
