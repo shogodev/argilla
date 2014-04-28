@@ -6,6 +6,9 @@
  * @license http://argilla.ru/LICENSE
  * @package frontend.components.url
  */
+
+Yii::autoload('CUrlManager');
+
 class FUrlRule extends CUrlRule
 {
   /**
