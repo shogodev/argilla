@@ -25,9 +25,9 @@
 
     <?php echo $form->textFieldRow($model, 'address'); ?>
 
-    <?php echo $form->dropDownListRow($model, 'payment_id', BDirPayment::model()->listData()); ?>
+    <?php echo $form->dropDownListRow($model, 'payment_id', BOrderPaymentType::model()->listData()); ?>
 
-    <?php echo $form->dropDownListRow($model, 'delivery_id', BDirDelivery::model()->listData()); ?>
+    <?php echo $form->dropDownListRow($model, 'delivery_id', BOrderDeliveryType::model()->listData()); ?>
 
     <?php echo $form->textAreaRow($model, 'comment'); ?>
 
@@ -43,6 +43,7 @@
 <?php if( $this->isUpdate() ) { ?>
   <?php $this->renderPartial('orderProducts', array('model' => $model));?>
   <?php $this->renderPartial('orderHistory', array('model' => $model));?>
+  <?php $this->renderPartial('_payments', array('model' => $model));?>
 <?php } ?>
 
 <?php $this->renderPartial('//_form_buttons', array('model' => $model));?>

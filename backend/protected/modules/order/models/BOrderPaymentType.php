@@ -6,7 +6,7 @@
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.order.models
  *
- * @method static BDirPayment model(string $className = __CLASS__)
+ * @method static BOrderPaymentType model(string $className = __CLASS__)
  *
  * @property int $id
  * @property string $name
@@ -14,21 +14,13 @@
  * @property string $notice
  * @property int $visible
  */
-class BDirPayment extends BActiveRecord
+class BOrderPaymentType extends BActiveRecord
 {
   const CASH = 1;
 
   const NON_CASH  = 2;
 
   const EPAY = 3;
-
-  /**
-   * @return string
-   */
-  public function tableName()
-  {
-    return '{{dir_payment}}';
-  }
 
   /**
    * @return array

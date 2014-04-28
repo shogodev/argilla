@@ -26,6 +26,7 @@
  * @property BOrderStatus $status
  * @property BOrderProduct[] $products
  * @property BOrderStatusHistory[] $history
+ * @property BOrderPayment $payment
  */
 class BOrder extends BActiveRecord
 {
@@ -47,9 +48,10 @@ class BOrder extends BActiveRecord
       'products' => array(self::HAS_MANY, 'BOrderProduct', 'order_id'),
       'user' => array(self::BELONGS_TO, 'BFrontendUser', 'user_id'),
       'status' => array(self::BELONGS_TO, 'BOrderStatus', 'status_id'),
-      'payment_type' => array(self::BELONGS_TO, 'BDirPayment', 'payment_id'),
+      'payment_type' => array(self::BELONGS_TO, 'BOrderPaymentType', 'payment_id'),
       'history' => array(self::HAS_MANY, 'BOrderStatusHistory', 'order_id'),
-      'orderPayDetails' => array(self::BELONGS_TO, 'BOrderPayDetails', array('id' => 'order_id'))
+      'orderPayDetails' => array(self::BELONGS_TO, 'BOrderPayDetails', array('id' => 'order_id')),
+      'payment' => [self::HAS_ONE, 'BOrderPayment', 'order_id'],
     );
   }
 

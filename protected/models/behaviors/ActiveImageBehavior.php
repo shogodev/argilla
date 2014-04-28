@@ -1,0 +1,93 @@
+<?php
+/**
+ * @author Sergey Glagolev <glagolev@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2014 Shogo
+ * @license http://argilla.ru/LICENSE
+ * @package frontend.models.behaviors
+ */
+
+/**
+ * Behavior realised methods for get/set/cache FActiveImage objects of FActiveRecord model
+ *
+ * Example:
+ *
+ * <pre>
+ * public function behaviors()
+ * {
+ *   return array(
+ *     'imagesBehavior' => array('class' => 'ActiveImageBehavior', 'imageClass' => 'ProductImage'),
+ *   );
+ * }
+ * </pre>
+ *
+ * Class ActiveImageBehavior
+ *
+ * @property FActiveRecord $owner
+ */
+class ActiveImageBehavior extends CModelBehavior
+{
+  public $imageClass;
+
+  private $images;
+
+  public function attach($owner)
+  {
+    parent::attach($owner);
+
+    if( !isset($this->imageClass) )
+    {
+      throw new CException('Can not attach ActiveImageBehavior without imageClass property');
+    }
+  }
+
+  /**
+   * @param string $type
+   *
+   * @return FActiveImage
+   */
+  public function getImage($type = 'main')
+  {
+    return Arr::reset($this->getImages($type));
+  }
+
+  /**
+   * @param string $type
+   *
+   * @return FActiveImage[]
+   */
+  public function getImages($type = 'main')
+  {
+    if( empty($this->images) )
+    {
+      /**
+       * @var FActiveRecord $model
+       */
+      $model = call_user_func(array($this->imageClass, 'model'));
+
+      $images = $model->findAllByAttributes(
+        array('parent' => $this->owner->getPrimaryKey()),
+        array('order' => 'IF(position, position, 999999999)')
+      );
+
+      $this->setImages($images, $type);
+    }
+
+    return isset($this->images[$type]) ? $this->images[$type] : array();
+  }
+
+  /**
+   * @param array  $images
+   * @param string $type
+   *
+   * @return void
+   */
+  public function setImages($images, $type)
+  {
+    if( !isset($this->images[$type]) )
+      $this->images[$type] = array();
+
+    foreach($images as $image)
+      $this->images[$image['type']][] = $image;
+  }
+}

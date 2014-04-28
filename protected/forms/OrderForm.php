@@ -7,25 +7,6 @@ return array(
 
   'elements' => array(
 
-    'dealer_id' => array(
-      'type' => 'hidden',
-    ),
-
-    'product_id' => array(
-      'type' => 'dropdownlist',
-      'items' => CHtml::listData(Product::model()->findAll(), 'id', 'name'),
-    ),
-
-    'size' => array(
-      'type' => 'text'
-    ),
-
-    'color' => array(
-      'type' => 'text'
-    ),
-
-    '<div class="hr1"></div>',
-
     'name' => array(
       'type' => 'text'
     ),
@@ -34,10 +15,25 @@ return array(
       'type' => 'text'
     ),
 
-    '<div class="hr1"></div>',
-
     'email' => array(
       'type' => 'text'
+    ),
+
+    'payment_id' => array(
+      'type' => 'radiolist',
+      'items' => CHtml::listData(OrderPaymentType::model()->findAll(), 'id', 'name'),
+    ),
+
+    'payment' => array(
+      'type' => 'form',
+      'model' => new OrderPayment(),
+      'elements' => array(
+        '<div class="platron_payment">Оплата через систему Platron</div>',
+        'payment_type_id' => array(
+          'type' => 'radiolist',
+          'items' => CHtml::listData(PlatronPaymentType::model()->findAll(), 'id', 'label'),
+        ),
+      )
     ),
 
     'address' => array(

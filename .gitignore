@@ -13,3 +13,4 @@
 
 /protected/config/db.php
 /protected/config/production.php
+/protected/config/platron.php

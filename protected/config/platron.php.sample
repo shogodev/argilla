@@ -1,0 +1,7 @@
+<?php
+return array(
+  'merchantId' => '123',
+  'secretKey' => 'qwerty',
+  'testMode' => true,
+  'testModeHost' => 'http://devpass.shogo-test.ru/',
+);

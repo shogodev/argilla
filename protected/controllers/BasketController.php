@@ -21,16 +21,16 @@ class BasketController extends FController
 
     if( Yii::app()->request->isAjaxRequest )
     {
-      $this->renderPartial('/_compare_basket_header');
-      $this->renderPartial('basket');
+      $this->renderPartial('/_basket_header');
+      $this->renderPartial('index');
     }
     else
-      $this->render('basket');
+      $this->render('index');
   }
 
   public function actionAdd()
   {
-    $this->renderPartial('/_compare_basket_header');
+    $this->renderPartial('/_basket_header');
     $this->renderPartial('/panel/panel');
   }
 
@@ -41,7 +41,7 @@ class BasketController extends FController
 
     $this->breadcrumbs = array('Корзина');
 
-    $orderForm = new FForm('Order', new Order());
+    $orderForm = new FForm('OrderForm', new Order());
     $orderForm->loadFromSession = true;
     $orderForm->autocomplete = true;
     $orderForm->ajaxValidation();
@@ -55,7 +55,7 @@ class BasketController extends FController
 
       echo CJSON::encode(array(
         'status' => 'ok',
-        'redirect'  => $this->createAbsoluteUrl('basket/success')
+        'redirect'  => $orderForm->model->getSuccessUrl(),
       ));
 
       Yii::app()->session['orderSuccess'] = true;
@@ -72,7 +72,7 @@ class BasketController extends FController
         ));
       }
 
-      $this->render('check_out', array('form' => $orderForm));
+      $this->render('check_out', array('form' => $orderForm, 'model' => $orderForm->model));
     }
   }
 
@@ -172,4 +172,3 @@ class BasketController extends FController
     }
   }
 }
-?>
