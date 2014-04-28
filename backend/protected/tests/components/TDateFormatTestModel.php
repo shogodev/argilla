@@ -13,9 +13,11 @@
  */
 class TDateFormatTestModel extends BActiveRecord
 {
+  const STATIC_TABLE_NAME = '{{date_format_test_table}}';
+
   public function tableName()
   {
-    return '{{date_format_test_table}}';
+    return self::STATIC_TABLE_NAME;
   }
 
   public function behaviors()

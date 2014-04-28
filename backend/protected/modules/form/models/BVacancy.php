@@ -10,9 +10,15 @@
  */
 class BVacancy extends BActiveRecord
 {
-  public $date_from;
-
-  public $date_to;
+  public function behaviors()
+  {
+    return array(
+      'dateFilterBehavior' => array(
+        'class' => 'DateFilterBehavior',
+        'attribute' => 'date',
+      )
+    );
+  }
 
   public function relations()
   {
@@ -48,9 +54,6 @@ class BVacancy extends BActiveRecord
   {
     $criteria->compare('phone', $this->phone, true);
     $criteria->compare('name', $this->name, true);
-
-    if( !empty($this->date_from) || !empty($this->date_to) )
-      $criteria->addBetweenCondition('date', Utils::dayBegin($this->date_from), Utils::dayEnd($this->date_to));
 
     return $criteria;
   }

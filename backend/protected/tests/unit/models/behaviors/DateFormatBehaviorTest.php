@@ -12,7 +12,7 @@ class DateFormatBehaviorTest extends CTestCase
 {
   public function setUp()
   {
-    $table = TDateFormatTestModel::model()->tableName();
+    $table = TDateFormatTestModel::STATIC_TABLE_NAME;
 
     $command = Yii::app()->db->createCommand();
     $command->createTable($table, array('id' => 'pk', 'date' => 'date NOT NULL'), 'ENGINE=InnoDB');
@@ -60,6 +60,6 @@ class DateFormatBehaviorTest extends CTestCase
 
   public function tearDown()
   {
-    Yii::app()->db->createCommand()->dropTable(TDateFormatTestModel::model()->tableName());
+    Yii::app()->db->createCommand()->dropTable(TDateFormatTestModel::STATIC_TABLE_NAME);
   }
 }
