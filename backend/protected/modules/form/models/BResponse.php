@@ -19,9 +19,15 @@
  */
 class BResponse extends BActiveRecord
 {
-  public $date_from;
-
-  public $date_to;
+  public function behaviors()
+  {
+    return array(
+      'dateFilterBehavior' => array(
+        'class' => 'DateFilterBehavior',
+        'attribute' => 'date',
+      )
+    );
+  }
 
   public function rules()
   {
@@ -31,7 +37,6 @@ class BResponse extends BActiveRecord
       array('product_id', 'length', 'max'=>10),
       array('name, email', 'length', 'max'=>255),
       array('content', 'safe'),
-      array('date_from, date_to', 'safe', 'on' => 'search'),
     );
   }
 
@@ -58,9 +63,6 @@ class BResponse extends BActiveRecord
   {
     $criteria->compare('visible', '='.$this->visible);
     $criteria->compare('name', $this->email, true);
-
-    if( !empty($this->date_from) || !empty($this->date_to) )
-      $criteria->addBetweenCondition('date', Utils::dayBegin($this->date_from), Utils::dayEnd($this->date_to));
 
     return $criteria;
   }

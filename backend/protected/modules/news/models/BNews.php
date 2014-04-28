@@ -22,10 +22,6 @@
  */
 class BNews extends BActiveRecord
 {
-  public $date_from;
-
-  public $date_to;
-
   public function behaviors()
   {
     return array(
@@ -33,8 +29,8 @@ class BNews extends BActiveRecord
         'class' => 'UploadBehavior',
         'validAttributes' => "img"
       ),
-      'dateFormatBehavior' => array(
-        'class' => 'DateFormatBehavior',
+      'dateFilterBehavior' => array(
+        'class' => 'DateFilterBehavior',
         'attribute' => 'date',
         'defaultNow' => true
       )
@@ -52,10 +48,7 @@ class BNews extends BActiveRecord
       array('url', 'length', 'max' => 255),
       array('visible, main', 'length', 'max' => 1),
 
-      array('date', 'date', 'format' => 'mm.dd.yyyy'),
-
       array('position, section_id, date, name, url, notice, content, visible', 'safe'),
-      array('date_from, date_to', 'safe', 'on' => 'search'),
     );
   }
 
@@ -86,9 +79,6 @@ class BNews extends BActiveRecord
     $criteria->compare('visible', $this->visible);
     $criteria->compare('main', $this->main);
     $criteria->compare('name', $this->name, true);
-
-    if( !empty($this->date_from) || !empty($this->date_to) )
-      $criteria->addBetweenCondition('date', Utils::dayBegin($this->date_from), Utils::dayEnd($this->date_to));
 
     return $criteria;
   }

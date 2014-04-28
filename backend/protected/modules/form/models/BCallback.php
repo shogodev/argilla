@@ -16,16 +16,21 @@
  */
 class BCallback extends BActiveRecord
 {
-  public $date_from;
-
-  public $date_to;
+  public function behaviors()
+  {
+    return array(
+      'dateFilterBehavior' => array(
+        'class' => 'DateFilterBehavior',
+        'attribute' => 'date',
+      )
+    );
+  }
 
   public function rules()
   {
     return array(
       array('name, phone', 'required'),
       array('time, content, result', 'safe'),
-      array('date_from, date_to', 'safe', 'on' => 'search'),
     );
   }
 
@@ -59,9 +64,6 @@ class BCallback extends BActiveRecord
   {
     $criteria->compare('phone', $this->phone, true);
     $criteria->compare('name', $this->name, true);
-
-    if( !empty($this->date_from) || !empty($this->date_to) )
-      $criteria->addBetweenCondition('date', Utils::dayBegin($this->date_from), Utils::dayEnd($this->date_to));
 
     return $criteria;
   }

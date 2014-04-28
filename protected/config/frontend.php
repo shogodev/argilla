@@ -33,7 +33,6 @@ return array_merge_recursive(array(
     'frontend.models.xml.*',
 
     'frontend.components.*',
-    'frontend.components.session.*',
     'frontend.components.common.*',
     'frontend.components.interfaces.*',
     'frontend.components.validators.*',
@@ -79,11 +78,6 @@ return array_merge_recursive(array(
       'class'          => 'FWebUser',
       'allowAutoLogin' => true,
       'loginUrl'       => '/user/login'
-    ),
-
-    'session' => array(
-      'class' => 'FHttpSession',
-      'sessionName' => 'FRONTEND',
     ),
 
     'urlManager' => array(

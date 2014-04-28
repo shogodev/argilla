@@ -42,7 +42,12 @@ class DateFormatBehavior extends CActiveRecordBehavior
 
     if( empty($this->attribute) )
       throw new CHttpException(500, "Ошибка. Не указано свойство attribute для поведения ".get_class($this));
-  }
+
+    $validator = new CDateValidator();
+    $validator->attributes = array($this->attribute);
+    $validator->format = 'mm.dd.yyyy';
+    $this->owner->validatorList->add($validator);
+   }
 
   /**
    * @param CEvent $event
