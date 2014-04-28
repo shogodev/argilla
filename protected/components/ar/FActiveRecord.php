@@ -65,6 +65,6 @@ class FActiveRecord extends CActiveRecord
     foreach(Association::model()->setSource($source)->setDestination($destination)->findAll() as $association)
       $ids[] = $association->{$key};
 
-    return $object->findAllByPk($ids);
+    return $ids;
   }
 }

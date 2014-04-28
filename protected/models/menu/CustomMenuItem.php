@@ -39,6 +39,9 @@ class CustomMenuItem extends FActiveRecord implements IMenuItem
    */
   public function getMenuUrl()
   {
+    if( substr($this->url, 0, 1) === '/' && substr($this->url, -1, 1) === '/' )
+      return $this->url;
+
     $url = array($this->url);
 
     foreach($this->data as $item)
