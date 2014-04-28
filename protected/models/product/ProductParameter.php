@@ -31,6 +31,11 @@ class ProductParameter extends FActiveRecord
     );
   }
 
+  public function behaviors()
+  {
+    return array('collectionElement' => array('class' => 'FCollectionParameter'));
+  }
+
   /**
    * @param ProductParameterName[] $parameterNames
    */

@@ -117,6 +117,7 @@ class FCollectionUI extends FCollection
         $linkText = is_array($text) ? Arr::get($text, 1) : $text;
     }
 
+    $defaultItems = $this->convertCollectionItemsToArray($defaultItems);
     if( !empty($defaultItems) )
       $htmlOptions['data-items'] = CJSON::encode($defaultItems);
 
@@ -126,7 +127,7 @@ class FCollectionUI extends FCollection
     return CHtml::link($linkText, '#', $htmlOptions);
   }
 
-  public function addButtonModel($text = '', $model, $htmlOptions = array(), $defaultItems = array(), $doNotAddInCollection = true)
+  public function addButtonModel($text = '', $model, $htmlOptions = array(), $doNotAddInCollection = true)
   {
     if( empty($htmlOptions['data-id']) )
       $htmlOptions['data-id'] = $model->id;
@@ -134,7 +135,7 @@ class FCollectionUI extends FCollection
     if( empty($htmlOptions['data-type']) )
       $htmlOptions['data-type'] = get_class($model);
 
-    return $this->addButton($text, $htmlOptions, $defaultItems, $doNotAddInCollection);
+    return $this->addButton($text, $htmlOptions, $model->defaultCollectionItems(), $doNotAddInCollection);
   }
 
   public function removeButton($element, $text = '', $htmlOptions = array(), $confirm = true)
@@ -222,8 +223,9 @@ class FCollectionUI extends FCollection
               waitActionElement.addClass(classAlreadyInCollection);
             if( waitActionElement.data('do-not-add') && !waitActionElement.hasClass(classDoNotAddInCollection) )
               waitActionElement.addClass(classDoNotAddInCollection);
-            if( waitActionElement.data('added-text') )
-               waitActionElement.text(waitActionElement.data('added-text'));
+            if( waitActionElement.data('added-text') ) {
+              waitActionElement.html(waitActionElement.data('added-text'));;
+            }
           }
         }
       });

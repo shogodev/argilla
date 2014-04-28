@@ -21,7 +21,7 @@ class FCollection extends SplObjectStorage
   protected $arrayParentElements = array();
 
   /**
-   * @param $keyCollection ключ колекции
+   * @param string $keyCollection ключ колекции
    * @param array $compareByItemKeys объединять элементы с указаными одинаковыми параметрами
    * @param array $allowedModels сприсок разрешенных моделей для которых нужно создать объект
    * @param bool $autoSave автоматисеская запись и чтение из сессии
@@ -182,7 +182,31 @@ class FCollection extends SplObjectStorage
 
   public function isInCollectionClass($class)
   {
-    return $this->isInCollectionData(get_class($class), $class->primaryKey);
+    $data = $this->convertClassToArray($class);
+
+    return $this->isInCollectionData(Arr::get($data, 'type'), Arr::get($data, 'id'));
+  }
+
+  public function convertClassToArray($class)
+  {
+    return array('type' => Utils::toSnakeCase(get_class($class)), 'id' => $class->primaryKey);
+  }
+
+  public function convertCollectionItemsToArray($items)
+  {
+    $arrayItems = array();
+    foreach($items as $key => $item)
+    {
+      if( empty($item) )
+        continue;
+
+      if( is_object($item) )
+        $arrayItems[$key] = $this->convertClassToArray($item);
+      else
+        $arrayItems[$key] = $item;
+    }
+
+    return $arrayItems;
   }
 
   public function createPathsRecursive($collection = null, $path = array(), $rootCollection = null)

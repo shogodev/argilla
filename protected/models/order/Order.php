@@ -142,76 +142,67 @@ class Order extends FActiveRecord
   {
     foreach($this->basket as $product)
     {
-      $orderProduct = new OrderProduct();
-      $orderProduct->attributes = [
+      $orderProduct = $this->saveModel(new OrderProduct(), array(
         'order_id' => $this->primaryKey,
         'name' => $product->name,
         'price' => $product->price,
         'count' => $product->collectionAmount,
         'discount' => $product->discount,
         'sum' => $product->sum,
-      ];
-
-      if( !$orderProduct->save() )
-        throw new CHttpException(500, 'Can`t save '.get_class($orderProduct).' model');
+      ));
 
       $image = Arr::reset($product->getImages());
-      $orderProductHistory = new OrderProductHistory();
-      $orderProductHistory->attributes = array(
+
+      $this->saveModel(new OrderProductHistory(), array(
         'order_product_id' => $orderProduct->getPrimaryKey(),
         'product_id' => $product->id,
         'url' => $product->url,
         'img' => isset($image) ? $image->pre : '',
         'articul' => $product->articul
-      );
+      ));
 
-      if( !$orderProductHistory->save() )
-        throw new CHttpException(500, 'Can`t save '.get_class($orderProductHistory).' model');
-
-      $this->saveParameters($product, $orderProduct);
+      $this->saveCollectionItems($product, $orderProduct);
     }
   }
 
   /**
    * @param Product $product
-   * @param OrderProduct $orderProduct
+   * @param FActiveRecord $orderProduct
    * @throws CHttpException
    */
-  protected function saveParameters($product, $orderProduct)
+  protected function saveCollectionItems(Product $product, $orderProduct)
   {
-    /**
-     * @var ProductParameter|null $size
-     */
-    if( $size = $product->getCollectionItems('size') )
+    foreach($product->collectionItems as $item)
     {
-      $productItem = new OrderProductItem();
-      $productItem->attributes = array(
+      if( !is_a($item->asa('collectionElement'), 'FCollectionElement') )
+        continue;
+
+      $this->saveModel(new OrderProductItem(), array(
         'order_product_id' => $orderProduct->primaryKey,
-        'type' => 'size',
-        'pk' => $size->primaryKey,
-        'name' => $size->parameterName->name,
-        'value' => $size->variant->name,
-      );
-
-      if( !$productItem->save() )
-        throw new CHttpException(500, 'Can`t save '.get_class($productItem).' model');
+        'type' => $item->getOrderItemType(),
+        'pk' => $item->getPrimaryKey(),
+        'name' => $item->getOrderItemName(),
+        'value' => $item->getOrderItemValue(),
+        'amount' => $item->getOrderItemAmount(),
+        'price' => $item->getOrderItemPrice(),
+      ));
     }
+  }
 
-    if( $parameterName = $product->getProductColorParameter() )
-    {
-      $parameters = $parameterName->parameters;
-      $parameter = reset($parameters);
-      $productItem = new OrderProductItem();
-      $productItem->attributes = array(
-        'order_product_id' => $orderProduct->primaryKey,
-        'type' => 'color',
-        'pk' => $parameter->id,
-        'name' => $parameterName->name,
-        'value' => $parameterName->value,
-      );
+  /**
+   * @param FActiveRecord $model
+   * @param array $attributes
+   *
+   * @return FActiveRecord
+   * @throws CHttpException
+   */
+  protected function saveModel(FActiveRecord $model, array $attributes)
+  {
+    $model->attributes = $attributes;
 
-      if( !$productItem->save() )
-        throw new CHttpException(500, 'Can`t save '.get_class($productItem).' model');
-    }
+    if( !$model->save() )
+      throw new CHttpException(500, 'Can`t save '.get_class($model).' model');
+
+    return $model;
   }
 }

@@ -21,7 +21,7 @@ class BasketController extends FController
 
     if( Yii::app()->request->isAjaxRequest )
     {
-      $this->renderPartial('/_basket_header');
+      $this->renderOverride('_basket_header');
       $this->renderPartial('index');
     }
     else
@@ -41,7 +41,7 @@ class BasketController extends FController
 
     $this->breadcrumbs = array('Корзина');
 
-    $orderForm = new FForm('OrderForm', new Order());
+    $orderForm = new FForm('Order', new Order());
     $orderForm->loadFromSession = true;
     $orderForm->autocomplete = true;
     $orderForm->ajaxValidation();

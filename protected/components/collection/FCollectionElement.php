@@ -6,10 +6,9 @@
  * @license http://argilla.ru/LICENSE
  * @package frontend.components.collection
  *
- * @property integer $collectionIndex
- * @property integer $collectionAmount
- * @property integer $collectionItems
+ * @property FActiveRecord $owner
  * @property integer $sum
+ *
  * @method string removeButton(string $text = '', array $htmlOption = array())
  * @method string amountInput(array $htmlOptions = array() )
  */
@@ -19,7 +18,10 @@ class FCollectionElement extends CBehavior
 
   public $collectionAmount;
 
-  public $collectionItems;
+  /**
+   * @var FCollectionElement[]
+   */
+  public $collectionItems = array();
 
   /**
    * @var FCollection $parentCollection
@@ -131,5 +133,43 @@ class FCollectionElement extends CBehavior
       $this->owner->{$attribute} = $object->{$attribute};
 
     return $this->owner;
+  }
+
+  /**
+   * @return array
+   */
+  public function defaultCollectionItems()
+  {
+    return array();
+  }
+
+  public function getOrderItemType()
+  {
+    return get_class($this->owner);
+  }
+
+  public function getPrimaryKey()
+  {
+    return $this->owner->getPrimaryKey();
+  }
+
+  public function getOrderItemName()
+  {
+    return 'Не задано';
+  }
+
+  public function getOrderItemValue()
+  {
+    return (string)$this->owner;
+  }
+
+  public function getOrderItemAmount()
+  {
+    return 0;
+  }
+
+  public function getOrderItemPrice()
+  {
+    return 0;
   }
 }

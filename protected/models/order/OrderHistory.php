@@ -15,6 +15,11 @@ class OrderHistory extends Order
    */
   public $historyUrl;
 
+  public function tableName()
+  {
+    return '{{order}}';
+  }
+
   public function afterFind()
   {
     parent::afterFind();
