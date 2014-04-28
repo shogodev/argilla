@@ -8,6 +8,7 @@
  */
 Yii::import('frontend.share.helpers.Arr');
 Yii::import('frontend.extensions.api-docs.*');
+Yii::import('CUrlManager', true);
 
 class ApiDocsCommand extends ApiCommand
 {
