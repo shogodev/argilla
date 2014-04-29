@@ -73,6 +73,16 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
       parent::__set($name, $value);
   }
 
+  public function __isset($name)
+  {
+    $fields = BProductAssignment::model()->getFields();
+
+    if( isset($fields[$name]) )
+      return true;
+    else
+      return parent::__isset($name);
+  }
+
   public function rules()
   {
     return array(
