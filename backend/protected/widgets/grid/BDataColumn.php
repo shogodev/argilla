@@ -53,7 +53,7 @@ class BDataColumn extends TbDataColumn
       echo $this->filter;
     else if( $this->filter !== false && $this->grid->filter !== null && $this->name !== null && strpos($this->name, '.') === false )
     {
-      echo CHtml::activeLabel($this->grid->filter, $this->name, array('id' => false));
+      echo CHtml::activeLabel($this->grid->filter, $this->name, array('id' => false, 'label' => $this->header));
 
       if( is_array($this->filter) )
         echo CHtml::activeDropDownList($this->grid->filter, $this->name, $this->filter, array('id' => false, 'prompt' => ''));

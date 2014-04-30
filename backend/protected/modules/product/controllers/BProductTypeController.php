@@ -13,12 +13,4 @@ class BProductTypeController extends BController
   public $name = 'Типы';
 
   public $modelClass = 'BProductType';
-
-  public function actionSave($model)
-  {
-    $assignmentModel = BProductTreeAssignment::assignToModel($model, 'section');
-
-    $this->saveModels(array($model, $assignmentModel));
-    $this->render('_form', array('model' => $model, 'assignmentModel' => $assignmentModel));
-  }
 }
