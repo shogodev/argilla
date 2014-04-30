@@ -12,7 +12,7 @@ $form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId()));
 ?>
 
 <?php $this->renderPartial('//_form_buttons', array('model' => $model));?>
-<?php echo $form->errorSummary(array($model, $assignmentModel)); ?>
+<?php echo $form->errorSummary(array($model)); ?>
 <?php echo $form->renderRequire(); ?>
 
 <table class="detail-view table table-striped table-bordered">
@@ -24,7 +24,7 @@ $form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId()));
 
   <?php echo $form->urlRow($model, 'url'); ?>
 
-  <?php echo $form->dropDownAssignedRow($assignmentModel)?>
+  <?php echo $form->dropDownListDefaultRow($model, 'parent_id', CHtml::listData($model->getParents(), 'id', 'name'))?>
 
   <?php echo $form->ckeditorRow($model, 'notice');?>
 

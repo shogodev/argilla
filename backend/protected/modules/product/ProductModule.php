@@ -44,4 +44,11 @@ class ProductModule extends BModule
   {
     return array();
   }
+
+  protected function getExtraDirectoriesToImport()
+  {
+    return array(
+      'backend.modules.product.models.behaviors.*',
+    );
+  }
 }

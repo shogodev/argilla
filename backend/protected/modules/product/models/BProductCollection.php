@@ -15,12 +15,17 @@
  * @property string $img
  * @property string $notice
  * @property integer $visible
+ *
+ * @mixin BTreeAssignmentBehavior
  */
 class BProductCollection extends BProductStructure
 {
   public function behaviors()
   {
-    return array('uploadBehavior' => array('class' => 'UploadBehavior', 'validAttributes' => 'img'));
+    return array(
+      'uploadBehavior' => array('class' => 'UploadBehavior', 'validAttributes' => 'img'),
+      'tree' => array('class' => 'BTreeAssignmentBehavior', 'parentModel' => 'BProductCategory'),
+    );
   }
 
   public function rules()
@@ -34,9 +39,10 @@ class BProductCollection extends BProductStructure
     );
   }
 
-  public function afterDelete()
+  public function attributeLabels()
   {
-    BProductTreeAssignment::assignToModel($this, 'category')->delete();
-    parent::afterDelete();
+    return CMap::mergeArray(parent::attributeLabels(), array(
+      'parent_id' => 'Категория',
+    ));
   }
 }

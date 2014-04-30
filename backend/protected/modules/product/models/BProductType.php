@@ -14,11 +14,11 @@
  * @property string  $name
  * @property string  $notice
  * @property integer $visible
+ *
+ * @mixin BTreeAssignmentBehavior
  */
 class BProductType extends BProductStructure
 {
-  public $section_id;
-
   public function rules()
   {
     return array(
@@ -27,42 +27,27 @@ class BProductType extends BProductStructure
       array('position, visible', 'numerical', 'integerOnly' => true),
       array('url, name', 'length', 'max' => 255),
       array('notice', 'safe'),
-      array('section_id', 'safe', 'on' => 'search'),
     );
   }
 
-  public function relations()
+  public function behaviors()
   {
     return array(
-      'treeAssignment' => array(self::HAS_MANY, 'BProductTreeAssignment', 'src_id', 'on' => 'src="type"'),
-      'section' => array(self::HAS_ONE, 'BProductSection', 'dst_id', 'on' => 'dst="section"', 'through' => 'treeAssignment'),
+      'tree' => array('class' => 'BTreeAssignmentBehavior', 'parentModel' => 'BProductSection'),
     );
-  }
-
-  public function afterDelete()
-  {
-    BProductTreeAssignment::assignToModel($this, 'section')->delete();
-    return parent::afterDelete();
   }
 
   public function attributeLabels()
   {
-    return Cmap::mergeArray(parent::attributeLabels(), array(
-      'section_id' => 'Раздел',
+    return CMap::mergeArray(parent::attributeLabels(), array(
+      'parent_id' => 'Раздел',
     ));
   }
 
-  /**
-   * @param CDbCriteria $criteria
-   *
-   * @return CDbCriteria
-   */
   protected function getSearchCriteria(CDbCriteria $criteria)
   {
-    $criteria->together = true;
-    $criteria->with = array('section');
-
-    $criteria->compare('section.id', $this->section_id);
+    $criteria->compare('t.visible', $this->visible);
+    $criteria->compare('t.name', $this->name, true);
 
     return $criteria;
   }

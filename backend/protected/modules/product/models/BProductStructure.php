@@ -39,6 +39,36 @@ class BProductStructure extends BActiveRecord
     parent::init();
   }
 
+  /**
+   * @param $class
+   *
+   * @return string
+   */
+  public function getRowName($class)
+  {
+    return lcfirst(str_replace($this->classPrefix, '', $class)).'_id';
+  }
+
+  /**
+   * @param $class
+   *
+   * @return string
+   */
+  public function getRelationName($class)
+  {
+    return lcfirst(str_replace($this->classPrefix, '', $class));
+  }
+
+  /**
+   * @param $row
+   *
+   * @return string
+   */
+  public function getModelName($row)
+  {
+    return $this->classPrefix.ucfirst(str_replace('_id', '', $row));
+  }
+
   protected function beforeSave()
   {
     $model = $this->findByPk($this->getPrimaryKey());
@@ -129,25 +159,5 @@ class BProductStructure extends BActiveRecord
     $criteria->join = implode(' ', $criteria->join);
 
     return $criteria;
-  }
-
-  /**
-   * @param $class
-   *
-   * @return string
-   */
-  private function getRowName($class)
-  {
-    return lcfirst(str_replace($this->classPrefix, '', $class)).'_id';
-  }
-
-  /**
-   * @param $row
-   *
-   * @return string
-   */
-  private function getModelName($row)
-  {
-    return $this->classPrefix.ucfirst(str_replace('_id', '', $row));
   }
 }
