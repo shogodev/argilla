@@ -8,7 +8,7 @@
  *
  * Example:
  *
- * array('payer_name', 'ExRequiredValidator', 'dependedAttribute' => 'payment_id', 'dependedValue' => DirPayment::BANK_PAYMENT)
+ * array('payer_name', 'ExRequiredValidator', 'dependedAttribute' => 'payment_id', 'dependedValue' => OrderPaymentType::BANK_PAYMENT)
  */
 class ExRequiredValidator extends CRequiredValidator
 {

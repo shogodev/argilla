@@ -5,7 +5,11 @@
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.product.models
- *
+ */
+
+Yii::import('backend.modules.product.models.behaviors.*');
+
+/**
  * @method static BProduct model(string $class = __CLASS__)
  *
  * @property string $id
@@ -69,6 +73,16 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
       parent::__set($name, $value);
   }
 
+  public function __isset($name)
+  {
+    $fields = BProductAssignment::model()->getFields();
+
+    if( isset($fields[$name]) )
+      return true;
+    else
+      return parent::__isset($name);
+  }
+
   public function rules()
   {
     return array(
@@ -94,6 +108,9 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
       'uploadBehavior' => array(
         'class' => 'UploadBehavior',
         'validAttributes' => 'product_img'
+      ),
+      'facetedSearchBehavior' => array(
+        'class' => 'BFacetedSearchBehavior'
       ),
     );
   }
@@ -182,7 +199,8 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
     $criteria->compare('name', $this->name, true);
 
     foreach(BProductAssignment::model()->getFields() as $key => $field)
-      $criteria->compare('assignment.'.$key, '='.$this->$key);
+      if( !is_array($this->$key) )
+        $criteria->compare('assignment.'.$key, $this->$key);
 
     return $criteria;
   }

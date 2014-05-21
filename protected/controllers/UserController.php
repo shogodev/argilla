@@ -19,7 +19,7 @@ class UserController extends FController
   {
     return array(
       array('deny',
-        'actions' => array('data', 'history'),
+        'actions' => array('data', 'profile', 'history', 'historyOne', 'profile', 'password', 'status'),
         'users'   => array('?'),
       ),
     );
@@ -38,8 +38,7 @@ class UserController extends FController
     $loginForm->autocomplete = true;
     $loginForm->ajaxValidation();
 
-    $attributes = Yii::app()->request->getPost('Login');
-  if( $attributes )
+    if( $attributes = Yii::app()->request->getPost('Login') )
     {
       $loginForm->model->attributes = $attributes;
 
@@ -75,8 +74,7 @@ class UserController extends FController
       $registrationForm = new FForm('UserRegistration', new UserRegistration());
       $registrationForm->loadFromSession  = true;
       $registrationForm->clearAfterSubmit = true;
-      $registrationForm->autocomplete = false;
-      $registrationForm['extendedData']->model = new UserDataExtended();
+      $registrationForm['extendedData']->model = new UserDataExtended('registration');
 
       if( Yii::app()->request->isPostRequest )
         $registrationForm->model->email = CHtml::encode(Yii::app()->request->getParam('email', ''));
@@ -115,19 +113,19 @@ class UserController extends FController
 
       $this->render('registration', array('registrationForm' => $registrationForm));
     }
-    else
-      $this->actionPrivateProfile();
   }
 
   public function actionData()
   {
-    $this->breadcrumbs = array('Профиль');
+    $this->breadcrumbs = array(
+      'Мой профиль' => array('user/profile'),
+      'Личные данные',
+    );
 
-    $userForm  = new FForm('UserRegistration', User::model()->findByPk(Yii::app()->user->getId()));
+    $userForm  = new FForm('UserDataForm', User::model()->findByPk(Yii::app()->user->getId()));
     $userForm['extendedData']->model = UserDataExtended::model()->findByPk(Yii::app()->user->getId());
-    //$userForm['extendedData']['birthday']->form = $userForm['extendedData'];
+    $userForm['extendedData']['birthday']->form = $userForm['extendedData'];
     $userForm->ajaxValidation();
-    $userForm->buttons['submit']->value = 'Отправить';
 
     if( Yii::app()->request->isAjaxRequest && $userForm->save() )
     {
@@ -137,7 +135,43 @@ class UserController extends FController
       ));
     }
 
-    $this->render('userData', array('userForm' => $userForm));
+    $this->render('data', array('userForm' => $userForm));
+  }
+
+  public function actionProfile()
+  {
+    $this->breadcrumbs = array(
+      'Мой профиль',
+    );
+
+    $userModel = User::model()->findByPk(Yii::app()->user->getId());
+    $extendedDataModel = UserDataExtended::model()->findByPk(Yii::app()->user->getId());
+
+    $this->render('profile', array(
+      'userModel' => $userModel,
+      'extendedDataModel' => $extendedDataModel,
+    ));
+  }
+
+  public function actionPassword()
+  {
+    $this->breadcrumbs = array(
+      'Мой профиль' => array('user/profile'),
+      'Сменить пароль',
+    );
+
+    $form = new FForm('UserPasswordForm', User::model()->findByPk(Yii::app()->user->getId()));
+    $form->ajaxValidation();
+
+    if( $form->model )
+      $form->model->setScenario('changePassword');
+
+    if( Yii::app()->request->isAjaxRequest && $form->save() )
+    {
+      $form->responseSuccess(Yii::app()->controller->textBlockRegister('Успешное изменение пароля', 'Изменения сохранены'));
+    }
+
+    $this->render('password', array('form' => $form));
   }
 
   public function actionRestore()
@@ -177,19 +211,34 @@ class UserController extends FController
 
   public function actionHistory()
   {
-    $this->breadcrumbs = array('История заказов');
+    $this->breadcrumbs = array(
+      'Мой профиль' => array('user/profile'),
+      'Мои заказы',
+    );
 
-    $orders = array();
-    $model  = Order::model();
+    $model  = OrderHistory::model();
+    $orders = $model->user(Yii::app()->user->getId())->findAll();
 
-    $filterKeys = $model->getFilterKeys(Yii::app()->user->getId());
-    if( !empty($filterKeys) )
-      $orders = $model->getFilteredOrders(Yii::app()->user->getId(), !empty($_GET['filter']) ? $_GET['filter'] : $filterKeys[0]['id']);
-
-    $this->render('orderHistory', array(
+    $this->render('history', array(
       'model' => $model,
       'orders' => $orders,
-      'filterKeys' => $filterKeys));
+    ));
+  }
+
+  public function actionStatus()
+  {
+    $this->breadcrumbs = array(
+      'Мой профиль' => array('user/profile'),
+      'Мой статус',
+    );
+
+    $userModel = User::model()->findByPk(Yii::app()->user->getId());
+    $extendedDataModel = UserDataExtended::model()->findByPk(Yii::app()->user->getId());
+
+    $this->render('status', array(
+      'userModel' => $userModel,
+      'extendedDataModel' => $extendedDataModel,
+    ));
   }
 
   public function actionHistoryOne($id)
@@ -202,5 +251,23 @@ class UserController extends FController
     $this->breadcrumbs = array('История заказов', 'Заказ №'.$order->id);
 
     $this->render('orderHistoryOne', array('order' => $order, 'backUrl' => $this->createUrl('user/history')));
+  }
+
+  public function deleteMenuStatusIfEmpty($menu, $route)
+  {
+    $data = array();
+    /** @var  UserDataExtended $extendedDataModel */
+    $extendedDataModel = UserDataExtended::model()->findByPk(Yii::app()->user->getId());
+    if($extendedDataModel->discount_id == 0)
+    {
+      foreach($menu as $item)
+      {
+        if($item['url'][0] !== $route)
+          $data[] = $item;
+      }
+      return $data;
+    }
+
+    return $menu;
   }
 }

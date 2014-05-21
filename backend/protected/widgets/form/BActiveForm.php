@@ -225,20 +225,6 @@ class BActiveForm extends TbActiveForm
   }
 
   /**
-   * Renders a assigned drop-down list rows.
-   *
-   * @param BProductTreeAssignment $model
-   * @param array $data
-   * @param array $htmlOptions
-   *
-   * @return string
-   */
-  public function dropDownAssignedRow($model, $data = array(), $htmlOptions = array())
-  {
-    return $this->dropDownListDefaultRow($model, $model::DST_FIELD, CHtml::listData($model->getValues(), 'id', 'name') + $data, $htmlOptions);
-  }
-
-  /**
    * Renders an Upload row
    *
    * @param $model

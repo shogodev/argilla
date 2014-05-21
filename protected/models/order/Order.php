@@ -16,22 +16,23 @@
  * @property string $address
  * @property string $comment
  * @property string $type
- * @property string $source
  * @property float $sum
- * @property string $delivery
+ * @property string $delivery_sum
  * @property integer $ip
  * @property string $date_create
- * @property string $status
+ * @property integer $status_id
  * @property string $order_comment
  * @property bool $deleted
  * @property integer $payment_id
  * @property integer $delivery_id
  * @property Product[]|FBasket $basket
  *
- * Отношения:
- * @property DirPayment $paymentType
- * @property DirDelivery $deliveryType
+ * @property OrderPaymentType $paymentType
+ * @property OrderDeliveryType $deliveryType
  * @property OrderProduct[] $products
+ * @property OrderStatus $status
+ *
+ * @mixin PlatronPaymentBehavior
  */
 class Order extends FActiveRecord
 {
@@ -48,7 +49,14 @@ class Order extends FActiveRecord
       array('phone', 'required', 'on' => 'fastOrder'),
       array('email', 'email'),
       array('name, phone, address, comment', 'length', 'min' => 3, 'max' => 255),
-      array('payment_id, delivery_id, sum, delivery', 'safe'),
+      array('payment_id, delivery_id, sum, delivery_sum', 'safe'),
+    );
+  }
+
+  public function behaviors()
+  {
+    return array(
+      'paymentBehavior' => 'frontend.models.order.behaviors.PlatronPaymentBehavior',
     );
   }
 
@@ -72,9 +80,9 @@ class Order extends FActiveRecord
   {
     return array(
       'products' => [self::HAS_MANY, 'OrderProduct', 'order_id'],
-      'payment' => [self::BELONGS_TO, 'DirPayment', 'payment_id'],
-      'delivery' => [self::BELONGS_TO, 'DirDelivery', 'delivery_id'],
-      //'status' => [self::BELONGS_TO, 'OrderStatus', 'status_id'],
+      'status' => [self::BELONGS_TO, 'OrderStatus', 'status_id'],
+      'paymentType' => [self::BELONGS_TO, 'OrderPaymentType', 'payment_id'],
+      'deliveryType' => [self::BELONGS_TO, 'OrderDeliveryType', 'delivery_id'],
     );
   }
 
@@ -85,16 +93,10 @@ class Order extends FActiveRecord
 
     $this->sum = $this->basket->totalSum();
     $this->ip = ip2long(Yii::app()->request->userHostAddress);
+    $this->type = $this->isFast() ? self::TYPE_FAST : self::TYPE_BASKET;
+    $this->user_id = !Yii::app()->user->isGuest ? Yii::app()->user->getId() : null;
+    $this->delivery_id = !empty($this->delivery_id) ? $this->delivery_id : null;
     $this->date_create = date('Y-m-d H:i:s');
-    //$this->delivery_id = DirDelivery::SELF_DELIVERY;
-
-    if( $this->isFast() )
-      $this->type = self::TYPE_FAST;
-    else
-      $this->type = self::TYPE_BASKET;
-
-    if( !Yii::app()->user->isGuest )
-      $this->user_id = Yii::app()->user->getId();
 
     return parent::beforeSave();
   }
@@ -102,7 +104,7 @@ class Order extends FActiveRecord
   public function afterSave()
   {
     if( !$this->isNewRecord )
-      return parent::afterSave();
+      parent::afterSave();
 
     $this->saveProducts();
   }
@@ -110,6 +112,12 @@ class Order extends FActiveRecord
   public function getAdminUrl()
   {
     return Yii::app()->request->hostInfo.'/backend/order/bOrder/update/'.$this->id;
+  }
+
+  public function getSuccessUrl()
+  {
+    $behavior = $this->asa('paymentBehavior');
+    return $behavior ? $behavior->getSuccessUrl() : Yii::app()->createAbsoluteUrl('basket/success');
   }
 
   public function setFastOrderBasket(FBasket $fastOrderBasket)
@@ -134,73 +142,67 @@ class Order extends FActiveRecord
   {
     foreach($this->basket as $product)
     {
-      $orderProduct = new OrderProduct();
-      $orderProduct->attributes = [
+      $orderProduct = $this->saveModel(new OrderProduct(), array(
         'order_id' => $this->primaryKey,
         'name' => $product->name,
         'price' => $product->price,
         'count' => $product->collectionAmount,
         'discount' => $product->discount,
         'sum' => $product->sum,
-      ];
+      ));
 
-      if( !$orderProduct->save() )
-        throw new CHttpException(500, 'Can`t save '.get_class($orderProduct).' model');
       $image = Arr::reset($product->getImages());
-      $orderProductHistory = new OrderProductHistory();
-      $orderProductHistory->attributes = array('order_product_id' => $orderProduct->getPrimaryKey(),
-                                               'product_id' => $product->id,
-                                               'url' => $product->url,
-                                               'img' => isset($image) ? $image->pre : '',
-                                               'articul' => $product->articul);
 
-      if( !$orderProductHistory->save() )
-        throw new CHttpException(500, 'Can`t save '.get_class($orderProductHistory).' model');
+      $this->saveModel(new OrderProductHistory(), array(
+        'order_product_id' => $orderProduct->getPrimaryKey(),
+        'product_id' => $product->id,
+        'url' => $product->url,
+        'img' => isset($image) ? $image->pre : '',
+        'articul' => $product->articul
+      ));
 
-      $this->saveParameters($product, $orderProduct);
+      $this->saveCollectionItems($product, $orderProduct);
     }
   }
 
   /**
    * @param Product $product
-   * @param OrderProduct $orderProduct
+   * @param FActiveRecord $orderProduct
    * @throws CHttpException
    */
-  protected function saveParameters($product, $orderProduct)
+  protected function saveCollectionItems(Product $product, $orderProduct)
   {
-    /**
-     * @var ProductParameter|null $size
-     */
-    if( $size = $product->getCollectionItems('size') )
+    foreach($product->collectionItems as $item)
     {
-      $productItem = new OrderProductItem();
-      $productItem->attributes = array(
+      if( !is_a($item->asa('collectionElement'), 'FCollectionElement') )
+        continue;
+
+      $this->saveModel(new OrderProductItem(), array(
         'order_product_id' => $orderProduct->primaryKey,
-        'type' => 'size',
-        'pk' => $size->primaryKey,
-        'name' => $size->parameterName->name,
-        'value' => $size->variant->name,
-      );
-
-      if( !$productItem->save() )
-        throw new CHttpException(500, 'Can`t save '.get_class($productItem).' model');
+        'type' => $item->getOrderItemType(),
+        'pk' => $item->getPrimaryKey(),
+        'name' => $item->getOrderItemName(),
+        'value' => $item->getOrderItemValue(),
+        'amount' => $item->getOrderItemAmount(),
+        'price' => $item->getOrderItemPrice(),
+      ));
     }
+  }
 
-    if( $parameterName = $product->getProductColorParameter() )
-    {
-      $parameters = $parameterName->parameters;
-      $parameter = reset($parameters);
-      $productItem = new OrderProductItem();
-      $productItem->attributes = array(
-        'order_product_id' => $orderProduct->primaryKey,
-        'type' => 'color',
-        'pk' => $parameter->id,
-        'name' => $parameterName->name,
-        'value' => $parameterName->value,
-      );
+  /**
+   * @param FActiveRecord $model
+   * @param array $attributes
+   *
+   * @return FActiveRecord
+   * @throws CHttpException
+   */
+  protected function saveModel(FActiveRecord $model, array $attributes)
+  {
+    $model->attributes = $attributes;
 
-      if( !$productItem->save() )
-        throw new CHttpException(500, 'Can`t save '.get_class($productItem).' model');
-    }
+    if( !$model->save() )
+      throw new CHttpException(500, 'Can`t save '.get_class($model).' model');
+
+    return $model;
   }
 }

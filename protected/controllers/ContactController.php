@@ -10,10 +10,10 @@ class ContactController extends FController
 {
   public function actionIndex()
   {
-    $model = Contact::model()->findAll();
+    $model = Contact::model()->findByAttributes(array('sysname' => 'contacts'));
 
     $this->breadcrumbs = array('Контакты');
 
-    $this->render('/contact', array('model' => $model));
+    $this->render('index', array('model' => $model));
   }
 }

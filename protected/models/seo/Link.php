@@ -37,12 +37,12 @@ class Link extends FActiveRecord
   public function rules()
   {
     return [
-      ['title, url, section_id', 'required'],
+      ['title, url, section_id, email', 'required'],
       ['title, url, region', 'length', 'max' => 255, 'min' => 3],
       ['url', 'url'],
       ['email', 'email'],
       ['section_id', 'numerical', 'integerOnly' => true],
-      ['content', 'safe'],
+      ['title, url, content', 'filter', 'filter' => 'htmlspecialchars'],
     ];
   }
 

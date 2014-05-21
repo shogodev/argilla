@@ -51,7 +51,11 @@ class FControllerBehavior extends CBehavior
   public function getBasket()
   {
     if ( $this->basket == null )
-      $this->basket = new FBasket('basket', array('service'), array('Product', 'ServiceBasket'));
+    {
+      $this->basket = new FBasket('basket', array('color', 'size'), array('Product', 'ProductColor', 'ProductParameter'));
+      $this->basket->ajaxUrl = Yii::app()->controller->createUrl('basket/index');
+      $this->basket->addButtonAjaxUrl = Yii::app()->controller->createUrl('basket/add');
+    }
 
     return $this->basket;
   }

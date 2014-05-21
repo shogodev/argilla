@@ -41,7 +41,8 @@
  * @property integer $collectionAmount
  * @property integer $collectionItems
  *
- * @mixin ParametersBehavior
+ * @mixin ProductParametersBehavior
+ * @mixin ActiveImageBehavior
  */
 class Product extends FActiveRecord
 {
@@ -50,13 +51,12 @@ class Product extends FActiveRecord
    */
   protected $relatedProduct;
 
-  protected $images;
-
   public function behaviors()
   {
     return array(
       'collectionElement' => array('class' => 'FCollectionElement'),
       'productParametersBehavior' => array('class' => 'ProductParametersBehavior'),
+      'imagesBehavior' => array('class' => 'ActiveImageBehavior', 'imageClass' => 'ProductImage'),
     );
   }
 
@@ -98,75 +98,6 @@ class Product extends FActiveRecord
     if( isset(Yii::app()->controller) )
       $this->url = Yii::app()->controller->createUrl('product/one', array('url' => $this->url));
 
-    $this->price = floatval($this->price);
-    $this->price_old = floatval($this->price_old);
-
-    if( !Yii::app()->user->isGuest )
-    {
-      if( empty($this->price_old) && !empty(Yii::app()->user->discount) )
-      {
-        $this->discount  = Yii::app()->user->discount;
-        $this->price_old = $this->price;
-        $this->price     = $this->price - ($this->price * $this->discount / 100);
-      }
-    }
-
     parent::afterFind();
-  }
-
-  /**
-   * @param string $type
-   *
-   * @return ProductImage
-   */
-  public function getImage($type = 'main')
-  {
-    return Arr::reset($this->getImages($type));
-  }
-
-  /**
-   * @param string $type
-   *
-   * @return ProductImage[]
-   */
-  public function getImages($type = 'main')
-  {
-    if( empty($this->images) )
-    {
-      $images = ProductImage::model()->findAllByAttributes(
-        array('parent' => $this->id),
-        array('order' => 'IF(position, position, 999999999)')
-      );
-
-      $this->setImages($images, $type);
-    }
-
-    return isset($this->images[$type]) ? $this->images[$type] : array();
-  }
-
-  /**
-   * @param array  $images
-   * @param string $type
-   *
-   * @return void
-   */
-  public function setImages($images, $type)
-  {
-    if( !isset($this->images[$type]) )
-      $this->images[$type] = array();
-
-    foreach($images as $image)
-      $this->images[$image['type']][] = $image;
-  }
-
-  /**
-   * @return Product[]
-   */
-  public function getRelatedProducts()
-  {
-    if( $this->relatedProduct === null )
-      $this->relatedProduct = $this->findAllThroughAssociation(new Product(), false);
-
-    return $this->relatedProduct;
   }
 }

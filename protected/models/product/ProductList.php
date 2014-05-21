@@ -22,7 +22,7 @@ class ProductList extends CComponent
   public $pagination;
 
   /**
-   * @var ProductFilter[]|null $filters
+   * @var Filter[]|null $filters
    */
   public $filters = null;
 
@@ -158,6 +158,7 @@ class ProductList extends CComponent
           $filteredCriteria = $filter->apply($filteredCriteria);
 
       $this->filteredCriteria = $filteredCriteria;
+      $this->filteredCriteria->order = $this->criteria->order;
     }
 
     return $this->filteredCriteria;
@@ -167,9 +168,12 @@ class ProductList extends CComponent
   {
     $assignment = ProductAssignment::model()->tableName();
     $criteria->join  = 'JOIN '.$assignment.' AS a ON a.product_id = t.id';
-    $criteria->order = Arr::get(self::$sortingRange, $this->sorting, Arr::reset(self::$sortingRange));
+    $criteria->distinct = true;
     $criteria->compare('t.visible', 1);
     $criteria->compare('a.visible', 1);
+
+    if( empty($criteria->order) )
+      $criteria->order = Arr::get(self::$sortingRange, $this->sorting, Arr::reset(self::$sortingRange));
 
     $this->criteria = $criteria;
   }
@@ -238,12 +242,10 @@ class ProductList extends CComponent
 
   protected function setAssignments()
   {
-    $assignments = array('category', 'type');
-    $criteria = new CDbCriteria(array('select' => 't.product_id'));
+    $assignments = array('section', 'type');
+    $criteria = new CDbCriteria(array('select' => 'a.product_id'));
     $criteria->addInCondition('product_id', $this->dataProvider->getKeys());
-
     $productAssignments = ProductAssignment::model()->getAssignments($criteria);
-    ProductAssignment::model()->setAssignments(null);
 
     foreach($assignments as $assignment)
     {
@@ -270,7 +272,7 @@ class ProductList extends CComponent
   {
     $models = array();
     $relation = Product::model()->getMetaData()->relations[$relationName];
-    $records = $this->findRecords('product_id', $relation->className);
+    $records = $this->findRecords($relation->foreignKey, $relation->className);
 
     foreach($records as $record)
     {

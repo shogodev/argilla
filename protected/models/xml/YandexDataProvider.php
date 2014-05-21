@@ -79,13 +79,15 @@ class YandexDataProvider
       'price'       => $product->price,
       'currencyId'  => 'RUR',
       'url'         => $this->getUrl($product),
-      'categoryId'  => $product->type->id,
+      'categoryId'  => $product->section->id,
       'vendor'      => $product->category->name,
       'vendorCode'  => $product->vendor_code,
       'model'       => XmlHelper::escape($product->name),
       'description' => XmlHelper::escape(strip_tags($product->content)),
       'picture'     => $this->getImage($product),
       'available'   => $this->getAvailable($product),
+      'typePrefix'  => $product->section->name,
+      'delivery'    => 'true',
       'manufacturer_warranty' => 'true',
     );
   }
@@ -97,7 +99,7 @@ class YandexDataProvider
    */
   protected function getUrl(Product $product)
   {
-    return $product->url.'?mrkt=true';
+    return Yii::app()->homeUrl.trim($product->url, '/').'/?mrkt=true';
   }
 
   /**
@@ -127,10 +129,10 @@ class YandexDataProvider
    */
   protected function buildCategory(Product $product)
   {
-    if( isset($product->type) )
+    if( isset($product->section) )
     {
-      $this->categories[$product->type->id] = array(
-        'name' => XmlHelper::escape($product->type->name),
+      $this->categories[$product->section->id] = array(
+        'name' => XmlHelper::escape($product->section->name),
       );
     }
   }

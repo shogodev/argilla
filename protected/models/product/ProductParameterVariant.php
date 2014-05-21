@@ -24,8 +24,10 @@ class ProductParameterVariant extends FActiveRecord
 
   public function defaultScope()
   {
+    $alias = $this->getTableAlias(false, false);
+
     return array(
-      'order' => 'IF(position=0, 1, 0), position ASC, name'
+      'order' => "IF({$alias}.position=0, 1, 0), {$alias}.position ASC, {$alias}.name"
     );
   }
 

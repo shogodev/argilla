@@ -12,6 +12,7 @@ Yii::import('backend.components.interfaces.*');
 Yii::import('backend.components.auth.*');
 Yii::import('backend.components.db.*');
 Yii::import('backend.controllers.*');
+Yii::import('frontend.share.behaviors.*');
 
 class RbacCommand extends CConsoleCommand
 {

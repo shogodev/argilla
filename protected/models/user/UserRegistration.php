@@ -24,14 +24,10 @@ class UserRegistration extends UserBase
   public function rules()
   {
     return array(
-      array('login ,password, password_confirm, email', 'required'),
-      array('login', 'LoginValidator'),
+      array('email ,password, password_confirm', 'required'),
       array('email', 'email'),
-      array('email, login', 'unique', 'message' => 'Такой {attribute} уже используется, введите другой'),
+      array('email', 'unique', 'message' => 'Такой {attribute} уже используется, введите другой'),
       array('password_confirm', 'compare', 'compareAttribute' => 'password', 'message' => 'Поля "Пароль" и "Подтверждение пароля" не совпадают'),
-
-      array('verifyCode', 'ExCaptchaValidator'),
-      array('verifyCode', 'required'),
     );
   }
 
@@ -58,6 +54,8 @@ class UserRegistration extends UserBase
   {
     if( parent::beforeSave() )
     {
+      $this->login = $this->email;
+
       $this->password = FUserIdentity::createPassword($this->login, $this->password);
 
       $this->type = self::TYPE;

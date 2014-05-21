@@ -20,6 +20,8 @@ class FListView extends CListView
 
   public $sorterTemplate;
 
+  public $cssFile = false;
+
   public function renderPager()
   {
     if( !$this->enablePagination )
@@ -47,7 +49,7 @@ class FListView extends CListView
     if( $this->sorterTemplate )
     {
       echo $this->sorterHeader;
-      $this->owner->renderPartial($this->sorterTemplate);
+      $this->owner->renderPartial($this->sorterTemplate, $this->viewData);
       echo $this->sorterFooter;
     }
     else
@@ -100,5 +102,12 @@ class FListView extends CListView
 
     if( $this->itemsTagName !== null )
       echo CHtml::closeTag($this->itemsTagName);
+  }
+
+  public function registerClientScript()
+  {
+    parent::registerClientScript();
+    $cs = Yii::app()->clientScript;
+    $cs->unregisterScriptFile($this->baseScriptUrl.'/jquery.yiilistview.js',CClientScript::POS_END);
   }
 }

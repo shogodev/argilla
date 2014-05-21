@@ -15,9 +15,7 @@ class MetaMask extends FActiveRecord
 
   public function getData($url)
   {
-    if( strlen($url) > 1 && substr($url, -1) == '/' )
-      $url = substr($url, 0, strlen($url) - 1);
-
+    $url = Utils::normalizeUrl($url);
     $data = $this->getDataByUrl($url);
     if( empty($data) )
       $data = $this->findDataByMask($url);

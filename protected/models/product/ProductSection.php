@@ -44,7 +44,7 @@ class ProductSection extends FActiveRecord
     $criteria->select    = 't.id, t.name, t.notice, t.url';
     $criteria->join      = 'JOIN '.$assignment.' AS a ON t.id = a.section_id ';
     $criteria->join     .= 'JOIN '.$product.' AS p ON p.id = a.product_id';
-    $criteria->condition = 'p.visible=1';
+    $criteria->condition = 'p.visible=1 AND a.visible=1';
     $criteria->distinct  = true;
 
     return $this->findAll($criteria);

@@ -19,6 +19,7 @@ return array_merge_recursive(array(
 
   'import' => array(
     'frontend.models.*',
+    'frontend.models.behaviors.*',
 
     'frontend.models.seo.*',
     'frontend.models.news.*',
@@ -30,6 +31,8 @@ return array_merge_recursive(array(
     'frontend.models.user.*',
     'frontend.models.info.*',
     'frontend.models.order.*',
+    'frontend.models.order.paymentSystem.*',
+    'frontend.models.order.paymentSystem.platron.*',
     'frontend.models.xml.*',
 
     'frontend.components.*',
@@ -107,7 +110,7 @@ return array_merge_recursive(array(
         array(
           'class'     => 'ext.yii-debug-toolbar.YiiDebugToolbarRoute',
           'ipFilters' => array('192.168.*'),
-          'enabled'   => false,
+          'enabled'   => YII_DEBUG,
         ),
       ),
     ),

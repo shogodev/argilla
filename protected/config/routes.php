@@ -49,6 +49,13 @@ return array(
   'basketSuccess'   => array('basket/success',   'pattern' => 'basket/success'),
   'basketFastOrder' => array('basket/fastOrder', 'pattern' => 'basket/fastorder'),
 
+  // payment system
+  'paymentCheck'   => array('payment/check',   'pattern' => 'payment/check'),
+  'paymentResult'  => array('payment/result',  'pattern' => 'payment/result'),
+  'paymentSuccess' => array('payment/success', 'pattern' => 'payment/success'),
+  'paymentFailure' => array('payment/failure', 'pattern' => 'payment/failure'),
+  'paymentCapture' => array('payment/capture', 'pattern' => 'payment/capture'),
+
   // favorite
   'favorite' => array('favorite/index', 'pattern' => 'favorite'),
 

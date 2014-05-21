@@ -19,7 +19,6 @@
  */
 class BProductSection extends BProductStructure
 {
-
   public function rules()
   {
     return array(
