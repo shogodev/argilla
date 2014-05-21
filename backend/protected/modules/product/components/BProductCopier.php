@@ -31,9 +31,11 @@ class BProductCopier extends BAbstractModelCopier
   }
 
   /**
+   * @param $withImages
+   *
    * @return integer copied product id
    */
-  public function copy()
+  public function copy($withImages = false)
   {
     $this->copy = $this->copyModel($this->origin, null, array('parent' => $this->origin->id));
 
@@ -41,6 +43,11 @@ class BProductCopier extends BAbstractModelCopier
     $this->copyRelations($this->copy, $this->origin, 'associations');
 
     $this->copyParams();
+
+    if( $withImages )
+    {
+      $this->copyImages($this->copy, $this->origin);
+    }
 
     return $this->copy->id;
   }
@@ -54,5 +61,62 @@ class BProductCopier extends BAbstractModelCopier
     ));
 
     $this->copyRelations($this->copy, $this->origin, 'params');
+  }
+
+  protected function copyImages(BActiveRecord $copyModel, BActiveRecord $originModel)
+  {
+    $images = BProductImg::model()->findAllByAttributes(array('parent' => $originModel->id));
+    $imageThumbsPrefixList = $this->getThumbsPrefixList();
+
+    $path = realpath(Yii::getPathOfAlias('frontend').'/../f/product').'/';
+    foreach($images as $image)
+    {
+      if( $fileName = $this->copyFiles($path, $image->name, $imageThumbsPrefixList) )
+      {
+        $newImage = new BProductImg('copy');
+        $newImage->attributes = $image->attributes;
+        $newImage->setAttribute('parent', $copyModel->primaryKey);
+        $newImage->setAttribute('name', $fileName);
+
+        $newImage->save();
+      }
+    }
+  }
+
+  protected function copyFiles($path, $fileName, $imageThumbsPrefixList)
+  {
+    if( !file_exists($path.$fileName) )
+      return null;
+
+    while( 1 )
+    {
+      $newFileName = Utils::doCustomFilename($fileName);
+      if( !file_exists($path.$newFileName) )
+      {
+        foreach($imageThumbsPrefixList as $prefix)
+        {
+          if( file_exists($path.$prefix.$fileName) )
+          {
+            copy($path.$prefix.$fileName, $path.$prefix.$newFileName);
+            chmod($path.$prefix.$newFileName, 0775);
+          }
+        }
+
+        return $newFileName;
+      }
+    }
+  }
+
+  protected function getThumbsPrefixList()
+  {
+    $prefixList = array();
+    $thumbsSettings = Arr::get(Yii::app()->getModule('product')->getThumbsSettings(), 'product');
+
+    foreach($thumbsSettings as $key => $value)
+    {
+     $prefixList[] = $key == 'origin' ?  '' : $key.'_';
+    }
+
+    return $prefixList;
   }
 }
