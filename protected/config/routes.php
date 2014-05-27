@@ -80,4 +80,7 @@ return array(
   // captcha
   'captchaImg' => array('index/captcha', 'pattern' => '<model:\w+>/captcha/v/<code:\w+>'),
   'captchaRef' => array('index/captcha', 'pattern' => '<model:\w+>/captcha/<refresh:refresh>/<code:\w+>'),
+
+  // Sitemap
+  'sitemapXml' => array('sitemap/xml', 'pattern' => 'sitemapXml'),
 );
