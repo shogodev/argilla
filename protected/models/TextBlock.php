@@ -6,6 +6,8 @@
  * @license http://argilla.ru/LICENSE
  * @package frontend.models
  *
+ * @method static TextBlock model(string $class = __CLASS__)
+ *
  * @property string $id
  * @property string $location
  * @property string $name
@@ -34,8 +36,30 @@ class TextBlock extends FActiveRecord
 
     return array(
       'condition' => $alias.'.visible=1',
-      'order' => $alias.'.position',
+      'order' => "{$alias}.location, {$alias}.position",
     );
+  }
+
+  /**
+   * @return array
+   */
+  public function getGroupByLocation()
+  {
+    $this->dbCriteria->select = 'location, content, id';
+
+    $command = $this->dbConnection->commandBuilder->createFindCommand($this->tableName(), $this->dbCriteria);
+
+    return CHtml::listData($command->queryAll(), 'id', 'content', 'location');
+  }
+
+  /**
+   * @param string $location
+   *
+   * @return TextBlock[]|array
+   */
+  public function getByLocation($location)
+  {
+    return $this->findAllByAttributes(array('location' => $location));
   }
 
   public function __toString()

@@ -52,6 +52,7 @@
     <echo message="Compilation finished. File build/tmp/compiled.js filesize ${compiledJsFileSize}K. Copying to js/compiled.js..."/>
 
     <copy file="build/tmp/compiled.js" tofile="js/compiled.js" overwrite="true"/>
+    <delete file="build/tmp/compiled.js" quiet="yes" failonerror="false"/>
   </target>
 
   <target name="symlinkYii" depends="checkYiiAvailability">

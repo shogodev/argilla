@@ -22,7 +22,7 @@ class BProductController extends BController
     if( Yii::app()->request->isPostRequest )
     {
       $copier    = new BProductCopier(Yii::app()->request->getPost('id'));
-      $productId = $copier->copy();
+      $productId = $copier->copy(Yii::app()->request->getPost('withImages', false));
 
       if( !$productId )
         throw new CHttpException(500, 'Невозможно скопировать продукт');
@@ -61,8 +61,8 @@ class BProductController extends BController
     $assignmentModel = $model->assignment ? $model->assignment : array(new BProductAssignment);
 
     // привязанное событие будет выполняться в транзакции saveModels
-    $model->attachEventHandler('onAfterSave', array($this, 'saveParameters'));
-    $model->attachEventHandler('onAfterSave', array($this, 'saveProductAssignment'));
+    $model->getEventHandlers('onAfterSave')->insertAt(0, array($this, 'saveParameters'));
+    $model->getEventHandlers('onAfterSave')->insertAt(1, array($this, 'saveProductAssignment'));
 
     $this->saveModels(array($model));
 

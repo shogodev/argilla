@@ -9,6 +9,7 @@
     <th>Действия</th>
     <td>
       <?php echo CHtml::tag('button', array('class' => 'btn btn-info copy-product-btn', 'data-id' => $model->id), 'Копировать');?>
+      <?php echo CHtml::tag('button', array('class' => 'btn btn-info copy-product-btn with-images', 'data-id' => $model->id), 'Копировать c изображениями');?>
     </td>
   </tr>
 
@@ -26,7 +27,7 @@
         document.location.href = resp.url
     };
 
-    $.post(url, {id : $(this).data('id')}, finish, 'json');
+    $.post(url, {id : $(this).data('id'), withImages : $(this).hasClass('with-images') ? 1 : 0 }, finish, 'json');
   });
   ", CClientScript::POS_READY)?>
 <?php } ?>

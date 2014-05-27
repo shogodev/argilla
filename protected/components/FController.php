@@ -8,6 +8,7 @@
  *
  * @mixin CommonBehavior
  * @mixin SeoBehavior
+ * @mixin TextBlockBehavior
  * @mixin FControllerBehavior
  *
  * @property Counter[] $counters
@@ -45,6 +46,7 @@ class FController extends CController
     return array(
       'seo' => array('class' => 'SeoBehavior'),
       'controller' => array('class' => 'FControllerBehavior'),
+      'textBlock' => array('class' => 'TextBlockBehavior'),
       'common' => array('class' => 'CommonBehavior'),
     );
   }

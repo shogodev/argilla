@@ -29,4 +29,5 @@ return [
   'structure3' => ['id' => '18', 'name' => 'Новый товар18', 'url' => 'new_product18'],
 
   'saveAssign' => ['id' => '19', 'name' => 'Новый товар18', 'url' => 'new_product19'],
+  'copyProductWithImages' => ['id' => '20', 'name' => 'Новый товар20', 'url' => 'new_product20'],
 ];

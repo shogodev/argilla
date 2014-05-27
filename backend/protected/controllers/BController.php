@@ -6,6 +6,7 @@
  * @license http://argilla.ru/LICENSE
  * @package backend.controllers
  *
+ * @mixin TextBlockBehavior
  * @mixin CommonBehavior
  */
 abstract class BController extends CController
@@ -30,6 +31,7 @@ abstract class BController extends CController
   public function behaviors()
   {
     return array(
+      'textBlock' => array('class' => 'TextBlockBehavior'),
       'common' => array('class' => 'CommonBehavior'),
     );
   }
