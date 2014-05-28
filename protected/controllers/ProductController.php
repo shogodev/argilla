@@ -31,7 +31,6 @@ class ProductController extends FController
     parent::init();
 
     $params = Yii::app()->session->get($this->id);
-    $this->sorting = Arr::get($params, 'sorting', $this->sorting);
     $this->pageSize = Arr::get($params, 'pageSize', $this->getSettings('product_page_size', $this->pageSize));
     $this->pageSizeRange = Arr::reflect(array(20, 40, 60));
   }
@@ -132,7 +131,7 @@ class ProductController extends FController
   private function renderPage(array $models, CDbCriteria $criteria)
   {
     $this->setFilter();
-    $productList = new ProductList($criteria, $this->sorting, true, $this->filter);
+    $productList = new ProductList($criteria, $this->getSorting(), true, $this->filter);
     $dataProvider = $productList->getDataProvider();
 
     $this->filter->setSelectedModels($models);
@@ -214,13 +213,21 @@ class ProductController extends FController
     {
       $sessionParams = Yii::app()->session[$this->id];
 
-      $this->sorting = Yii::app()->request->getPost('sorting', $this->sorting);
-      $sessionParams['sorting'] = $this->sorting;
+      $sorting = Yii::app()->request->getPost('sorting');
+      $sessionParams['sorting'] = !empty($sorting) ? $sorting : null;
 
       $this->pageSize = Yii::app()->request->getPost('pageSize', $this->pageSize);
       $sessionParams['pageSize'] = $this->pageSize;
 
       Yii::app()->session[$this->id] = $sessionParams;
     }
+  }
+
+  private function getSorting()
+  {
+    $params = Yii::app()->session->get($this->id);
+    $this->sorting = Arr::get($params, 'sorting', $this->sorting);
+
+    return $this->sorting;
   }
 }

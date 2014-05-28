@@ -190,13 +190,33 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
       'select' => false,
     ]);
 
-    $criteria->compare('position', $this->position);
-    $criteria->compare('t.visible', $this->visible);
-    $criteria->compare('spec', $this->spec);
-    $criteria->compare('novelty', $this->novelty);
-    $criteria->compare('main', $this->main);
-
-    $criteria->compare('name', $this->name, true);
+    foreach($this->getFilteredGridSettings() as $filteredGridSetting)
+    {
+      if( property_exists($this, $filteredGridSetting->name) || isset($this->getMetaData()->columns[$filteredGridSetting->name]) )
+      {
+        if( $filteredGridSetting->filter == BGridSettings::FILTER_COMPARE )
+        {
+          if( $this->{$filteredGridSetting->name} === '0' )
+          {
+            $criteria->addColumnCondition(
+              array(
+                't.'.$filteredGridSetting->name => $this->{$filteredGridSetting->name},
+                't.'.$filteredGridSetting->name => null
+              ),
+              'OR'
+            );
+          }
+          else
+          {
+            $criteria->compare('t.'.$filteredGridSetting->name, trim($this->{$filteredGridSetting->name}));
+          }
+        }
+        else if( $filteredGridSetting->filter == BGridSettings::FILTER_CONTAIN )
+        {
+          $criteria->compare('t.'.$filteredGridSetting->name, trim($this->{$filteredGridSetting->name}), true);
+        }
+      }
+    }
 
     foreach(BProductAssignment::model()->getFields() as $key => $field)
       if( !is_array($this->$key) )
@@ -208,5 +228,15 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
   protected function getSearchParams()
   {
     return array('sort' => array('defaultOrder' => 't.id ASC'));
+  }
+
+  /**
+   * @return BGridSettings[]
+   */
+  protected function getFilteredGridSettings()
+  {
+    Yii::import('backend.modules.settings.models.BGridSettings');
+
+    return BGridSettings::model()->visible()->filter()->findAll();
   }
 }
