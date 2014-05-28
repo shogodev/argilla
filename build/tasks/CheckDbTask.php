@@ -350,6 +350,6 @@ class PrivilegeChecker
       return strtolower(trim($priv));
     }, explode(',', $privilegeList['privileges']));
 
-    return in_array(strtolower($privilege), $privs);
+    return in_array(strtolower($privilege), $privs) || in_array('all privileges', $privs);
   }
 }

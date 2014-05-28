@@ -21,13 +21,13 @@
     <if>
       <equals arg1="${jsCompiler}" arg2="yui"/>
       <then>
-        <exec command="java -jar build/compilers/yuicompressor.jar js/packed.js>build/tmp/compiled.js"/>
+        <exec command="java -jar build/compilers/yuicompressor.jar js/packed.js>build/tmp/compiled.js" logoutput="true" passthru="true" checkreturn="true"/>
       </then>
     </if>
     <if>
       <equals arg1="${jsCompiler}" arg2="closure"/>
       <then>
-        <exec command="java -jar build/compilers/closure.jar --third_party --warning_level QUIET --js js/packed.js --js_output_file build/tmp/compiled.js"/>
+        <exec command="java -jar build/compilers/closure.jar --third_party --warning_level QUIET --js js/packed.js --js_output_file build/tmp/compiled.js" logoutput="true" passthru="true" checkreturn="true"/>
       </then>
     </if>
 
