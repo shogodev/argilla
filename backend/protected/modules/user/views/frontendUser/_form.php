@@ -21,8 +21,8 @@
      echo $form->dateTextRow($model, 'date_create');
   ?>
   <?php echo $form->textFieldRow($model, 'login'); ?>
-  <?php echo $form->passwordFieldRow($model, 'password'); ?>
-  <?php echo $form->passwordFieldRow($model, 'password_confirm'); ?>
+  <?php echo $form->passwordFieldRow($model, 'password', array('autocomplete' => 'off')); ?>
+  <?php echo $form->passwordFieldRow($model, 'password_confirm', array('autocomplete' => 'off')); ?>
   <?php echo $form->textFieldRow($model, 'email'); ?>
 
   <?php echo $form->textFieldRow($userExtendedData, 'name'); ?>
