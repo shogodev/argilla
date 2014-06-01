@@ -4,10 +4,10 @@
  * @link      https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license   http://argilla.ru/LICENSE
- */
-
-
-/**
+ * @package   frontend.models.seo
+ *
+ * @method static News model(string $class = __CLASS__)
+ *
  * @property int    $id
  * @property string $route
  * @property bool   $lastmod

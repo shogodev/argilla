@@ -1,20 +1,29 @@
 <?php
 /**
- * @author    Vladimir Utenkov <utenkov@shogo.ru>
- * @link      https://github.com/shogodev/argilla/
- * @copyright Copyright &copy; 2003-2013 Shogo
- * @license   http://argilla.ru/LICENSE
+ * @author Vladimir Utenkov <utenkov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2014 Shogo
+ * @license http://argilla.ru/LICENSE
+ * @package frontend.components.sitemapXml.locationCenerators
  */
 class SitemapXml extends CComponent
 {
+  private $charset = 'utf-8';
+
   /**
    * @var SitemapRoute[]
    */
   private $_routes;
+
   /**
    * @var ILocationGenerator[]
    */
   private $_generators;
+
+  /**
+   * @var SimpleXMLElement
+   */
+  private $urlsetElement;
 
   /**
    * @param SitemapRoute[]       $routes
@@ -26,6 +35,25 @@ class SitemapXml extends CComponent
     $this->_generators = $generators;
   }
 
+  public function init()
+  {
+    /**
+     * Empty method for XmlExportController
+     */
+  }
+
+  /**
+   * Renders sitemap xml
+   *
+   * @return void
+   */
+  public function render()
+  {
+    header('Content-Type: text/xml; charset='.$this->charset);
+    echo $this->urlsetElement->asXML();
+    Yii::app()->end();
+  }
+
   /**
    * @param SitemapUrlBuilder $urlBuilder
    * @param DateTime          $currentDate
@@ -34,7 +62,7 @@ class SitemapXml extends CComponent
    */
   public function build(SitemapUrlBuilder $urlBuilder, DateTime $currentDate)
   {
-    $urlsetElement = new SimpleXMLElement(
+    $this->urlsetElement = new SimpleXMLElement(
       '<?xml version="1.0" encoding="utf-8"?><urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9"></urlset>'
     );
 
@@ -60,7 +88,7 @@ class SitemapXml extends CComponent
             $priority   = $exclusion->priority;
           }
 
-          $urlElement = $this->createUrlElement($urlsetElement);
+          $urlElement = $this->createUrlElement($this->urlsetElement);
           $urlBuilder->addLoc($urlElement, $location);
           if( !empty($lastmod) )
           {
@@ -77,7 +105,7 @@ class SitemapXml extends CComponent
     /** @var $location string */
     foreach( $otherLocations as $location )
     {
-      $urlElement = $this->createUrlElement($urlsetElement);
+      $urlElement = $this->createUrlElement($this->urlsetElement);
       $urlBuilder->addLoc($urlElement, $location->route);
       if( !empty($location->lastmod) )
       {
@@ -86,8 +114,6 @@ class SitemapXml extends CComponent
       $urlBuilder->addChangeFreq($urlElement, $location->changefreq);
       $urlBuilder->addPriority($urlElement, $location->priority);
     }
-
-    return $urlsetElement->asXML();
   }
 
   /**

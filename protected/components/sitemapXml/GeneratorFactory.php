@@ -1,9 +1,10 @@
 <?php
 /**
- * @author    Vladimir Utenkov <utenkov@shogo.ru>
- * @link      https://github.com/shogodev/argilla/
- * @copyright Copyright &copy; 2003-2013 Shogo
- * @license   http://argilla.ru/LICENSE
+ * @author Vladimir Utenkov <utenkov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2014 Shogo
+ * @license http://argilla.ru/LICENSE
+ * @package frontend.components.sitemapXml
  */
 class GeneratorFactory extends CComponent
 {
@@ -26,6 +27,10 @@ class GeneratorFactory extends CComponent
     foreach( $generatorNames as $name )
     {
       $className = $name->getBasename('.php');
+
+      if($this->isSample($className))
+        continue;
+
       $generator = new $className($controller);
 
       if( $generator instanceof ILocationGenerator )
@@ -43,5 +48,20 @@ class GeneratorFactory extends CComponent
   public function getGenerators()
   {
     return $this->_generators;
+  }
+
+  /**
+   * Checks if locationGenerator file is an example sample
+   *
+   * @param $className
+   *
+   * @return bool
+   */
+  public function isSample($className)
+  {
+    if(strpos($className, '.sample') !== false)
+      return true;
+
+    return false;
   }
 }

@@ -55,4 +55,13 @@ class XmlExportController extends FController
       'dataProviderClass' => 'YandexPriceDataProvider',
     ));
   }
+
+  protected function sitemapXml()
+  {
+    $generatorFactory = new GeneratorFactory(Yii::getPathOfAlias('frontend.components.sitemapXml.locationGenerators'), Yii::app()->controller);
+    $siteMap          = new SitemapXml(SitemapRoute::model()->findAll(), $generatorFactory->getGenerators());
+    $siteMap->build(new SitemapUrlBuilder(), new DateTime());
+
+    return $siteMap;
+  }
 }

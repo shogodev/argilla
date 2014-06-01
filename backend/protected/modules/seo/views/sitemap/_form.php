@@ -2,7 +2,7 @@
 /**
  * @var BSitemapController $this
  * @var BSitemapRoute      $model
- * @var BActiveForm       $form
+ * @var BActiveForm        $form
  */
 ?>
 <?php $form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId())); ?>
@@ -14,8 +14,8 @@
   <table class="detail-view table table-striped table-bordered">
     <tbody>
 
-      <?php echo $form->dropDownListRow($model, 'route', $model->getRoutes(require_once(Yii::getPathOfAlias('frontend.config').'/routes.php')), array('class' => 'bb')); ?>
-      <?php echo $form->dropDownListRow($model, 'changefreq', $model->changeFreqs, array('class' => 'bb')); ?>
+      <?php echo $form->dropDownListRow($model, 'route', $model->getRoutes(), array('class' => 'bb')); ?>
+      <?php echo $form->dropDownListRow($model, 'changefreq', $model->getChangeFreqs(), array('class' => 'bb')); ?>
       <?php echo $form->textFieldRow($model, 'priority'); ?>
       <?php echo $form->checkBoxRow($model, 'lastmod'); ?>
       <?php echo $form->checkBoxRow($model, 'visible'); ?>

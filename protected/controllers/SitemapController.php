@@ -14,12 +14,6 @@ class SitemapController extends FController
 
   public function actionXml()
   {
-    $generatorFactory = new GeneratorFactory(Yii::getPathOfAlias('frontend.components.sitemapXml.locationGenerators'),
-                                             Yii::app()->controller);
-    $siteMap          = new SitemapXml(SitemapRoute::model()->findAll(), $generatorFactory->getGenerators());
-    $xml              = $siteMap->build(new SitemapUrlBuilder(), new DateTime());
 
-    header('Content-Type: text/xml; charset=utf-8');
-    echo $xml;
   }
 }

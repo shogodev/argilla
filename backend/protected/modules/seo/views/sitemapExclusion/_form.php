@@ -2,7 +2,7 @@
 /**
  * @var BSitemapController $this
  * @var BSitemapRoute      $model
- * @var BActiveForm       $form
+ * @var BActiveForm        $form
  */
 ?>
 <?php $form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId())); ?>
@@ -15,7 +15,7 @@
     <tbody>
 
       <?php echo $form->textFieldRow($model, 'route'); ?>
-      <?php echo $form->dropDownListRow($model, 'changefreq', $model->changeFreqs, array('class' => 'bb')); ?>
+      <?php echo $form->dropDownListRow($model, 'changefreq', $model->getChangeFreqs(), array('class' => 'bb')); ?>
       <?php echo $form->textFieldRow($model, 'priority'); ?>
       <?php echo $form->checkBoxRow($model, 'lastmod'); ?>
       <?php echo $form->checkBoxRow($model, 'visible'); ?>
