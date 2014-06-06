@@ -10,6 +10,6 @@ class YandexPriceDataProvider extends YandexDataProvider
 {
   protected function getUrl(Product $product)
   {
-    return $product->url;
+    return Yii::app()->homeUrl.trim($product->url, '/').'/';
   }
 }

@@ -6,7 +6,8 @@
 
 <?php
 /**
- * @var $this FController
+ * @var FController $this
+ * @var string $content
  */
 ?>
 
@@ -17,8 +18,6 @@
   <base href="<?php echo Yii::app()->homeUrl?>" />
 
   <link rel="canonical" href="<?php echo $this->getCanonicalUrl();?>" />
-
-  <?php Yii::app()->clientScript->registerScriptFile('/js/config/config.js') ?>
 
   <!--[if lt IE 9]>
   <script src="js/html5msie/html5shiv-printshiv.js"></script>

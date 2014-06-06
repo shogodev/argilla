@@ -14,14 +14,38 @@ abstract class AbstractXml extends CComponent
 
   public $template;
 
+  public $filePath;
+
+  public $dataProviderClass;
+
+  /**
+   * @var CDbCriteria
+   */
+  public $criteria;
+
   /**
    * @var SimpleXMLElement
    */
   protected $xmlDocument;
 
+  protected $dataProvider;
+
+  abstract public function buildXml();
+
   public function init()
   {
-    $this->xmlDocument = new SimpleXMLElement($this->getTemplatePath($this->template), false, true);
+    $this->filePath = $this->getXmlPath();
+
+    if( !$this->loadXml() )
+    {
+      $this->xmlDocument = new SimpleXMLElement($this->getTemplatePath($this->template), false, true);
+      $this->criteria = isset($this->criteria) ? $this->criteria : new CDbCriteria();
+      $this->dataProvider = new $this->dataProviderClass($this->criteria);
+
+      $this->buildXml();
+    }
+
+    $this->saveXml();
   }
 
   public function render()
@@ -32,21 +56,36 @@ abstract class AbstractXml extends CComponent
   }
 
   /**
-   * @param mixed $string
-   *
-   * @return mixed
+   * @return bool
    */
-  protected function escape($string)
+  private function loadXml()
   {
-    if( is_array($string) )
+    if( Yii::app()->request->getQuery('force') === 'force' )
     {
-      foreach($string as $key => $value)
-      {
-        $string[$key] = $this->escape($value);
-      }
+      set_time_limit(0);
+      ignore_user_abort(true);
+      return false;
+    }
+    else if( file_exists($this->filePath) )
+    {
+      $this->xmlDocument = simplexml_load_file($this->filePath);
+      return true;
     }
 
-    return htmlspecialchars(trim($string));
+    return false;
+  }
+
+  private function saveXml()
+  {
+    $dir = pathinfo($this->filePath, PATHINFO_DIRNAME);
+    if( !file_exists($dir) )
+    {
+      mkdir($dir);
+      chmod($dir, 0775);
+    }
+
+    $this->xmlDocument->saveXML($this->filePath);
+    chmod($this->filePath, 0775);
   }
 
   /**
@@ -55,7 +94,7 @@ abstract class AbstractXml extends CComponent
    * @return string $path
    * @throws InvalidArgumentException
    */
-  protected function getTemplatePath($template)
+  private function getTemplatePath($template)
   {
     if( $template === null )
     {
@@ -70,5 +109,14 @@ abstract class AbstractXml extends CComponent
     }
 
     return $path;
+  }
+
+  /**
+   * @return string $filePath
+   */
+  private function getXmlPath()
+  {
+    $class = str_replace('DataProvider', '', $this->dataProviderClass);
+    return !isset($this->filePath) ? 'f/xml/'.lcfirst($class).'.xml' : $this->filePath;
   }
 }

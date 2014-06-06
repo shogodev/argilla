@@ -11,26 +11,13 @@ class YandexMarketXml extends AbstractXml
   public $dataProviderClass = 'YandexDataProvider';
 
   /**
-   * @var CDbCriteria
-   */
-  public $criteria;
-
-  /**
    * @var YandexDataProvider
    */
-  private $dataProvider;
+  protected $dataProvider;
 
-  public function init()
+  public function buildXml()
   {
-    parent::init();
-
-    if( !isset($this->criteria) )
-    {
-      $this->criteria = new CDbCriteria();
-    }
-
     $this->xmlDocument->addAttribute('date', date("Y-m-d H:i"));
-    $this->dataProvider = new $this->dataProviderClass($this->criteria);
 
     $this->setShop();
     $this->setCurrencies();
