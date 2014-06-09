@@ -1,4 +1,6 @@
 <?php
+
+
 /**
  * @author Vladimir Utenkov <utenkov@shogo.ru>
  * @link https://github.com/shogodev/argilla/
@@ -23,14 +25,11 @@ class GeneratorFactory extends CComponent
 
     /** @var $generators ILocationGenerator[] */
     $generators = array();
+
     /** @var $name DirectoryIterator */
     foreach( $generatorNames as $name )
     {
       $className = $name->getBasename('.php');
-
-      if($this->isSample($className))
-        continue;
-
       $generator = new $className($controller);
 
       if( $generator instanceof ILocationGenerator )
@@ -48,20 +47,5 @@ class GeneratorFactory extends CComponent
   public function getGenerators()
   {
     return $this->_generators;
-  }
-
-  /**
-   * Checks if locationGenerator file is an example sample
-   *
-   * @param $className
-   *
-   * @return bool
-   */
-  public function isSample($className)
-  {
-    if(strpos($className, '.sample') !== false)
-      return true;
-
-    return false;
   }
 }
