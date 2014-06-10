@@ -18,6 +18,7 @@ abstract class FileUploader
     'pdf' => 'icn_pdf.gif',
     'rar' => 'icn_rar.gif',
     'xls' => 'icn_xls.gif',
+    'csv' => 'icn_xls.gif',
     'zip' => 'icn_zip.gif',
   );
 

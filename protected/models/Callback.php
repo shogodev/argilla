@@ -16,7 +16,8 @@ class Callback extends FActiveRecord
   public function rules()
   {
     return array(
-      array('name, phone', 'required'),
+      array('phone', 'required'),
+      array('name', 'length', 'max' => 255),
       array('time, content', 'safe'),
     );
   }

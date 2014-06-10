@@ -39,9 +39,7 @@ return array_merge_recursive(array(
 
     'frontend.components.*',
     'frontend.components.common.*',
-    'frontend.components.interfaces.*',
     'frontend.components.validators.*',
-    'frontend.components.alphabets.*',
     'frontend.components.redirect.*',
     'frontend.components.image.*',
     'frontend.components.form.*',

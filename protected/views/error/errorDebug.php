@@ -13,7 +13,7 @@
 ?>
 <section id="main">
 
-  <?php $this->renderPartial('/breadcrumbs');?>
+  <?php $this->renderPartial('/_breadcrumbs');?>
 
   <h2 class="m7">Ошибка <?php echo $this->errorCode?></h2>
 

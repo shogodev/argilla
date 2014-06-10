@@ -13,7 +13,7 @@
 
 <head>
   <meta charset="utf-8" />
-  <title><?php echo $this->meta->title;?></title>
+  <title><?php echo Yii::app()->meta->title;?></title>
   <meta name="viewport" content="target-densitydpi=device-dpi" />
   <base href="<?php echo Yii::app()->homeUrl?>" />
 

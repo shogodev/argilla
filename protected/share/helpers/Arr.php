@@ -374,4 +374,19 @@ class Arr
       return false;
     });
   }
+
+  /**
+   * @param array $array
+   *
+   * @return array
+   */
+  public static function flatten(array $array)
+  {
+    $result = array();
+    array_walk_recursive($array, function ($value, $key) use (&$result) {
+      $result[$key] = $value;
+    });
+
+    return $result;
+  }
 }

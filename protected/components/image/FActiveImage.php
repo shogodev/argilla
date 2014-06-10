@@ -101,6 +101,18 @@ class FActiveImage extends FActiveRecord implements ImageInterface
   }
 
   /**
+   * Создание абсолютного пути до файла
+   *
+   * @param null $name
+   *
+   * @return string
+   */
+  public function getAbsolutePath($name = null)
+  {
+    return Yii::app()->createAbsoluteUrl($this->getFullPath($name));
+  }
+
+  /**
    * Создание полного пути до файла
    *
    * @param string $name

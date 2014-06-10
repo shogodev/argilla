@@ -59,7 +59,7 @@ class XmlExportController extends FController
   protected function sitemapXml()
   {
     $path = Yii::getPathOfAlias('frontend.models.sitemap.generators');
-    $generatorFactory = new GeneratorFactory($path, $this);
+    $generatorFactory = new GeneratorFactory($path, Yii::app()->controller);
 
     return Yii::createComponent(array(
       'class' => 'SitemapXml',
