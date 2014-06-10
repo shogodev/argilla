@@ -107,11 +107,6 @@ class FilterElementItem extends CComponent
     return isset($this->parent->disabled[$this->id]);
   }
 
-  public function getImage()
-  {
-    return new FSingleImage($this->parent->id.'_'.$this->id.'.png', 'upload/images/color');
-  }
-
   public function render()
   {
     echo CHtml::checkBox($this->name, $this->isSelected(), array('id' => $this->cssId, 'value' => $this->id));

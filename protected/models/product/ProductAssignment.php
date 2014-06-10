@@ -11,6 +11,8 @@
  * @property int $product_id
  * @property int $section_id
  * @property int $type_id
+ * @property int $category_id
+ * @property int $collection_id
  */
 class ProductAssignment extends FActiveRecord
 {
@@ -21,6 +23,7 @@ class ProductAssignment extends FActiveRecord
     return array(
       'product' => array(self::BELONGS_TO, 'ProductProduct', 'product_id'),
       'section' => array(self::BELONGS_TO, 'ProductSection', 'section_id'),
+      'type' => array(self::BELONGS_TO, 'ProductType', 'type_id'),
       'collection' => array(self::BELONGS_TO, 'ProductCollection', 'collection_id'),
     );
   }
@@ -45,30 +48,6 @@ class ProductAssignment extends FActiveRecord
     return $this->assignments[$key];
   }
 
-  /**
-   * @return array
-   */
-  public function getSectionMenu()
-  {
-    $menu        = array();
-    $criteria    = new CDbCriteria();
-    $assignments = $this->getAssignments($criteria);
-
-    foreach($assignments as $item)
-    {
-      if( !isset($menu[$item['section_id']]) )
-      {
-        $menu[$item['section_id']] = array(
-          'label' => $item['section_name'],
-          'url' => array('product/section', 'section' => $item['section_url']),
-          'items' => array(),
-        );
-      }
-    }
-
-    return $menu;
-  }
-
   private function buildCriteria(CDbCriteria $defaultCriteria = null)
   {
     $criteria = new CDbCriteria(array('distinct' => true));
@@ -77,31 +56,40 @@ class ProductAssignment extends FActiveRecord
       'a.section_id, a.collection_id, a.category_id, a.type_id',
       'section.name AS section_name, section.url AS section_url',
       'type.name AS type_name, type.url AS type_url',
+      'category.name AS category_name, category.url AS category_url',
+      'collection.name AS collection_name, collection.url AS collection_url',
     );
 
     $condition = implode(" AND ", array(
       'a.visible = 1',
       'product.visible = 1',
       'section.visible = 1',
-      '(type.visible IS NULL OR type.visible = 1)',
+      'category.visible = 1',
+      'type.visible = 1',
+      '(collection.visible IS NULL OR collection.visible = 1)',
     ));
 
     $join = array(
       'product' => Product::model()->tableName(),
       'section' => ProductSection::model()->tableName(),
       'type' => ProductType::model()->tableName(),
+      'category' => ProductCategory::model()->tableName(),
+      'collection' => ProductCollection::model()->tableName(),
     );
 
     array_walk($join, function(&$value, $key){
-      $value = PHP_EOL.'LEFT OUTER JOIN '.$value.' AS '.$key.' ON '.$key.'.id = a.'.$key.'_id';
+      $value = PHP_EOL.'LEFT OUTER JOIN `'.$value.'` AS '.$key.' ON '.$key.'.id = a.'.$key.'_id';
     });
 
     $criteria->join = implode(" ", $join);
     $criteria->condition = $condition;
-    $criteria->order = 'section.position, type.position';
+    $criteria->distinct = true;
 
     if( $defaultCriteria !== null )
       $criteria->mergeWith($defaultCriteria);
+
+    if( empty($criteria->order) )
+      $criteria->order = 'section.position, type.position';
 
     return $criteria;
   }

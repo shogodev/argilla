@@ -169,7 +169,7 @@ class ProductList extends CComponent
   protected function initCriteria(CDbCriteria $criteria)
   {
     $assignment = ProductAssignment::model()->tableName();
-    $criteria->join = 'JOIN '.$assignment.' AS a ON a.product_id = t.id '.$criteria->join;
+    $criteria->join = 'JOIN `'.$assignment.'` AS a ON a.product_id = t.id '.$criteria->join;
     $criteria->distinct = true;
     $criteria->compare('t.visible', 1);
     $criteria->compare('a.visible', 1);
