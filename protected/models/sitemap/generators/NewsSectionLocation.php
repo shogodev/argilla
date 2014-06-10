@@ -1,10 +1,10 @@
 <?php
 /**
- * @author    Vladimir Utenkov <utenkov@shogo.ru>
- * @link      https://github.com/shogodev/argilla/
+ * @author Vladimir Utenkov <utenkov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2014 Shogo
- * @license   http://argilla.ru/LICENSE
- * @package   frontend.components.sitemapXml.locationCenerators
+ * @license http://argilla.ru/LICENSE
+ * @package frontend.components.sitemap.generators
  */
 class NewsSectionLocation extends LocationBase
 {

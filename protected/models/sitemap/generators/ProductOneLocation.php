@@ -4,18 +4,15 @@
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
- * @package frontend.components.sitemapXml.locationCenerators
+ * @package frontend.components.sitemap
  */
-class IndexLocation extends LocationBase
+class ProductOneLocation extends LocationBase
 {
-  /**
-   * @param CController $controller
-   */
   function __construct(CController $controller)
   {
     parent::__construct($controller);
 
-    $this->_modelSource = new ArrayIterator(array('/')); // Заглушка, чтобы не сыпались fatal errors.
+    $this->_modelSource = new CDataProviderIterator(new CActiveDataProvider('Product'));
   }
 
   /**
@@ -23,7 +20,10 @@ class IndexLocation extends LocationBase
    */
   public function current()
   {
-    return $this->_controller->createAbsoluteUrl($this->getRoute());
+    /** @var $current Product */
+    $current = $this->_modelSource->current();
+
+    return Yii::app()->request->hostInfo.$current->url;
   }
 
   /**
@@ -31,6 +31,6 @@ class IndexLocation extends LocationBase
    */
   public function getRoute()
   {
-    return 'index/index';
+    return 'product/one';
   }
 }

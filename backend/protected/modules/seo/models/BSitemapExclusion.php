@@ -32,7 +32,7 @@ class BSitemapExclusion extends BSitemap
   public function rules()
   {
     return array(
-      array('route', 'filter', 'filter' => array('Utils', 'parseRelativeUrl')),
+      array('route', 'filter', 'filter' => array('Utils', 'getRelativeUrl')),
       array('route', 'required'),
       array('lastmod, visible', 'numerical', 'integerOnly' => true, 'min' => 0, 'max' => 1),
       array('route, changefreq', 'length', 'max' => 255),

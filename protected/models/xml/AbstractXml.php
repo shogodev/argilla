@@ -39,8 +39,12 @@ abstract class AbstractXml extends CComponent
     if( !$this->loadXml() )
     {
       $this->xmlDocument = new SimpleXMLElement($this->getTemplatePath($this->template), false, true);
-      $this->criteria = isset($this->criteria) ? $this->criteria : new CDbCriteria();
-      $this->dataProvider = new $this->dataProviderClass($this->criteria);
+
+      if( isset($this->dataProviderClass) )
+      {
+        $this->criteria     = isset($this->criteria) ? $this->criteria : new CDbCriteria();
+        $this->dataProvider = new $this->dataProviderClass($this->criteria);
+      }
 
       $this->buildXml();
     }
@@ -116,7 +120,12 @@ abstract class AbstractXml extends CComponent
    */
   private function getXmlPath()
   {
-    $class = str_replace('DataProvider', '', $this->dataProviderClass);
-    return !isset($this->filePath) ? 'f/xml/'.lcfirst($class).'.xml' : $this->filePath;
+    if( !isset($this->filePath) )
+    {
+      $class = str_replace('DataProvider', '', $this->dataProviderClass);
+      $this->filePath = 'f/xml/'.lcfirst($class).'.xml';
+    }
+
+    return $this->filePath;
   }
 }

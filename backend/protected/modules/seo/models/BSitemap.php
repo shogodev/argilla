@@ -24,7 +24,6 @@ class BSitemap extends BActiveRecord
   {
     return CMap::mergeArray(parent::attributeLabels(), array(
       'route' => 'Маршрут',
-      'lastmod' => 'Дата последнего изменения',
       'changefreq' => 'Частота изменения',
       'priority' => 'Приоритет',
     ));

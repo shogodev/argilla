@@ -4,7 +4,7 @@
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
- * @package frontend.components.sitemapXml.locationCenerators
+ * @package frontend.components.sitemap
  */
 abstract class LocationBase extends CComponent implements ILocationGenerator
 {
@@ -63,15 +63,15 @@ abstract class LocationBase extends CComponent implements ILocationGenerator
 
   public function unique(array $keys, array $dataSource)
   {
-    foreach( $dataSource as $key => $data )
+    foreach($dataSource as $key => $data)
     {
-      foreach( $dataSource as $key_ => $value_ )
+      foreach($dataSource as $key_ => $value_)
       {
         if( $key != $key_ )
         {
           $delete = true;
 
-          foreach( $keys as $value )
+          foreach($keys as $value)
           {
             if( isset($dataSource[$key][$value]) && isset($dataSource[$key_][$value]) )
               if( $dataSource[$key][$value] != $dataSource[$key_][$value] )

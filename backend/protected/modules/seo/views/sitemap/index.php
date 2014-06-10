@@ -10,6 +10,7 @@ $this->widget('BGridView', array(
   'filter' => $model,
   'dataProvider' => $dataProvider,
   'columns' => array(
+    array('name' => 'id', 'class' => 'BPkColumn'),
     array('name' => 'route'),
     array('name' => 'changefreq', 'class' => 'OnFlyEditField', 'dropDown' => $model->getChangeFreqs()),
     array('name' => 'priority', 'class' => 'OnFlyEditField', 'htmlOptions' => array('class' => 'span1')),

@@ -1,18 +1,18 @@
 ﻿<?php
 /**
- * @author    Vladimir Utenkov <utenkov@shogo.ru>
- * @link      https://github.com/shogodev/argilla/
+ * @author Vladimir Utenkov <utenkov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2013 Shogo
- * @license   http://argilla.ru/LICENSE
- * @package   frontend.models.seo
+ * @license http://argilla.ru/LICENSE
+ * @package frontend.models.sitemap
  *
  * @method static SitemapRoute model(string $class = __CLASS__)
  *
- * @property int    $id
- * @property string $route
- * @property bool   $lastmod
- * @property string $changefreq
- * @property float  $priority
+ * @property integer $id
+ * @property string  $route
+ * @property bool    $lastmod
+ * @property string  $changefreq
+ * @property float   $priority
  */
 class SitemapRoute extends FActiveRecord
 {

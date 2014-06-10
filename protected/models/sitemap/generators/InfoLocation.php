@@ -4,9 +4,9 @@
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
- * @package frontend.components.sitemapXml.locationCenerators
+ * @package frontend.components.sitemap.generators
  */
-class ContactLocation extends LocationBase
+class InfoLocation extends LocationBase
 {
   /**
    * @param CController $controller
@@ -15,7 +15,7 @@ class ContactLocation extends LocationBase
   {
     parent::__construct($controller);
 
-    $this->_modelSource = new ArrayIterator(array('/')); // Заглушка, чтобы не сыпались fatal errors.
+    $this->_modelSource = new CDataProviderIterator(new CActiveDataProvider(Info::model()));
   }
 
   /**
@@ -23,7 +23,10 @@ class ContactLocation extends LocationBase
    */
   public function current()
   {
-    return $this->_controller->createAbsoluteUrl($this->getRoute());
+    /** @var $current Info */
+    $current = $this->_modelSource->current();
+
+    return $this->_controller->createAbsoluteUrl($this->getRoute(), array('url' => $current->url));
   }
 
   /**
@@ -31,6 +34,6 @@ class ContactLocation extends LocationBase
    */
   public function getRoute()
   {
-    return 'contact/index';
+    return 'info/index';
   }
 }

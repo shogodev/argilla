@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * @author Vladimir Utenkov <utenkov@shogo.ru>
  * @link https://github.com/shogodev/argilla/
@@ -16,10 +14,10 @@ class GeneratorFactory extends CComponent
   private $_generators;
 
   /**
-   * @param string      $pathToGenerators
-   * @param CController $controller
+   * @param string $pathToGenerators
+   * @param FController $controller
    */
-  function __construct($pathToGenerators, CController $controller)
+  function __construct($pathToGenerators, FController $controller)
   {
     $generatorNames = new LocationGeneratorFileFilter(new DirectoryIterator($pathToGenerators));
 
@@ -27,7 +25,7 @@ class GeneratorFactory extends CComponent
     $generators = array();
 
     /** @var $name DirectoryIterator */
-    foreach( $generatorNames as $name )
+    foreach($generatorNames as $name)
     {
       $className = $name->getBasename('.php');
       $generator = new $className($controller);

@@ -58,10 +58,14 @@ class XmlExportController extends FController
 
   protected function sitemapXml()
   {
-    $generatorFactory = new GeneratorFactory(Yii::getPathOfAlias('frontend.components.sitemapXml.locationGenerators'), Yii::app()->controller);
-    $siteMap = new SitemapXml(SitemapRoute::model()->findAll(), $generatorFactory->getGenerators());
-    $siteMap->build(new SitemapUrlBuilder(), new DateTime());
+    $path = Yii::getPathOfAlias('frontend.models.sitemap.generators');
+    $generatorFactory = new GeneratorFactory($path, $this);
 
-    return $siteMap;
+    return Yii::createComponent(array(
+      'class' => 'SitemapXml',
+      'filePath' => 'f/xml/sitemap.xml',
+      'routes' => SitemapRoute::model()->findAll(),
+      'generators' => $generatorFactory->getGenerators(),
+    ));
   }
 }

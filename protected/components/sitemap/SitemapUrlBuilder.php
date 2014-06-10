@@ -4,7 +4,7 @@
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
- * @package frontend.components.sitemapXml.locationCenerators
+ * @package frontend.components.sitemap
  */
 class SitemapUrlBuilder extends CComponent
 {
@@ -23,13 +23,7 @@ class SitemapUrlBuilder extends CComponent
    */
   public function addLastMod(SimpleXMLElement $urlElement, DateTime $date)
   {
-    $days    = 1;
-    $day     = 24 * 60 * 60;
-    $add     = ((rand(9, 19)) * 60 + rand(1, 59)) * 60 + rand(1, 59);
-    $time    = (floor(time() / $day) - $days) * $day + $add;
-    $lastmod = substr_replace(date('Y-m-d\TH:iO', $time), ':', -2).substr(date('O', $time), 3);
-
-    $urlElement->addChild('lastmod', $lastmod);
+    $urlElement->addChild('lastmod', $date->format('Y-m-d'));
   }
 
   /**
