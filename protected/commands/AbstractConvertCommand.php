@@ -31,11 +31,6 @@ abstract class AbstractConvertCommand extends CConsoleCommand
    */
   protected $dstTables = array();
 
-  /**
-   * @var bool Выводим ли в консоль сообщения об успешном сохранении записи
-   */
-  protected $showSuccessMessages = true;
-
   public function actionIndex($mode = 'update')
   {
     $this->mode = $mode;
@@ -66,11 +61,11 @@ abstract class AbstractConvertCommand extends CConsoleCommand
     }
   }
 
-  protected function save(BActiveRecord $model)
+  protected function save(BActiveRecord $model, $showSuccessMessages = true)
   {
     if( $model->save() )
     {
-      if( $this->showSuccessMessages )
+      if( $showSuccessMessages )
         echo 'Обработка '.get_class($model).' c id='.$model->id.' завершена ('.memory_get_usage().')'.PHP_EOL;
 
       return true;
