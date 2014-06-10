@@ -7,6 +7,10 @@
 	Contact: melnikov [at] shogo.ru
 	From: Tula, Russia
 
+	Developer: Nikita Pimoshenko
+	Contact: pimoshenko [at] shogo.ru
+	From: Tula, Russia
+
 	Developer: Alexey Tatarinov
 	Contact: tatarinov [at] shogo.ru
 	From: Tula, Russia
