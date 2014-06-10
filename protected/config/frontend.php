@@ -47,6 +47,8 @@ return array_merge_recursive(array(
     'frontend.components.ar.*',
     'frontend.components.url.*',
     'frontend.components.collection.*',
+    'frontend.components.sitemapXml.*',
+    'frontend.components.sitemapXml.locationGenerators.*',
 
     'frontend.controllers.*',
     'frontend.controllers.behaviors.*',

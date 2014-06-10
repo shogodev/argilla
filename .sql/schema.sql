@@ -1419,7 +1419,42 @@ CREATE TABLE `argilla_vacancy_file` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `argilla_seo_sitemap_route`
+--
+DROP TABLE IF EXISTS `argilla_seo_sitemap_route`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE IF NOT EXISTS `argilla_seo_sitemap_route` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `route` varchar(255) NOT NULL,
+  `lastmod` tinyint(1) NOT NULL DEFAULT '0',
+  `changefreq` varchar(255) NOT NULL DEFAULT 'monthly',
+  `priority` decimal(5,2) NOT NULL DEFAULT '0.00',
+  `visible` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `route` (`route`)
+) ENGINE=InnoDB  DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
 
+--
+-- Table structure for table `argilla_seo_sitemap_exclusion`
+--
+DROP TABLE IF EXISTS `argilla_seo_sitemap_exclusion`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE IF NOT EXISTS `argilla_seo_sitemap_exclusion` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `route` varchar(255) NOT NULL,
+  `lastmod` tinyint(1) NOT NULL DEFAULT '0',
+  `changefreq` varchar(255) NOT NULL DEFAULT 'monthly',
+  `priority` decimal(5,2) NOT NULL DEFAULT '0.00',
+  `visible` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `route` (`route`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 --
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
