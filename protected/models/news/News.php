@@ -19,16 +19,14 @@
  * @property string  $name
  * @property string  $content
  * @property string  $img
+ *
+ * @property NewsSection $section
  */
 class News extends FActiveRecord
 {
   public $image;
 
   public $dateRaw;
-  public function tableName()
-  {
-    return '{{news}}';
-  }
 
   public function defaultScope()
   {
@@ -61,8 +59,8 @@ class News extends FActiveRecord
   protected function afterFind()
   {
     $this->dateRaw = $this->date;
-    $this->date  = !empty($this->date) ? date('d.m.Y', strtotime($this->date)).', '.Yii::app()->locale->getWeekDayName(date('w',strtotime($this->date))) : '';
-    $this->url   = Yii::app()->controller->createUrl('news/one', array('url' => $this->url));
+    $this->date  = !empty($this->date) ? date('d.m.Y', strtotime($this->date)).', '.Yii::app()->locale->getWeekDayName(date('w', strtotime($this->date))) : '';
+    $this->url   = Yii::app()->controller->createUrl('news/one', array('section' => $this->section->url, 'url' => $this->url));
     $this->image = $this->img ? new FSingleImage($this->img, 'news', array('pre')) : null;
 
     parent::afterFind();

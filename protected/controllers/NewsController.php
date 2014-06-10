@@ -16,7 +16,7 @@ class NewsController extends FController
       throw new CHttpException(404, 'Страница не найдена');
 
     $this->breadcrumbs = array(
-      $model->section->name => array('news/section', 'url' => $model->section->url),
+      $model->section->name => array('news/section', 'section' => $model->section->url),
       $model->name
     );
 
@@ -25,12 +25,16 @@ class NewsController extends FController
     ));
   }
 
-  public function actionSection($url)
+  public function actionSection($section)
   {
-    $model = NewsSection::model()->findByAttributes(array('url' => $url));
+    $model = NewsSection::model()->findByAttributes(array('url' => $section));
 
     if( $model === null )
       throw new CHttpException(404, 'Страница не найдена');
+
+    $sectionCriteria = new CDbCriteria();
+    $sectionCriteria->addNotInCondition('id', array($model->id));
+    $sections = NewsSection::model()->findAll($sectionCriteria);
 
     $this->breadcrumbs = array($model->name);
 
@@ -44,6 +48,7 @@ class NewsController extends FController
     $this->render('section', array(
       'model' => $model,
       'dataProvider' => $dataProvider,
+      'sections' => $sections
     ));
   }
 }

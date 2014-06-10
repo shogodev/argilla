@@ -5,7 +5,8 @@
  */
 ?>
 <div id="content" class="paddings">
-  <?php $this->renderPartial('/breadcrumbs');?>
+<div class="wrapper">
+  <?php $this->renderPartial('/_breadcrumbs');?>
 
   <h1><?php echo $this->clip('h1', 'Регистрация')?></h1>
   <?php if( Yii::app()->user->isGuest ) {?>
@@ -20,4 +21,5 @@
 
   <?php } else
     echo "Вы уже зарегистрированы." ?>
+</div>
 </div>

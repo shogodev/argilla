@@ -5,10 +5,12 @@
  */
 ?>
 <div id="content" class="paddings">
-  <?php $this->renderPartial('/breadcrumbs');?>
+  <div class="wrapper">
+    <?php $this->renderPartial('/_breadcrumbs'); ?>
 
-  <h1><?php echo $this->clip('h1', 'Восстановление пароля')?></h1>
+    <h1><?php echo $this->clip('h1', 'Восстановление пароля') ?></h1>
 
-  <?php echo $restoreForm; ?>
+    <?php echo $restoreForm; ?>
+  </div>
 </div>
 

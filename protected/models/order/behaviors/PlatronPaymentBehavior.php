@@ -56,7 +56,7 @@ class PlatronPaymentBehavior extends CModelBehavior
    */
   public function getPaymentSystemTypeId()
   {
-    return OrderPaymentType::E_PAY;
+    return OrderPaymentType::NON_CASH;
   }
 
   public function registerPaymentScripts()

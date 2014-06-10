@@ -10,11 +10,11 @@ foreach($model->attributeLabels() as $attribute => $label)
   if( !empty($model->$attribute) )
     $fields[$label] = $model->$attribute;
 
-if( $model->payment )
-  $fields['Методы оплаты'] = $model->payment->name;
+if( isset($model->paymentType) )
+  $fields['Методы оплаты'] = $model->paymentType->name;
 
-if( $model->delivery )
-  $fields['Способ доставки'] = $model->delivery->name;
+if( isset($model->deliveryType) )
+  $fields['Способ доставки'] = $model->deliveryType->name;
 
 $data = array(
   'header' => "Заказ",
