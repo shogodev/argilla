@@ -18,9 +18,17 @@ $form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId()));
 <tbody>
 
   <?php echo $form->textFieldRow($model, 'url_mask'); ?>
+
+  <?php echo $form->textFieldRow($model, 'header'); ?>
+
   <?php echo $form->textFieldRow($model, 'title'); ?>
+
   <?php echo $form->textAreaRow($model, 'description'); ?>
+
   <?php echo $form->textAreaRow($model, 'keywords'); ?>
+
+  <?php echo $form->checkBoxRow($model, 'noindex'); ?>
+
   <?php echo $form->checkBoxRow($model, 'visible'); ?>
 
 </tbody>

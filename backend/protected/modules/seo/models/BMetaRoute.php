@@ -7,6 +7,14 @@
  * @package backend.modules.seo.models
  *
  * @method static BMetaRoute model(string $class = __CLASS__)
+ *
+ * @property string $route
+ * @property string $clips
+ * @property string $description
+ * @property string $keywords
+ * @property string $header
+ * @property integer $noindex
+ * @property integer $visible
  */
 class BMetaRoute extends BActiveRecord
 {
@@ -21,8 +29,8 @@ class BMetaRoute extends BActiveRecord
   {
     return array(
       array('route', 'unique'),
-      array('route, title, description, keywords', 'length', 'max' => 255),
-      array('route, title, description, keywords, visible' , 'safe'),
+      array('route, title, description, keywords, header', 'length', 'max' => 255),
+      array('noindex, visible', 'numerical', 'integerOnly' => true),
     );
   }
 
@@ -35,38 +43,20 @@ class BMetaRoute extends BActiveRecord
     );
   }
 
-  public function afterFind()
+  public function getClipList()
   {
-    if( !empty($this->clips) )
-    {
-      $clips = explode(',', $this->clips);
-      $this->clips = '{'.implode('}, {', $clips).'}';
-    }
-  }
-
-  public function beforeSave()
-  {
-    if( parent::beforeSave() )
-    {
-      if( !empty($this->clips) )
-      {
-        $clips = explode('}{', trim($this->clips, '}{'));
-        $this->clips = implode(',', $clips);
-      }
-
-      return true;
-    }
-
-    return false;
+    return '{'.implode('}, {', explode(',', $this->clips)).'}';
   }
 
   public function attributeLabels()
   {
     return CMap::mergeArray(parent::attributeLabels(), array(
-      'clips' => 'Переменные шаблона',
+      'clipList' => 'Переменные шаблона',
       'globalVars' => 'Общие переменные',
       'route' => 'Маршрут',
       'title' => 'Title страницы',
+      'header' => 'Заголовок h1',
+      'noindex' => 'Запретить индексацию',
     ));
   }
 

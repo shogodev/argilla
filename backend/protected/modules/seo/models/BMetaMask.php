@@ -21,16 +21,17 @@ class BMetaMask extends BActiveRecord
   public function rules()
   {
     return array(
-      array('url_mask, title', 'required'),
+      array('url_mask', 'required'),
       array('url_mask', 'unique'),
-      array('url_mask, title, description, keywords', 'length', 'max' => 255),
-      array('url_mask, title, description, keywords, visible' , 'safe'),
+      array('url_mask, title, description, keywords, header', 'length', 'max' => 255),
+      array('noindex, visible', 'numerical', 'integerOnly' => true),
     );
   }
 
   public function beforeSave()
   {
-    $this->url_mask = Utils::getRelativeUrl($this->url_mask);
+    if( !preg_match('/^#.*#$/', $this->url_mask) )
+      $this->url_mask = Utils::getRelativeUrl($this->url_mask);
 
     return parent::beforeSave();
   }
@@ -40,6 +41,8 @@ class BMetaMask extends BActiveRecord
     return CMap::mergeArray(parent::attributeLabels(), array(
       'url_mask' => 'Маска',
       'title' => 'Title страницы',
+      'header' => 'Заголовок h1',
+      'noindex' => 'Запретить индексацию',
     ));
   }
 

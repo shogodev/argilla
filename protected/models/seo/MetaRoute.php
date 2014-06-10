@@ -6,24 +6,48 @@
  * @license http://argilla.ru/LICENSE
  * @package frontend.models.seo
  *
- * @property integer $id
+ * @method static MetaRoute model(string $class = __CLASS__)
+ *
  * @property string $route
+ * @property string $header
  * @property string $title
  * @property string $description
  * @property string $keywords
  * @property string $models
  * @property string $clips
+ * @property integer $noindex
  * @property integer $visible
  */
 class MetaRoute extends FActiveRecord
 {
+  const DEFAULT_ROUTE = 'default';
+
   public function tableName()
   {
     return '{{seo_meta_route}}';
   }
 
-  public function getData($route)
+  public function defaultScope()
   {
-    return $this->find('route=:route AND visible=:visible', array(':route' => $route, ':visible' => '1'));
+    $alias = $this->getTableAlias(false, false);
+
+    return array(
+      'condition' => $alias.'.visible=1',
+    );
+  }
+
+  public function findByRoute($route, $findDefault = true)
+  {
+    $criteria = new CDbCriteria();
+    $criteria->compare('route', $route);
+
+    if( $findDefault )
+    {
+      $criteria->addCondition('route = :default', 'OR');
+      $criteria->order = 'IF(route = :default, 1, 0)';
+      $criteria->params[':default'] = self::DEFAULT_ROUTE;
+    }
+
+    return $this->find($criteria);
   }
 }

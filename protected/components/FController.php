@@ -102,24 +102,44 @@ class FController extends CController
    * @param string $view
    * @param null $data
    * @param bool $return
-   * @return mixed|string
+   *
+   * @return string|null
+   * @throws CException
    */
   public function render($view, $data = null, $return = false)
   {
-    if( !is_object($this->meta) )
+    $this->onBeforeRender(new CEvent($this, array('data' => $data, 'view' => $view)));
+
+    if( $this->beforeRender($view) )
     {
-      $this->meta = new Meta($this->route, $this->getPageTitle());
-      $this->meta->findModel($data);
+      $output = $this->renderPartial($view, $data, true);
+
+      if( ($layoutFile = $this->getLayoutFile($this->layout)) !== false )
+      {
+        $this->onBeforeRenderLayout(new CEvent($this, array('content' => $output)));
+        $output = $this->renderFile($layoutFile, array('content' => $output), true);
+      }
+
+      $this->afterRender($view, $output);
+      $output = $this->processOutput($output);
+
+      if( $return )
+        return $output;
+      else
+        echo $output;
     }
 
-    return parent::render($view, $data, $return);
+    return null;
   }
 
-  public function afterRender($view, &$output)
+  public function onBeforeRender(CEvent $event)
   {
-    $this->meta->saveUsedModels();
+    $this->raiseEvent('onBeforeRender', $event);
+  }
 
-    parent::afterRender($view, $output);
+  public function onBeforeRenderLayout(CEvent $event)
+  {
+    $this->raiseEvent('onBeforeRenderLayout', $event);
   }
 
   public function clip($id, $value)
@@ -128,8 +148,8 @@ class FController extends CController
     echo $value;
     $this->endClip();
 
-    if( $this->meta )
-      $this->meta->registerClip($id, $value);
+    if( Yii::app()->meta )
+      Yii::app()->meta->registerClip($id, $value);
 
     return $this->clips[$id];
   }
@@ -148,19 +168,33 @@ class FController extends CController
   }
 
   /**
+   * @param bool $cutDefaultParams
+   *
    * @return string
    */
-  public function getCurrentUrl()
+  public function getCurrentUrl($cutDefaultParams = true)
   {
-    return $this->createUrl($this->id.'/'.$this->action->id, $this->getActionParams(true));
+    return $this->createUrl($this->id.'/'.$this->action->id, $this->getActionParams($cutDefaultParams));
   }
 
   /**
+   * @param bool $cutDefaultParams
+   *
    * @return string
    */
-  public function getCurrentAbsoluteUrl()
+  public function getCurrentAbsoluteUrl($cutDefaultParams = true)
   {
-    return $this->createAbsoluteUrl($this->id.'/'.$this->action->id, $this->getActionParams(true));
+    return $this->createAbsoluteUrl($this->id.'/'.$this->action->id, $this->getActionParams($cutDefaultParams));
+  }
+
+  /**
+   * @param bool $cutDefaultParams
+   *
+   * @return string
+   */
+  public function getActionUrl($cutDefaultParams = true)
+  {
+    return preg_replace('/\?.*/', '', $this->getCurrentUrl($cutDefaultParams));
   }
 
   /**

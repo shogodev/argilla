@@ -99,6 +99,10 @@ return array_merge_recursive(array(
       'class' => 'RequestRedirectComponent',
     ),
 
+    'meta' => array(
+      'class' => 'frontend.components.Meta',
+    ),
+
     'errorHandler' => array(
       'errorAction' => 'error/error',
     ),

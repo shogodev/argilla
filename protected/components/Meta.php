@@ -6,201 +6,235 @@
  * @license http://argilla.ru/LICENSE
  * @package frontend.components
  *
+ * @property string $header
  * @property string $title
+ * @property string $description
+ * @property string $keywords
  */
-class Meta extends CComponent
+class Meta extends CApplicationComponent
 {
-  public static $VARS_PATTERN = '/{(\w+)}|{(\w+):(\w+)}/';
+  const VARIABLE_PATTERN = '/([a-z]*){([^}]+)}/';
 
-  public $modelExceptions = array('ProductAssignment', 'ProductParameterAssignment');
+  /**
+   * @var array
+   */
+  public $exceptedModels = array('ProductAssignment', 'ProductParameterAssignment', 'ProductTreeAssignment');
 
-  public $maxDepthFind = 1;
+  /**
+   * @var array
+   */
+  public $replaces = array();
 
+  /**
+   * @var int
+   */
+  public $maxSearchDepth = 1;
+
+  /**
+   * @var FController
+   */
+  private $controller;
+
+  /**
+   * @var string
+   */
   private $route;
-  private $usedModels = array();
-  private $usedClips = array();
+
+  /**
+   * @var string
+   */
+  private $requestUri;
+
+  /**
+   * @var FActiveRecord[]
+   */
+  private $renderedModels = array();
+
+  /**
+   * @var array
+   */
+  private $renderedClips = array();
+
+  private $header;
 
   private $title;
+
   private $description;
+
   private $keywords;
 
-  public function __construct($route, $default_title = '')
+  private $noindex;
+
+  public function init()
   {
-    $this->route = $route;
+    parent::init();
 
-    $model     = MetaMask::model();
-    $meta_data = $model->getData(Yii::app()->request->requestUri);
-
-    if( !empty($meta_data) )
-      $this->initMetaData($meta_data, $default_title);
-    else
+    if( ($controller = Yii::app()->controller) )
     {
-      $model     = MetaRoute::model();
-      $meta_data = $model->getData($route);
-
-      if( empty($meta_data) )
-        $meta_data = $model->getData('default');
-
-      $this->initMetaData($meta_data, $default_title);
+      $this->setController($controller);
+      $this->controller->attachEventHandler('onBeforeRender', array($this, 'setRenderedModels'));
+      $this->controller->attachEventHandler('onBeforeRenderLayout', array($this, 'registerMeta'));
     }
 
-    if( !Yii::app()->clientScript->hasEventHandler('onBeforeRenderClientScript') )
-      Yii::app()->clientScript->attachEventHandler('onBeforeRenderClientScript', array($this, 'registerKeywordsAndDescription'));
+    Yii::app()->attachEventHandler('onEndRequest', array($this, 'updateRenderedModels'));
+
+    if( isset(Yii::app()->request) )
+      $this->setRequestUri(Yii::app()->request->requestUri);
+
+    $this->replaces = array(
+      '{project}' => Arr::get(Yii::app()->params, 'project'),
+    );
   }
 
   /**
-   * Ищет модель в $data
-   * @param $data
+   * @return string
    */
-  public function findModel($data)
-  {
-    static $depth;
-
-    $depth++;
-
-    if( !isset($data) )
-      return;
-
-    foreach($data as $model)
-    {
-      if( is_a($model, 'CModel') || is_a($model, 'CForm') )
-      {
-        if( is_a($model, 'CModel') )
-          $modelName = get_class($model);
-        else if( is_a($model, 'CForm') )
-        {
-          $model = $model->model;
-          $modelName = get_class($model);
-        }
-
-        if( !in_array($modelName, $this->modelExceptions) )
-          $this->usedModels[$modelName] = $model;
-
-        $this->title       = $this->replaceVars($this->title, $model);
-        $this->description = $this->replaceVars($this->description, $model);
-        $this->keywords    = $this->replaceVars($this->keywords, $model);
-
-        if( $depth <= $this->maxDepthFind )
-          $this->findRelations($model);
-      }
-    }
-  }
-
-  /**
-   * Пишем в базу найденные модели
-   */
-  public function saveUsedModels()
-  {
-    $model = MetaRoute::model()->find('route=:route', array(':route' => $this->route));
-
-    if( empty($model) )
-      $model = new MetaRoute();
-
-    $model->route  = $this->route;
-    $model->models = !empty($this->usedModels) ? implode(',', array_keys($this->usedModels)) : '';
-    $model->clips  = !empty($this->usedClips) ? implode(',', array_keys($this->usedClips)) : '';
-    $model->save();
-  }
-
   public function getTitle()
   {
     return $this->clear($this->title);
   }
 
-  public function registerClip($id,  $value)
-  {
-    if( empty($id) )
-      return;
-
-    $this->usedClips[$id] = $id;
-
-    $this->title       = strtr($this->title, array("{{$id}}" => $value));
-    $this->description = strtr($this->description, array("{{$id}}" => $value));
-    $this->keywords    = strtr($this->keywords, array("{{$id}}" => $value));
-  }
-
-  protected function registerKeywordsAndDescription()
-  {
-    if( !empty($this->description) )
-      Yii::app()->clientScript->registerMetaTag($this->clear($this->description), 'description', null, array(), 'description');
-
-    if( !empty($this->keywords) )
-      Yii::app()->clientScript->registerMetaTag($this->clear($this->keywords), 'keywords', null, array(), 'keywords');
-  }
-
   /**
-   * Ищет модели в relations
-   * @param FActiveRecord $model
-   */
-  protected function findRelations($model)
-  {
-    $relations = $model->relations();
-
-    foreach($relations as $relationName => $relation)
-    {
-
-      if( in_array($relation[0], array(FActiveRecord::HAS_ONE, FActiveRecord::BELONGS_TO)) )
-      {
-        if( !isset($this->usedModels[$relation[1]]) )
-          $this->findModel(array($model->{$relationName}));
-      }
-    }
-  }
-
-  private function initMetaData($meta_data, $default_title)
-  {
-    $this->title       = isset($meta_data) ? $meta_data->title       : $default_title;
-    $this->description = isset($meta_data) ? $meta_data->description : '';
-    $this->keywords    = isset($meta_data) ? $meta_data->keywords    : '';
-  }
-
-  /**
-   * Заменяет встречающиеся в $var переменные на значения свойств $model
-   * @param $var
-   * @param $model
    * @return string
    */
-  private function replaceVars($var, $model)
+  public function getDescription()
   {
-    //todo: мозно сделать оптимальней передава сразу все модели известные в afterRender и обатывать все здесь
-    if( preg_match_all(self::$VARS_PATTERN, $var, $matches) )
-    {
-      $replace_data = array();
-
-      // переменные без указания моделей
-      if( !empty($matches[1]) )
-      {
-        foreach($matches[1] as $key => $property)
-        {
-          if( ($property_value=$this->getPropertyValue($model, $property)) !== false)
-            $replace_data[$matches[0][$key]] = $property_value;
-        }
-      }
-
-      // переменные с указанием модели
-      if( !empty($matches[2]) && !empty($matches[3]) )
-      {
-        foreach($matches[3] as $key => $property)
-        {
-          if( strtolower($matches[2][$key]) != strtolower(get_class($model)) )
-            continue;
-
-          if( ($property_value=$this->getPropertyValue($model, $property)) !== false)
-            $replace_data[$matches[0][$key]] = $property_value;
-        }
-      }
-
-      if( !empty($replace_data) )
-        $var = strtr($var, $replace_data);
-
-      $var = strtr($var, array('{project}' => Yii::app()->params->project));
-    }
-
-    return $var;
+    return $this->clear($this->description);
   }
 
   /**
-   * Вырезает незамененные переменные в $string
+   * @return string
+   */
+  public function getKeywords()
+  {
+    return $this->clear($this->keywords);
+  }
+
+  /**
+   * @param $header
+   *
+   * @return string
+   */
+  public function setHeader($header)
+  {
+    if( !empty($this->header) )
+    {
+      $header = $this->clear($this->header);
+    }
+
+    $this->registerClip('h1', $header);
+    return $header;
+  }
+
+  /**
+   * @param FController $controller
+   */
+  public function setController(FController $controller)
+  {
+    if( !isset($this->controller) )
+    {
+      $this->controller = $controller;
+      $this->setRoute();
+    }
+  }
+
+  /**
+   * @param string $uri
+   */
+  public function setRequestUri($uri)
+  {
+    $this->requestUri = $uri;
+  }
+
+  public function setMeta()
+  {
+    /**
+     * @var MetaMask $metaMask
+     * @var MetaRoute $metaRoute
+     */
+    $metaMask = MetaMask::model()->findByUri($this->requestUri);
+    $metaRoute = MetaRoute::model()->findByRoute($this->route);
+
+    foreach(array('header', 'title', 'keywords', 'description', 'noindex') as $property)
+    {
+      if( $metaRoute )
+        $this->$property = Arr::get($metaRoute, $property);
+
+      if( $metaMask && trim($metaMask->$property) !== '' )
+        $this->$property = $metaMask->$property;
+    }
+
+    if( empty($this->title) )
+    {
+      $this->title = $this->controller->getPageTitle();
+    }
+  }
+
+  /**
+   * Собираем все модели, переданные в render()
+   *
+   * @param CEvent $event
+   */
+  public function setRenderedModels(CEvent $event)
+  {
+    $this->setRoute();
+    $this->setMeta();
+
+    $this->processModels(Arr::get($event->params, 'data', array()));
+  }
+
+  /**
+   * @param FActiveRecord[] $models
+   */
+  public function addModels(array $models)
+  {
+    $this->processModels($models);
+  }
+
+  public function registerClip($id, $value)
+  {
+    $this->replaces['{'.$id.'}'] = $value;
+    $this->renderedClips[$id] = $id;
+
+    return $value;
+  }
+
+  /**
+   * Запись в базу моделей, найденных во время рендеринга
+   */
+  public function updateRenderedModels()
+  {
+    if( !$model = MetaRoute::model()->resetScope()->findByRoute($this->route, false) )
+      $model = new MetaRoute();
+
+    $model->route  = $this->route;
+    $model->models = implode(',', array_keys($this->renderedModels));
+    $model->clips  = implode(',', array_keys($this->renderedClips));
+    $model->save();
+  }
+
+  public function registerMeta()
+  {
+    if( $clientScript = Yii::app()->clientScript )
+    {
+      $clientScript->registerMetaTag($this->getDescription(), 'description', null, array(), 'description');
+      $clientScript->registerMetaTag($this->getKeywords(), 'keywords', null, array(), 'keywords');
+
+      if( $this->noindex )
+      {
+        $clientScript->registerMetaTag('noindex, nofollow', 'robots', null, array(), 'robots');
+      }
+    }
+  }
+
+  private function setRoute()
+  {
+    if( isset($this->controller) )
+      $this->route = $this->controller->route;
+  }
+
+  /**
+   * Удаление переменных моделей в строке метатегов
    *
    * @param string $string
    *
@@ -208,50 +242,154 @@ class Meta extends CComponent
    */
   private function clear($string)
   {
-    $string = $this->replaceCommands($string);
-    $string = preg_replace(self::$VARS_PATTERN, '', $string);
+    $string = $this->replaceVariables($string);
+    $string = preg_replace(self::VARIABLE_PATTERN, '', $string);
     $string = preg_replace('/\s+/', ' ', $string);
 
-    return CHtml::encode($string);
+    return CHtml::encode(trim($string));
   }
 
-  private function getPropertyValue($model, $property)
+  /**
+   * @param FActiveRecord[] $data
+   */
+  private function processModels(array $data)
   {
-    if( !isset($model->{$property}) )
-      return false;
+    static $depth;
 
-    $property_value = $model->{$property};
-
-    if( is_object($property_value) || is_array($property_value) )
-      return false;
-
-    return $property_value;
-  }
-
-  private function replaceCommands($string)
-  {
-    $string = preg_replace_callback('/(ucfirst|upper|lower)([^\s]+)/', function($data) {
-
-      switch($data[1])
+    foreach($data as $model)
+    {
+      if( $model instanceof FActiveRecord )
+        $modelName = get_class($model);
+      else if( $model instanceof FForm )
       {
-        case 'ucfirst':
-          return Utils::ucfirst($data[2]);
-          break;
+        $model = $model->model;
+        $modelName = get_class($model);
+      }
+      else
+        continue;
 
-        case 'upper':
-          return mb_strtoupper($data[2]);
-          break;
+      if( in_array($modelName, $this->exceptedModels) )
+        continue;
 
-        case 'lower':
-          return mb_strtolower($data[2]);
-          break;
+      $this->renderedModels[$modelName] = $model;
+
+      if( $depth <= $this->maxSearchDepth )
+      {
+        $depth++;
+        $this->processRelations($model);
+      }
+    }
+  }
+
+  /**
+   * @param FActiveRecord $model
+   */
+  private function processRelations(FActiveRecord $model)
+  {
+    foreach($model->relations() as $name => $relation)
+    {
+      if( in_array($relation[0], array(FActiveRecord::HAS_ONE, FActiveRecord::BELONGS_TO)) )
+      {
+        if( !isset($this->renderedModels[$relation[1]]) )
+        {
+          $this->processModels(array($model->{$name}));
+        }
+      }
+    }
+  }
+
+  /**
+   * Замена встречающиеся переменных на значения свойств $model
+   *
+   * @param $string
+   *
+   * @return string
+   */
+  private function replaceVariables($string)
+  {
+    if( preg_match_all(self::VARIABLE_PATTERN, $string, $matches) )
+    {
+      if( !empty($matches[2]) )
+      {
+        foreach($matches[2] as $key => $value)
+        {
+          $replace = $matches[0][$key];
+          $command = $matches[1][$key];
+
+          $this->processValue($value, $replace, $command);
+        }
       }
 
-      return '';
-
-    }, $string);
+      $string = strtr($string, $this->replaces);
+    }
 
     return $string;
   }
+
+  /**
+   * @param $value
+   * @param $replace
+   * @param $command
+   *
+   * @return array
+   */
+  private function processValue($value, $replace, $command)
+  {
+    list($modelName, $property) = $this->parseValue($value);
+    $model = Arr::get($this->renderedModels, $modelName);
+
+    if( $model && ($value = $this->getPropertyValue($model, $property)) )
+    {
+      $value = $this->replaceCommands($command, $value);
+      $this->replaces[$replace] = $value;
+    }
+  }
+
+  /**
+   * @param string $command
+   * @param string $string
+   *
+   * @return string
+   */
+  private function replaceCommands($command, $string)
+  {
+    switch($command)
+    {
+      case 'ucfirst':
+        return Utils::ucfirst($string);
+        break;
+
+      case 'upper':
+        return mb_strtoupper($string);
+        break;
+
+      case 'lower':
+        return mb_strtolower($string);
+        break;
+
+      default:
+        return $string;
+    }
+  }
+
+  /**
+   * @param FActiveRecord $model
+   * @param string $property
+   *
+   * @return string
+   */
+  private function getPropertyValue($model, $property)
+  {
+    return isset($model->$property) && !is_object($model->$property) && !is_array($model->$property) ? $model->$property : null;
+  }
+
+  /**
+   * @param $value
+   *
+   * @return array
+   */
+  private function parseValue($value)
+  {
+    return strpos($value, ':') !== false ?  explode(':', $value) : array(key($this->renderedModels), $value);
+  }
 }
-?>
