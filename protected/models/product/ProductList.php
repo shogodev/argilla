@@ -35,9 +35,9 @@ class ProductList extends CComponent
   public $fetchContent = true;
 
   public static $sortingRange = array(
-    'popular_up' => 'IF(position=0, 1, 0), position DESC ',
-    'popular_down' => 'IF(position=0, 1, 0), position ASC ',
-    'price_up' => 'IF(price=0, 1, 0), price DESC ',
+    'popular_up' => 'IF(t.position=0, 1, 0), t.position DESC, dump DESC, price',
+    'popular_down' => 'IF(t.position=0, 1, 0), t.position ASC, dump DESC, price',
+    'price_up' => 'IF(price=0, 1, 0), price DESC',
     'price_down' => 'IF(price=0, 1, 0), price ASC',
     'name_up' => 'name DESC',
     'name_down' => 'name ASC',
@@ -158,7 +158,9 @@ class ProductList extends CComponent
           $filteredCriteria = $filter->apply($filteredCriteria);
 
       $this->filteredCriteria = $filteredCriteria;
-      $this->filteredCriteria->order = $this->criteria->order;
+
+      foreach(array('distinct', 'order', 'join') as $value)
+        $this->filteredCriteria->$value = $this->criteria->$value;
     }
 
     return $this->filteredCriteria;
@@ -167,7 +169,7 @@ class ProductList extends CComponent
   protected function initCriteria(CDbCriteria $criteria)
   {
     $assignment = ProductAssignment::model()->tableName();
-    $criteria->join  = 'JOIN '.$assignment.' AS a ON a.product_id = t.id';
+    $criteria->join = 'JOIN '.$assignment.' AS a ON a.product_id = t.id '.$criteria->join;
     $criteria->distinct = true;
     $criteria->compare('t.visible', 1);
     $criteria->compare('a.visible', 1);
@@ -242,7 +244,7 @@ class ProductList extends CComponent
 
   protected function setAssignments()
   {
-    $assignments = array('section', 'type');
+    $assignments = array('section', 'type', 'category');
     $criteria = new CDbCriteria(array('select' => 'a.product_id'));
     $criteria->addInCondition('product_id', $this->dataProvider->getKeys());
     $productAssignments = ProductAssignment::model()->getAssignments($criteria);
