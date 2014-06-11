@@ -55,7 +55,7 @@ class ChangeTablePrefixTask extends DumpWorkerTask
   {
     foreach($fileData as $string)
     {
-      if( preg_match('/^--?\sTablePrefix:?\s(\w+)/', $string, $matches) )
+      if( preg_match('/^--?\sTablePrefix:?\s([\w\-]+)/', $string, $matches) )
         return trim($matches[1]);
     }
 
