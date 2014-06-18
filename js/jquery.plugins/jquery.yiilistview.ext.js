@@ -48,5 +48,13 @@
       var list = $('#' + $(dropDown).data('list-id'));
       list.yiiListView.update(list.attr('id'), params);
     };
+
+    /**
+     * @param id
+     * @param data
+     */
+    $.fn.yiiListView.afterAjaxHandler = function (id, data) {
+      $('body').trigger('yiiListViewUpdated', id, data);
+    };
   }
 })(jQuery);

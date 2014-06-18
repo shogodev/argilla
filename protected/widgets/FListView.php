@@ -22,6 +22,8 @@ class FListView extends CListView
 
   public $cssFile = false;
 
+  public $afterAjaxUpdate = '$.fn.yiiListView.afterAjaxHandler';
+
   public function renderPager()
   {
     if( !$this->enablePagination )
