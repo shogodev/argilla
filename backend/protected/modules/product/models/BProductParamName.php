@@ -17,6 +17,7 @@
  * @property string $key
  * @property integer $product
  * @property integer $section
+ * @property integer $selection
  *
  * @property BProductParamVariant[] $variants
  *
@@ -63,6 +64,7 @@ class BProductParamName extends BActiveRecord
   {
     return array(
       'uploadBehavior' => array('class' => 'UploadBehavior', 'validAttributes' => 'img'),
+      'facetedParameterBehavior' => array('class' => 'BFacetedParameterBehavior'),
     );
   }
 
