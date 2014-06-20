@@ -32,28 +32,13 @@ class ProductSection extends FActiveRecord
     );
   }
 
-  /**
-   * @return ProductSection[]
-   */
-  public function getSections()
-  {
-    $product    = Product::model()->tableName();
-    $assignment = ProductAssignment::model()->tableName();
-
-    $criteria            = new CDbCriteria();
-    $criteria->select    = 't.id, t.name, t.notice, t.url';
-    $criteria->join      = 'JOIN '.$assignment.' AS a ON t.id = a.section_id ';
-    $criteria->join     .= 'JOIN '.$product.' AS p ON p.id = a.product_id';
-    $criteria->condition = 'p.visible=1 AND a.visible=1';
-    $criteria->distinct  = true;
-
-    return $this->findAll($criteria);
-  }
-
   public function getMenu($criteria = null)
   {
-    $menu     = array();
-    $sections = $this->getSections($criteria);
+    /**
+     * @var ProductSection[] $sections
+     */
+    $menu = array();
+    $sections = ProductAssignment::model()->getModels('ProductSection', $criteria);
 
     foreach($sections as $section)
     {

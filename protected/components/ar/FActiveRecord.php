@@ -9,6 +9,15 @@
 class FActiveRecord extends CActiveRecord
 {
   /**
+   * @return string model table name
+   */
+  public static function table()
+  {
+    $model = parent::model(get_called_class());
+    return $model->tableName();
+  }
+
+  /**
    * @param string $className
    *
    * @return FActiveRecord|CActiveRecord

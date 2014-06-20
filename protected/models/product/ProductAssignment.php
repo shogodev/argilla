@@ -41,11 +41,32 @@ class ProductAssignment extends FActiveRecord
     if( !isset($this->assignments[$key]) )
     {
       $builder = new CDbCommandBuilder(Yii::app()->db->getSchema());
-      $command = $builder->createFindCommand(self::tableName(), $criteria, 'a');
+      $command = $builder->createFindCommand(self::table(), $criteria, 'a');
       $this->assignments[$key] = $command->queryAll();
     }
 
     return $this->assignments[$key];
+  }
+
+  /**
+   * @param string $modelName
+   * @param CDbCriteria $defaultCriteria
+   *
+   * @return FActiveRecord[]
+   */
+  public function getModels($modelName, CDbCriteria $defaultCriteria)
+  {
+    $modelId = preg_replace('/product([a-z]+)/i', 'a.$1_id', $modelName);
+
+    $criteria = new CDbCriteria(array('distinct' => true));
+    $criteria->join = 'JOIN `'.ProductAssignment::table().'` AS a ON t.id = '.$modelId.' ';
+    $criteria->join .= 'JOIN `'.Product::table().'` AS p ON p.id = a.product_id';
+
+    $criteria->compare('p.visible', 1);
+    $criteria->compare('a.visible', 1);
+    $criteria->mergeWith($defaultCriteria);
+
+    return $modelName::model()->findAll($criteria);
   }
 
   private function buildCriteria(CDbCriteria $defaultCriteria = null)
@@ -63,18 +84,14 @@ class ProductAssignment extends FActiveRecord
     $condition = implode(" AND ", array(
       'a.visible = 1',
       'product.visible = 1',
-      'section.visible = 1',
-      'category.visible = 1',
-      'type.visible = 1',
-      '(collection.visible IS NULL OR collection.visible = 1)',
     ));
 
     $join = array(
-      'product' => Product::model()->tableName(),
-      'section' => ProductSection::model()->tableName(),
-      'type' => ProductType::model()->tableName(),
-      'category' => ProductCategory::model()->tableName(),
-      'collection' => ProductCollection::model()->tableName(),
+      'product' => Product::table(),
+      'section' => ProductSection::table(),
+      'type' => ProductType::table(),
+      'category' => ProductCategory::table(),
+      'collection' => ProductCollection::table(),
     );
 
     array_walk($join, function(&$value, $key){
