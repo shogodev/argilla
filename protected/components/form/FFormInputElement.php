@@ -8,9 +8,29 @@
  */
 class FFormInputElement extends CFormInputElement
 {
-  public $baseType;
+  public static $coreTypes=array(
+    'text'=>'activeTextField',
+    'hidden'=>'activeHiddenField',
+    'password'=>'activePasswordField',
+    'textarea'=>'activeTextArea',
+    'file'=>'activeFileField',
+    'radio'=>'activeRadioButton',
+    'checkbox'=>'activeCheckBox',
+    'listbox'=>'activeListBox',
+    'dropdownlist'=>'activeDropDownList',
+    'checkboxlist'=>'activeCheckBoxList',
+    'radiolist'=>'activeRadioButtonList',
+    'url'=>'activeUrlField',
+    'email'=>'activeEmailField',
+    'number'=>'activeNumberField',
+    'range'=>'activeRangeField',
+    'date'=>'activeDateField',
+    'tel'=>'activeTelField'
+  );
 
-  protected $defaultTemplate = "<div class=\"form-row m25\">\n{label}\n<div class=\"form-field\">{input}\n{hint}\n{error}</div>\n</div>\n";
+  public $layout = null;
+
+  protected $defaultLayout = "<div class=\"text-container\">\n{label}\n<div class=\"pdb\"><span class=\"input-wrap\">{input}</span>\n{hint}\n{error}</div>\n</div>\n";
 
   private $_label;
 
@@ -48,63 +68,47 @@ class FFormInputElement extends CFormInputElement
     $this->_label = $value;
   }
 
-  /**
-   * Alias of getTemplate()
-   *
-   * @return string
-   */
+  public function renderInput()
+  {
+    if(isset(self::$coreTypes[$this->type]))
+    {
+      $method=self::$coreTypes[$this->type];
+      if(strpos($method,'List')!==false)
+        return CHtml::$method($this->getParent()->getModel(), $this->name, $this->items, $this->attributes);
+      else
+        return CHtml::$method($this->getParent()->getModel(), $this->name, $this->attributes);
+    }
+    else
+    {
+      $attributes=$this->attributes;
+      $attributes['model']=$this->getParent()->getModel();
+      $attributes['attribute']=$this->name;
+      ob_start();
+      $this->getParent()->getOwner()->widget($this->type, $attributes);
+      return ob_get_clean();
+    }
+  }
+
   protected function getLayout()
   {
-    return $this->getTemplate();
+    return $this->layout ? $this->layout : $this->getElementsLayout($this->parent);
   }
 
   /**
-   * Получение шаблона отображения для каждого из типов полей
-   * Для более общего отображения разных классов одинаковых типов полей
-   * используется свойство baseType
-   *
-   * Если оно не установлено и не существует метод получения шаблона для текущего типа поля,
-   * то возвращает defaultLayout, общий для всех полей
+   * @param FForm $form
    *
    * @return string
    */
-  protected function getTemplate()
+  protected function getElementsLayout($form)
   {
-    if( !empty($this->baseType) )
-      $typeName = ucfirst($this->baseType);
-    else
-      $typeName = ucfirst($this->type);
+    if( is_null($form->elementsLayout) )
+    {
+      if( $form->parent instanceof CForm )
+        return $this->getElementsLayout($form->parent);
+      else
+        return $this->defaultLayout;
+    }
 
-    $methodName = 'get' . $typeName . 'Template';
-
-    if( method_exists($this, $methodName) )
-      return $this->$methodName();
-    else
-      return $this->getDefaultTemplate();
-  }
-
-  /**
-   * Получение общего для всех полей шаблона отображения
-   *
-   * @return string
-   */
-  protected function getDefaultTemplate()
-  {
-    return $this->defaultTemplate;
-  }
-
-  protected function getFileTemplate()
-  {
-    return "<div class=\"text-container\">
-              {label}
-              <div class=\"pdb\">
-                <div class=\"fileinput-button btn btn-red\">
-                  Выбрать файл
-                  {input}
-                </div>
-                <div id=\"" . get_class($this->getParent()->getModel()) . '_' . $this->name . "_file_wrap_list\" class=\"MultiFile-list\"></div>
-                {hint}{error}
-              </div>
-            </div>";
+    return $form->elementsLayout;
   }
 }
