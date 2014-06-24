@@ -126,7 +126,7 @@ class BMetaRoute extends BActiveRecord
         foreach($findVariables as $var)
         {
           $variableName = substr($var, 1);
-          $variables[$model][] = count($models) > 1 ? '{'.$model.':'.$variableName.'}' : '{'.$variableName.'}';
+          $variables[$model][] = '{'.$model.':'.$variableName.'}';
         }
       }
     }

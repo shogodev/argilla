@@ -13,7 +13,9 @@
  */
 class Meta extends CApplicationComponent
 {
-  const VARIABLE_PATTERN = '/([a-z]*){([^}]+)}/';
+  const VARIABLE_PATTERN = "/{([\w:]+)}/";
+
+  const COMMAND_PATTERN = "/([a-z]+)\(([^()]+)\)/";
 
   /**
    * @var array
@@ -204,13 +206,16 @@ class Meta extends CApplicationComponent
    */
   public function updateRenderedModels()
   {
-    if( !$model = MetaRoute::model()->resetScope()->findByRoute($this->route, false) )
-      $model = new MetaRoute();
+    if( strpos($this->route, '/') !== false )
+    {
+      if( !$model = MetaRoute::model()->resetScope()->findByRoute($this->route, false) )
+        $model = new MetaRoute();
 
-    $model->route  = $this->route;
-    $model->models = implode(',', array_keys($this->renderedModels));
-    $model->clips  = implode(',', array_keys($this->renderedClips));
-    $model->save();
+      $model->route  = $this->route;
+      $model->models = implode(',', array_keys($this->renderedModels));
+      $model->clips  = implode(',', array_keys($this->renderedClips));
+      $model->save();
+    }
   }
 
   public function registerMeta()
@@ -243,6 +248,7 @@ class Meta extends CApplicationComponent
   private function clear($string)
   {
     $string = $this->replaceVariables($string);
+    $string = $this->replaceCommands($string);
     $string = preg_replace(self::VARIABLE_PATTERN, '', $string);
     $string = preg_replace('/\s+/', ' ', $string);
 
@@ -309,14 +315,13 @@ class Meta extends CApplicationComponent
   {
     if( preg_match_all(self::VARIABLE_PATTERN, $string, $matches) )
     {
-      if( !empty($matches[2]) )
+      if( !empty($matches[0]) )
       {
-        foreach($matches[2] as $key => $value)
+        foreach($matches[0] as $key => $value)
         {
           $replace = $matches[0][$key];
-          $command = $matches[1][$key];
-
-          $this->processValue($value, $replace, $command);
+          $value = $matches[1][$key];
+          $this->processValue($value, $replace);
         }
       }
 
@@ -326,49 +331,78 @@ class Meta extends CApplicationComponent
     return $string;
   }
 
+  private function replaceCommands($string)
+  {
+    if( preg_match(self::COMMAND_PATTERN, $string, $matches) )
+    {
+      if( !empty($matches[0]) )
+      {
+        $command = $matches[1];
+        $args = $matches[2];
+        $value = $this->processCommand($command, $args);
+
+        $string = strtr($string, array($matches[0] => $value));
+        $string = $this->replaceCommands($string);
+      }
+    }
+
+    return $string;
+  }
+
   /**
    * @param $value
    * @param $replace
-   * @param $command
-   *
-   * @return array
    */
-  private function processValue($value, $replace, $command)
+  private function processValue($value, $replace)
   {
-    list($modelName, $property) = $this->parseValue($value);
-    $model = Arr::get($this->renderedModels, $modelName);
-
-    if( $model && ($value = $this->getPropertyValue($model, $property)) )
+    if( strpos($value, ':') !== false )
     {
-      $value = $this->replaceCommands($command, $value);
-      $this->replaces[$replace] = $value;
+      list($modelName, $attribute) = explode(':', $value);
+      $model = Arr::get($this->renderedModels, $modelName);
+
+      if( $model && ($property = $this->getPropertyValue($model, $attribute)) )
+      {
+        $this->replaces[$replace] = $property;
+      }
     }
   }
 
   /**
    * @param string $command
-   * @param string $string
+   * @param string $args
    *
    * @return string
    */
-  private function replaceCommands($command, $string)
+  private function processCommand($command, $args)
   {
+    $args = Arr::trim(explode(',', $args));
+
     switch($command)
     {
       case 'ucfirst':
-        return Utils::ucfirst($string);
+        return Utils::ucfirst($args[0]);
         break;
 
       case 'upper':
-        return mb_strtoupper($string);
+        return mb_strtoupper($args[0]);
         break;
 
       case 'lower':
-        return mb_strtolower($string);
+        return mb_strtolower($args[0]);
+        break;
+
+      case 'wrap':
+        $left = Arr::get($args, 1, '(');
+        $right = Arr::get($args, 2, ')');
+        return $left.$args[0].$right;
+        break;
+
+      case 'implode':
+        return implode(trim(Arr::cut($args, 0), '\'"'), $args);
         break;
 
       default:
-        return $string;
+        return $args[0];
     }
   }
 
@@ -381,15 +415,5 @@ class Meta extends CApplicationComponent
   private function getPropertyValue($model, $property)
   {
     return isset($model->$property) && !is_object($model->$property) && !is_array($model->$property) ? $model->$property : null;
-  }
-
-  /**
-   * @param $value
-   *
-   * @return array
-   */
-  private function parseValue($value)
-  {
-    return strpos($value, ':') !== false ?  explode(':', $value) : array(key($this->renderedModels), $value);
   }
 }

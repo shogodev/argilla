@@ -98,10 +98,45 @@ class MetaTest extends CDbTestCase
     $meta->setRequestUri('/testCommandsUcfirst/');
     $meta->setMeta();
     $this->assertEquals('Section Name', $meta->getTitle());
+  }
 
-    $meta->setRequestUri('/testOneModel/');
+  public function testReplaceCommandsInClips()
+  {
+    $meta = new Meta();
+
+    $meta->setRequestUri('/testCommandsWrap/');
     $meta->setMeta();
-    $this->assertEquals('section Name', $meta->getTitle());
+    $meta->registerClip('color', 'white');
+    $this->assertEquals('/white/', $meta->getTitle());
+  }
+
+  public function testEmptyWrap()
+  {
+    $meta = new Meta();
+
+    $meta->setRequestUri('/testCommandsEmptyWrap/');
+    $meta->setMeta();
+    $meta->registerClip('color', 'white');
+    $this->assertEquals('(white)', $meta->getTitle());
+  }
+
+  public function testMultiCommands()
+  {
+    $meta = new Meta();
+    $meta->addModels(array(ProductSection::model()->findByPk(8)));
+    $meta->setRequestUri('/testMultiCommands/');
+    $meta->setMeta();
+    $meta->registerClip('color', 'white');
+    $this->assertEquals('/white section Name/', $meta->getTitle());
+  }
+
+  public function testWrongCommand()
+  {
+    $meta = new Meta();
+
+    $meta->setRequestUri('/testWrongCommand/');
+    $meta->setMeta();
+    $this->assertEquals('', $meta->getTitle());
   }
 
   public function testSetHeader()
