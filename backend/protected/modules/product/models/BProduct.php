@@ -34,6 +34,8 @@ Yii::import('backend.modules.product.models.behaviors.*');
 
  * @property integer $section_id
  * @property integer $type_id
+ * @property integer $category_id
+ * @property integer $collection_id
  *
  * @property BProductAssignment $assignment
  * @property BAssociation[] $associations
@@ -192,11 +194,13 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
 
     $criteria->compare('position', $this->position);
     $criteria->compare('t.visible', $this->visible);
+    $criteria->compare('dump', $this->dump);
     $criteria->compare('spec', $this->spec);
     $criteria->compare('novelty', $this->novelty);
     $criteria->compare('main', $this->main);
 
     $criteria->compare('name', $this->name, true);
+    $criteria->compare('articul', $this->articul, true);
 
     foreach(BProductAssignment::model()->getFields() as $key => $field)
       if( !is_array($this->$key) )
