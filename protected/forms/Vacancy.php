@@ -3,9 +3,11 @@ $a = 1;
 
 return array(
   'class' => 'form',
+
   'description' => '<span class="required">*</span> - поля, обязательные для заполнения',
 
   'ajaxSubmit' => false,
+
   'attributes' => array(
     'enctype' => 'multipart/form-data',
   ),

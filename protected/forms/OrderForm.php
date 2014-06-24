@@ -2,6 +2,7 @@
 return array(
 
   'class' => 'form big-inputs m20',
+
   'description' => 'Поля, отмеченные знаком <span class="required">*</span> , обязательны для заполнения.',
 
 
