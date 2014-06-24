@@ -80,7 +80,7 @@ class YandexDataProvider
       'currencyId'  => 'RUR',
       'url'         => $this->getUrl($product),
       'categoryId'  => $product->section->id,
-      'vendor'      => $product->category->name,
+      'vendor'      => $this->getVendor($product),
       'vendorCode'  => $this->getVendorCode($product),
       'model'       => XmlHelper::escape($product->name),
       'description' => XmlHelper::escape(strip_tags($product->content)),
@@ -110,6 +110,16 @@ class YandexDataProvider
   protected function getAvailable(Product $product)
   {
     return !empty($product['dump']) ? true : false;
+  }
+
+  /**
+   * @param Product $product
+   *
+   * @return string
+   */
+  protected function getVendor(Product $product)
+  {
+    return Arr::get($product->category, 'name');
   }
 
   /**
