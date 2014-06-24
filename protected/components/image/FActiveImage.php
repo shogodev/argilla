@@ -14,7 +14,7 @@
  * echo $image;
  * echo $image->pre;
  */
-class FActiveImage extends FActiveRecord implements ImageInterface
+abstract class FActiveImage extends FActiveRecord implements ImageInterface
 {
   /**
    * Изображение, отображаемое при отсутствии файла

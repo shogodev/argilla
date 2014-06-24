@@ -6,7 +6,7 @@
  * @license http://argilla.ru/LICENSE
  * @package frontend.components.ar
  */
-class FActiveRecord extends CActiveRecord
+abstract class FActiveRecord extends CActiveRecord
 {
   /**
    * @return string model table name

@@ -6,7 +6,7 @@
  * @license http://argilla.ru/LICENSE
  * @package frontend.components.ar
  */
-class FActiveFileRecord extends FActiveRecord
+abstract class FActiveFileRecord extends FActiveRecord
 {
   public $maxFiles = 5;
 
