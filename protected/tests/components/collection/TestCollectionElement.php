@@ -5,6 +5,8 @@
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
  * @package frontend.tests.components.collection
+ *
+ * @mixin FCollectionElementBehavior
  */
 class TestCollectionElement extends CModel
 {
@@ -14,7 +16,7 @@ class TestCollectionElement extends CModel
 
   public function behaviors()
   {
-    return  array('collectionElement' => array('class' => 'FCollectionElement'));
+    return  array('collectionElement' => array('class' => 'FCollectionElementBehavior'));
   }
 
   public function attributeNames()

@@ -77,11 +77,11 @@ class FCompare extends FCollectionUI
     return CHtml::link($text, '#', $htmlOptions);
   }
 
-  public function removeButton($element, $text = '', $htmlOptions = array(), $confirm = true)
+  public function buttonRemove($element, $text = '', $htmlOptions = array(), $confirm = true)
   {
     $htmlOptions['data-group-id'] = $this->getElementGroup($element)->id;
 
-    return parent::removeButton($element, $text, $htmlOptions, $confirm);
+    return parent::buttonRemove($element, $text, $htmlOptions, $confirm);
   }
 
   protected function getElementGroup($element)
@@ -109,15 +109,13 @@ class FCompare extends FCollectionUI
 
   protected function registerButtonChangeTabScript()
   {
-    $script = "$('body').on('click', '.{$this->classChangeTab}', function(e){
+    $this->registerScript("$('body').on('click', '.{$this->classChangeTab}', function(e){
       e.preventDefault();
 
       $.fn.collection('{$this->keyCollection}').send({
           'action' : 'changeTab',
           'data' : $(this).data(),
         });
-    });";
-
-    Yii::app()->clientScript->registerScript(__METHOD__.'#'.$this->keyCollection, $script, CClientScript::POS_END);
+    });");
   }
 }
