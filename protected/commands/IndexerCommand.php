@@ -109,6 +109,10 @@ class IndexerCommand extends CConsoleCommand
 
   private function save()
   {
-    $r = $this->builder->createMultipleInsertCommand($this->searchTable, $this->data)->query();
+    if( !empty($this->data) )
+    {
+      $result = $this->builder->createMultipleInsertCommand($this->searchTable, $this->data)->query();
+      echo 'Inserted '.$result->count().' record(s)'.PHP_EOL;
+    }
   }
 }
