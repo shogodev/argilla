@@ -940,8 +940,6 @@ CREATE TABLE `argilla_product_img` (
   `id` int(10) NOT NULL AUTO_INCREMENT,
   `parent` int(10) unsigned NOT NULL,
   `name` varchar(255) NOT NULL,
-  `size` varchar(50) DEFAULT NULL,
-  `type` varchar(255) DEFAULT 'main',
   `notice` varchar(255) DEFAULT NULL,
   `position` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`),
