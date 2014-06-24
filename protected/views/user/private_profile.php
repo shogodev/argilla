@@ -10,7 +10,7 @@
  */
 ?>
 <div class="wrap-info">
-  <?php $this->renderPartial('//breadcrumbs');?>
+  <?php $this->renderPartial('/_breadcrumbs');?>
 </div>
 <div class="wrap">
   <div class="container container_16 nofloat">

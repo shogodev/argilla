@@ -17,9 +17,22 @@
  * @property SNotification $notification
  * @property RequestRedirectComponent $requestRedirect
  * @property EPhpThumb $phpThumb
+ * @property Meta $meta
  */
 class FApplication extends CWebApplication
 {
+  /**
+   * @param CController $controller
+   * @param CAction $action
+   *
+   * @return bool
+   */
+  public function beforeControllerAction($controller, $action)
+  {
+    $this->getComponent('meta');
+    return parent::beforeControllerAction($controller, $action);
+  }
+
   protected function init()
   {
     parent::init();

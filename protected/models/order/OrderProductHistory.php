@@ -13,6 +13,8 @@
  * @property string $url
  * @property string $img
  * @property string $articul
+ *
+ * @property Product $product
  */
 class OrderProductHistory extends FActiveRecord
 {
@@ -22,5 +24,12 @@ class OrderProductHistory extends FActiveRecord
       ['order_product_id, product_id', 'required'],
       ['url, img, articul', 'safe'],
     ];
+  }
+
+  public function relations()
+  {
+    return array(
+      'product' => array(self::BELONGS_TO, 'Product', 'product_id'),
+    );
   }
 }

@@ -83,7 +83,7 @@ class FUrlRule extends CUrlRule
 
     foreach($this->params as $key => $value)
     {
-      $tr["<$key>"] = urlencode($params[$key]);
+      $tr["<$key>"] = preg_match('/[a-z\/-]/', $params[$key]) ? $params[$key] : urlencode($params[$key]);
       unset($params[$key]);
     }
 

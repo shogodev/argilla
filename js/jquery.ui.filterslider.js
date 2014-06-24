@@ -36,13 +36,13 @@ $.widget('argilla.filterSlider', {
 
     options.controls.tooltipButton.on('click', function(e) {
       e.preventDefault();
-      var input = widget.element.siblings('input');
-      input.val(input.data('value')).trigger('change');
+      options.controls.filterButton.trigger('click');
     });
 
     options.controls.filterButton.on('click', function(e) {
       e.preventDefault();
-      options.controls.tooltipButton.trigger('click');
+      var input = widget.element.siblings('input');
+      input.val(input.data('value')).trigger('change');
     });
 
     options.controls.minInput.on('change', function(e) {
@@ -138,17 +138,19 @@ $.widget('argilla.filterSlider', {
     this.options.controls.tooltipButton.toggle(toggle);
     this.options.controls.tooltipCounter.html(response['amount']);
 
-    var self = this;
-    tooltip.stop(true, true).fadeIn(function(){
-      self._startTimer(
-        'tooltipTimer',
-        function() {
-          tooltip.fadeOut();
-          self._stopTimer('tooltipTimer');
-        },
-        self.options.tooltipDelay
-      );
-    });
+    if( tooltip.length ) {
+      var self = this;
+      tooltip.stop(true, true).fadeIn(function () {
+        self._startTimer(
+          'tooltipTimer',
+          function () {
+            tooltip.fadeOut();
+            self._stopTimer('tooltipTimer');
+          },
+          self.options.tooltipDelay
+        );
+      });
+    }
   },
 
   _startTimer : function(timerIndex, callback, delay) {
@@ -157,8 +159,7 @@ $.widget('argilla.filterSlider', {
   },
 
   _stopTimer : function(timerIndex) {
-    if( this.options.timers[timerIndex] !== undefined )
-    {
+    if( this.options.timers[timerIndex] !== undefined ) {
       clearTimeout(this.options.timers[timerIndex]);
       delete this.options.timers[timerIndex];
     }

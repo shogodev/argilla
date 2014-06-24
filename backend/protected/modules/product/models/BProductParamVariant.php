@@ -11,6 +11,7 @@
  * @property string $id
  * @property string $param_id
  * @property string $name
+ * @property string $notice
  * @property string $position
  *
  * @property BProductParamName $param

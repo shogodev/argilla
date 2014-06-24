@@ -43,6 +43,15 @@ class ProductController extends FController
     return $this->filter;
   }
 
+  public function actionCategories()
+  {
+    $this->breadcrumbs = array('Производители');
+
+    $categories = ProductCategory::model()->findAll();
+
+    $this->render('categories', array('categories' => $categories));
+  }
+
   public function actionCategory($category)
   {
     /**
@@ -54,6 +63,7 @@ class ProductController extends FController
       throw new CHttpException(404, 'Страница не найдена');
 
     $this->breadcrumbs = array(
+      'Производители' => $this->createUrl('product/categories'),
       $model->name,
     );
 

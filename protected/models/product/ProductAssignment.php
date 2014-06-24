@@ -11,6 +11,8 @@
  * @property int $product_id
  * @property int $section_id
  * @property int $type_id
+ * @property int $category_id
+ * @property int $collection_id
  */
 class ProductAssignment extends FActiveRecord
 {
@@ -21,6 +23,7 @@ class ProductAssignment extends FActiveRecord
     return array(
       'product' => array(self::BELONGS_TO, 'ProductProduct', 'product_id'),
       'section' => array(self::BELONGS_TO, 'ProductSection', 'section_id'),
+      'type' => array(self::BELONGS_TO, 'ProductType', 'type_id'),
       'collection' => array(self::BELONGS_TO, 'ProductCollection', 'collection_id'),
     );
   }
@@ -38,7 +41,7 @@ class ProductAssignment extends FActiveRecord
     if( !isset($this->assignments[$key]) )
     {
       $builder = new CDbCommandBuilder(Yii::app()->db->getSchema());
-      $command = $builder->createFindCommand(self::tableName(), $criteria, 'a');
+      $command = $builder->createFindCommand(self::table(), $criteria, 'a');
       $this->assignments[$key] = $command->queryAll();
     }
 
@@ -46,27 +49,24 @@ class ProductAssignment extends FActiveRecord
   }
 
   /**
-   * @return array
+   * @param string $modelName
+   * @param CDbCriteria $defaultCriteria
+   *
+   * @return FActiveRecord[]
    */
-  public function getSectionMenu()
+  public function getModels($modelName, CDbCriteria $defaultCriteria)
   {
-    $menu        = array();
-    $criteria    = new CDbCriteria();
-    $assignments = $this->getAssignments($criteria);
+    $modelId = preg_replace('/product([a-z]+)/i', 'a.$1_id', $modelName);
 
-    foreach($assignments as $item)
-    {
-      if( !isset($menu[$item['section_id']]) )
-      {
-        $menu[$item['section_id']] = array(
-          'label' => $item['section_name'],
-          'url' => array('product/section', 'section' => $item['section_url']),
-          'items' => array(),
-        );
-      }
-    }
+    $criteria = new CDbCriteria(array('distinct' => true));
+    $criteria->join = 'JOIN `'.ProductAssignment::table().'` AS a ON t.id = '.$modelId.' ';
+    $criteria->join .= 'JOIN `'.Product::table().'` AS p ON p.id = a.product_id';
 
-    return $menu;
+    $criteria->compare('p.visible', 1);
+    $criteria->compare('a.visible', 1);
+    $criteria->mergeWith($defaultCriteria);
+
+    return $modelName::model()->findAll($criteria);
   }
 
   private function buildCriteria(CDbCriteria $defaultCriteria = null)
@@ -77,31 +77,36 @@ class ProductAssignment extends FActiveRecord
       'a.section_id, a.collection_id, a.category_id, a.type_id',
       'section.name AS section_name, section.url AS section_url',
       'type.name AS type_name, type.url AS type_url',
+      'category.name AS category_name, category.url AS category_url',
+      'collection.name AS collection_name, collection.url AS collection_url',
     );
 
     $condition = implode(" AND ", array(
       'a.visible = 1',
       'product.visible = 1',
-      'section.visible = 1',
-      '(type.visible IS NULL OR type.visible = 1)',
     ));
 
     $join = array(
-      'product' => Product::model()->tableName(),
-      'section' => ProductSection::model()->tableName(),
-      'type' => ProductType::model()->tableName(),
+      'product' => Product::table(),
+      'section' => ProductSection::table(),
+      'type' => ProductType::table(),
+      'category' => ProductCategory::table(),
+      'collection' => ProductCollection::table(),
     );
 
     array_walk($join, function(&$value, $key){
-      $value = PHP_EOL.'LEFT OUTER JOIN '.$value.' AS '.$key.' ON '.$key.'.id = a.'.$key.'_id';
+      $value = PHP_EOL.'LEFT OUTER JOIN `'.$value.'` AS '.$key.' ON '.$key.'.id = a.'.$key.'_id';
     });
 
     $criteria->join = implode(" ", $join);
     $criteria->condition = $condition;
-    $criteria->order = 'section.position, type.position';
+    $criteria->distinct = true;
 
     if( $defaultCriteria !== null )
       $criteria->mergeWith($defaultCriteria);
+
+    if( empty($criteria->order) )
+      $criteria->order = 'section.position, type.position';
 
     return $criteria;
   }

@@ -1,8 +1,8 @@
--- MySQL dump 10.13  Distrib 5.1.63, for portbld-freebsd8.2 (amd64)
+-- MySQL dump 10.13  Distrib 5.1.73, for portbld-freebsd8.2 (amd64)
 --
 
 -- ------------------------------------------------------
--- Server version	5.1.63-log
+-- Server version	5.1.73-log
 
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
@@ -183,7 +183,7 @@ CREATE TABLE `argilla_contact` (
   `notice` text,
   `img` varchar(512) DEFAULT NULL,
   `img_big` varchar(512) DEFAULT NULL,
-  `map` varchar(2048) DEFAULT NULL,
+  `map` text,
   `visible` int(1) DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -863,6 +863,7 @@ CREATE TABLE `argilla_product_category` (
   `position` int(11) DEFAULT NULL,
   `url` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
+  `alt_name` varchar(255) DEFAULT NULL,
   `img` varchar(255) DEFAULT NULL,
   `notice` text,
   `content` text,
@@ -1007,6 +1008,7 @@ CREATE TABLE `argilla_product_param_name` (
   `position` int(11) DEFAULT '0',
   `visible` tinyint(1) DEFAULT NULL,
   `name` varchar(1024) NOT NULL,
+  `notice` varchar(1024) DEFAULT NULL,
   `img` varchar(255) NOT NULL,
   `type` varchar(50) NOT NULL DEFAULT 'text',
   `key` varchar(50) DEFAULT NULL,
@@ -1222,6 +1224,8 @@ CREATE TABLE `argilla_seo_meta_mask` (
   `title` varchar(255) NOT NULL,
   `description` varchar(255) NOT NULL,
   `keywords` varchar(255) NOT NULL,
+  `header` varchar(255) DEFAULT NULL,
+  `noindex` tinyint(1) NOT NULL DEFAULT '0',
   `visible` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1240,8 +1244,10 @@ CREATE TABLE `argilla_seo_meta_route` (
   `title` varchar(255) NOT NULL,
   `description` varchar(255) NOT NULL,
   `keywords` varchar(255) NOT NULL,
+  `header` varchar(255) DEFAULT NULL,
   `models` text NOT NULL,
   `clips` varchar(512) NOT NULL,
+  `noindex` tinyint(1) NOT NULL DEFAULT '0',
   `visible` tinyint(1) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1262,6 +1268,44 @@ CREATE TABLE `argilla_seo_redirect` (
   `visible` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `base` (`base`,`target`,`type_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `argilla_seo_sitemap_exclusion`
+--
+
+DROP TABLE IF EXISTS `argilla_seo_sitemap_exclusion`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `argilla_seo_sitemap_exclusion` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `route` varchar(255) NOT NULL,
+  `lastmod` tinyint(1) NOT NULL DEFAULT '0',
+  `changefreq` varchar(255) NOT NULL DEFAULT 'monthly',
+  `priority` decimal(5,2) NOT NULL DEFAULT '0.00',
+  `visible` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `route` (`route`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `argilla_seo_sitemap_route`
+--
+
+DROP TABLE IF EXISTS `argilla_seo_sitemap_route`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `argilla_seo_sitemap_route` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `route` varchar(255) NOT NULL,
+  `lastmod` tinyint(1) NOT NULL DEFAULT '0',
+  `changefreq` varchar(255) NOT NULL DEFAULT 'monthly',
+  `priority` decimal(5,2) NOT NULL DEFAULT '0.00',
+  `visible` tinyint(1) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `route` (`route`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

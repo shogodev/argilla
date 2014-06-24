@@ -5,6 +5,16 @@
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
  * @package frontend.models.seo
+ *
+ * @method static MetaMask model(string $class = __CLASS__)
+ *
+ * @property string $url_mask
+ * @property string $header
+ * @property string $title
+ * @property string $description
+ * @property string $keywords
+ * @property integer $noindex
+ * @property integer $visible
  */
 class MetaMask extends FActiveRecord
 {
@@ -13,32 +23,44 @@ class MetaMask extends FActiveRecord
     return '{{seo_meta_mask}}';
   }
 
-  public function getData($url)
+  public function defaultScope()
+  {
+    $alias = $this->getTableAlias(false, false);
+
+    return array(
+      'condition' => $alias.'.visible=1',
+    );
+  }
+
+  /**
+   * @param $url
+   *
+   * @return MetaMask
+   */
+  public function findByUri($url)
   {
     $url = Utils::normalizeUrl($url);
-    $data = $this->getDataByUrl($url);
-    if( empty($data) )
-      $data = $this->findDataByMask($url);
 
-    return $data;
+    if( !$model = $this->findByAttributes(array('url_mask' => $url)) )
+    {
+      $model = $this->findByMask($url);
+    }
+
+    return $model;
   }
 
-  private function getDataByUrl($url)
+  /**
+   * @param $url
+   *
+   * @return MetaMask
+   */
+  private function findByMask($url)
   {
-    return $this->find('url_mask=:url AND visible=:visible', array(':url' => $url, ':visible' => '1'));
-  }
+    $criteria = new CDbCriteria();
+    $criteria->compare('url_mask', '#', true);
 
-  private function findDataByMask($url)
-  {
-    $data = $this->findAll('visible=:visible', array(':visible' => 1));
-
-    $masks = array();
-    foreach($data as $value)
-      $masks[] = $value->url_mask;
-
-    //todo: Обработка маски откладывается до лучших времен
-
-    return array();
+    foreach($this->findAll($criteria) as $mask)
+      if( @preg_match($mask['url_mask'], $url) )
+        return $mask;
   }
 }
-?>

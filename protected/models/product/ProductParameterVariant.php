@@ -36,6 +36,11 @@ class ProductParameterVariant extends FActiveRecord
     return $this->name;
   }
 
+  public function getImage()
+  {
+    return 'f/upload/images/'.$this->param_id.'_'.$this->id.'.png';
+  }
+
   /**
    * @param ProductParameterName[] $parameterNames
    */

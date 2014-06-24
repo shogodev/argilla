@@ -34,12 +34,12 @@ return array_merge_recursive(array(
     'frontend.models.order.paymentSystem.*',
     'frontend.models.order.paymentSystem.platron.*',
     'frontend.models.xml.*',
+    'frontend.models.sitemap.*',
+    'frontend.models.sitemap.generators.*',
 
     'frontend.components.*',
     'frontend.components.common.*',
-    'frontend.components.interfaces.*',
     'frontend.components.validators.*',
-    'frontend.components.alphabets.*',
     'frontend.components.redirect.*',
     'frontend.components.image.*',
     'frontend.components.form.*',
@@ -47,6 +47,8 @@ return array_merge_recursive(array(
     'frontend.components.ar.*',
     'frontend.components.url.*',
     'frontend.components.collection.*',
+    'frontend.components.sitemap.*',
+
 
     'frontend.controllers.*',
     'frontend.controllers.behaviors.*',
@@ -93,6 +95,10 @@ return array_merge_recursive(array(
 
     'requestRedirect' => array(
       'class' => 'RequestRedirectComponent',
+    ),
+
+    'meta' => array(
+      'class' => 'frontend.components.Meta',
     ),
 
     'errorHandler' => array(

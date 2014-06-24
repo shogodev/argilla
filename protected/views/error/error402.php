@@ -5,7 +5,7 @@
 ?>
 <section id="main">
 
-  <?php $this->renderPartial('/breadcrumbs');?>
+  <?php $this->renderPartial('/_breadcrumbs');?>
 
   <h2 class="m7">Требуется авторизация</h2>
 

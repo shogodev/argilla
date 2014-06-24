@@ -32,7 +32,9 @@ return array(
 
     'phpThumb' => array(
       'class' => 'ext.phpthumb.EPhpThumb',
-      'options' => array()
+      'options' => array(
+        'jpegQuality' => '75',
+      ),
     ),
 
     'email' => array(

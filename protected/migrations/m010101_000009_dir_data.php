@@ -4,12 +4,12 @@ class m010101_000009_dir_data extends CDbMigration
 {
 	public function up()
 	{
-    $this->execute("INSERT INTO `{{dir_payment}}` (`id`, `name`, `position`, `notice`, `visible`) VALUES
+    $this->execute("INSERT INTO `{{order_payment_type}}` (`id`, `name`, `position`, `notice`, `visible`) VALUES
       (1, 'Оплата наличными', 0, NULL, 1),
       (2, 'Безналичный платеж', 0, NULL, 1),
       (3, 'Электронные деньги', 0, NULL, 1)");
 
-    $this->execute("INSERT INTO `{{dir_delivery}}` (`id`, `name`, `position`, `notice`, `visible`) VALUES
+    $this->execute("INSERT INTO `{{order_delivery_type}}` (`id`, `name`, `position`, `notice`, `visible`) VALUES
       (1, 'Самовывоз', 2, NULL, 1),
       (2, 'Доставка', 1, NULL, 1)");
 

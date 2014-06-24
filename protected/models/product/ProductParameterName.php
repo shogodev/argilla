@@ -11,6 +11,7 @@
  * @property integer $position
  * @property integer $visible
  * @property string $name
+ * @property string $notice
  * @property string $type
  * @property string $key
  * @property integer $product

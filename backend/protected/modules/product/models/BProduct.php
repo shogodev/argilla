@@ -34,6 +34,8 @@ Yii::import('backend.modules.product.models.behaviors.*');
 
  * @property integer $section_id
  * @property integer $type_id
+ * @property integer $category_id
+ * @property integer $collection_id
  *
  * @property BProductAssignment $assignment
  * @property BAssociation[] $associations

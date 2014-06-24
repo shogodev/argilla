@@ -153,7 +153,7 @@ class OnFlyEditField extends BDataColumn
     else
     {
       return CHtml::dropDownList('', $value, $this->dropDown,
-        array_merge($commonAttributes, ['class' => 'onfly-edit-dropdown'], $this->elementOptions));
+        array_merge($commonAttributes, ['class' => 'onfly-edit-dropdown', 'style' => 'margin-bottom: 0px;'], $this->elementOptions));
     }
   }
 }

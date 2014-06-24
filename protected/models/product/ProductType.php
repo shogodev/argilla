@@ -28,26 +28,13 @@ class ProductType extends FActiveRecord
     );
   }
 
-  public function getTypes()
-  {
-    $product    = Product::model()->tableName();
-    $assignment = ProductAssignment::model()->tableName();
-
-    $criteria            = new CDbCriteria();
-    $criteria->select    = 't.id, t.name, t.notice, t.url';
-    $criteria->join      = 'JOIN '.$assignment.' AS a ON t.id = a.type_id ';
-    $criteria->join     .= 'JOIN '.$product.' AS p ON p.id = a.product_id';
-    $criteria->condition = 'p.visible=1';
-    $criteria->distinct  = true;
-
-    return $this->findAll($criteria);
-  }
-
   public function getMenu()
   {
-    $menu[] = array('label' => 'Разделы');
-
-    $types = $this->getTypes();
+    /**
+     * @var ProductType[] $types
+     */
+    $menu = array();
+    $types = $sections = ProductAssignment::model()->getModels('ProductType', new CDbCriteria());
 
     foreach($types as $type)
       $menu[$type->id] = array(

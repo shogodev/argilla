@@ -51,6 +51,30 @@ class Banner extends FActiveRecord
     return $this->banners[$location];
   }
 
+  public function findByPage($page, $location = null)
+  {
+    $criteria = new CDbCriteria();
+
+    if( isset($location) )
+      $criteria->compare('location', $location);
+
+    $banners = $this->findAll($criteria);
+
+    foreach($banners as $banner)
+    {
+      if( !$banner->pagelist )
+        continue;
+
+      foreach(explode("\n", $banner->pagelist) as $searchPage)
+      {
+        if( trim($searchPage) == $page )
+          return $banner;
+      }
+    }
+
+    return null;
+  }
+
   protected function afterFind()
   {
     $this->image = $this->img ? new FSingleImage($this->img, 'images') : null;

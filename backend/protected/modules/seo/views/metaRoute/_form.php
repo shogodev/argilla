@@ -9,6 +9,7 @@
 /* @var $form BActiveForm */
 $form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId()));
 ?>
+
 <?php $this->renderPartial('//_form_buttons', array('model' => $model));?>
 <?php echo $form->errorSummary($model); ?>
 <?php echo $form->renderRequire(); ?>
@@ -16,36 +17,39 @@ $form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId()));
 <table class="detail-view table table-striped table-bordered">
 <tbody>
 
+  <?php if( $this->isUpdate() ) { ?>
+    <?php echo $form->textRow($model, 'route'); ?>
+  <?php } else { ?>
+    <?php echo $form->dropDownListRow($model, 'route', CHtml::listData($model->getRoutesList(), 'id', 'name'), $model->getRoutesListOptions());?>
+  <?php } ?>
 
-<?php if( $this->isUpdate() )
-        echo $form->textRow($model, 'route');
-      else
-        echo $form->dropDownListRow($model, 'route', CHtml::listData($model->getRoutesList(), 'id', 'name'), $model->getRoutesListOptions());
-?>
-
-<tr>
+  <tr>
     <th><label class="required">Переменные моделей</label></th>
     <td>
       <?php foreach($model->getModelVariables($model->id) as $key => $value) {?>
         <div>
-            <b><?php echo $key?>:</b>
+          <b><?php echo $key?>:</b>
           <?php echo implode(', ', $value) ?>
         </div>
       <?php }?>
     </td>
-</tr>
+  </tr>
 
-<?php echo $form->textRow($model, 'clips'); ?>
+  <?php echo $form->textRow($model, 'clipList'); ?>
 
-<?php echo $form->textRow($model, 'globalVars'); ?>
+  <?php echo $form->textRow($model, 'globalVars'); ?>
 
-<?php echo $form->textFieldRow($model, 'title'); ?>
+  <?php echo $form->textFieldRow($model, 'header'); ?>
 
-<?php echo $form->textAreaRow($model, 'description'); ?>
+  <?php echo $form->textFieldRow($model, 'title'); ?>
 
-<?php echo $form->textAreaRow($model, 'keywords'); ?>
+  <?php echo $form->textAreaRow($model, 'description'); ?>
 
-<?php echo $form->checkBoxRow($model, 'visible'); ?>
+  <?php echo $form->textAreaRow($model, 'keywords'); ?>
+
+  <?php echo $form->checkBoxRow($model, 'noindex'); ?>
+
+  <?php echo $form->checkBoxRow($model, 'visible'); ?>
 
 </tbody>
 </table>

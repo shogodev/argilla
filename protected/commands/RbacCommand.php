@@ -176,11 +176,12 @@ class RbacCommand extends CConsoleCommand
     {
       foreach( $module->controllerMap as $id => $controller )
       {
-        $controllerClass = new $controller($id);
+        $class = new ReflectionClass($controller);
+        $properties = $class->getDefaultProperties();
 
         $this->names[] = [
-          'name' => $moduleName.':'.$controllerClass->getId(),
-          'title' => $module->name.' - '.$controllerClass->name,
+          'name' => $moduleName.':'.$id,
+          'title' => $module->name.' - '.$properties['name'],
         ];
       }
     }

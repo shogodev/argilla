@@ -20,6 +20,7 @@ class SeoModule extends BModule
       'BLinkBlock' => array('label' => 'Ссылочный блок', 'url' => Yii::app()->createUrl('seo/BLinkBlock'), 'menu' => array('BLinkBlock'), 'itemOptions' => array('class' => 'linksblock')),
       'BLink'      => array('label' => 'Каталог ссылок', 'url'   => Yii::app()->createUrl('seo/BLink'), 'menu' => array('BLink', 'BLinkSection'), 'itemOptions' => array('class' => 'links')),
       'BRedirects'  => array('label' => 'Редиректы', 'url' => Yii::app()->createUrl('seo/BRedirect'), 'menu' => array('BRedirects'), 'itemOptions' => array('class' => 'redirect')),
+      'BSitemap'  => array('label' => 'SitemapXML', 'url' => Yii::app()->createUrl('seo/BSitemap'), 'menu' => array('BSitemap', 'BSitemapExclusion'), 'itemOptions' => array('class' => 'sitemap')),
     );
   }
 }

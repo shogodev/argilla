@@ -16,9 +16,6 @@ $config = array_replace_recursive(
       'request' => array(
         'class' => 'frontend.tests.components.THttpRequest'
       ),
-      'session' => array(
-        'class' => 'CHttpSession'
-      )
     ),
     'params' => array(
       'mode' => 'test'

@@ -10,12 +10,8 @@ return array(
   // xml
   'xmlExport' => array('xmlExport/index', 'pattern' => '<id:\w+>_xml'),
 
-  // news
-  'newsSection' => array('news/section', 'pattern' => '<url:(news|articles|reviews)>/<page:\d+>', 'defaultParams' => array('page' => 1)),
-  'newsOne'     => array('news/one',     'pattern' => 'news/<url:\w+>', 'urlSuffix' => '.html'),
-
   // info
-  'info' => array('info/index', 'pattern' => 'info/<url:\w+>'),
+  'info' => array('info/index', 'pattern' => 'info/<url:\w+>', 'urlSuffix' => '.html'),
 
   // contacts
   'contact' => array('contact/index', 'pattern' => 'contact'),
@@ -29,14 +25,16 @@ return array(
   'compareClearGroup' => array('compare/clearGroup', 'pattern' => '<url:compare\/clear_group>/<id:\d+>'),
 
   // users
-  'userRegistration' => array('user/registration',     'pattern' => 'user/registration'),
-  'userLogin'        => array('user/login',            'pattern' => 'user/login'),
-  'userLogout'       => array('user/logout',           'pattern' => 'user/logout'),
-  'userRestoreCode'  => array('user/restoreConfirmed', 'pattern' => 'user/restore/<code:\w+>'),
-  'userRestore'      => array('user/restore',          'pattern' => 'user/restore'),
-  'userData'         => array('user/data',             'pattern' => 'user/data'),
-  'userHistoryOne'   => array('user/historyOne',       'pattern' => 'user/history/<id:\d+>'),
-  'userHistory'      => array('user/history',          'pattern' => 'user/history'),
+  'userRegistration'   => array('user/registration',     'pattern' => 'user/registration'),
+  'userLogin'          => array('user/login',            'pattern' => 'user/login'),
+  'userLogout'         => array('user/logout',           'pattern' => 'user/logout'),
+  'userRestoreCode'    => array('user/restoreConfirmed', 'pattern' => 'user/restore/<code:\w+>'),
+  'userRestore'        => array('user/restore',          'pattern' => 'user/restore'),
+  'userData'           => array('user/data',             'pattern' => 'user/data'),
+  'userHistoryOne'     => array('user/historyOne',       'pattern' => 'user/history/<id:\d+>'),
+  'userHistory'        => array('user/history',          'pattern' => 'user/history'),
+  'userCurrentOrders'  => array('user/currentOrders',    'pattern' => 'user/current_orders'),
+  'userChangePassword' => array('user/changePassword',   'pattern' => 'user/change_password'),
 
   // forms
   'callback' => array('callback/index', 'pattern' => 'callback'),
@@ -65,16 +63,22 @@ return array(
   // products
   'productFastOrder' => array('product/fastOrder', 'pattern' => 'fastorder/<id:\d+>'),
   'productSelection' => array('product/selection', 'pattern' => 'selection'),
+  'productCategories' => array('product/categories', 'pattern' => 'categories'),
   'productSections'  => array('product/sections',  'pattern' => 'sections'),
-  'productType'      => array('product/type',      'pattern' => 'type/<type:\w+>/<page:\d+>', 'defaultParams' => array('page' => 1)),
 
   // db routing
   'productOne' => array('product/one', 'pattern' => '<url:\w+>', 'models' => array('url' => 'Product'), 'class' => 'DBRule'),
-  'productSection' => array('product/section', 'class' => 'DBRule', 'pattern' => '<section:\w+>/<page:\d+|all>', 'defaultParams' => array('page' => 1), 'models' => array('section' => 'ProductSection')),
+  'productSection' => array('product/section', 'class' => 'DBRule', 'pattern' => '<section:\w+>/<page:\d+>', 'defaultParams' => array('page' => 1), 'models' => array('section' => 'ProductSection')),
+  'productCategory' => array('product/category', 'class' => 'DBRule', 'pattern' => '<category:\w+>', 'models' => array('category' => 'ProductCategory')),
+  'productType' => array('product/type', 'class' => 'DBRule', 'pattern' => '<type:\w+>/<page:\d+>', 'models' => array('type' => 'ProductType'), 'defaultParams' => array('page' => 1)),
+
+  // news
+  'newsSection' => array('news/section', 'class' => 'DBRule', 'pattern' => '<section:\w+>/<page:\d+>', 'defaultParams' => array('page' => 1), 'models' => array('section' => 'NewsSection')),
+  'newsOne'     => array('news/one', 'pattern' => '<section:(news|actions|video|articles)>/<url:\w+>', 'urlSuffix' => '.html'),
 
   // link
-  'linkIndex' => array('link/index', 'pattern' => 'links/<page:\d+>', 'defaultParams' => array('page' => 1)),
-  'linkSection' => array('link/section', 'pattern' => 'links/<section:\w+>/<page:\d+>', 'defaultParams' => array('page' => 1)),
+  'linkIndex' => array('link/index', 'pattern' => 'resources/<page:\d+>', 'defaultParams' => array('page' => 1)),
+  'linkSection' => array('link/section', 'pattern' => 'resources/<section:\w+>/<page:\d+>', 'defaultParams' => array('page' => 1)),
   'linkAdd' => array('link/add', 'pattern' => 'links/add'),
 
   // captcha

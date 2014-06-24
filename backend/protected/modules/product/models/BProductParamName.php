@@ -17,6 +17,9 @@
  * @property string $key
  * @property integer $product
  * @property integer $section
+ * @property integer $selection
+ *
+ * @property BProductParamVariant[] $variants
  *
  * @method BProductParamName groups()
  */
@@ -50,7 +53,7 @@ class BProductParamName extends BActiveRecord
     return array(
       array('name, type', 'required'),
       array('parent, position, visible, product, section, section_list, selection', 'numerical', 'integerOnly' => true),
-      array('name', 'length', 'max' => 1024),
+      array('name, notice', 'length', 'max' => 1024),
       array('type, key', 'length', 'max' => 50),
       array('notice', 'safe'),
       array('section_id, type_id', 'safe', 'on' => 'search'),
@@ -61,6 +64,7 @@ class BProductParamName extends BActiveRecord
   {
     return array(
       'uploadBehavior' => array('class' => 'UploadBehavior', 'validAttributes' => 'img'),
+      'facetedParameterBehavior' => array('class' => 'BFacetedParameterBehavior'),
     );
   }
 

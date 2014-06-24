@@ -4,7 +4,7 @@
  * @var integer $index
  */ ?>
 <div class="column">
-  <a href="<?php echo $data->section->url?>" class="caption m15"><?php echo $data->section->name?></a>
+  <a href="<?php echo $this->createUrl('news/section', array('section' => $data->section->url))?>" class="caption m15"><?php echo $data->section->name?></a>
   <div class="announce-image m5">
     <?php if($data->image) {?>
       <a href="<?php echo $data->url?>"><img src="<?php echo $data->image->pre?>" alt=""></a>

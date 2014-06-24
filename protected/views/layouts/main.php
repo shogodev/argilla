@@ -6,19 +6,18 @@
 
 <?php
 /**
- * @var $this FController
+ * @var FController $this
+ * @var string $content
  */
 ?>
 
 <head>
   <meta charset="utf-8" />
-  <title><?php echo $this->meta->title;?></title>
+  <title><?php echo Yii::app()->meta->title;?></title>
   <meta name="viewport" content="target-densitydpi=device-dpi" />
   <base href="<?php echo Yii::app()->homeUrl?>" />
 
   <link rel="canonical" href="<?php echo $this->getCanonicalUrl();?>" />
-
-  <?php Yii::app()->clientScript->registerScriptFile('/js/config/config.js') ?>
 
   <!--[if lt IE 9]>
   <script src="js/html5msie/html5shiv-printshiv.js"></script>

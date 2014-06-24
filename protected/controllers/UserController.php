@@ -19,7 +19,7 @@ class UserController extends FController
   {
     return array(
       array('deny',
-        'actions' => array('data', 'profile', 'history', 'historyOne', 'profile', 'password', 'status'),
+        'actions' => array('data', 'profile', 'history', 'historyOne', 'password', 'status', 'currentOrders', 'changePassword'),
         'users'   => array('?'),
       ),
     );
@@ -113,19 +113,29 @@ class UserController extends FController
 
       $this->render('registration', array('registrationForm' => $registrationForm));
     }
+    else
+    {
+      $this->render('registration');
+    }
+
+
   }
 
   public function actionData()
   {
     $this->breadcrumbs = array(
-      'Мой профиль' => array('user/profile'),
+      'Мой профиль',
       'Личные данные',
     );
 
-    $userForm  = new FForm('UserDataForm', User::model()->findByPk(Yii::app()->user->getId()));
+    $this->activeUrl = array('user/data');
+
+    $userForm = new FForm('UserRegistration', User::model()->findByPk(Yii::app()->user->getId()));
+    $userForm->elements['password']->visible = false;
+    $userForm->elements['password_confirm']->visible = false;
     $userForm['extendedData']->model = UserDataExtended::model()->findByPk(Yii::app()->user->getId());
-    $userForm['extendedData']['birthday']->form = $userForm['extendedData'];
     $userForm->ajaxValidation();
+    $userForm->buttons['submit']->value = 'Сохранить';
 
     if( Yii::app()->request->isAjaxRequest && $userForm->save() )
     {
@@ -135,7 +145,7 @@ class UserController extends FController
       ));
     }
 
-    $this->render('data', array('userForm' => $userForm));
+  	$this->render('user_data', array('form' => $userForm));
   }
 
   public function actionProfile()
@@ -156,7 +166,7 @@ class UserController extends FController
   public function actionPassword()
   {
     $this->breadcrumbs = array(
-      'Мой профиль' => array('user/profile'),
+      'Мой профиль',
       'Сменить пароль',
     );
 
@@ -172,6 +182,30 @@ class UserController extends FController
     }
 
     $this->render('password', array('form' => $form));
+  }
+
+  public function actionChangePassword()
+  {
+    $this->breadcrumbs = array(
+      'Мой профиль',
+      'Сменить пароль',
+    );
+
+    $this->activeUrl = array('user/changePassword');
+
+    $form = new FForm('UserChangePassword', User::model()->findByPk(Yii::app()->user->getId()));
+    $form->ajaxValidation();
+    $form->model->setScenario('changePassword');
+
+    if( Yii::app()->request->isAjaxRequest && $form->save() )
+    {
+      $form->responseSuccess(Yii::app()->controller->textBlockRegister(
+        'Успешное изменение пароля',
+        'Изменения сохранены'
+      ));
+    }
+
+    $this->render('change_password', array('form' => $form));
   }
 
   public function actionRestore()
@@ -209,26 +243,38 @@ class UserController extends FController
       $this->redirect(array('user/restore'));
   }
 
+
+
+  public function actionCurrentOrders()
+  {
+    $this->breadcrumbs = array(
+      'Мои заказы',
+      'Текущие заказы',
+    );
+
+    $this->activeUrl = array('user/currentOrders');
+    $orders = OrderHistory::model()->currentOrders()->findAll();
+
+    $this->render('current_orders', array('orders' => $orders));
+  }
+
   public function actionHistory()
   {
     $this->breadcrumbs = array(
-      'Мой профиль' => array('user/profile'),
       'Мои заказы',
+      'История заказов',
     );
 
-    $model  = OrderHistory::model();
-    $orders = $model->user(Yii::app()->user->getId())->findAll();
+    $this->activeUrl = array('user/history');
+    $orders = OrderHistory::model()->historyOrders()->findAll();
 
-    $this->render('history', array(
-      'model' => $model,
-      'orders' => $orders,
-    ));
+    $this->render('history_orders', array('orders' => $orders));
   }
 
   public function actionStatus()
   {
     $this->breadcrumbs = array(
-      'Мой профиль' => array('user/profile'),
+      'Личный кабинет',
       'Мой статус',
     );
 
@@ -248,7 +294,9 @@ class UserController extends FController
     if( empty($order) )
       throw new CHttpException(404, 'Страница не найдена');
 
-    $this->breadcrumbs = array('История заказов', 'Заказ №'.$order->id);
+    $this->breadcrumbs = array(
+      'История заказов', 'Заказ №'.$order->id
+    );
 
     $this->render('orderHistoryOne', array('order' => $order, 'backUrl' => $this->createUrl('user/history')));
   }

@@ -11,15 +11,12 @@ class TextBlockBehavior extends CBehavior
   /**
    * @var TextBlock[] $textBlocks
    */
-  protected $textBlocks = array();
+  protected $textBlocks;
 
   public function attach($owner)
   {
     parent::attach($owner);
-
     $this->import();
-
-    $this->init();
   }
 
   /**
@@ -41,6 +38,9 @@ class TextBlockBehavior extends CBehavior
    */
   public function textBlocks($location, $replace = array())
   {
+    if( !isset($this->textBlocks) )
+      $this->textBlocks = TextBlock::model()->getGroupByLocation();
+
     return !isset($this->textBlocks[$location]) ? array() : $this->executeReplace($this->textBlocks[$location], $replace);
   }
 
@@ -97,11 +97,6 @@ class TextBlockBehavior extends CBehavior
     Yii::import('frontend.components.image.ImageInterface');
 
     Yii::import('frontend.models.TextBlock');
-  }
-
-  protected function init()
-  {
-    $this->textBlocks = TextBlock::model()->getGroupByLocation();
   }
 
   protected function executeReplace($data, $replace)

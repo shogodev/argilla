@@ -9,4 +9,7 @@ return array(
   'section6' => array('id' => 6, 'name' => 'Спагетти', 'visible' => 1),
 
   'section7' => array('id' => 7, 'name' => 'Салаты', 'visible' => 1),
+
+  // test meta
+  'section8' => array('id' => 8, 'name' => 'section Name', 'visible' => 1),
 );
