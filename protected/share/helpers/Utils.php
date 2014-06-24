@@ -263,7 +263,10 @@ class Utils
 
   public static function isDecimalEmpty($value)
   {
-    return empty($value) || $value === '0.00' ? true : false;
+    if( empty($value) || preg_replace('/(\.0+)$/', '', $value == 0) )
+      return true;
+
+    return false;
   }
 
   /**
