@@ -62,6 +62,9 @@ class TextBlockBehavior extends CBehavior
 
     if( !$this->textBlock($location) )
     {
+      if( TextBlock::model()->resetScope()->getByLocation($location) )
+        return '';
+
       $textBlock = new TextBlock();
       $textBlock->attributes = array(
         'location' => $location,

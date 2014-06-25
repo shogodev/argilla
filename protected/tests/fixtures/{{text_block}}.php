@@ -8,4 +8,5 @@ return array(
   '6' => array('id' => '6', 'location' => 'testReplaceByTextBlock', 'name' => 'Test replace text block', 'content' => 'text2 {replaced_text_block}', 'visible' => 1),
   '7' => array('id' => '7', 'location' => 'replaced_text_block', 'name' => 'Test replace text block', 'content' => 'new replaced text', 'visible' => 1),
   '8' => array('id' => '8', 'location' => 'test_replace_registration', 'name' => 'Test replace', 'content' => 'text3 {before}', 'visible' => 1),
+  '9' => array('id' => '9', 'location' => 'test_registration_not_visible', 'name' => 'Test not visible', 'content' => 'text', 'visible' => 0),
 );

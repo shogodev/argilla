@@ -83,6 +83,12 @@ class TextBlockBehaviorTest extends CDbTestCase
     $this->assertRegExp('/Успешная регистрация/iu', $textBlock->content);
     $this->assertRegExp('/class="test_class"/iu', $textBlock->content);
     $this->assertRegExp('/id="message"/iu', $textBlock->content);
+
+    $this->clearTextBlocksCache();
+
+    Yii::app()->controller->textBlockRegister('test_registration_not_visible', 'Успешная регистрация');
+    $textBlock = TextBlock::model()->resetScope()->findAllByAttributes(array('location' => 'test_registration_not_visible'));
+    $this->assertTrue(count($textBlock) == 1);
   }
 
   public function testReplace()
