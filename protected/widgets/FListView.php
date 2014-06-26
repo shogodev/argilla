@@ -24,6 +24,10 @@ class FListView extends CListView
 
   public $afterAjaxUpdate = '$.fn.yiiListView.afterAjaxHandler';
 
+  public $columnsCount;
+
+  public $lastItemClass = 'last';
+
   public function renderPager()
   {
     if( !$this->enablePagination )
@@ -90,9 +94,9 @@ class FListView extends CListView
       $j        = 0;
       foreach($data as $i => $item)
       {
-        $data           = $this->viewData;
-        $data['index']  = $i;
-        $data['data']   = $item;
+        $this->viewData['index'] = $i;
+        $data = $this->viewData;
+        $data['data'] = $item;
         $data['widget'] = $this;
         $owner->renderFile($viewFile, $data);
         if( $j++ < $n - 1 )
@@ -110,6 +114,17 @@ class FListView extends CListView
   {
     parent::registerClientScript();
     $cs = Yii::app()->clientScript;
-    $cs->unregisterScriptFile($this->baseScriptUrl.'/jquery.yiilistview.js',CClientScript::POS_END);
+    $cs->unregisterScriptFile($this->baseScriptUrl.'/jquery.yiilistview.js', CClientScript::POS_END);
+  }
+
+  /**
+   * @return string
+   */
+  public function getColumnClass()
+  {
+    if( !empty($this->columnsCount) )
+      return ($this->viewData['index'] + 1) % $this->columnsCount == 0 ? 'last' : '';
+    else
+      return '';
   }
 }

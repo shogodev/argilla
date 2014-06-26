@@ -16,10 +16,10 @@
   <?php foreach($showcase as $tab) { ?>
     <div id="<?php echo $tab->index?>">
       <?php $this->widget('FListView', array(
+        'columnsCount' => 5,
         'dataProvider' => $tab->getRandomDataProvider(),
         'itemsCssClass' => 'vitrine',
         'itemView' => '/product/_product_block_tablet',
-        'skin' => array('limit' => 5)
       ));?>
     </div>
   <?php } ?>
