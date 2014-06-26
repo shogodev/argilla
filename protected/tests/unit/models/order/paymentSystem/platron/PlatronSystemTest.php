@@ -52,7 +52,9 @@ class PlatronSystemTest extends CDbTestCase
   }
 
   /**
-   * @dataProvider checkDataProvider
+   * @param $data
+   *
+   * @dataProvider resultDataProvider
    */
   public function testProcessCheckPayment($data)
   {
@@ -75,6 +77,8 @@ class PlatronSystemTest extends CDbTestCase
   }
 
   /**
+   * @param $data
+   *
    * @dataProvider resultDataProvider
    */
   public function testProcessResultPayment($data)

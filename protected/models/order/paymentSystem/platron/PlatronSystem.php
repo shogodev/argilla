@@ -491,7 +491,8 @@ class PlatronSystem extends AbstractPaymentSystem
   protected function sendXmlResponse($data, $exit = true)
   {
     $xml = new SimpleXMLElement('<?xml version="1.0" encoding="utf-8"?><response/>');
-    header('Content-type: text/xml');
+    if( !headers_sent() )
+      header('Content-type: text/xml');
 
     foreach($data as $key => $value)
       $xml->addChild($key, $value);
