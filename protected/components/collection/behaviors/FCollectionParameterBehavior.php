@@ -5,13 +5,13 @@
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @package frontend.components.collection
  *
- * @property ProductColor $owner
+ * @property ProductParameter $owner
  */
-class FCollectionColor extends FCollectionElement
+class FCollectionParameterBehavior extends FCollectionElementBehavior
 {
   public function getOrderItemType()
   {
-    return 'color';
+    return 'parameter-'.$this->owner->parameterName->id;
   }
 
   public function getPrimaryKey()
@@ -21,11 +21,11 @@ class FCollectionColor extends FCollectionElement
 
   public function getOrderItemName()
   {
-    return 'Цвет';
+    return $this->owner->parameterName->name;
   }
 
   public function getOrderItemValue()
   {
-    return $this->owner->color->name;
+    return $this->owner->variant->name;
   }
 }

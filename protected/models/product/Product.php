@@ -54,7 +54,7 @@ class Product extends FActiveRecord
   public function behaviors()
   {
     return array(
-      'collectionElement' => array('class' => 'FCollectionElement'),
+      'collectionElement' => array('class' => 'FCollectionElementBehavior'),
       'productParametersBehavior' => array('class' => 'ProductParametersBehavior'),
       'imagesBehavior' => array('class' => 'ActiveImageBehavior', 'imageClass' => 'ProductImage'),
     );

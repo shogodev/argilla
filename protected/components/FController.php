@@ -245,9 +245,11 @@ class FController extends CController
       'user/restore',
       'user/profile',
       'user/data',
+      'user/restoreConfirmed'
     );
 
-    $remember = !in_array(Yii::app()->request->pathInfo, $excludedPages) &&
+
+    $remember = !in_array($this->route, $excludedPages) &&
                 !isset(Yii::app()->errorHandler->error) &&
                 !Yii::app()->request->isAjaxRequest;
 

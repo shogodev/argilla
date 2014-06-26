@@ -19,6 +19,8 @@ class FForm extends CForm
 
   public $layout = "{title}\n{elements}\n{description}\n<div class=\"form-submit\">{buttons}</div>\n";
 
+  public $elementsLayout;
+
   public $inputElementClass = 'FFormInputElement';
 
   public $activeForm = array('class' => 'CActiveForm',
@@ -55,17 +57,17 @@ class FForm extends CForm
 
   public function __construct($config, $model = null, $parent = null)
   {
-    if( is_string($config) /*&& strpos($config, '.') === false*/ )
+    if( is_string($config) )
     {
       $pathToForm     = self::$DEFAULT_FORMS_PATH.$config;
       $this->formName = get_class($model);
     }
     else
     {
-      //$pathToForm     = get_class($model);
-      //$this->formName = substr($config, strrpos($config, '.') + 1);
-      $pathToForm     = $config;
-      $this->formName = $config['name'];
+      $pathToForm = $config;
+
+      if( isset($config['name']) )
+        $this->formName = $config['name'];
     }
 
     parent::__construct($pathToForm, $model, $parent);

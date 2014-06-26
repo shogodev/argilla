@@ -3,7 +3,6 @@
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
- * @package frontend.components.collection.assets
  */
 
 ;(function($) {
@@ -15,7 +14,6 @@
      * settings
      * ajaxUrl - урл сабмита по умолчвнию
      * ajaxUpdate[] - масссив id элементов которые будут обновлены после сабмита
-     * classWaitAction - класс элемента ожидиющего действия
      */
     this.settings = {};
 
@@ -38,6 +36,11 @@
       var data = {};
       data[keyCollection] = options.data;
       data['action'] = options.action;
+
+      if( !$('#loader_ajax').is('show') )
+        $.mouseLoader(true);
+      else
+        return;
 
       if( settings.beforeAjaxScript !== undefined && settings.beforeAjaxScript(options.element, options.data, options.action) === false )
         return;
@@ -88,29 +91,22 @@
           alert(err);
         }
       });
+
+      jqxhr.always(function() {
+        $.mouseLoader(false);
+      });
+
     };
 
-/*    this.addButtonListener = function(keyCollection)
+    this.getElementsByData = function(data, selector)
     {
-       var self = this;
-       var settings = this.collectionSettings[keyCollection];
+      if(data == undefined || data.id == undefined || data.type == undefined )
+        return false;
 
-       $('body').on('click', '.' + settings.classAdd , function(e){
-         e.preventDefault();
+      var elements = $((selector == undefined ? '' : selector) + '[data-id=' + data.id + '][data-type=' + data.type + ']');
 
-        if( $(this).hasClass(settings.classDoNotAddInCollection) )
-          return;
-
-        var options = {
-          'action' : 'add',
-          'element' : $(this),
-          'data' : $(this).data(),
-          'url' : settings.addButtonAjaxUrl
-        };
-
-         self.send(options);
-      });
-    }*/
+      return elements.length > 0 ? elements : false;
+    }
 
     if( inputSettings !== undefined )
     {

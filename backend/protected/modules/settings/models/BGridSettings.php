@@ -5,9 +5,17 @@
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.settings.models
+ */
+
+Yii::import('backend.modules.product.models.*');
+
+
+/**
+ * Class BGridSettings
  *
  * @method static BGridSettings model(string $class = __CLASS__)
  * @method static BGridSettings visible()
+ * @method static BGridSettings filter()
  *
  * @property integer $id
  * @property integer $position
@@ -19,10 +27,19 @@
  * @property integer $visible
  */
 
-Yii::import('backend.modules.product.models.*');
 
 class BGridSettings extends BActiveRecord
 {
+  const FILTER_COMPARE = 1;
+
+  const FILTER_CONTAIN = 2;
+
+  public static $labels = array(
+    0 => 'Отключен',
+    1 => 'Совпадает',
+    2 => 'Содержит'
+  );
+
   public $gridModel = 'BProduct';
 
   public function tableName()
@@ -47,6 +64,9 @@ class BGridSettings extends BActiveRecord
     return array(
       'visible' => array(
         'condition' => $alias.'.visible=1'
+      ),
+      'filter' => array(
+        'condition' => $alias.'.filter>0'
       )
     );
   }

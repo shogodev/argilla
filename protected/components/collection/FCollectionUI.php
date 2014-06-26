@@ -8,17 +8,26 @@
  */
 class FCollectionUI extends FCollection
 {
-  public $classAdd = 'to-{keyCollection}';
+  /**
+   * Добавить элемент в кодекцию только 1 раз
+   */
+  const BT_ADD_ONCE = 1;
 
-  public $classAlreadyInCollection = 'already-in-{keyCollection}';
+  /**
+   * Добавлять элемент в кодекцию всегда
+   */
+  const BT_ADD_ALWAYS = 2;
 
-  public $classDoNotAddInCollection = 'do-not-add-{keyCollection}';
-
-  public $classWaitAction = 'process{keyCollection}';
+  /**
+   * Работа в режиме переключателя
+   */
+  const BT_TOGGLE = 3;
 
   public $ajaxUrl;
 
   public $addButtonAjaxUrl;
+
+  public $addThroughButtonAjaxUrl = array('product/addThroughPopup');
 
   public $ajaxUpdate = array();
 
@@ -26,27 +35,28 @@ class FCollectionUI extends FCollection
 
   public $afterAjaxScript = array();
 
+  protected $classAdd = 'to-{keyCollection}';
+
+  protected $classAlreadyInCollection = 'already-in-{keyCollection}';
+
   protected $classRemove = 'remove-{keyCollection}';
 
   protected $classAmount = 'amount-{keyCollection}';
 
   protected $classChangeAmount = 'change-amount-{keyCollection}';
 
-  public function init()
-  {
-    $this->replaceKeyCollection();
+  protected $classAddThroughPopupButton = 'add-through-popup-{keyCollection}';
 
-    Yii::app()->getClientScript()->attachEventHandler('onBeforeRenderClientScript', function($event){
-      $this->registerScripts();
-    });
-  }
+  protected $popupAutofocusFieldId = 'autofocus-field';
 
   public function sum()
   {
     $sum = 0;
 
     foreach($this as $element)
+    {
       $sum += $element->sum;
+    }
 
     return $sum;
   }
@@ -81,97 +91,191 @@ class FCollectionUI extends FCollection
   }
 
   /**
-   * Строит кнопку добавления в коллекцию. Если установить data-amount, то amountInput будет менять количество
-   * Пример: echo $this->basket->addButton('Добавить в корзину', array('class' => 'btn green-btn to-basket-btn', 'data-id' => $data->id, 'data-amount' => 1))
-   * @param string|array $text - 'текст кнопки' или массим array('текст кнопки', 'текст активной кнопки')
+   * Строит кнопку добавления в коллекцию.
+   * Пример:
+   * <pre>
+   *  echo $this->basket->buttonAdd($model, 'Добавить в корзину', array('class' => 'btn, 'data-amount' => 1))
+   *  echo $this->basket->buttonAdd(array('id' => 1, 'type' => 'product'), array('Добавить в корзину', 'В корзине'), array('class' => 'btn), FCollectionUI::BT_ADD_ONCE)
+   * </pre>
+   * @param array|FCollectionElementBehavior|CActiveRecord $data
+   * @param array|string $text
    * @param array $htmlOptions
-   * @param array $defaultItems
-   * @param boolean $doNotAddInCollection запретить добавлять в коллекцию одинаковый элемент несколько раз
+   * @param int $buttonType тип кнопки (может быть: self::BT_ADD_ONCE | self::BT_ADD_ALWAYS | self::BT_TOGGLE). По умодчанию BT_ADD_ALWAYS
    *
    * @return string
    */
-  public function addButton($text = '', $htmlOptions = array(), $defaultItems = array(), $doNotAddInCollection = true)
+  public function buttonAdd($data, $text = '', $htmlOptions = array(), $buttonType = self::BT_ADD_ALWAYS)
   {
-    $classes = isset($htmlOptions['class']) ? array($htmlOptions['class']) : array();
-    $classes[] = $this->classAdd;
-    if( is_array($text) )
-    {
-      $linkText =  Arr::reset($text);
-      $htmlOptions['data-not-added-text'] = htmlspecialchars(Arr::get($text, 0));
-      $htmlOptions['data-added-text'] = htmlspecialchars(Arr::get($text, 1));
-    }
-    else
-      $linkText = $text;
+    $this->appendHtmlOption($htmlOptions, $this->classAdd);
 
-    if( $doNotAddInCollection )
-      $htmlOptions['data-do-not-add'] = 1;
-
-    if( $this->isInCollectionData($htmlOptions['data-type'], $htmlOptions['data-id']) )
-    {
-      $classes[] = $this->classAlreadyInCollection;
-
-      if( $doNotAddInCollection )
-        $classes[] = $this->classDoNotAddInCollection;
-
-      if( is_array($text) )
-        $linkText = is_array($text) ? Arr::get($text, 1) : $text;
-    }
-
-    $defaultItems = $this->convertCollectionItemsToArray($defaultItems);
-    if( !empty($defaultItems) )
-      $htmlOptions['data-items'] = CJSON::encode($defaultItems);
-
-    $htmlOptions['data-type'] = Utils::toSnakeCase($htmlOptions['data-type']);
-    $htmlOptions['class'] = implode(' ', $classes);
-
-    return CHtml::link($linkText, '#', $htmlOptions);
+    return $this->createButtonAdd($data, $text, $htmlOptions, $buttonType);
   }
 
-  public function addButtonModel($text = '', $model, $htmlOptions = array(), $doNotAddInCollection = true)
+  /**
+   * @param array|FCollectionElementBehavior|CActiveRecord $data
+   * @param string $text
+   * @param array $htmlOptions
+   * @param bool $confirm
+   *
+   * @return string
+   */
+  public function buttonRemove($data, $text = '', $htmlOptions = array(), $confirm = true)
   {
-    if( empty($htmlOptions['data-id']) )
-      $htmlOptions['data-id'] = $model->id;
+    $preparedData = $this->prepareInputData($data);
 
-    if( empty($htmlOptions['data-type']) )
-      $htmlOptions['data-type'] = get_class($model);
-
-    return $this->addButton($text, $htmlOptions, $model->defaultCollectionItems(), $doNotAddInCollection);
-  }
-
-  public function removeButton($element, $text = '', $htmlOptions = array(), $confirm = true)
-  {
-    $htmlOptions['class'] = empty($htmlOptions['class']) ? $this->classRemove :  $htmlOptions['class'].' '.$this->classRemove;
-
-    $htmlOptions['data-id'] = $element->collectionExternalIndex;
+    $this->appendHtmlOption($htmlOptions, $this->classRemove);
 
     if( $confirm !== false)
       $htmlOptions['data-confirm'] = ($confirm === true ? 'true' : CJavaScript::quote($confirm));
 
-    return CHtml::link($text, '#', $htmlOptions);
+    return CHtml::link($text, '#', CMap::mergeArray($preparedData, $htmlOptions));
   }
 
-  public function changeAmountInput($element, $htmlOptions = array())
+  public function buttonAddThroughPopup($data, $text = '', $htmlOptions = array(), $buttonType = self::BT_ADD_ALWAYS)
   {
-    $htmlOptions['class'] = empty($htmlOptions['class']) ? $this->classChangeAmount :  $htmlOptions['class'].' '.$this->classChangeAmount;
+    $this->appendHtmlOption($htmlOptions, $this->classAddThroughPopupButton);
 
-    if( empty($htmlOptions['data-id']) )
-      $htmlOptions['data-id'] = $element->collectionExternalIndex;
-
-    return CHtml::textField('amount', $element->collectionAmount, $htmlOptions);
+    return $this->createButtonAdd($data, $text, $htmlOptions, $buttonType);
   }
 
   /**
-   * Строит input меняющий количество на кнопке добавления в коллекцию. Менят количество только у тех инпутов у которых установлено значение data-amount.
-   * Пример: echo $this->basket->amountInput(array('data-id' => $data->id))
+   * Строит input меняющий количество на кнопке добавления в коллекцию.
+   * Пример:
+   * <pre>
+   *   echo $this->basket->inputAmountButton('#button-id', array('class' => 'inp'))
+   *   или
+   *   echo $this->basket->inputAmountButton('.calculator-popup')
+   * </pre>
+   *
+   * @param string $targetSelector селектор кнопки добавления в коллекцию или селектор блока содержащего кнопку добавления в коллекцию
    * @param array $htmlOptions
-   * @param int $amount количество
+   * @param int $defaultAmount количество по умолчанию
+   * @param int $step
+   *
    * @return string
    */
-  public function amountInput($htmlOptions = array(), $amount = 1)
+  public function inputAmountButton($targetSelector, $htmlOptions = array(), $defaultAmount = 1, $step = 1)
   {
-    $htmlOptions['class'] = empty($htmlOptions['class']) ? $this->classAmount :  $htmlOptions['class'].' '.$this->classAmount;
+    $this->appendHtmlOption($htmlOptions, $this->classAmount);
+    $this->appendHtmlOption($htmlOptions, $targetSelector, 'data-target-selector');
+    $this->appendHtmlOption($htmlOptions, $step, 'data-step');
 
-    return CHtml::textField('amount', $amount, $htmlOptions);
+    return CHtml::textField('amount', $defaultAmount, $htmlOptions);
+  }
+
+  /**
+   * Инпут смены количества в коллекции
+   *
+   * @param $element - элемент коллекции
+   * @param array $htmlOptions
+   * @param int $step
+   *
+   * @return string
+   */
+  public function inputAmountCollection($element, $htmlOptions = array(), $step = 1)
+  {
+    $this->appendHtmlOption($htmlOptions, $this->classChangeAmount);
+    $this->appendHtmlOption($htmlOptions, $step, 'data-step');
+
+    if( empty($htmlOptions['data-index']) )
+      $htmlOptions['data-index'] = $element->collectionIndex;
+
+    return CHtml::textField('amount', $element->collectionAmount * $step, $htmlOptions);
+  }
+
+  protected function createButtonAdd($data, $text = '', $htmlOptions = array(), $buttonType = self::BT_ADD_ALWAYS)
+  {
+    $preparedData = $this->prepareInputData($data);
+    $isInCollection = $this->isInCollection($preparedData['data-type'], $preparedData['data-id']);
+
+    switch ($buttonType)
+    {
+      case self::BT_ADD_ONCE:
+        $this->appendHtmlOption($htmlOptions, $isInCollection ? 1 : 0, 'data-do-not-add');
+        break;
+
+      case self::BT_TOGGLE:
+        $this->appendHtmlOption($htmlOptions, $isInCollection ? 1 : 0, 'data-do-not-add');
+        $this->appendHtmlOption($htmlOptions, $isInCollection ? 1 : 0, 'data-remove-toggle');
+       break;
+    }
+
+    if( $isInCollection )
+    {
+      $this->appendHtmlOption($htmlOptions, $this->classAlreadyInCollection);
+    }
+
+    return CHtml::link($this->prepareText($text, $isInCollection, $htmlOptions), '#', CMap::mergeArray($preparedData, $htmlOptions));
+  }
+
+  /**
+   * @param array|CModel|FCollectionElementBehavior $data
+   *
+   * @return array
+   */
+  protected function prepareInputData($data)
+  {
+    $preparedData = array();
+
+    if( $data instanceof CModel )
+    {
+      $preparedData['data-id'] = $data->primaryKey;
+      $preparedData['data-type'] = Utils::toSnakeCase(get_class($data));
+
+      if( isset($data->collectionIndex) )
+        $preparedData['data-index'] = $data->collectionIndex;
+
+      if( $items = $data->defaultCollectionItems() )
+        $preparedData['data-items'] = CJSON::encode($items);
+    }
+    else
+    {
+      foreach($data as $key => $item)
+      {
+        if( !preg_match('/^data-(.*)/', $key) )
+          $preparedData['data-'.$key] = $item;
+        else
+          $preparedData[$key] = $item;
+      }
+    }
+
+    return $preparedData;
+  }
+
+  /**
+   * @param string|array $text
+   * @param $inCollection
+   * @param $htmlOptions
+   *
+   * @return array|mixed
+   */
+  protected function prepareText($text, $inCollection, &$htmlOptions)
+  {
+    if( is_array($text) )
+    {
+      $linkText = Arr::reset($text);
+      $this->appendHtmlOption($htmlOptions, htmlspecialchars(Arr::get($text, 0)), 'data-not-added-text');
+      $this->appendHtmlOption($htmlOptions, htmlspecialchars(Arr::get($text, 1)), 'data-added-text');
+    }
+    else
+      $linkText = $text;
+
+    if( $inCollection )
+    {
+      if( is_array($text) )
+        $linkText = is_array($text) ? Arr::get($text, 1) : $text;
+    }
+
+    return $linkText;
+  }
+
+  protected function init()
+  {
+    $this->replaceKeyCollection();
+
+    Yii::app()->getClientScript()->attachEventHandler('onBeforeRenderClientScript', function($event){
+      $this->registerScripts();
+    });
   }
 
   protected function registerScripts()
@@ -181,106 +285,179 @@ class FCollectionUI extends FCollection
       'ajaxUpdate' => $this->ajaxUpdate,
       'beforeAjaxScript' => $this->buildBeforeAjaxScript(),
       'afterAjaxScript' => $this->buildAfterAjaxScript(),
-      'classWaitAction' => $this->classWaitAction,
     );
 
     $script = "$.fn.collection('{$this->keyCollection}', ".CJavaScript::encode($settings).");";
     Yii::app()->clientScript->registerScript('initScript#'.Utils::ucfirst($this->keyCollection), $script, CClientScript::POS_END);
 
-    $this->registerAddButtonScript();
-    $this->registerChangeAmountScript();
-    $this->registerAmountScript();
-    $this->registerRemoveButtonScript();
+    $this->registerScriptButtonAdd();
+    $this->registerScriptButtonRemove();
+    $this->registerScriptInputAmountButton();
+    $this->registerScriptInputAmountCollection();
+    $this->registerScriptButtonAddThroughPopup();
   }
 
-  protected function registerAddButtonScript()
+  protected function registerScriptButtonAdd()
   {
-    $script = "$('body').on('click', '.{$this->classAdd}', function(e){
+    $this->registerScript("$('body').on('click', '.{$this->classAdd}', function(e){
       e.preventDefault();
 
-      var classDoNotAddInCollection = '{$this->classDoNotAddInCollection}';
-      if( $(this).hasClass(classDoNotAddInCollection) )
+      if( $(this).data('do-not-add') == 1 || $(this).data('remove-toggle') == 1 )
         return;
 
-      var classWaitAction = '{$this->classWaitAction}';
       var classAlreadyInCollection = '{$this->classAlreadyInCollection}';
+      var collection = $.fn.collection('{$this->keyCollection}');
 
-      $.fn.collection('{$this->keyCollection}').send({
+      collection.send({
         'action' : 'add',
         'element' : $(this),
         'data' : $(this).data(),
         'url' : '{$this->addButtonAjaxUrl}',
-        'beforeAjaxScript' : function(element, data, action) {
-          if( element.length > 0 && !element.hasClass(classWaitAction) )
-            element.addClass(classWaitAction);
-        },
         'afterAjaxScript' : function(element, data, action, response) {
-          var waitActionElement = $('.' + classWaitAction);
-          if( waitActionElement.length > 0 )
+          var elements = $.extend(
+            {},
+            collection.getElementsByData(data, '.{$this->classAdd}'),
+            collection.getElementsByData(data, '.{$this->classAddThroughPopupButton}')
+          );
+          if( elements.length > 0 )
           {
-            waitActionElement.removeClass(classWaitAction);
-            if( !waitActionElement.hasClass(classAlreadyInCollection) )
-              waitActionElement.addClass(classAlreadyInCollection);
-            if( waitActionElement.data('do-not-add') && !waitActionElement.hasClass(classDoNotAddInCollection) )
-              waitActionElement.addClass(classDoNotAddInCollection);
-            if( waitActionElement.data('added-text') ) {
-              waitActionElement.html(waitActionElement.data('added-text'));;
-            }
+            elements.each(function () {
+              var e = $(this);
+
+              if( e.hasClass(classAlreadyInCollection) )
+                return;
+
+              if( !e.hasClass(classAlreadyInCollection) )
+                e.addClass(classAlreadyInCollection);
+
+              if( e.data('do-not-add') == 0 )
+                e.data('do-not-add', 1);
+
+              if( e.data('remove-toggle') == 0 )
+                e.data('remove-toggle', 1);
+
+              if( e.data('added-text') )
+                e.html(e.data('added-text'));
+            });
           }
         }
       });
-    });";
-
-    Yii::app()->clientScript->registerScript(__METHOD__.'#'.$this->keyCollection, $script, CClientScript::POS_END);
+    });");
   }
 
-  protected function registerAmountScript()
+  protected function registerScriptButtonRemove()
   {
-    $script = "$('body').on('change', '.{$this->classAmount}', function(e){
+    $this->registerScript("$('body, .{$this->classRemove}').on('click', '.{$this->classRemove}, .{$this->classAdd}[data-remove-toggle], .{$this->classAddThroughPopupButton}[data-remove-toggle]', function(e){
       e.preventDefault();
-      var id = $(this).data('id');
-      $('.{$this->classAdd}[data-amount][data-id=' + id + ']').data('amount', $(this).val());
-    });";
 
-    Yii::app()->clientScript->registerScript(__METHOD__.'#'.$this->keyCollection, $script, CClientScript::POS_END);
-  }
+      if( $(this).data('remove-toggle') == 0 )
+        return;
 
-  protected function registerChangeAmountScript()
-  {
-    $script = "$('body').on('change', '.{$this->classChangeAmount}', function(e){
-      e.preventDefault();
-      var data = $(this).data();
-      data['amount'] = $(this).val();
+      var self = this;
 
-      $.fn.collection('{$this->keyCollection}').send({
-          'action' : 'changeAmount',
-          'data' : data,
+      var makeAction = function()
+      {
+        var classAlreadyInCollection = '{$this->classAlreadyInCollection}';
+        var collection = $.fn.collection('{$this->keyCollection}');
+
+        collection.send({
+          'element' : $(self),
+          'action' : 'remove',
+          'data' : $(self).data(),
+          'afterAjaxScript' : function(element, data, action, response) {
+            var elements = $.extend(
+              {},
+              collection.getElementsByData(data, '.{$this->classAdd}'),
+              collection.getElementsByData(data, '.{$this->classAddThroughPopupButton}')
+            );
+            if( elements.length > 0 )
+            {
+              elements.each(function () {
+                var e = $(this);
+
+                if( !e.hasClass(classAlreadyInCollection) )
+                  return;
+
+                if( e.hasClass(classAlreadyInCollection) )
+                  e.removeClass(classAlreadyInCollection);
+
+                if( e.data('do-not-add') == 1 )
+                  e.data('do-not-add', 0);
+
+                if( e.data('remove-toggle') == 1 )
+                  e.data('remove-toggle', 0);
+
+                if( e.data('not-added-text') )
+                  e.html(e.data('not-added-text'));
+              });
+            }
+          }
         });
-    });";
-
-    Yii::app()->clientScript->registerScript(__METHOD__.'#'.$this->keyCollection, $script, CClientScript::POS_END);
-  }
-
-  protected function registerRemoveButtonScript()
-  {
-    $script = "$('body, .{$this->classRemove}').on('click', '.{$this->classRemove}', function(e){
-      e.preventDefault();
+      }
 
       var confirmValue = $(this).data('confirm');
 
       if( confirmValue !== undefined )
       {
-        if( !confirm(confirmValue === true ? 'Вы уверены?' : confirmValue) )
-          return;
+        alertify.confirm(confirmValue === true ? 'Вы уверены?' : confirmValue, function(answer) {
+          if( answer )
+          {
+            makeAction();
+          }
+        });
       }
+      else
+      {
+        makeAction();
+      }
+    });");
+  }
+
+  protected function registerScriptButtonAddThroughPopup()
+  {
+    $url = is_array($this->addThroughButtonAjaxUrl) ? CHtml::normalizeUrl($this->addThroughButtonAjaxUrl) : $this->addThroughButtonAjaxUrl;
+
+    $this->registerScript("$(document.body).on('click', '.{$this->classAddThroughPopupButton}', function(e){
+      e.preventDefault();
+
+      if( $(this).data('do-not-add') == 1 || $(this).data('remove-toggle') == 1 ) return;
+
+      $('.forwardElement').removeClass('forwardElement');
+      $(this).addClass('forwardElement');
+
+      $.post('{$url}', {'id' : $(this).data('id')}, function(resp) {
+        var popup = $('#add-through-popup');
+        popup.find('.add-through-popup-block').replaceWith('<div class=\"add-through-popup-block\">' + resp + '</div>');
+        $.overlayLoader(true, popup);
+        setTimeout(function() {
+          popup.find('#{$this->popupAutofocusFieldId}').focus();
+        }, 300);
+      }, 'html');
+    });");
+  }
+
+  protected function registerScriptInputAmountButton()
+  {
+    $this->registerScript("$('body').on('change', '.{$this->classAmount}', function(e){
+      e.preventDefault();
+      var targetSelector = $(this).data('target-selector');
+      var target = $(targetSelector + '.{$this->classAdd}').length > 0 ? $(targetSelector + '.{$this->classAdd}') : $(this).closest(targetSelector).find('.{$this->classAdd}');
+      target.data('amount', $(this).val() / $(this).data('step') );
+    });");
+  }
+
+  protected function registerScriptInputAmountCollection()
+  {
+    $this->registerScript("$('body').on('change', '.{$this->classChangeAmount}', function(e){
+      e.preventDefault();
+      var data = $(this).data();
+      data['amount'] = $(this).val() / $(this).data('step');
 
       $.fn.collection('{$this->keyCollection}').send({
-          'action' : 'remove',
-          'data' : $(this).data(),
+          'action' : 'changeAmount',
+          'data' : data,
         });
-    });";
-
-    Yii::app()->clientScript->registerScript(__METHOD__.'#'.$this->keyCollection, $script, CClientScript::POS_END);
+    });");
   }
 
   protected function buildBeforeAjaxScript()
@@ -303,5 +480,25 @@ class FCollectionUI extends FCollection
       if( is_string($value) )
         $this->{$name} = strtr($value, array('{keyCollection}' => $this->keyCollection));
     }
+  }
+
+  /**
+   * @param $htmlOptions
+   * @param $value
+   * @param string $key - по умолчанию 'class'
+   */
+  protected function appendHtmlOption(&$htmlOptions, $value, $key = 'class')
+  {
+    $htmlOptions[$key] = !isset($htmlOptions[$key]) ? $value :  $htmlOptions[$key].' '.$value;
+  }
+
+  /**
+   * @param $script
+   * @param $position
+   */
+  protected function registerScript($script, $position = CClientScript::POS_END)
+  {
+    $calls = debug_backtrace(0, 2);
+    Yii::app()->clientScript->registerScript($calls[1]['function'].'#'.$this->keyCollection, $script, $position);
   }
 }

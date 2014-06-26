@@ -1,6 +1,7 @@
 <?php
 return array(
   'class' => 'form personal-form centered-form',
+
   'layout' => "{title}\n{errors}\n{elements}{description}\n<div class=\"form-submit\">{buttons}</div>\n",
 
   'elements' => array(
@@ -14,12 +15,9 @@ return array(
     ),
 
     'rememberMe' => array(
-      'label'           => 'Запомнить меня',
-      'type'            => 'checkbox',
-      'defaultTemplate' => '<div class="nofloat form-hint">
-                              <div class="remember-me-box">{input}{label}</div>
-                              <div class="right"><a href="'.Yii::app()->controller->createUrl('user/restore').'">Забыли пароль?</a></div>
-                            </div>'
+      'label' => 'Запомнить меня',
+      'type' => 'checkbox',
+      'layout' => '<div class="nofloat form-hint"><div class="remember-me-box">{input}{label}</div><div class="right"><a href="'.Yii::app()->createUrl('user/restore').'">Забыли пароль?</a></div></div>'
     ),
   ),
 

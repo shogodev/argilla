@@ -1,6 +1,7 @@
 <?php
 return array(
   'class' => 'form',
+
   'description' => 'Поля, отмеченные знаком <span class="required">*</span> , обязательны для заполнения.',
 
   'elements' => array(

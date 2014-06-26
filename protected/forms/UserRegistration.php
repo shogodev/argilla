@@ -1,6 +1,7 @@
 <?php
 return array(
   'class' => 'form auth-form',
+
   'layout' => "{title}\n{elements}\n{description}\n<div class=\"form-submit input-level\">{buttons}</div>\n",
 
   'elements' => array(

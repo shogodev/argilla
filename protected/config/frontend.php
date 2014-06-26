@@ -46,6 +46,8 @@ return array_merge_recursive(array(
     'frontend.components.auth.*',
     'frontend.components.ar.*',
     'frontend.components.url.*',
+    'frontend.components.collection.base.*',
+    'frontend.components.collection.behaviors.*',
     'frontend.components.collection.*',
     'frontend.components.sitemap.*',
 
