@@ -12,7 +12,8 @@ return array(
   'mask 8' => array('url_mask' => '/testCommandsEmptyWrap/', 'title' => 'wrap({color})', 'visible' => 1),
   'mask 9' => array('url_mask' => '/testMultiCommands/', 'title' => 'wrap(implode(" ", {color}, {ProductSection:name}), /, /) {h1}', 'visible' => 1),
   'mask 10' => array('url_mask' => '/testWrongCommand/', 'title' => 'undefined({color}, args) {h1}', 'visible' => 1),
+  'mask 11' => array('url_mask' => '/test_with_get/', 'title' => 'page title', 'visible' => 1),
 
   // MetaMaskTest
-  'mask 11' => array('url_mask' => '#/\w+/price/[\d\-]+/#', 'visible' => 1),
+  'mask 12' => array('url_mask' => '#/\w+/price/[\d\-]+/#', 'visible' => 1),
 );

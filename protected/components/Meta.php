@@ -145,7 +145,7 @@ class Meta extends CApplicationComponent
    */
   public function setRequestUri($uri)
   {
-    $this->requestUri = $uri;
+    $this->requestUri = preg_replace('/\?.*/', '', $uri);
   }
 
   public function setMeta()

@@ -139,6 +139,15 @@ class MetaTest extends CDbTestCase
     $this->assertEquals('', $meta->getTitle());
   }
 
+  public function testUrlWithGet()
+  {
+    $meta = new Meta();
+
+    $meta->setRequestUri('/test_with_get/?param=value');
+    $meta->setMeta();
+    $this->assertEquals('page title', $meta->getTitle());
+  }
+
   public function testSetHeader()
   {
     Yii::app()->setUnitEnvironment('index', 'index');
