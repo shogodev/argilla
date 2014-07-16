@@ -149,7 +149,7 @@ $.overlayLoader(bool, options); // необязательный хэш пара�
         {
           $node = $('<div id="loader_'+image+'" style="display:none;position:absolute;z-index:9999;font-family:Tahoma,Verdana,Arial,Helvetica,sans-serif;font-size:11px;font-size-adjust:none;font-style:normal;font-variant:normal;font-weight:normal;line-height:120%"><p style="color:#FFFFFF">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Загрузка. Пожалуйста, подождите...</p><img src="'+loaders[image]+'" /></div>');
         }
-        $(document.body).append($overlay).on('keydown', function(e) {
+        $(document.body).append($overlay).on('keyup', function(e) {
           if( $overlay.is(':visible') && e.keyCode == 27 )
           {
             $.overlayLoader(false, $overlay.data('loader_node'));
