@@ -170,7 +170,7 @@ class FController extends CController
       'query' => array(),
     );
 
-    foreach(Yii::app()->urlManager->rule['canonicalParams'] as $param)
+    foreach(Yii::app()->urlManager->rule->canonicalParams as $param)
       if( $value = $request->getParam($param) )
         $url['query'][$param] = $value;
 

@@ -91,13 +91,8 @@ class FUrlManager extends CUrlManager
     $route = parent::parseUrl($request);
 
     foreach($this->rules as $index => $rule)
-    {
       if( Arr::get($rule, 0) === $route )
-      {
         $this->ruleIndex = $index;
-        $this->rule = $rule;
-      }
-    }
 
     return $route;
   }

@@ -47,6 +47,7 @@ class FUrlRule extends CUrlRule
 
     if( preg_match($this->pattern, $pathInfo, $matches) )
     {
+      $manager->rule = $this;
       return $this->getRoute($manager, $pathInfo, $matches);
     }
     else
