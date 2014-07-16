@@ -6,11 +6,16 @@
  * @license http://argilla.ru/LICENSE
  * @package frontend.components.url
  *
- * @property bool $defaultParamsUsed
+ * @property bool $defaultParams
  */
 class FUrlManager extends CUrlManager
 {
   public $urlRuleClass = 'FUrlRule';
+
+  /**
+   * @var FUrlRule
+   */
+  public $rule;
 
   /**
    * @var mixed Индекс совпавшего правила из массива rules
@@ -25,9 +30,9 @@ class FUrlManager extends CUrlManager
   protected $urlCreator;
 
   /**
-   * @var bool Использовались ли при построении ссылки параметры по-умолчанию
+   * @var array
    */
-  private $defaultParamsUsed = false;
+  protected $defaultParams;
 
   public function init()
   {
@@ -37,17 +42,20 @@ class FUrlManager extends CUrlManager
     $this->urlCreator->init();
   }
 
-  public function getDefaultParamsUsed()
+  /**
+   * @return array
+   */
+  public function getDefaultParams()
   {
-    return $this->defaultParamsUsed;
+    return $this->defaultParams;
   }
 
   /**
    * @param $value
    */
-  public function setDefaultParamsUsed($value)
+  public function setDefaultParams(array $value)
   {
-    $this->defaultParamsUsed = $value;
+    $this->defaultParams = $value;
   }
 
   public function createUrl($route, $params = array(), $ampersand = '&')
@@ -64,6 +72,16 @@ class FUrlManager extends CUrlManager
   }
 
   /**
+   * Запоминаем или нет адрес текущей страницы в сессию пользователя
+   *
+   * @return bool
+   */
+  public function shouldRememberReturnUrl()
+  {
+    return $this->rule->shouldRemember && !Yii::app()->errorHandler->error && !Yii::app()->request->isAjaxRequest;
+  }
+
+  /**
    * @param CHttpRequest $request
    *
    * @return string route (controllerID/actionID)
@@ -73,8 +91,13 @@ class FUrlManager extends CUrlManager
     $route = parent::parseUrl($request);
 
     foreach($this->rules as $index => $rule)
+    {
       if( Arr::get($rule, 0) === $route )
+      {
         $this->ruleIndex = $index;
+        $this->rule = $rule;
+      }
+    }
 
     return $route;
   }

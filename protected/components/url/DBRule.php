@@ -5,6 +5,10 @@
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
  * @package frontend.components.url
+ *
+ * <pre>
+ * 'productCategory' => array('product/category', 'class' => 'DBRule', 'pattern' => '<category:\w+>', 'models' => array('category' => 'ProductCategory')),
+ * </pre>
  */
 class DBRule extends FUrlRule
 {
@@ -34,7 +38,7 @@ class DBRule extends FUrlRule
    */
   public function parseUrl($manager, $request, $pathInfo, $rawPathInfo)
   {
-    $manager->defaultParamsUsed = false;
+    $manager->defaultParams = array();
 
     if( ($pathInfo = $this->preparePathInfo($manager, $request, $pathInfo, $rawPathInfo)) === false )
     {
@@ -44,7 +48,7 @@ class DBRule extends FUrlRule
     if( !empty($this->defaultParams) && !preg_match($this->pattern, $pathInfo, $matches)  )
     {
       $pathInfo .= implode('/', $this->defaultParams).'/';
-      $manager->defaultParamsUsed = true;
+      $manager->defaultParams = $this->defaultParams;
     }
 
     if( preg_match($this->pattern, $pathInfo, $matches) )

@@ -43,12 +43,12 @@ class FUrlRuleTest extends CTestCase
     $path   = 'section/some_section';
     $result = $urlRule->parseUrl(Yii::app()->urlManager, null, $path, $path);
     $this->assertTrue($result !== false);
-    $this->assertTrue(Yii::app()->urlManager->defaultParamsUsed);
+    $this->assertArrayHasKey('page', Yii::app()->urlManager->defaultParams);
 
     $path   = 'section/some_section/2';
     $result = $urlRule->parseUrl(Yii::app()->urlManager, null, $path, $path);
     $this->assertTrue($result !== false);
-    $this->assertFalse(Yii::app()->urlManager->defaultParamsUsed);
+    $this->assertArrayNotHasKey('page', Yii::app()->urlManager->defaultParams);
   }
 
   public function testCreateUrl()

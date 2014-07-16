@@ -25,11 +25,11 @@ return array(
   'compareClearGroup' => array('compare/clearGroup', 'pattern' => '<url:compare\/clear_group>/<id:\d+>'),
 
   // users
-  'userRegistration'   => array('user/registration',     'pattern' => 'user/registration'),
-  'userLogin'          => array('user/login',            'pattern' => 'user/login'),
-  'userLogout'         => array('user/logout',           'pattern' => 'user/logout'),
-  'userRestoreCode'    => array('user/restoreConfirmed', 'pattern' => 'user/restore/<code:\w+>'),
-  'userRestore'        => array('user/restore',          'pattern' => 'user/restore'),
+  'userRegistration'   => array('user/registration',     'pattern' => 'user/registration', 'shouldRemember' => false),
+  'userLogin'          => array('user/login',            'pattern' => 'user/login', 'shouldRemember' => false),
+  'userLogout'         => array('user/logout',           'pattern' => 'user/logout', 'shouldRemember' => false),
+  'userRestoreCode'    => array('user/restoreConfirmed', 'pattern' => 'user/restore/<code:\w+>', 'shouldRemember' => false),
+  'userRestore'        => array('user/restore',          'pattern' => 'user/restore', 'shouldRemember' => false),
   'userData'           => array('user/data',             'pattern' => 'user/data'),
   'userHistoryOne'     => array('user/historyOne',       'pattern' => 'user/history/<id:\d+>'),
   'userHistory'        => array('user/history',          'pattern' => 'user/history'),

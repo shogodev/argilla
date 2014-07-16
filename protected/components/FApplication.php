@@ -30,7 +30,14 @@ class FApplication extends CWebApplication
   public function beforeControllerAction($controller, $action)
   {
     $this->getComponent('meta');
+    $this->onBeforeControllerAction(new CEvent($this));
+
     return parent::beforeControllerAction($controller, $action);
+  }
+
+  public function onBeforeControllerAction(CEvent $event)
+  {
+    $this->raiseEvent('onBeforeControllerAction', $event);
   }
 
   protected function init()

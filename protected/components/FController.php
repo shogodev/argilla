@@ -161,10 +161,20 @@ class FController extends CController
    */
   public function getCanonicalUrl()
   {
-    $path = CHtml::encode(Yii::app()->request->getPathInfo());
-    $url  = Yii::app()->request->getHostInfo().($path ? '/'.Utils::normalizeUrl($path) : '/');
+    $request = Yii::app()->request;
+    $path = CHtml::encode($request->getPathInfo());
 
-    return $url;
+    $url = array(
+      'host' => $request->getHostInfo().'/',
+      'path' => $path ? $path.'/' : '',
+      'query' => array(),
+    );
+
+    foreach(Yii::app()->urlManager->rule['canonicalParams'] as $param)
+      if( $value = $request->getParam($param) )
+        $url['query'][$param] = $value;
+
+    return Utils::buildUrl($url);
   }
 
   /**
@@ -223,36 +233,11 @@ class FController extends CController
    */
   protected function afterAction($action)
   {
-    if( $this->shouldRememberReturnUrl() )
+    if( Yii::app()->urlManager->shouldRememberReturnUrl() )
     {
       Yii::app()->user->setReturnUrl($this->getCurrentUrl());
     }
 
     parent::afterAction($action);
-  }
-
-  /**
-   * Запоминаем или нет адрес текущей страницы в сессию пользователя
-   *
-   * @return bool
-   */
-  protected function shouldRememberReturnUrl()
-  {
-    $excludedPages = array(
-      'user/login',
-      'user/logout',
-      'user/registration',
-      'user/restore',
-      'user/profile',
-      'user/data',
-      'user/restoreConfirmed'
-    );
-
-
-    $remember = !in_array($this->route, $excludedPages) &&
-                !isset(Yii::app()->errorHandler->error) &&
-                !Yii::app()->request->isAjaxRequest;
-
-    return $remember;
   }
 }

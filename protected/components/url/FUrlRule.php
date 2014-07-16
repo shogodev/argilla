@@ -5,9 +5,23 @@
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
  * @package frontend.components.url
+ *
+ * <pre>
+ * 'productType' => array('product/type', 'pattern' => 'type-<type:\w+>/<page:\d+>', 'defaultParams' => array('page' => 1), 'canonicalParams' => array('page'), 'shouldRemember' => false),
+ * </pre>
  */
 class FUrlRule extends CUrlRule
 {
+  /**
+   * @var array Параметры, которые будут оставлены при построении канонической ссылки
+   */
+  public $canonicalParams = array();
+
+  /**
+   * @var bool Запоминаем или нет маршрут в сессию, чтобы вернуться на страницу после авторизации пользователя
+   */
+  public $shouldRemember = true;
+
   /**
    * @param FUrlManager $manager
    * @param CHttpRequest $request
@@ -18,7 +32,7 @@ class FUrlRule extends CUrlRule
    */
   public function parseUrl($manager, $request, $pathInfo, $rawPathInfo)
   {
-    $manager->defaultParamsUsed = false;
+    $manager->defaultParams = array();
 
     if( ($pathInfo = $this->preparePathInfo($manager, $request, $pathInfo, $rawPathInfo)) === false )
     {
@@ -28,7 +42,7 @@ class FUrlRule extends CUrlRule
     if( !empty($this->defaultParams) && !preg_match($this->pattern, $pathInfo, $matches)  )
     {
       $pathInfo .= implode('/', $this->defaultParams).'/';
-      $manager->defaultParamsUsed = true;
+      $manager->defaultParams = $this->defaultParams;
     }
 
     if( preg_match($this->pattern, $pathInfo, $matches) )
