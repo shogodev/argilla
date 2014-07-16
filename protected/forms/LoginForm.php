@@ -24,7 +24,7 @@ return array(
   'buttons' => array(
     'submit' => array(
       'type'  => 'submit',
-      'class' => 'btn red-btn wide-paddings-btn',
+      'class' => 'btn',
       'value' => 'Войти'
     ),
   ),

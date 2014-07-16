@@ -1,7 +1,7 @@
 <?php
 /**
  * @var User $model
- * @var UserDataExtended $userData
+ * @var UserProfile $userData
  * @var string $adminUrl
  */
 ?>

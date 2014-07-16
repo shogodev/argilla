@@ -24,17 +24,19 @@ return array(
   'compareClear'      => array('compare/clear',      'pattern' => 'compare/clear'),
   'compareClearGroup' => array('compare/clearGroup', 'pattern' => '<url:compare\/clear_group>/<id:\d+>'),
 
-  // users
-  'userRegistration'   => array('user/registration',     'pattern' => 'user/registration'),
-  'userLogin'          => array('user/login',            'pattern' => 'user/login'),
-  'userLogout'         => array('user/logout',           'pattern' => 'user/logout'),
-  'userRestoreCode'    => array('user/restoreConfirmed', 'pattern' => 'user/restore/<code:\w+>'),
-  'userRestore'        => array('user/restore',          'pattern' => 'user/restore'),
-  'userData'           => array('user/data',             'pattern' => 'user/data'),
-  'userHistoryOne'     => array('user/historyOne',       'pattern' => 'user/history/<id:\d+>'),
-  'userHistory'        => array('user/history',          'pattern' => 'user/history'),
-  'userCurrentOrders'  => array('user/currentOrders',    'pattern' => 'user/current_orders'),
-  'userChangePassword' => array('user/changePassword',   'pattern' => 'user/change_password'),
+  // user
+  'userRegistration' => array('user/registration', 'pattern' => 'user/registration'),
+  'userLogin' => array('user/login', 'pattern' => 'user/login'),
+  'userLogout' => array('user/logout', 'pattern' => 'user/logout'),
+  'userRestoreConfirmed' => array('user/restoreConfirmed', 'pattern' => 'user/restore/<code:\w+>'),
+  'userRestore' => array('user/restore', 'pattern' => 'user/restore'),
+
+  // userProfile
+  'userProfile' => array('userProfile/profile', 'pattern' => 'user'),
+  'userProfileData' => array('userProfile/data', 'pattern' => 'user/data'),
+  'userProfileChangePassword' => array('userProfile/changePassword', 'pattern' => 'user/change_password'),
+  'userProfileHistoryOrders' => array('userProfile/historyOrders', 'pattern' => 'user/orders/history'),
+  'userProfileCurrentOrders' => array('userProfile/currentOrders', 'pattern' => 'user/orders/current'),
 
   // forms
   'callback' => array('callback/index', 'pattern' => 'callback'),

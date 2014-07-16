@@ -53,8 +53,8 @@ class FControllerBehavior extends CBehavior
     if ( $this->basket == null )
     {
       $this->basket = new FBasket('basket', array('color', 'size'), array('Product', 'ProductColor', 'ProductParameter'));
-      $this->basket->ajaxUrl = Yii::app()->controller->createUrl('basket/index');
-      $this->basket->addButtonAjaxUrl = Yii::app()->controller->createUrl('basket/add');
+      $this->basket->ajaxUrl = Yii::app()->createUrl('basket/index');
+      $this->basket->addButtonAjaxUrl = Yii::app()->createUrl('basket/add');
     }
 
     return $this->basket;
@@ -73,7 +73,7 @@ class FControllerBehavior extends CBehavior
     if ( $this->visits == null )
     {
       $this->visits = new FFavorite('visits', array(), array('Product'));
-      $this->visits->ajaxUrl = Yii::app()->controller->createUrl('visits/index');
+      $this->visits->ajaxUrl = Yii::app()->createUrl('visits/index');
     }
     return $this->visits;
   }
@@ -86,8 +86,8 @@ class FControllerBehavior extends CBehavior
     if ( $this->compare == null )
     {
       $this->compare = new FCompare('compare', array(), array('Product', 'ProductSection'));
-      $this->compare->ajaxUrl = Yii::app()->controller->createUrl('compare/index');
-      $this->compare->addButtonAjaxUrl = Yii::app()->controller->createUrl('compare/add');
+      $this->compare->ajaxUrl = Yii::app()->createUrl('compare/index');
+      $this->compare->addButtonAjaxUrl = Yii::app()->createUrl('compare/add');
     }
 
     return $this->compare;
@@ -119,7 +119,7 @@ class FControllerBehavior extends CBehavior
     if( !$this->loginPopupForm )
     {
       $this->loginPopupForm = new FForm('LoginPopupForm', new Login());
-      $this->loginPopupForm->action = Yii::app()->controller->createUrl('user/login');
+      $this->loginPopupForm->action = Yii::app()->createUrl('user/login');
       $this->loginPopupForm->ajaxSubmit = false;
       $this->loginPopupForm->autocomplete = true;
     }
@@ -135,7 +135,7 @@ class FControllerBehavior extends CBehavior
     if( !$this->callbackForm )
     {
       $this->callbackForm = new FForm('CallbackForm', new Callback());
-      $this->callbackForm->action = Yii::app()->controller->createUrl('callback/index');
+      $this->callbackForm->action = Yii::app()->createUrl('callback/index');
     }
 
     return $this->callbackForm;
@@ -149,7 +149,7 @@ class FControllerBehavior extends CBehavior
     if( !$this->fastOrderForm )
     {
       $this->fastOrderForm = new FForm('FastOrder', new Order('fastOrder'));
-      $this->fastOrderForm->action = Yii::app()->controller->createUrl('basket/fastOrder');
+      $this->fastOrderForm->action = Yii::app()->createUrl('basket/fastOrder');
     }
 
     return $this->fastOrderForm;

@@ -15,7 +15,7 @@ $this->widget('BGridView', array(
     array('name' => 'login'),
     array('name' => 'fullName', 'value' => '$data->getFullName()', 'header' => 'Имя'),
     array('name' => 'email'),
-    array('name' => 'userPhone', 'value' => '$data->user ? $data->user->phone : ""'),
+    array('name' => 'userPhone', 'value' => '$data->profile ? $data->profile->phone : ""'),
     array('class' => 'JToggleColumn', 'name' => 'visible'),
     array('class' => 'BButtonUpdateColumn'),
   ),

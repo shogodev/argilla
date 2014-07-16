@@ -2,15 +2,18 @@
 return array(
   'class' => 'form auth-form',
 
-  'layout' => "{title}\n{elements}\n{description}\n<div class=\"form-submit input-level\">{buttons}</div>\n",
-
   'elements' => array(
-    'email'            => array('type' => 'text'),
-    'password'         => array('type' => 'password'),
-    'password_confirm' => array('type' => 'password'),
+    'login' => array('type' => 'text'),
 
-    'extendedData' => array(
-      'type'     => 'form',
+    'email' => array('type' => 'text'),
+
+    'password' => array('type' => 'password'),
+
+    'confirmPassword' => array('type' => 'password'),
+
+    'profile' => array(
+      'type' => 'form',
+      'layout' => "{title}\n{elements}\n{description}\n{buttons}\n",
       'elements' => array(
         'name' => array('type' => 'text'),
        )
@@ -19,9 +22,9 @@ return array(
 
   'buttons' => array(
     'submit' => array(
-      'type' => 'htmlButton',
+      'type' => 'button',
       'label' => 'Зарегистрироваться',
-      'class' => 'btn orange-btn h36btn s19 bb'
+      'class' => 'btn'
     ),
   ),
 );

@@ -8,37 +8,18 @@
  */
 class FWebUser extends CWebUser
 {
-  public $discount = 0;
+  private $data = null;
 
-  public $email = null;
-
-  public $data = null;
-
-  private $type = null;
-
-  private $loginData = null;
-
-  public function init()
+  /**
+   * @return User|null
+   */
+  public function getData()
   {
-    parent::init();
-
-    if( !$this->isGuest )
+    if( !$this->isGuest && is_null($this->data) )
     {
-      $this->loginData = Login::model()->findByPk($this->getId());
-      $this->email     = $this->loginData->email;
-
-      $this->type      = $this->loginData ? $this->loginData->type : 'user';
-
-      if( $this->isUser() )
-        $this->data = UserDataExtended::model()->findByPk($this->id);
-
-      if( isset($this->loginData->discount) )
-        $this->discount  = floatval($this->loginData->discount);
+      $this->data = User::model()->findByPk($this->getId());
     }
-  }
 
-  public function isUser()
-  {
-    return $this->type == UserRegistration::TYPE ? true : false;
+    return $this->data;
   }
 }

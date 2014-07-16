@@ -16,19 +16,16 @@ class BFrontendUserController extends BController implements ICoordinateSetter
 
   public function actionSave($model)
   {
-    $userExtendedData = !empty($model->id) ? BUserDataExtended::model()->findByPk($model->id) : new BUserDataExtended();
+    $userProfile = !empty($model->id) ? BUserProfile::model()->findByPk($model->id) : new BUserProfile();
 
-    if( empty($model->type) )
-      $model->type = BFrontendUser::TYPE_USER;
+    $this->saveModels(array($model, $userProfile));
 
-    $this->saveModels(array($model, $userExtendedData));
-
-    $this->render('_form', array('model' => $model, 'userExtendedData' => $userExtendedData));
+    $this->render('_form', array('model' => $model, 'userProfile' => $userProfile));
   }
 
   public function actionSetCoordinates($id, $attribute)
   {
-    $model     = BUserDataExtended::model()->findByPk($id);
+    $model = BUserProfile::model()->findByPk($id);
     $attribute = get_class($model).'_'.$attribute;
 
     $this->render('coordinate_setter', array(

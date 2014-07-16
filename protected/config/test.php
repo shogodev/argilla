@@ -6,7 +6,8 @@ $config = array_replace_recursive(
   require(__DIR__.'/frontend.php'),
   array(
     'import' => array(
-      'tests' => 'frontend.tests.components.*',
+      'testComponents' => 'frontend.tests.components.*',
+      'testForms' => 'frontend.tests.components.form.*',
     ),
     'components' => array(
       'fixture' => array(
@@ -15,6 +16,11 @@ $config = array_replace_recursive(
       ),
       'request' => array(
         'class' => 'frontend.tests.components.THttpRequest'
+      ),
+      'user' => array(
+        'class' => 'TWebUser',
+        'allowAutoLogin' => true,
+        'loginUrl' => '/user/login'
       ),
     ),
     'params' => array(

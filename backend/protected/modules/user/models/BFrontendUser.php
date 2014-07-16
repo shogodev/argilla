@@ -5,33 +5,44 @@
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.user.models
+ */
+
+Yii::import('frontend.components.auth.FUserIdentity');
+
+/**
+ * Class BFrontendUser
  *
  * @method static BFrontendUser model(string $class = __CLASS__)
  *
  * @property integer $id
  * @property string $date_create
  * @property string $login
- * @property string $password
  * @property string $email
+ * @property string $passwordHash
  * @property string $service
  * @property string $service_id
- * @property string $discount
  * @property string $restore_code
  * @property string $type
  * @property integer $visible
- * @property BUserDataExtended $user
+ * @property BUserProfile $profile
  */
 class BFrontendUser extends BActiveRecord
 {
   const TYPE_USER = 'user';
 
-  public $password_confirm;
+  /**
+   * @var string
+   */
+  public $password;
+
+  /**
+   * @var string
+   */
+  public $confirmPassword;
 
   public $fullName;
 
   public $userPhone;
-
-  private $_password;
 
   public function tableName()
   {
@@ -44,61 +55,58 @@ class BFrontendUser extends BActiveRecord
       array('login, email', 'required'),
       array('email', 'email'),
       array('email', 'unique'),
-      array('password_confirm', 'compare', 'compareAttribute' => 'password'),
-      array('password, discount, visible', 'safe'),
+      array('confirmPassword', 'compare', 'compareAttribute' => 'password'),
+      array('password', 'doHashPassword'),
+      array('visible', 'safe'),
       array('fullName, userPhone', 'safe', 'on' => 'search'),
     );
-  }
-
-  public function attributeLabels()
-  {
-    return CMap::mergeArray(parent::attributeLabels(), array(
-      'fullName' => 'Имя',
-      'userPhone' => 'Контактный телефон',
-    ));
   }
 
   public function defaultScope()
   {
     return array(
       'order' => 'date_create DESC',
-      'condition' => "type='".BFrontendUser::TYPE_USER."'"
+      'condition' => 'type = :type_user',
+      'params' => array(':type_user' => BFrontendUser::TYPE_USER)
     );
-  }
-
-  public function beforeSave()
-  {
-    if( parent::beforeSave() )
-    {
-      if( empty($this->password) )
-        $this->password = $this->_password;
-      else
-      {
-        Yii::import('frontend.components.auth.FUserIdentity');
-        $this->password = FUserIdentity::createPassword($this->login, $this->password);
-      }
-      return true;
-    }
-    return false;
-  }
-
-  public function afterFind()
-  {
-    $this->_password = $this->password;
-    $this->password  = '';
-    return parent::afterFind();
   }
 
   public function relations()
   {
     return array(
-      'user' => array(self::HAS_ONE, 'BUserDataExtended', 'user_id'),
+      'profile' => array(self::HAS_ONE, 'BUserProfile', 'user_id'),
     );
+  }
+
+  public function afterValidate()
+  {
+    parent::afterValidate();
+
+    if( $this->isNewRecord )
+      $this->type = self::TYPE_USER;
+  }
+
+  public function doHashPassword($attribute, $params)
+  {
+    if( !empty($this->password) )
+    {
+      $this->restore_code = '';
+      $this->passwordHash = FUserIdentity::createPassword($this->login, $this->password);
+    }
+  }
+
+  public function attributeLabels()
+  {
+    return CMap::mergeArray(parent::attributeLabels(), array(
+      'fullName' => 'Имя',
+      'userPhone' => 'Телефон',
+      'confirmPassword' => 'Подтверждение пароля',
+    ));
   }
 
   public function getFullName()
   {
-    $fullName = $this->user ? (implode(" ", array($this->user->last_name, $this->user->name, $this->user->patronymic))) : '';
+    $fullName = $this->profile ? (implode(" ", array($this->profile->last_name, $this->profile->name, $this->profile->patronymic))) : '';
     return preg_replace("/\s+/", " ", trim($fullName));
   }
 
@@ -110,15 +118,16 @@ class BFrontendUser extends BActiveRecord
   public function getSearchCriteria(CDbCriteria $criteria)
   {
     $criteria->together = true;
-    $criteria->with     = array('user');
+    $criteria->with = array('profile');
 
     $criteria->compare('visible', $this->visible);
     $criteria->compare('login', $this->login, true);
     $criteria->compare('email', $this->email, true);
 
-    $criteria->compare('user.phone', $this->userPhone, true);
+    $criteria->compare('profile.phone', $this->userPhone, true);
+
     if( !empty($this->fullName) )
-      $criteria->addSearchCondition('CONCAT(user.last_name, " ", user.name, " ", user.patronymic)', $this->fullName, true);
+      $criteria->addSearchCondition('CONCAT(profile.last_name, " ", profile.name, " ", profile.patronymic)', $this->fullName, true);
 
     return $criteria;
   }

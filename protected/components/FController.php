@@ -243,9 +243,13 @@ class FController extends CController
       'user/logout',
       'user/registration',
       'user/restore',
-      'user/profile',
-      'user/data',
-      'user/restoreConfirmed'
+      'user/restoreConfirmed',
+
+      'userProfile/profile',
+      'userProfile/data',
+      'userProfile/changePassword',
+      'userProfile/historyOrders',
+      'userProfile/currentOrders',
     );
 
 

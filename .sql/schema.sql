@@ -1391,11 +1391,10 @@ CREATE TABLE `argilla_user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `date_create` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `login` varchar(255) NOT NULL,
-  `password` varchar(255) NOT NULL,
+  `passwordHash` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `service` varchar(255) NOT NULL,
   `service_id` varchar(255) NOT NULL,
-  `discount` decimal(10,2) NOT NULL,
   `restore_code` varchar(255) NOT NULL,
   `type` varchar(255) NOT NULL DEFAULT 'user',
   `visible` tinyint(1) NOT NULL DEFAULT '1',
@@ -1404,24 +1403,22 @@ CREATE TABLE `argilla_user` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `argilla_user_data_extended`
+-- Table structure for table `argilla_user_profile`
 --
 
-DROP TABLE IF EXISTS `argilla_user_data_extended`;
+DROP TABLE IF EXISTS `argilla_user_profile`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `argilla_user_data_extended` (
+CREATE TABLE `argilla_user_profile` (
   `user_id` int(10) unsigned NOT NULL,
   `name` varchar(255) NOT NULL,
   `last_name` varchar(255) NOT NULL,
   `patronymic` varchar(255) NOT NULL,
   `address` varchar(255) NOT NULL,
-  `coordinates` varchar(255) DEFAULT NULL,
   `phone` varchar(255) NOT NULL,
   `birthday` date DEFAULT NULL,
-  `avatar` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`user_id`),
-  CONSTRAINT `argilla_user_data_extended_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `argilla_user` (`id`) ON DELETE CASCADE
+  CONSTRAINT `argilla_user_profile_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `argilla_user` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

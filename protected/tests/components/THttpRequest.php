@@ -25,6 +25,13 @@ class THttpRequest extends CHttpRequest
     return $this->_requestUri;
   }
 
+  public function setAjax(array $data, $method = 'POST')
+  {
+    $_SERVER['HTTP_X_REQUESTED_WITH'] = 'XMLHttpRequest';
+    $_SERVER['REQUEST_METHOD'] = $method;
+    $_POST = $data;
+  }
+
   public function redirect($url, $terminate = true, $statusCode = 302)
   {
     throw new TRedirectException(200, 'Location: '.$url, $statusCode);

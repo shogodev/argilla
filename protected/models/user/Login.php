@@ -6,11 +6,8 @@
  * @license http://argilla.ru/LICENSE
  * @package frontend.models.user
  *
- * @property string $type
- * @property string $service
- * @property string $service_id
  */
-class Login extends FActiveRecord
+class Login extends CFormModel
 {
   public $login;
 
@@ -18,18 +15,11 @@ class Login extends FActiveRecord
 
   public $rememberMe;
 
-  private $_identity;
-
-  public function tableName()
-  {
-    return '{{user}}';
-  }
-
   public function attributeLabels()
   {
     return array(
-      'login'      => 'Логин',
-      'password'   => 'Пароль',
+      'login' => 'Логин',
+      'password' => 'Пароль',
       'rememberMe' => 'Запомнить меня'
     );
   }
@@ -38,79 +28,26 @@ class Login extends FActiveRecord
   {
     return array(
       array('login, password', 'required'),
-      array('rememberMe', 'safe')
+      array('rememberMe', 'boolean'),
+      array('password', 'authenticate')
     );
   }
 
-  public function relations()
+  public function authenticate($attribute, $params)
   {
-    return array(
-      'user' => array(self::HAS_ONE, 'UserDataExtended', 'user_id'),
-    );
-  }
+    if( !empty($this->errors) )
+      return;
 
-  public function loginUser()
-  {
-    if($this->_identity === null)
+    $identity = new FUserIdentity($this->login, $this->password);
+
+    if( $identity->authenticate() )
     {
-      $this->_identity = new FUserIdentity($this->login, $this->password);
-      $this->_identity->authenticate();
-    }
-    if($this->_identity->errorCode === FUserIdentity::ERROR_NONE)
-    {
-      $duration = $this->rememberMe ? 3600*24*30 : 0; // 30 days
-      Yii::app()->user->login($this->_identity, $duration);
-      return true;
+      $duration = $this->rememberMe ? 3600 * 24 * 30 : 0; // 30 days
+      Yii::app()->user->login($identity, $duration);
     }
     else
-      return false;
-  }
-
-  public function getButtonLogout($htmlOptions=array(), $text = '')
-  {
-    return CHtml::ajaxButton(
-      $text,
-      $this->getLogoutUrl(),
-      array(
-        'type'       => 'POST',
-        'dataType'   => 'json',
-        'beforeSend' => '$.mouseLoader(true)',
-        'success'    => "function(resp){checkResponse(resp)}",
-        'error'      => 'function(resp){alert("Ошибка!")}',
-      ),
-      $htmlOptions);
-  }
-
-  public static function getSocialAccount($id, $service)
-  {
-    return self::model()->findByAttributes(array(
-      'service' => $service,
-      'service_id' => $id,
-    ));
-  }
-
-  public static function createSocialAccount($id, $service, $userData)
-  {
-    if( isset($id, $service) )
     {
-      if( !self::getSocialAccount($id, $service) )
-      {
-        $model = new Login();
-        $model->login      = $id."@".$service;
-        $model->service    = $service;
-        $model->service_id = $id;
-        $model->type       = 'user';
-
-        if( $model->save(false) )
-        {
-          $data = new UserDataExtended();
-          $data->user_id   = $model->getPrimaryKey();
-          $data->name      = Arr::get($userData, 'first_name');
-          $data->last_name = Arr::get($userData, 'last_name');
-
-          $data->save(false);
-        }
-      }
+      $this->addError('error', 'Ошибка неверный логин/пароль!');
     }
   }
 }
