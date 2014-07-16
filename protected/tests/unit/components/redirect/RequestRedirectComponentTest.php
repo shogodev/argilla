@@ -17,10 +17,12 @@ class RequestRedirectComponentTest extends CDbTestCase
 
     $component->setRequest('testUrl/');
     $component->init();
+    $component->makeSlashRedirect();
     $this->assertNotNull($component);
 
     $component->setRequest('testUrl.html');
     $component->init();
+    $component->makeSlashRedirect();
     $this->assertNotNull($component);
   }
 
@@ -32,6 +34,7 @@ class RequestRedirectComponentTest extends CDbTestCase
   {
     $component = new RequestRedirectComponent('testUrl');
     $component->init();
+    $component->makeSlashRedirect();
   }
 
   /**
@@ -42,6 +45,7 @@ class RequestRedirectComponentTest extends CDbTestCase
   {
     $component = new RequestRedirectComponent('testUrl?param1=value1');
     $component->init();
+    $component->makeSlashRedirect();
   }
 
   /**

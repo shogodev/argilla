@@ -57,7 +57,6 @@ class RequestRedirectComponent extends FRedirectComponent
 
   public function init()
   {
-    $this->makeSlashRedirect();
     $this->makeIndexRedirect();
 
     $this->criteria = new CDbCriteria();
@@ -65,6 +64,15 @@ class RequestRedirectComponent extends FRedirectComponent
     parent::init();
 
     Yii::app()->attachEventHandler('onBeginRequest', array($this, 'processRequest'));
+    Yii::app()->attachEventHandler('onBeforeControllerAction', array($this, 'beforeControllerAction'));
+  }
+
+  public function beforeControllerAction()
+  {
+    if( Yii::app()->controller )
+    {
+      Yii::app()->controller->attachEventHandler('onBeforeRender', array($this, 'makeSlashRedirect'));
+    }
   }
 
   /**
@@ -76,21 +84,24 @@ class RequestRedirectComponent extends FRedirectComponent
     $this->findOrigin();
   }
 
+  public function makeSlashRedirect()
+  {
+    if( Yii::app()->errorHandler->error )
+      return;
+
+    if( RedirectHelper::needTrailingSlash($this->request['path']) )
+    {
+      $this->setTarget($this->request['path'].'/');
+      $this->move(RedirectHelper::TYPE_301);
+    }
+  }
+
   /**
    * @param string $url
    */
   private function setTarget($url)
   {
     $this->target = $url;
-  }
-
-  private function makeSlashRedirect()
-  {
-    if( RedirectHelper::needTrailingSlash($this->request['path']) )
-    {
-      $this->setTarget($this->request['path'].'/');
-      $this->move(RedirectHelper::TYPE_301);
-    }
   }
 
   private function makeIndexRedirect()
