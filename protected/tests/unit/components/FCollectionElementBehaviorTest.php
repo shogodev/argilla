@@ -8,15 +8,19 @@
  */
 Yii::import('frontend.tests.components.collection.*');
 
-class FCollectionElementBehaviorTest extends CTestCase
+class FCollectionElementBehaviorTest extends CDbTestCase
 {
+  protected $fixtures = array(
+    'product' => 'Product',
+  );
+
   public function testGetSum()
   {
     $element = new TestCollectionElement();
     $element->attachBehaviors($element->behaviors());
     $element->price = 3020.40;
 
-    $collectionElement = new FCollectionElement(array('id' => 1, 'type' => 'product', 'amount' => 3));
+    $collectionElement = new FCollectionElement(array('id' => 500, 'type' => 'product', 'amount' => 3));
     $element->setCollectionElement($collectionElement);
 
     $this->assertEquals($element->sum, 9061.2);
@@ -26,22 +30,22 @@ class FCollectionElementBehaviorTest extends CTestCase
   {
     $collection = new FCollection('test', array('size'), false);
     $index = $collection->add(array(
-      'id' => 1,
+      'id' => 500,
       'type' => 'product',
       'amount' => 3,
       'items' => array(
         'size' => '15',
         'options' => array(
           array(
-            'id' => 3,
+            'id' => 501,
             'type' => 'product'
           ),
           array(
-            'id' => 1,
+            'id' => 502,
             'type' => 'product'
           ),
           array(
-            'id' => 3,
+            'id' => 501,
             'type' => 'product'
           ),
         )
@@ -49,8 +53,8 @@ class FCollectionElementBehaviorTest extends CTestCase
     ));
 
     $this->assertEquals($collection[$index]->collectionItemsListData('options', 'collectionIndex', 'id'), array(
-      1 => 3,
-      2 => 1
+      1 => 501,
+      2 => 502
     ));
   }
 }

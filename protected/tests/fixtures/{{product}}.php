@@ -21,4 +21,10 @@ return array(
   'product27' => array('id' => 27, 'name' => 'Тесты фильтра 27', 'url' => 'product_27_url', 'visible' => 1, 'price' => 14000, 'price_old' => 14500),
   'product28' => array('id' => 28, 'name' => 'Тесты фильтра 28', 'url' => 'product_28_url', 'visible' => 1, 'price' => 6000, 'price_old' => 6500),
   'product29' => array('id' => 29, 'name' => 'Тесты фильтра 29', 'url' => 'product_29_url', 'visible' => 1, 'price' => 7000, 'price_old' => 7500),
+
+  'product500' => array('id' => 500, 'name' => 'Тест коллекций 500', 'url' => 'product_500_url', 'visible' => 1),
+  'product501' => array('id' => 501, 'name' => 'Тест коллекций 501', 'url' => 'product_501_url', 'visible' => 1),
+  'product502' => array('id' => 502, 'name' => 'Тест коллекций 502', 'url' => 'product_502_url', 'visible' => 1),
+  'product503' => array('id' => 503, 'name' => 'Тест коллекций 503', 'url' => 'product_503_url', 'visible' => 1),
+  'product504' => array('id' => 504, 'name' => 'Тест коллекций 504', 'url' => 'product_504_url', 'visible' => 1),
 );

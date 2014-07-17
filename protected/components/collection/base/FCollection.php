@@ -59,7 +59,7 @@ class FCollection extends FAbstractCollection
       throw new CHttpException(500, 'Ошибка! Невозможно добавить пустой элемент в коллекцию.');
     }
 
-    if(  is_object($data) )
+    if( is_object($data) )
     {
       if( $data instanceof CModel && is_a($data->asa('collectionElement'), 'FCollectionElementBehavior') )
       {
