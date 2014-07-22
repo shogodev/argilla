@@ -22,6 +22,16 @@ class FUrlRule extends CUrlRule
    */
   public $shouldRemember = true;
 
+  public function __construct($route, $pattern)
+  {
+    if( is_array($route) )
+      foreach(array('canonicalParams', 'shouldRemember') as $name)
+        if( isset($route[$name]) )
+          $this->$name = $route[$name];
+
+    parent::__construct($route, $pattern);
+  }
+
   /**
    * @param FUrlManager $manager
    * @param CHttpRequest $request

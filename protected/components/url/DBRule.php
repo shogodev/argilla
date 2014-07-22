@@ -72,7 +72,11 @@ class DBRule extends FUrlRule
         }
       }
 
-      return $result ? $this->getRoute($manager, $pathInfo, $matches) : false;
+      if( $result )
+      {
+        $manager->rule = $this;
+        return $this->getRoute($manager, $pathInfo, $matches);
+      }
     }
 
     return false;
