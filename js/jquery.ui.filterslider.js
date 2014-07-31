@@ -4,7 +4,7 @@ $.widget('argilla.filterSlider', {
     ajaxAction : 'getAmount',
     ajaxUrl    : null,
     ajaxMethod : null,
-    ranges     : [0, 100000, 0, 100000],
+    ranges     : [0, 100000, 0, 100000, 100],
     controls   : {
       minInput       : '#filter-price-min',
       maxInput       : '#filter-price-max',
@@ -28,7 +28,7 @@ $.widget('argilla.filterSlider', {
         options.controls[i] = $(options.controls[i]);
 
     this.element.slider({
-      range: true, step: 100,
+      range: true, step: (this.options.ranges[4] === undefined ? 1 : this.options.ranges[4]),
       min: this.options.ranges[0], max: this.options.ranges[1], values: [this.options.ranges[2], this.options.ranges[3]],
       slide: function(event, ui){$.proxy(widget._slide(ui), widget)},
       stop: function(event, ui){$.proxy(widget._stopSlide(ui), widget)}

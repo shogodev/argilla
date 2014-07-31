@@ -6,6 +6,7 @@
  * @license http://argilla.ru/LICENSE
  * @package frontend.models.product.filter
  *
+ * @property mixed $step шаг число или строка вида 'число%'
  * @property integer $selectedMin;
  * @property integer $selectedMax;
  * @property integer $minValue;
@@ -16,6 +17,8 @@ class FilterElementSlider extends FilterElementRange implements JsonSerializable
   public $itemClass = 'FilterElementItemSlider';
 
   public $borderRange = 0;
+
+  public $step = 100;
 
   protected $minValue;
 
@@ -91,6 +94,7 @@ class FilterElementSlider extends FilterElementRange implements JsonSerializable
       $this->getMaxValue(),
       $this->getSelectedMin(),
       $this->getSelectedMax(),
+      $this->getStep(),
     );
   }
 
@@ -110,5 +114,14 @@ class FilterElementSlider extends FilterElementRange implements JsonSerializable
     }
 
     return $this->ranges;
+  }
+
+  protected function getStep()
+  {
+    $diff = $this->getMaxValue() - $this->getMinValue();
+
+    $step = preg_match('/(\d+)%/', $this->step, $matches) ? intval($diff*$matches[1]/100) : $this->step;
+
+    return $step >= $diff ? $diff : $step;
   }
 }
