@@ -11,7 +11,7 @@ return array(
   'xmlExport' => array('xmlExport/index', 'pattern' => '<id:\w+>_xml'),
 
   // info
-  'info' => array('info/index', 'pattern' => 'info/<url:\w+>', 'urlSuffix' => '.html'),
+  'info' => array('info/index', 'pattern' => 'info/<url:[\w\-]+>', 'urlSuffix' => '.html'),
 
   // contacts
   'contact' => array('contact/index', 'pattern' => 'contact'),
