@@ -38,7 +38,6 @@ class ReplaceRedirectComponent extends FRedirectComponent
 
     $this->initStaticPatterns();
     parent::init();
-
   }
 
   /**
@@ -68,6 +67,16 @@ class ReplaceRedirectComponent extends FRedirectComponent
   public function getStaticUrl($url)
   {
     return $this->findByStaticPattern($url);
+  }
+
+  protected function addRedirect($base, $target, $type)
+  {
+    $data = array('target' => $base, 'type_id' => $type);
+
+    if( RedirectHelper::isRegExp($target) )
+      $this->redirectPatterns[$target] = $data;
+    else
+      $this->redirectUrls[$target] = $data;
   }
 
   private function findByStaticPattern($url)

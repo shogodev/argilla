@@ -76,8 +76,11 @@ class BRedirect extends BActiveRecord
    */
   protected function beforeSave()
   {
-    $this->base = Utils::getRelativeUrl($this->base);
-    $this->target = Utils::getRelativeUrl($this->target);
+    if( !RedirectHelper::isRegExp($this->base) )
+      $this->base = Utils::getRelativeUrl($this->base);
+
+    if( !RedirectHelper::isRegExp($this->target) )
+      $this->target = Utils::getRelativeUrl($this->target);
 
     return parent::beforeSave();
   }

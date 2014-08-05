@@ -96,6 +96,16 @@ class RequestRedirectComponent extends FRedirectComponent
     }
   }
 
+  protected function addRedirect($base, $target, $type)
+  {
+    $data = array('target' => $target, 'type_id' => $type);
+
+    if( RedirectHelper::isRegExp($base) )
+      $this->redirectPatterns[$base] = $data;
+    else
+      $this->redirectUrls[$base] = $data;
+  }
+
   /**
    * @param string $url
    */
@@ -129,15 +139,20 @@ class RequestRedirectComponent extends FRedirectComponent
     }
   }
 
+  /**
+   * Отдаем 404 на страницах, для которых настроены редиректы, чтобы не возникало дублей
+   *
+   * @throws CHttpException
+   */
   private function findOrigin()
   {
     foreach($this->getRedirectUrls() as $base => $data)
-    {
-      if( $base === $this->getPath() )
-      {
+      if( $data['target'] === $this->getPath() )
         $this->move(404);
-      }
-    }
+
+    foreach($this->getRedirectPatterns() as $pattern => $data)
+      if( @preg_match($data['target'], $this->getPath()) )
+        $this->move(404);
   }
 
   /**
