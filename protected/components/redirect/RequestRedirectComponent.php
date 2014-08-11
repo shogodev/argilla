@@ -19,6 +19,11 @@ class RequestRedirectComponent extends FRedirectComponent
   private $target;
 
   /**
+   * @var integer
+   */
+  private $usedRedirect;
+
+  /**
    * @param string $url
    */
   public function __construct($url = null)
@@ -55,6 +60,14 @@ class RequestRedirectComponent extends FRedirectComponent
     return $this->request['path'];
   }
 
+  /**
+   * @param integer $id
+   */
+  public function setUsedRedirect($id)
+  {
+    $this->usedRedirect = $id;
+  }
+
   public function init()
   {
     $this->makeIndexRedirect();
@@ -64,6 +77,7 @@ class RequestRedirectComponent extends FRedirectComponent
     parent::init();
 
     Yii::app()->attachEventHandler('onBeginRequest', array($this, 'processRequest'));
+    Yii::app()->attachEventHandler('onEndRequest', array($this, 'updateCounters'));
     Yii::app()->attachEventHandler('onBeforeControllerAction', array($this, 'beforeControllerAction'));
   }
 
@@ -96,9 +110,22 @@ class RequestRedirectComponent extends FRedirectComponent
     }
   }
 
-  protected function addRedirect($base, $target, $type)
+  public function updateCounters()
   {
-    $data = array('target' => $target, 'type_id' => $type);
+    if( $this->usedRedirect )
+    {
+      $criteria = new CDbCriteria();
+      $criteria->compare('id', $this->usedRedirect);
+
+      $builder = new CDbCommandBuilder(Yii::app()->db->getSchema());
+      $builder->createSqlCommand('UPDATE '.Redirect::table().' SET counter = counter + 1, last_used = ? WHERE id = ?')
+              ->execute(array(date(DATE_ATOM), $this->usedRedirect));
+    }
+  }
+
+  protected function addRedirect($id, $base, $target, $type)
+  {
+    $data = array('id' => $id, 'target' => $target, 'type_id' => $type);
 
     if( RedirectHelper::isRegExp($base) )
       $this->redirectPatterns[$base] = $data;
@@ -130,11 +157,13 @@ class RequestRedirectComponent extends FRedirectComponent
     if( ($data = $this->findByKey($this->getPath())) !== null )
     {
       $this->setTarget($data['target']);
+      $this->setUsedRedirect($data['id']);
       $this->move($data['type_id']);
     }
     elseif( $data = $this->findByPattern($this->getPath()) )
     {
       $this->setTarget($data['target']);
+      $this->setUsedRedirect($data['id']);
       $this->move($data['type_id']);
     }
   }

@@ -87,9 +87,9 @@ abstract class FRedirectComponent extends CApplicationComponent
 
     foreach($command->queryAll() as $row)
     {
-      $this->addRedirect($row['base'], $row['target'], $row['type_id']);
+      $this->addRedirect($row['id'], $row['base'], $row['target'], $row['type_id']);
     }
   }
 
-  abstract protected function addRedirect($base, $target, $type);
+  abstract protected function addRedirect($id, $base, $target, $type);
 }

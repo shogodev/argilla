@@ -179,7 +179,7 @@ CREATE TABLE `argilla_contact` (
   `name` varchar(255) NOT NULL,
   `sysname` varchar(255) DEFAULT NULL,
   `url` varchar(127) DEFAULT NULL,
-  `address` varchar(255) DEFAULT NULL,
+  `address` text,
   `notice` text,
   `img` varchar(512) DEFAULT NULL,
   `img_big` varchar(512) DEFAULT NULL,
@@ -919,12 +919,11 @@ DROP TABLE IF EXISTS `argilla_product_currency`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `argilla_product_currency` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `name` varchar(255) CHARACTER SET koi8r NOT NULL,
-  `display` varchar(255) CHARACTER SET koi8r DEFAULT NULL,
-  `multiplier` decimal(10,2) DEFAULT '0.00',
-  `rate` decimal(10,2) DEFAULT '0.00',
-  `auto` tinyint(1) DEFAULT NULL,
-  `rate_auto` decimal(10,2) DEFAULT '0.00',
+  `name` varchar(255) NOT NULL,
+  `title` varchar(255) DEFAULT NULL,
+  `multiplier` decimal(10,2) DEFAULT '1.00',
+  `rate` decimal(10,2) DEFAULT NULL,
+  `autorate_id` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1263,6 +1262,8 @@ CREATE TABLE `argilla_seo_redirect` (
   `base` varchar(255) NOT NULL,
   `target` varchar(255) NOT NULL,
   `type_id` int(11) NOT NULL,
+  `counter` int(11) NOT NULL DEFAULT '0',
+  `last_used` datetime NOT NULL,
   `visible` int(11) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `base` (`base`,`target`,`type_id`)

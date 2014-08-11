@@ -69,9 +69,9 @@ class ReplaceRedirectComponent extends FRedirectComponent
     return $this->findByStaticPattern($url);
   }
 
-  protected function addRedirect($base, $target, $type)
+  protected function addRedirect($id, $base, $target, $type)
   {
-    $data = array('target' => $base, 'type_id' => $type);
+    $data = array('id' => $id, 'target' => $base, 'type_id' => $type);
 
     if( RedirectHelper::isRegExp($target) )
       $this->redirectPatterns[$target] = $data;
