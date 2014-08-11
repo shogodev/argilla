@@ -95,7 +95,7 @@ class FUrlManager extends CUrlManager
    */
   public function shouldRememberReturnUrl()
   {
-    return $this->rule->shouldRemember && !Yii::app()->errorHandler->error && !Yii::app()->request->isAjaxRequest;
+    return $this->rule && $this->rule->shouldRemember && !Yii::app()->errorHandler->error && !Yii::app()->request->isAjaxRequest;
   }
 
   /**

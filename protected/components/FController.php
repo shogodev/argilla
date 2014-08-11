@@ -173,9 +173,10 @@ class FController extends CController
       'query' => array(),
     );
 
-    foreach(Yii::app()->urlManager->rule->canonicalParams as $param)
-      if( $value = $request->getParam($param) )
-        $url['query'][$param] = $value;
+    if( Yii::app()->urlManager->rule )
+      foreach(Yii::app()->urlManager->rule->canonicalParams as $param)
+        if( $value = $request->getParam($param) )
+          $url['query'][$param] = $value;
 
     return Utils::buildUrl($url);
   }

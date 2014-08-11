@@ -169,18 +169,18 @@ class RequestRedirectComponent extends FRedirectComponent
   }
 
   /**
-   * Отдаем 404 на страницах, для которых настроены редиректы, чтобы не возникало дублей
+   * Отдаем 404 на страницах, для которых настроены редиректы подмены, чтобы не возникало дублей
    *
    * @throws CHttpException
    */
   private function findOrigin()
   {
     foreach($this->getRedirectUrls() as $base => $data)
-      if( $data['target'] === $this->getPath() )
+      if( $data['type_id'] === RedirectHelper::TYPE_REPLACE && $data['target'] === $this->getPath() )
         $this->move(404);
 
     foreach($this->getRedirectPatterns() as $pattern => $data)
-      if( @preg_match($data['target'], $this->getPath()) )
+      if( $data['type_id'] === RedirectHelper::TYPE_REPLACE && @preg_match($data['target'], $this->getPath()) )
         $this->move(404);
   }
 
