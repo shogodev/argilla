@@ -231,7 +231,6 @@ abstract class BActiveRecord extends CActiveRecord
       'subject'          => 'Тема',
       'message'          => 'Сообщение',
       'password'         => 'Пароль',
-      'password_confirm' => 'Подтверждение пароля',
       'type'             => 'Тип',
       'sysname'          => 'Системное имя',
       'model'            => 'Модель',

@@ -279,7 +279,7 @@ class Meta extends CApplicationComponent
 
       $this->renderedModels[$modelName] = $model;
 
-      if( $depth <= $this->maxSearchDepth )
+      if( $model instanceof FActiveRecord && $depth <= $this->maxSearchDepth )
       {
         $depth++;
         $this->processRelations($model);

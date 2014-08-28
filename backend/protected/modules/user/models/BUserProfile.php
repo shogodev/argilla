@@ -5,9 +5,9 @@
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.user.models
- *
- * @method static BUserDataExtended model(string $class = __CLASS__)
- *
+
+ * @method static BUserProfile model(string $class = __CLASS__)
+
  * @property integer $user_id
  * @property string $name
  * @property string $last_name
@@ -18,22 +18,14 @@
  * @property string $birthday
  * @property string $avatar
  */
-class BUserDataExtended extends BActiveRecord implements IHasCoordinates
+class BUserProfile extends BActiveRecord implements IHasCoordinates
 {
   /**
    * @return string
    */
   public function tableName()
   {
-    return '{{user_data_extended}}';
-  }
-
-  /**
-   * @return array
-   */
-  public function behaviors()
-  {
-    return array('uploadBehavior' => array('class' => 'UploadBehavior', 'validAttributes' => 'avatar'));
+    return '{{user_profile}}';
   }
 
   /**
@@ -43,7 +35,17 @@ class BUserDataExtended extends BActiveRecord implements IHasCoordinates
   {
     return array(
       array('name', 'required'),
-      array('last_name, patronymic, address, phone, birthday, coordinates, birth_day, birth_mount, birth_year', 'safe')
+      array('last_name, patronymic, address, phone, birthday, coordinates', 'safe')
+    );
+  }
+
+  public function behaviors()
+  {
+    return array(
+      'dateFilterBehavior' => array(
+        'class' => 'DateFilterBehavior',
+        'attribute' => 'birthday',
+      )
     );
   }
 
@@ -59,20 +61,8 @@ class BUserDataExtended extends BActiveRecord implements IHasCoordinates
       'phone'        => 'Контактный телефон',
       'address'      => 'Адрес',
       'birthday'     => 'Дата рождения',
-      'avatar'       => 'Изображение',
       'coordinates'  => 'Координаты',
     );
-  }
-
-  /**
-   * @return void
-   */
-  public function afterFind()
-  {
-    if( !empty($this->birthday) )
-      $this->birthday = str_replace('-', '.', $this->birthday);
-
-    return parent::afterFind();
   }
 
   /**

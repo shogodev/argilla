@@ -4,13 +4,10 @@
  * @var UserController $this
  */
 ?>
-<div id="content" class="paddings">
-  <div class="wrapper">
-    <?php $this->renderPartial('/_breadcrumbs'); ?>
+<div class="wrapper" style="background-color: #F4F4F4;">
+  <?php $this->renderPartial('/_breadcrumbs');?>
 
-    <h1><?php echo $this->clip('h1', 'Восстановление пароля') ?></h1>
+  <h1><?php echo Yii::app()->meta->setHeader('Восстановление пароля') ?></h1>
 
-    <?php echo $restoreForm; ?>
-  </div>
+  <?php echo $restoreForm; ?>
 </div>
-

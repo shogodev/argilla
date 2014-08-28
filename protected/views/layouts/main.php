@@ -41,7 +41,7 @@
 
 <?php $this->renderOverride('header');?>
 
-<div class="container" style="padding-top: 60px">
+<div class="container" style="padding-top: 60px;">
 
   <?php $this->renderPartial('/alerts');?>
 

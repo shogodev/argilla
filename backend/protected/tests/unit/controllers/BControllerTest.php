@@ -96,20 +96,23 @@ class BControllerTest extends CDbTestCase
     $name  = 'testName1';
 
     $userModel = new BFrontendUser();
-    $dataModel = new BUserDataExtended();
+    $dataModel = new BUserProfile();
 
-    $_POST['BFrontendUser']     = array('email' => '123@123.ru', 'login' => $login);
-    $_POST['BUserDataExtended'] = array('name' => $name);
+    $_POST['BFrontendUser'] = array('email' => '123@123.ru', 'login' => $login);
+    $_POST['BUserProfile'] = array('name' => $name);
     $_SERVER['REQUEST_METHOD']  = 'POST';
 
     $method = new ReflectionMethod('BController', 'saveModels');
     $method->setAccessible(true);
     $method->invoke($this->controller, array($userModel, $dataModel));
 
+    /**
+     * @var BFrontendUser $user
+     */
     $user = BFrontendUser::model()->findByAttributes(array('login' => $login));
 
     $this->assertEquals($login, $user->login);
-    $this->assertEquals($name, $user->user->name);
+    $this->assertEquals($name, $user->profile->name);
   }
 
   public function testValidateModels()

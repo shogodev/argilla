@@ -8,12 +8,18 @@
  */
 require_once(dirname(__FILE__).'/../../components/FApplication.php');
 
+
+/**
+ * Class FTestApplication
+ * @property THttpRequest $request The request override component.
+ */
 class FTestApplication extends FApplication
 {
   protected function init()
   {
     $_SERVER['SCRIPT_FILENAME'] = realpath(__DIR__.'/../../..'.$_SERVER['SCRIPT_NAME']);
     parent::init();
+    Yii::setPathOfAlias('webroot', realpath(Yii::getPathOfAlias('frontend').'/..'));
   }
 
   /**

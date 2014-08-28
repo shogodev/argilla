@@ -81,7 +81,7 @@ class FForm extends CForm
   public function render()
   {
     $this->returnUrl = Yii::app()->request->getUrl();
-    $message         = $this->getSuccessMessage();
+    $message = $this->getSuccessMessage();
 
     if( !empty($message) )
       return $message;
@@ -89,7 +89,10 @@ class FForm extends CForm
     {
       $errors = $this->getErrorMessage();
       if( !empty($errors) )
+      {
+        $this->model->clearErrors();
         $this->model->addErrors($errors);
+      }
     }
 
     if( $this->loadFromSession )
@@ -585,7 +588,7 @@ class FForm extends CForm
       'type'       => 'POST',
       'dataType'   => 'json',
       'beforeSend' => 'function(){
-        $("#'.$this->getActiveFormWidget()->id.'").data("settings").submitting = true;
+        //$("#'.$this->getActiveFormWidget()->id.'").data("settings").submitting = true;
         $.mouseLoader(true);
       }',
       'url'        => $this->action,

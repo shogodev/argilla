@@ -1,7 +1,7 @@
 <?php
 /* @var $this BUserController*/
 /* @var $model BFrontendUser */
-/* @var $userExtendedData BUserDataExtended*/
+/* @var $userProfile BUserProfile*/
 /* @var $form CActiveForm|BActiveForm */
 ?>
 
@@ -22,19 +22,15 @@
   ?>
   <?php echo $form->textFieldRow($model, 'login'); ?>
   <?php echo $form->passwordFieldRow($model, 'password', array('autocomplete' => 'off')); ?>
-  <?php echo $form->passwordFieldRow($model, 'password_confirm', array('autocomplete' => 'off')); ?>
+  <?php echo $form->passwordFieldRow($model, 'confirmPassword', array('autocomplete' => 'off')); ?>
   <?php echo $form->textFieldRow($model, 'email'); ?>
 
-  <?php echo $form->textFieldRow($userExtendedData, 'name'); ?>
-  <?php echo $form->textFieldRow($userExtendedData, 'last_name'); ?>
-  <?php echo $form->textFieldRow($userExtendedData, 'patronymic'); ?>
-  <?php echo $form->textFieldRow($userExtendedData, 'phone'); ?>
-  <?php echo $form->textFieldRow($userExtendedData, 'address'); ?>
-  <?php echo $form->textFieldRow($userExtendedData, 'birthday'); ?>
-
-  <?php echo $form->uploadRow($userExtendedData, 'avatar', false); ?>
-
-  <?php echo $form->coordinatesRow($userExtendedData, 'coordinates');?>
+  <?php echo $form->textFieldRow($userProfile, 'name'); ?>
+  <?php echo $form->textFieldRow($userProfile, 'last_name'); ?>
+  <?php echo $form->textFieldRow($userProfile, 'patronymic'); ?>
+  <?php echo $form->textFieldRow($userProfile, 'phone'); ?>
+  <?php echo $form->textFieldRow($userProfile, 'address'); ?>
+  <?php echo $form->textFieldRow($userProfile, 'birthday'); ?>
 
   <?php echo $form->checkBoxRow($model, 'visible');?>
 

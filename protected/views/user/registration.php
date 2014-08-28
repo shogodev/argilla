@@ -4,22 +4,17 @@
  * @var UserController $this
  */
 ?>
-<div id="content" class="paddings">
-<div class="wrapper">
+<div class="wrapper" style="background-color: #F4F4F4;">
   <?php $this->renderPartial('/_breadcrumbs');?>
 
-  <h1><?php echo $this->clip('h1', 'Регистрация')?></h1>
+  <h1><?php  echo Yii::app()->meta->setHeader('Регистрация')?></h1>
+
   <?php if( Yii::app()->user->isGuest ) {?>
-
-    <?php if( !$registrationForm->getStatus() ):?>
-      <div class="text-container m30 registration-text">
-        <?php echo $this->textBlock('registration_text');?>
-      </div>
-    <?php endif;?>
-
+    <?php if( !$registrationForm->getStatus() ) {?>
+      <div class="text-container"><?php echo $this->textBlock('registration_text');?></div>
+    <?php }?>
     <?php echo $registrationForm->render(); ?>
-
-  <?php } else
-    echo "Вы уже зарегистрированы." ?>
-</div>
+  <?php } else {?>
+    <?php echo "Вы уже зарегистрированы."?>
+ <?php }?>
 </div>

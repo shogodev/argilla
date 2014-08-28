@@ -6,101 +6,108 @@
  * @license http://argilla.ru/LICENSE
  * @package frontend.models.user
  *
- * @property string        $header
- * @property int           $id
- * @property string        $login
- * @property string        $phone
- * @property string        $email
- * @property string        $address
- * @property string        $password
- * @property string        $type
- * @property int           $visible
- * @property string        $date_create
- * @property UserDataExtended  $userDataEx
+ * @method static User model(string $class = __CLASS__)
+ *
+ * @property integer $id
+ * @property string $date_create
+ * @property string $login
+ * @property string $passwordHash
+ * @property string $service
+ * @property string $service_id
+ * @property string $restore_code
+ * @property string $type
+ * @property integer $visible
+ *
+ * @property UserProfile $profile
  */
-class User extends UserBase
+class User extends FActiveRecord
 {
-  const DEFAULT_USER = 1;
+  const SCENARIO_REGISTRATION = 'insert';
+
+  const SCENARIO_CHANGE_PASSWORD = 'update';
+
+  const TYPE_USER = 'user';
 
   /**
    * @var string
    */
-  public $url;
+  public $password;
 
   /**
-   * @var string temp password container
+   * @var string
    */
-  protected $_password;
+  public $confirmPassword;
 
   /**
-   * Получение текущего пользователя
-   *
-   * @static
-   *
-   * @return CActiveRecord|null
+   * @var string
    */
-  public static function getCurrentUser()
+  public $oldPassword;
+
+  public function tableName()
   {
-    if( empty(Yii::app()->user->id) )
-      return null;
-
-    return self::model()->findByPk(Yii::app()->user->id);
+    return '{{user}}';
   }
 
-  /**
-   * @OVERRIDE
-   *
-   * @return array
-   */
   public function rules()
   {
     return array(
-      array('email', 'required', 'except' => 'changePassword'),
-      array('password, password_confirm', 'required', 'on' => 'changePassword'),
-      array('email', 'unique'),
-      array('password_confirm', 'compare', 'compareAttribute' => 'password', 'message' => 'Поля "Новый пароль" и "Подтверждение пароля" не совпадают'),
-      array('password', 'safe'),
+      array('login, email, password, confirmPassword', 'required', 'on' => self::SCENARIO_REGISTRATION),
+      array('email', 'unique', 'on' => self::SCENARIO_REGISTRATION),
+      array('email', 'email', 'on' => self::SCENARIO_REGISTRATION),
+
+      array('oldPassword, password, confirmPassword', 'required', 'on' => self::SCENARIO_CHANGE_PASSWORD),
+      array('oldPassword', 'checkOldPassword', 'on' => self::SCENARIO_CHANGE_PASSWORD),
+
+      array(
+        'confirmPassword',
+        'compare',
+        'compareAttribute' => 'password',
+        'message' => 'Поля "Новый пароль" и "Подтверждение пароля" не совпадают',
+        'on' => array(
+          self::SCENARIO_REGISTRATION,
+          self::SCENARIO_CHANGE_PASSWORD
+        )
+      ),
+
+      array('password', 'doHashPassword', 'on' => array(self::SCENARIO_REGISTRATION, self::SCENARIO_CHANGE_PASSWORD)),
     );
   }
 
-  public function relation()
+  public function attributeLabels()
   {
     return array(
-      'userDataEx' => array(self::HAS_ONE, 'UserDataExtended', 'user_id'),
+      'login' => 'Логин',
+      'email' => 'E-mail',
+      'password' => 'Пароль',
+      'confirmPassword' => 'Подтверждение пароля',
+      'oldPassword' => 'Старый пароль',
     );
   }
 
-  /**
-   * @OVERRIDE
-   *
-   * @return void
-   */
-  public function afterFind()
+  public function relations()
   {
-    $this->_password = $this->password;
-    $this->password  = '';
-
-    $this->url = Yii::app()->controller->createUrl('user/profile', array('id' => $this->id));
+    return array(
+      'profile' => array(self::HAS_ONE, 'UserProfile', 'user_id'),
+    );
   }
 
-  /**
-   * @OVERRIDE
-   *
-   * @return bool
-   */
-  protected function beforeSave()
+  public function afterValidate()
   {
-    if( parent::beforeSave() )
-    {
-      if( empty($this->password) )
-        $this->password = $this->_password;
-      else
-      {
-        Yii::app()->notification->send('UserChangePassword', array('model' => $this), $this->email);
-        $this->password = FUserIdentity::createPassword($this->login, $this->password);
-      }
-      return true;
-    }
-    return false;
+    parent::afterValidate();
+
+    if( $this->isNewRecord )
+      $this->type = self::TYPE_USER;
+  }
+
+  public function doHashPassword($attribute, $params)
+  {
+    $this->restore_code = '';
+    $this->passwordHash = FUserIdentity::createPassword($this->login, $this->password);
+  }
+
+  public function checkOldPassword($attribute, $params)
+  {
+    if( FUserIdentity::createPassword($this->login, $this->oldPassword) != $this->passwordHash )
+      $this->addError($attribute, "Не правильно введен ".$this->getAttributeLabel($attribute));
   }
 }

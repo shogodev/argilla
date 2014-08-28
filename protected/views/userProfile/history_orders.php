@@ -11,7 +11,7 @@
 
   <div class="nofloat profile">
     <h1><?php echo $this->clip('h1', 'Личный кабинет')?></h1>
-    <?php $this->renderPartial('_left_menu', $_data_)?>
+    <?php $this->renderPartial('_menu', $_data_) ?>
     <div class="profile-content">
       <h2>История заказов</h2>
       <?php if( $orders ) {?>

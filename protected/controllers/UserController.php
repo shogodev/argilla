@@ -8,50 +8,24 @@
  */
 class UserController extends FController
 {
-  public function filters()
-  {
-    return array(
-      'accessControl',
-    );
-  }
-
-  public function accessRules()
-  {
-    return array(
-      array('deny',
-        'actions' => array('data', 'profile', 'history', 'historyOne', 'password', 'status', 'currentOrders', 'changePassword'),
-        'users'   => array('?'),
-      ),
-    );
-  }
-
   public function actionLogin()
   {
     if( !Yii::app()->user->isGuest )
-      $this->redirect($this->createUrl('user/profile'), true, 200);
+      $this->redirect($this->createUrl('userProfile/profile'), true, 200);
 
     $this->breadcrumbs = array('Вход');
 
     $loginForm = new FForm('LoginForm', new Login());
     $loginForm->action = Yii::app()->controller->createUrl('user/login');
     $loginForm->ajaxSubmit = false;
+    $loginForm->validateOnChange = false;
+    $loginForm->validateOnSubmit = false;
     $loginForm->autocomplete = true;
-    $loginForm->ajaxValidation();
 
-    if( $attributes = Yii::app()->request->getPost('Login') )
+    if( $loginForm->process() )
     {
-      $loginForm->model->attributes = $attributes;
-
-      if( $loginForm->process() )
-      {
-        if( $loginForm->model->loginUser() )
-        {
-          $this->redirect(Yii::app()->user->returnUrl);
-          Yii::app()->end();
-        }
-      }
-
-      $loginForm->model->addError('Login_authError', 'Ошибка неверный логин/пароль!');
+      $this->redirect(Yii::app()->user->returnUrl);
+      Yii::app()->end();
     }
 
     $this->render('login', array('loginForm' => $loginForm));
@@ -71,10 +45,10 @@ class UserController extends FController
     {
       $this->breadcrumbs = array('Регистрация');
 
-      $registrationForm = new FForm('UserRegistration', new UserRegistration());
+      $registrationForm = new FForm('UserRegistration', new User());
       $registrationForm->loadFromSession  = true;
       $registrationForm->clearAfterSubmit = true;
-      $registrationForm['extendedData']->model = new UserDataExtended('registration');
+      $registrationForm['profile']->model = new UserProfile(User::SCENARIO_REGISTRATION);
 
       if( Yii::app()->request->isPostRequest )
         $registrationForm->model->email = CHtml::encode(Yii::app()->request->getParam('email', ''));
@@ -85,10 +59,7 @@ class UserController extends FController
       {
         Yii::app()->notification->send(
           $registrationForm->model,
-          array(
-            'userData' => $registrationForm['extendedData']->model,
-            'password' => Yii::app()->request->getParam('UserRegistration')['password']
-          ),
+          array('profile' => $registrationForm['profile']->model),
           $registrationForm->model->email
         );
 
@@ -96,7 +67,7 @@ class UserController extends FController
           'UserRegistrationBackend',
           array(
             'model' => $registrationForm->model,
-            'userData' => $registrationForm['extendedData']->model
+            'profile' => $registrationForm['profile']->model
           )
         );
 
@@ -117,109 +88,24 @@ class UserController extends FController
     {
       $this->render('registration');
     }
-
-
-  }
-
-  public function actionData()
-  {
-    $this->breadcrumbs = array(
-      'Мой профиль',
-      'Личные данные',
-    );
-
-    $this->activeUrl = array('user/data');
-
-    $userForm = new FForm('UserRegistration', User::model()->findByPk(Yii::app()->user->getId()));
-    $userForm->elements['password']->visible = false;
-    $userForm->elements['password_confirm']->visible = false;
-    $userForm['extendedData']->model = UserDataExtended::model()->findByPk(Yii::app()->user->getId());
-    $userForm->ajaxValidation();
-    $userForm->buttons['submit']->value = 'Сохранить';
-
-    if( Yii::app()->request->isAjaxRequest && $userForm->save() )
-    {
-      $userForm->responseSuccess(Yii::app()->controller->textBlockRegister(
-        'Успешное изменение пользовательских данных',
-        'Изменения сохранены'
-      ));
-    }
-
-  	$this->render('user_data', array('form' => $userForm));
-  }
-
-  public function actionProfile()
-  {
-    $this->breadcrumbs = array(
-      'Мой профиль',
-    );
-
-    $userModel = User::model()->findByPk(Yii::app()->user->getId());
-    $extendedDataModel = UserDataExtended::model()->findByPk(Yii::app()->user->getId());
-
-    $this->render('profile', array(
-      'userModel' => $userModel,
-      'extendedDataModel' => $extendedDataModel,
-    ));
-  }
-
-  public function actionPassword()
-  {
-    $this->breadcrumbs = array(
-      'Мой профиль',
-      'Сменить пароль',
-    );
-
-    $form = new FForm('UserPasswordForm', User::model()->findByPk(Yii::app()->user->getId()));
-    $form->ajaxValidation();
-
-    if( $form->model )
-      $form->model->setScenario('changePassword');
-
-    if( Yii::app()->request->isAjaxRequest && $form->save() )
-    {
-      $form->responseSuccess(Yii::app()->controller->textBlockRegister('Успешное изменение пароля', 'Изменения сохранены'));
-    }
-
-    $this->render('password', array('form' => $form));
-  }
-
-  public function actionChangePassword()
-  {
-    $this->breadcrumbs = array(
-      'Мой профиль',
-      'Сменить пароль',
-    );
-
-    $this->activeUrl = array('user/changePassword');
-
-    $form = new FForm('UserChangePassword', User::model()->findByPk(Yii::app()->user->getId()));
-    $form->ajaxValidation();
-    $form->model->setScenario('changePassword');
-
-    if( Yii::app()->request->isAjaxRequest && $form->save() )
-    {
-      $form->responseSuccess(Yii::app()->controller->textBlockRegister(
-        'Успешное изменение пароля',
-        'Изменения сохранены'
-      ));
-    }
-
-    $this->render('change_password', array('form' => $form));
   }
 
   public function actionRestore()
   {
     $this->breadcrumbs = array('Восстановление пароля');
 
-    $restoreForm = new FForm('UserRestore', new UserRestore());
+    $restoreForm = new FForm('UserRestore', new RestorePassword(RestorePassword::GENERATE_RESTORE_CODE));
     $restoreForm->validateOnChange = false;
     $restoreForm->ajaxValidation();
 
     if( Yii::app()->request->isAjaxRequest && $restoreForm->process() )
     {
-      $record = $restoreForm->getModel()->findByAttributes(array('email' => $restoreForm->getModel()->email));
-      $record->generateRestoreCode();
+      Yii::app()->notification->send(
+        'UserRequestRestorePassword',
+        array('model' => $restoreForm->model),
+        $restoreForm->model->email
+      );
+
       $restoreForm->responseSuccess(Yii::app()->controller->textBlockRegister(
         'Email успешно отправлен',
         'Вам на E-mail отправлены дальнейшие инструкции'
@@ -233,89 +119,23 @@ class UserController extends FController
   {
     $this->breadcrumbs = array('Восстановление пароля');
 
-    $record = UserRestore::model()->findByAttributes(array('restore_code' => $code));
-    if( $record )
+    $restorePassword = new RestorePassword(RestorePassword::GENERATE_NEW_PASSWORD);
+    $restorePassword->attributes = array('restoreCode' => $code);
+
+    if( $restorePassword->validate() )
     {
-      $record->generateNewPassword();
+      Yii::app()->notification->send(
+        'UserRestorePassword',
+        array(
+          'model' => $restorePassword,
+          'password' => $restorePassword->user->password
+        ),
+        $restorePassword->user->email
+      );
+
       $this->render('restore', array('restoreForm' => 'Новый пароль выслан на ваш E-mail.'));
     }
     else
       $this->redirect(array('user/restore'));
-  }
-
-
-
-  public function actionCurrentOrders()
-  {
-    $this->breadcrumbs = array(
-      'Мои заказы',
-      'Текущие заказы',
-    );
-
-    $this->activeUrl = array('user/currentOrders');
-    $orders = OrderHistory::model()->currentOrders()->findAll();
-
-    $this->render('current_orders', array('orders' => $orders));
-  }
-
-  public function actionHistory()
-  {
-    $this->breadcrumbs = array(
-      'Мои заказы',
-      'История заказов',
-    );
-
-    $this->activeUrl = array('user/history');
-    $orders = OrderHistory::model()->historyOrders()->findAll();
-
-    $this->render('history_orders', array('orders' => $orders));
-  }
-
-  public function actionStatus()
-  {
-    $this->breadcrumbs = array(
-      'Личный кабинет',
-      'Мой статус',
-    );
-
-    $userModel = User::model()->findByPk(Yii::app()->user->getId());
-    $extendedDataModel = UserDataExtended::model()->findByPk(Yii::app()->user->getId());
-
-    $this->render('status', array(
-      'userModel' => $userModel,
-      'extendedDataModel' => $extendedDataModel,
-    ));
-  }
-
-  public function actionHistoryOne($id)
-  {
-    $order = Order::model()->findByPk($id);
-
-    if( empty($order) )
-      throw new CHttpException(404, 'Страница не найдена');
-
-    $this->breadcrumbs = array(
-      'История заказов', 'Заказ №'.$order->id
-    );
-
-    $this->render('orderHistoryOne', array('order' => $order, 'backUrl' => $this->createUrl('user/history')));
-  }
-
-  public function deleteMenuStatusIfEmpty($menu, $route)
-  {
-    $data = array();
-    /** @var  UserDataExtended $extendedDataModel */
-    $extendedDataModel = UserDataExtended::model()->findByPk(Yii::app()->user->getId());
-    if($extendedDataModel->discount_id == 0)
-    {
-      foreach($menu as $item)
-      {
-        if($item['url'][0] !== $route)
-          $data[] = $item;
-      }
-      return $data;
-    }
-
-    return $menu;
   }
 }
