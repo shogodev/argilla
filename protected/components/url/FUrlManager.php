@@ -58,6 +58,13 @@ class FUrlManager extends CUrlManager
     $this->defaultParams = $value;
   }
 
+  /**
+   * @param string $route
+   * @param array $params
+   * @param string $ampersand
+   *
+   * @return string
+   */
   public function createUrl($route, $params = array(), $ampersand = '&')
   {
     if( $this->hasStaticPatterns($params) )
@@ -69,6 +76,16 @@ class FUrlManager extends CUrlManager
       $url = parent::createUrl($route, $params, $ampersand);
       return $this->urlCreator->getUrl($url);
     }
+  }
+
+  /**
+   * @param $path
+   *
+   * @return string
+   */
+  public function createPath($path)
+  {
+    return $this->urlCreator->getUrl($path);
   }
 
   /**
