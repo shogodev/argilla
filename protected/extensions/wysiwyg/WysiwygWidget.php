@@ -8,45 +8,57 @@
  */
 class WysiwygWidget extends CInputWidget
 {
-  public $editor;
+  public $language = 'ru';
 
-  public $basePath;
+  public $options = array();
 
-  public $defaultValue;
+  public $skin = 'kama';
 
-  public $config = array();
+  private $basePath;
 
-  public $class = 'CKeditor';
+  private $assetsPath;
+
+  public function init()
+  {
+    if( !isset($this->model) )
+    {
+      throw new CHttpException(500, '"model" have to be set!');
+    }
+
+    if( !isset($this->attribute) )
+    {
+      throw new CHttpException(500, '"attribute" have to be set!');
+    }
+
+    $this->basePath = dirname(__FILE__);
+    $this->assetsPath = Yii::app()->getAssetManager()->publish($this->basePath.DIRECTORY_SEPARATOR.'assets');
+
+    $this->registerScripts();
+  }
 
   public function run()
   {
-    if( !isset($this->model) )
-      throw new CHttpException(500, '"model" have to be set!');
+    $this->htmlOptions['id'] = $this->id;
 
-    if( !isset($this->attribute) )
-      throw new CHttpException(500, '"attribute" have to be set!');
-
-    if( !isset($this->editor) )
-      $this->editor = Yii::app()->getFrontendRoot()."ckeditor/ckeditor.php";
-
-    if( !isset($this->basePath) )
-      $this->basePath = Yii::app()->getFrontendUrl()."ckeditor/";
-
-    if( !isset($this->defaultValue) )
-      $this->defaultValue = $this->model->{$this->attribute};
-
-    require_once $this->editor;
-    $this->renderEditor();
+     echo CHtml::activeTextArea($this->model, $this->attribute, $this->htmlOptions);
   }
 
-  protected function renderEditor()
+  private function getOptions()
   {
-    $editor           = new $this->class(get_class($this->model).'['.$this->attribute.']');
-    $editor->basePath = $this->basePath;
+    return CMap::mergeArray($this->options, array(
+      'language' => $this->language,
+      'skin' => $this->skin
+    ));
+  }
 
-    foreach($this->config as $key => $value)
-      $editor->config[$key] = $value;
+  private function registerScripts()
+  {
+    Yii::app()->clientScript->registerScriptFile($this->assetsPath.'/ckeditor.js');
 
-    $editor->editor(get_class($this->model).'['.$this->attribute.']', $this->defaultValue);
+    $jsonOptions = CJSON::encode($this->getOptions());
+
+    $script = "CKEDITOR.replace('{$this->id}', {$jsonOptions});";
+
+    Yii::app()->clientScript->registerScript('WysiwygWidgetScript#'.$this->id, $script, CClientScript::POS_LOAD);
   }
 }

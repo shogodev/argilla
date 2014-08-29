@@ -233,7 +233,17 @@ class BInputHorizontal extends BInput
   {
     echo $this->getLabel();
     echo '<td>';
-    echo $this->widget('WysiwygWidget', array('model' => $this->model, 'attribute' => $this->attribute), true);
+
+    $this->widget('ext.wysiwyg.WysiwygWidget', array(
+      'model' => $this->model,
+      'attribute'=> $this->attribute,
+      'skin' => 'kama',
+      'options' => array(
+        'filebrowserBrowseUrl' => CHtml::normalizeUrl(array('/bFileUploader/elfinderCKEditor')),
+        'filebrowserUploadUrl' => false
+      ),
+    ));
+
     echo $this->getError().$this->getHint();
     echo '</td>';
   }
