@@ -176,11 +176,11 @@ class RequestRedirectComponent extends FRedirectComponent
   private function findOrigin()
   {
     foreach($this->getRedirectUrls() as $base => $data)
-      if( $data['type_id'] === RedirectHelper::TYPE_REPLACE && $data['target'] === $this->getPath() )
+      if( $data['type_id'] == RedirectHelper::TYPE_REPLACE && $data['target'] === $this->getPath() )
         $this->move(404);
 
     foreach($this->getRedirectPatterns() as $pattern => $data)
-      if( $data['type_id'] === RedirectHelper::TYPE_REPLACE && @preg_match($data['target'], $this->getPath()) )
+      if( $data['type_id'] == RedirectHelper::TYPE_REPLACE && @preg_match($data['target'], $this->getPath()) )
         $this->move(404);
   }
 

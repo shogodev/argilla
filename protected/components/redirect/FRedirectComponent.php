@@ -73,9 +73,8 @@ abstract class FRedirectComponent extends CApplicationComponent
 
   protected function prepareReplacement($string)
   {
-    $position = 0;
-
-    return preg_replace_callback("/\(.+\)/", function() use ($position) {
+    return preg_replace_callback("/\([^)]+\)/", function($matches) {
+      static $position = 0;
       return '$'.++$position;
     }, trim($string, '#'));
   }

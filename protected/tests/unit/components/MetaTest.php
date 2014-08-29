@@ -25,7 +25,7 @@ class MetaTest extends CDbTestCase
     $this->assertInstanceOf('Meta', $renderHandler[0]);
     $this->assertEquals('setRenderedModels', $renderHandler[1]);
 
-    $endHandler = Yii::app()->getEventHandlers('onEndRequest')[0];
+    $endHandler = Yii::app()->getEventHandlers('onEndRequest')[1];
     $this->assertInstanceOf('Meta', $endHandler[0]);
     $this->assertEquals('updateRenderedModels', $endHandler[1]);
   }

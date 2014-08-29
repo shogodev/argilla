@@ -117,7 +117,7 @@ class RequestRedirectComponentTest extends CDbTestCase
    */
   public function testOriginExists()
   {
-    $component = new RequestRedirectComponent('/lyzhi_begovie/');
+    $component = new RequestRedirectComponent('/begovie/');
     $component->init();
     $component->processRequest();
   }
