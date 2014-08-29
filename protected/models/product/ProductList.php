@@ -214,9 +214,19 @@ class ProductList extends CComponent
      * @var $product Product
      */
     foreach($this->dataProvider->getData() as $product)
+    {
       if( isset($images[$product->id]) )
+      {
         foreach($images[$product->id] as $type => $imgs)
+        {
           $product->setImages($imgs, $type);
+        }
+      }
+      else
+      {
+        $product->setImages(array(), null);
+      }
+    }
   }
 
   protected function setParameters()
@@ -230,6 +240,8 @@ class ProductList extends CComponent
 
     foreach($products as $product)
     {
+      $product->setParameters();
+
       foreach($names as $name)
       {
         $productParameterName = clone $name;
