@@ -60,7 +60,7 @@ jQuery('body').on('click', '.items a.add', function(e){
   options.callback = function(elements)
   {
     var ids = [];
-    $(elements).each(function(){
+    $(elements).filter(':checked').each(function(){
       ids.push($(this).attr('id').match(/pk_(\d+)/)[1]);
     });
 

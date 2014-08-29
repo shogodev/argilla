@@ -58,7 +58,7 @@ class ActiveImageBehavior extends CModelBehavior
    */
   public function getImages($type = 'main')
   {
-    if( empty($this->images) )
+    if( !isset($this->images) )
     {
       /**
        * @var FActiveRecord $model
@@ -84,6 +84,9 @@ class ActiveImageBehavior extends CModelBehavior
    */
   public function setImages($images, $type)
   {
+    if( !isset($this->images) )
+      $this->images = array();
+
     if( !isset($this->images[$type]) )
       $this->images[$type] = array();
 

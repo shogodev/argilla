@@ -79,9 +79,12 @@ class BPkColumn extends BDataColumn
       'id' => 'pk_'.$data->getPrimaryKey(),
     );
 
-    $class = new $this->associationClass;
+    $object = new $this->associationClass;
 
-    if( $class->getChecked($parameters) )
+    if( !method_exists($object, 'getChecked') )
+      throw new CHttpException(500, 'Класс заданный свойством associationClass должен реализовывать метод getChecked().');
+
+    if( $object->getChecked($parameters) )
       $options['checked'] = 'checked';
 
     echo CHtml::tag('input', $options);

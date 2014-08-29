@@ -155,10 +155,12 @@ var assigner =
 
     $('#main-assign .popup_add').on('click', function(e){
       e.preventDefault();
-      var els = $('iframe').contents().find('input[type=checkbox].select:checked');
 
       if( options.callback )
-        options.callback(els);
+        options.callback($('iframe').contents().find('input[type=checkbox].select'));
+
+      if( options.closeOperation )
+        options.closeOperation();
 
       assigner.close();
     });
@@ -184,20 +186,21 @@ var assigner =
 
   ajaxHandler: function(element, params)
   {
-    iframeUrl = $(element).data('iframeurl');
-    ajaxUrl   = $(element).data('ajaxurl');
+    var iframeUrl = $(element).data('iframeurl');
+    var ajaxUrl   = $(element).data('ajaxurl');
 
     var callback = function(elements)
     {
-      var ids = [];
+      var data = {};
       $(elements).each(function(){
-        ids.push($(this).attr('id').match(/pk_(\d+)/)[1]);
+        var id = $(this).attr('id').match(/pk_(\d+)/)[1];
+        data[id] = $(this).prop('checked');
       });
 
-      $.post(ajaxUrl, {'ids' : ids}, false, 'json');
+      $.post(ajaxUrl, {'elements' : data}, false, 'json');
     };
 
-    options = {'callback' : callback};
+    var options = {'callback' : callback};
     $.extend(options, params);
 
     assigner.open(iframeUrl, options);

@@ -6,7 +6,7 @@
  * @license http://argilla.ru/LICENSE
  * @package frontend.components.redirect
  */
-class FRedirectComponent extends CApplicationComponent
+abstract class FRedirectComponent extends CApplicationComponent
 {
   /**
    * @var CDbCriteria
@@ -16,12 +16,12 @@ class FRedirectComponent extends CApplicationComponent
   /**
    * @var array
    */
-  private $redirectUrls = array();
+  protected $redirectUrls = array();
 
   /**
    * @var array
    */
-  private $redirectPatterns = array();
+  protected $redirectPatterns = array();
 
   public function init()
   {
@@ -63,12 +63,20 @@ class FRedirectComponent extends CApplicationComponent
     {
       if( @preg_match($pattern, $url) )
       {
-        $data['target'] = preg_replace($pattern, $data['target'], $url);
+        $data['target'] = preg_replace($pattern, $this->prepareReplacement($data['target']), $url);
         return $data;
       }
     }
 
     return null;
+  }
+
+  protected function prepareReplacement($string)
+  {
+    return preg_replace_callback("/\([^)]+\)/", function($matches) {
+      static $position = 0;
+      return '$'.++$position;
+    }, trim($string, '#'));
   }
 
   protected function initRedirects()
@@ -78,19 +86,9 @@ class FRedirectComponent extends CApplicationComponent
 
     foreach($command->queryAll() as $row)
     {
-      $data = array(
-        'target' => $row['target'],
-        'type_id' => $row['type_id']
-      );
-
-      if( RedirectHelper::isRegExp($row['base']) )
-      {
-        $this->redirectPatterns[$row['base']] = $data;
-      }
-      else
-      {
-        $this->redirectUrls[$row['base']] = $data;
-      }
+      $this->addRedirect($row['id'], $row['base'], $row['target'], $row['type_id']);
     }
   }
+
+  abstract protected function addRedirect($id, $base, $target, $type);
 }

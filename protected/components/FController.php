@@ -162,17 +162,21 @@ class FController extends CController
   public function getCanonicalUrl()
   {
     $request = Yii::app()->request;
-    $path = CHtml::encode($request->getPathInfo());
+    $path = Utils::normalizeUrl('/'.CHtml::encode($request->getPathInfo()));
+
+     if( !Yii::app()->errorHandler->error && $path )
+       $path = Yii::app()->urlManager->createPath($path);
 
     $url = array(
-      'host' => $request->getHostInfo().'/',
-      'path' => $path ? $path.'/' : '',
+      'host' => $request->getHostInfo(),
+      'path' => $path,
       'query' => array(),
     );
 
-    foreach(Yii::app()->urlManager->rule->canonicalParams as $param)
-      if( $value = $request->getParam($param) )
-        $url['query'][$param] = $value;
+    if( Yii::app()->urlManager->rule )
+      foreach(Yii::app()->urlManager->rule->canonicalParams as $param)
+        if( $value = $request->getParam($param) )
+          $url['query'][$param] = $value;
 
     return Utils::buildUrl($url);
   }

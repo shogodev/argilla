@@ -58,6 +58,13 @@ class FUrlManager extends CUrlManager
     $this->defaultParams = $value;
   }
 
+  /**
+   * @param string $route
+   * @param array $params
+   * @param string $ampersand
+   *
+   * @return string
+   */
   public function createUrl($route, $params = array(), $ampersand = '&')
   {
     if( $this->hasStaticPatterns($params) )
@@ -72,13 +79,23 @@ class FUrlManager extends CUrlManager
   }
 
   /**
+   * @param $path
+   *
+   * @return string
+   */
+  public function createPath($path)
+  {
+    return $this->urlCreator->getUrl($path);
+  }
+
+  /**
    * Запоминаем или нет адрес текущей страницы в сессию пользователя
    *
    * @return bool
    */
   public function shouldRememberReturnUrl()
   {
-    return $this->rule->shouldRemember && !Yii::app()->errorHandler->error && !Yii::app()->request->isAjaxRequest;
+    return $this->rule && $this->rule->shouldRemember && !Yii::app()->errorHandler->error && !Yii::app()->request->isAjaxRequest;
   }
 
   /**
