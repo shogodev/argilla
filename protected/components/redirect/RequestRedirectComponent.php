@@ -23,12 +23,16 @@ class RequestRedirectComponent extends FRedirectComponent
    */
   private $usedRedirect;
 
+  private $attachHandlers;
+
   /**
-   * @param string $url
+   * @param null $url
+   * @param bool $attachHandlers
    */
-  public function __construct($url = null)
+  public function __construct($url = null, $attachHandlers = true)
   {
     $url = isset($url) ? $url : Arr::get($_SERVER, 'REQUEST_URI');
+    $this->attachHandlers = $attachHandlers;
     $this->setRequest($url);
   }
 
@@ -76,9 +80,12 @@ class RequestRedirectComponent extends FRedirectComponent
     $this->criteria->compare('visible', 1);
     parent::init();
 
-    Yii::app()->attachEventHandler('onBeginRequest', array($this, 'processRequest'));
-    Yii::app()->attachEventHandler('onEndRequest', array($this, 'updateCounters'));
-    Yii::app()->attachEventHandler('onBeforeControllerAction', array($this, 'beforeControllerAction'));
+    if( $this->attachHandlers )
+    {
+      Yii::app()->attachEventHandler('onBeginRequest', array($this, 'processRequest'));
+      Yii::app()->attachEventHandler('onEndRequest', array($this, 'updateCounters'));
+      Yii::app()->attachEventHandler('onBeforeControllerAction', array($this, 'beforeControllerAction'));
+    }
   }
 
   public function beforeControllerAction()

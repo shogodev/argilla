@@ -13,7 +13,7 @@ class RequestRedirectComponentTest extends CDbTestCase
 
   public function testDoNotMakeSlashRedirect()
   {
-    $component = new RequestRedirectComponent();
+    $component = new RequestRedirectComponent(null, false);
 
     $component->setRequest('testUrl/');
     $component->init();
@@ -32,7 +32,7 @@ class RequestRedirectComponentTest extends CDbTestCase
    */
   public function testMakeSlashRedirect()
   {
-    $component = new RequestRedirectComponent('testUrl');
+    $component = new RequestRedirectComponent('testUrl', false);
     $component->init();
     $component->makeSlashRedirect();
   }
@@ -43,7 +43,7 @@ class RequestRedirectComponentTest extends CDbTestCase
    */
   public function testMakeSlashRedirectWithGet()
   {
-    $component = new RequestRedirectComponent('testUrl?param1=value1');
+    $component = new RequestRedirectComponent('testUrl?param1=value1', false);
     $component->init();
     $component->makeSlashRedirect();
   }
@@ -54,7 +54,7 @@ class RequestRedirectComponentTest extends CDbTestCase
    */
   public function testMakeIndexRedirect1()
   {
-    $component = new RequestRedirectComponent('/index.php');
+    $component = new RequestRedirectComponent('/index.php', false);
     $component->init();
   }
 
@@ -64,7 +64,7 @@ class RequestRedirectComponentTest extends CDbTestCase
    */
   public function testMakeIndexRedirect2()
   {
-    $component = new RequestRedirectComponent('/index.php/');
+    $component = new RequestRedirectComponent('/index.php/', false);
     $component->init();
   }
 
@@ -74,7 +74,7 @@ class RequestRedirectComponentTest extends CDbTestCase
    */
   public function testMakeIndexRedirect()
   {
-    $component = new RequestRedirectComponent('/index.php/testUrl/');
+    $component = new RequestRedirectComponent('/index.php/testUrl/', false);
     $component->init();
   }
 
@@ -85,7 +85,7 @@ class RequestRedirectComponentTest extends CDbTestCase
    */
   public function testFindByKey()
   {
-    $component = new RequestRedirectComponent('/palki/');
+    $component = new RequestRedirectComponent('/palki/', false);
     $component->init();
     $component->processRequest();
   }
@@ -97,14 +97,14 @@ class RequestRedirectComponentTest extends CDbTestCase
    */
   public function testIndexRedirect()
   {
-    $component = new RequestRedirectComponent('/argilla/');
+    $component = new RequestRedirectComponent('/argilla/', false);
     $component->init();
     $component->processRequest();
   }
 
   public function testFindByPattern()
   {
-    $component = new RequestRedirectComponent('/lyzhnoe_snaryazhenie/2/');
+    $component = new RequestRedirectComponent('/lyzhnoe_snaryazhenie/2/', false);
     $component->init();
     $component->processRequest();
 
@@ -117,7 +117,7 @@ class RequestRedirectComponentTest extends CDbTestCase
    */
   public function testOriginExists()
   {
-    $component = new RequestRedirectComponent('/begovie/');
+    $component = new RequestRedirectComponent('/begovie/', false);
     $component->init();
     $component->processRequest();
   }
@@ -128,7 +128,7 @@ class RequestRedirectComponentTest extends CDbTestCase
    */
   public function testFind404()
   {
-    $component = new RequestRedirectComponent('/figurnye/');
+    $component = new RequestRedirectComponent('/figurnye/', false);
     $component->init();
     $component->processRequest();
   }
