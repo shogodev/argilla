@@ -22,10 +22,15 @@ class FUrlRule extends CUrlRule
    */
   public $shouldRemember = true;
 
+  /**
+   * @var bool Строим ли ссылку с параметрами по-умолчанию или без них
+   */
+  public $createWithDefault = false;
+
   public function __construct($route, $pattern)
   {
     if( is_array($route) )
-      foreach(array('canonicalParams', 'shouldRemember') as $name)
+      foreach(array('canonicalParams', 'shouldRemember', 'createWithDefault') as $name)
         if( isset($route[$name]) )
           $this->$name = $route[$name];
 
@@ -91,7 +96,7 @@ class FUrlRule extends CUrlRule
     // но в ссылку они добавлены не будут
     foreach($this->defaultParams as $key => $value)
       if( !isset($params[$key]) )
-        $params[$key] = '';
+        $params[$key] = $this->createWithDefault ? $value : '';
 
     foreach($this->params as $key => $value)
       if( !isset($params[$key]) )
