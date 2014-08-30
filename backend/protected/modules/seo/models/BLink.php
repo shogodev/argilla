@@ -37,13 +37,14 @@ class BLink extends BActiveRecord
   public function rules()
   {
     return array(
-      array('url, content, title', 'required'),
-      array('url', 'unique'),
+      array('url, content, title, section_id', 'required'),
+      array('url, email', 'unique'),
+      array('email', 'email'),
       array('section_id, position, visible', 'numerical', 'integerOnly' => true),
       array('url', 'length', 'max' => 255),
       array('visible', 'length', 'max' => 1),
       array('date', 'date', 'format' => 'mm.dd.yyyy'),
-      array('page, title, notice, content', 'safe'),
+      array('page, title, notice, content, region', 'safe'),
       array('section_id', 'safe', 'on' => 'search'),
     );
   }
