@@ -16,7 +16,7 @@ $form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId())); ?
 <?php echo $form->errorSummary($model); ?>
 <?php echo $form->renderRequire();?>
 
-<table id="yw0" class="detail-view table table-striped table-bordered">
+<table class="detail-view table table-striped table-bordered">
 <thead>
   <th colspan="2">Информационная страница</th>
 </thead>
