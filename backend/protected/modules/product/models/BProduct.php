@@ -198,20 +198,7 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
       {
         if( $filteredGridSetting->filter == BGridSettings::FILTER_COMPARE )
         {
-          if( $this->{$filteredGridSetting->name} === '0' )
-          {
-            $criteria->addColumnCondition(
-              array(
-                't.'.$filteredGridSetting->name => $this->{$filteredGridSetting->name},
-                't.'.$filteredGridSetting->name => null
-              ),
-              'OR'
-            );
-          }
-          else
-          {
-            $criteria->compare('t.'.$filteredGridSetting->name, trim($this->{$filteredGridSetting->name}));
-          }
+          $criteria->compare('t.'.$filteredGridSetting->name, trim($this->{$filteredGridSetting->name}));
         }
         else if( $filteredGridSetting->filter == BGridSettings::FILTER_CONTAIN )
         {
