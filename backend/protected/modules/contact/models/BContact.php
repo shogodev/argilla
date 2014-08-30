@@ -41,7 +41,7 @@ class BContact extends BActiveRecord
       array('visible', 'numerical', 'integerOnly' => true),
       array('url, name', 'length', 'max' => 255),
       array('address', 'length', 'max' => 255),
-      array('notice, map', 'length', 'max' => 2048),
+      array('notice, map', 'length', 'max' => 65535),
       array('name, sysname, url, address, notice, map', 'safe'),
     );
   }
