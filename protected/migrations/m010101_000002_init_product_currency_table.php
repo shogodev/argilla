@@ -4,9 +4,9 @@ class m010101_000002_init_product_currency_table extends CDbMigration
 {
 	public function up()
 	{
-    Yii::app()->db->createCommand()->insert('{{product_currency}}', array('id' => 1, 'name' => 'Рубль', 'display' => 'руб'));
-    Yii::app()->db->createCommand()->insert('{{product_currency}}', array('id' => 2, 'name' => 'Доллар', 'display' => '$'));
-    Yii::app()->db->createCommand()->insert('{{product_currency}}', array('id' => 3, 'name' => 'Евро', 'display' => '&euro;'));
+    Yii::app()->db->createCommand()->insert('{{product_currency}}', array('id' => 1, 'name' => 'Рубль', 'title' => 'руб'));
+    Yii::app()->db->createCommand()->insert('{{product_currency}}', array('id' => 2, 'name' => 'Доллар', 'title' => '$'));
+    Yii::app()->db->createCommand()->insert('{{product_currency}}', array('id' => 3, 'name' => 'Евро', 'title' => '&euro;'));
 	}
 
 	public function down()
