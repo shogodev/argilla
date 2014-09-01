@@ -11,7 +11,8 @@
  * @property integer $id
  * @property string $date_create
  * @property string $login
- * @property string $passwordHash
+ * @property string $password_hash
+ * @property string $email
  * @property string $service
  * @property string $service_id
  * @property string $restore_code
@@ -102,12 +103,12 @@ class User extends FActiveRecord
   public function doHashPassword($attribute, $params)
   {
     $this->restore_code = '';
-    $this->passwordHash = FUserIdentity::createPassword($this->login, $this->password);
+    $this->password_hash = FUserIdentity::createPassword($this->login, $this->password);
   }
 
   public function checkOldPassword($attribute, $params)
   {
-    if( FUserIdentity::createPassword($this->login, $this->oldPassword) != $this->passwordHash )
+    if( FUserIdentity::createPassword($this->login, $this->oldPassword) != $this->password_hash )
       $this->addError($attribute, "Не правильно введен ".$this->getAttributeLabel($attribute));
   }
 }

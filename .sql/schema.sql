@@ -1390,7 +1390,7 @@ CREATE TABLE `argilla_user` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `date_create` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `login` varchar(255) NOT NULL,
-  `passwordHash` varchar(255) NOT NULL,
+  `password_hash` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `service` varchar(255) NOT NULL,
   `service_id` varchar(255) NOT NULL,

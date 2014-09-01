@@ -18,7 +18,7 @@ Yii::import('frontend.components.auth.FUserIdentity');
  * @property string $date_create
  * @property string $login
  * @property string $email
- * @property string $passwordHash
+ * @property string $password_hash
  * @property string $service
  * @property string $service_id
  * @property string $restore_code
@@ -91,7 +91,7 @@ class BFrontendUser extends BActiveRecord
     if( !empty($this->password) )
     {
       $this->restore_code = '';
-      $this->passwordHash = FUserIdentity::createPassword($this->login, $this->password);
+      $this->password_hash = FUserIdentity::createPassword($this->login, $this->password);
     }
   }
 

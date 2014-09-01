@@ -27,11 +27,14 @@ class FUserIdentity extends  CUserIdentity
    */
   public function authenticate()
   {
+    /**
+     * @var $record User
+     */
     $record = User::model()->findByAttributes(array('login' => $this->username));
 
     if( $record === null )
       $this->errorCode = self::ERROR_USERNAME_INVALID;
-    elseif( $record->passwordHash !== self::createPassword($this->username, $this->password) )
+    elseif( $record->password_hash !== self::createPassword($this->username, $this->password) )
       $this->errorCode = self::ERROR_PASSWORD_INVALID;
     elseif( $record->visible == 0 )
       $this->errorCode = self::ERROR_UNKNOWN_IDENTITY;

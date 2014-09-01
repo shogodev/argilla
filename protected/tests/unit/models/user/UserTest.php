@@ -27,9 +27,12 @@ class UserTest extends CDbTestCase
 
   public function testRegistration()
   {
+    /**
+     * @var User $model
+     */
     $model = User::model()->findByAttributes(array('login' => 'test'));
     $this->assertEquals('test@shogo.ru', $model->email);
-    $this->assertEquals(FUserIdentity::createPassword('test', '123'), $model->passwordHash);
+    $this->assertEquals(FUserIdentity::createPassword('test', '123'), $model->password_hash);
   }
 
   public function testChangePasswordWithEmptyOldPassword()
@@ -84,8 +87,11 @@ class UserTest extends CDbTestCase
     );
     $userChangePassword->save();
 
+    /**
+     * @var User $model
+     */
     $model = User::model()->findByAttributes(array('login' => 'test'));
-    $this->assertEquals(FUserIdentity::createPassword('test', '12345'), $model->passwordHash);
+    $this->assertEquals(FUserIdentity::createPassword('test', '12345'), $model->password_hash);
   }
 
   public function testGenerateRestoreCodeWithEmptyEmail()
@@ -118,7 +124,7 @@ class UserTest extends CDbTestCase
   {
     $this->user->restore_code = 'restorecode';
     $this->user->save(false);
-    $passwordHash = $this->user->passwordHash;
+    $passwordHash = $this->user->password_hash;
 
     $restore = new RestorePassword(RestorePassword::GENERATE_NEW_PASSWORD);
     $restore->attributes = array(
@@ -129,7 +135,7 @@ class UserTest extends CDbTestCase
     $this->user->refresh();
 
     $this->assertEmpty($this->user->restore_code);
-    $this->assertNotEquals($passwordHash, $this->user->passwordHash);
+    $this->assertNotEquals($passwordHash, $this->user->password_hash);
   }
 
   public function tearDown()
