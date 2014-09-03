@@ -1,7 +1,7 @@
 <?php
 /**
- * @var User $model
+ * @var RestorePassword $model
  */
 ?>
-Здравствуйте<?php echo !empty($model->user->name) ? ' '.$model->user->name : ''?>!<br />
-<br />Для продолжения процедуры восстановления вам необходимо перейди по ссылке <a href="<?php echo $restoreUrl?>"><?php echo $restoreUrl?></a>
+Здравствуйте<?php echo !empty($model->user->profile->name) ? ' '.$model->user->profile->name : ''?>!<br />
+<br />Для продолжения процедуры восстановления вам необходимо перейди по ссылке <a href="<?php echo $model->getRestoreUrl()?>"><?php echo $model->getRestoreUrl()?></a>

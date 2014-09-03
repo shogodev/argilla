@@ -1397,7 +1397,9 @@ CREATE TABLE `argilla_user` (
   `restore_code` varchar(255) NOT NULL,
   `type` varchar(255) NOT NULL DEFAULT 'user',
   `visible` tinyint(1) NOT NULL DEFAULT '1',
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `login` (`login`),
+  UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

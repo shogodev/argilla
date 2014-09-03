@@ -27,12 +27,23 @@ class UserTest extends CDbTestCase
 
   public function testRegistration()
   {
+    $login = '  TesTRegisterРуСскийЁ ';
+    $user = new User();
+    $user->setAttributes(array(
+      'login' => $login,
+      'password' => '123',
+      'confirmPassword' => '123',
+      'email' => 'testRegister@shogo.ru'
+    ));
+    $user->save();
+
+    $loginLowerCase = 'testregisterрусскийё';
     /**
      * @var User $model
      */
-    $model = User::model()->findByAttributes(array('login' => 'test'));
-    $this->assertEquals('test@shogo.ru', $model->email);
-    $this->assertEquals(FUserIdentity::createPassword('test', '123'), $model->password_hash);
+    $model = User::model()->findByAttributes(array('login' => $loginLowerCase));
+    $this->assertEquals('testregister@shogo.ru', $model->email);
+    $this->assertEquals(FUserIdentity::createPassword($loginLowerCase, '123'), $model->password_hash);
   }
 
   public function testChangePasswordWithEmptyOldPassword()
@@ -141,5 +152,6 @@ class UserTest extends CDbTestCase
   public function tearDown()
   {
     User::model()->deleteAllByAttributes(array('login' => 'test'));
+    User::model()->deleteAllByAttributes(array('login' => 'testregisterрусскийё'));
   }
 }

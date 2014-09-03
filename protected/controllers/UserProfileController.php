@@ -76,6 +76,7 @@ class UserProfileController extends FController
 
     if( Yii::app()->request->isAjaxRequest && $form->save() )
     {
+      Yii::app()->notification->send('UserChangePassword', array('model' => $form->model), $form->model->email);
       $form->responseSuccess(Yii::app()->controller->textBlockRegister(
         'Успешное изменение пароля',
         'Изменения сохранены'

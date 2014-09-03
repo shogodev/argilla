@@ -6,9 +6,15 @@
  * @license http://argilla.ru/LICENSE
  * @package frontend.components.auth
  */
-class FUserIdentity extends  CUserIdentity
+class FUserIdentity extends CUserIdentity
 {
   private $_id;
+
+  public function __construct($username, $password)
+  {
+    $this->username = User::clear($username);
+    $this->password = $password;
+  }
 
   /**
    * Создание хэша для пароля пользователя

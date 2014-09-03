@@ -52,8 +52,9 @@ class User extends FActiveRecord
   public function rules()
   {
     return array(
+      array('login, email', 'filter', 'filter' => array('User', 'clear')),
       array('login, email, password, confirmPassword', 'required', 'on' => self::SCENARIO_REGISTRATION),
-      array('email', 'unique', 'on' => self::SCENARIO_REGISTRATION),
+      array('login, email', 'unique', 'on' => self::SCENARIO_REGISTRATION),
       array('email', 'email', 'on' => self::SCENARIO_REGISTRATION),
 
       array('oldPassword, password, confirmPassword', 'required', 'on' => self::SCENARIO_CHANGE_PASSWORD),
@@ -110,5 +111,10 @@ class User extends FActiveRecord
   {
     if( FUserIdentity::createPassword($this->login, $this->oldPassword) != $this->password_hash )
       $this->addError($attribute, "Не правильно введен ".$this->getAttributeLabel($attribute));
+  }
+
+  public static function clear($login)
+  {
+    return trim(mb_strtolower($login, 'utf-8'));
   }
 }

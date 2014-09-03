@@ -58,12 +58,17 @@ class RestorePassword extends CFormModel
     if( !empty($this->errors) )
       return;
 
-    $user = $this->getUser();
-    $user->scenario = User::SCENARIO_CHANGE_PASSWORD;
-    $password = Utils::generatePassword(8);
-    $user->setAttribute('password', $password);
-    $user->doHashPassword(array(), array());
-    $user->save(false);
+    if( $user = $this->getUser() )
+    {
+      $user->scenario = User::SCENARIO_CHANGE_PASSWORD;
+      $user->type = User::TYPE_USER;
+      $password = Utils::generatePassword(8);
+      $user->setAttribute('password', $password);
+      $user->doHashPassword(array(), array());
+      $user->save(false);
+    }
+    else
+      $this->addError('error', 'Неудалось найти пользователя');
   }
 
   /**

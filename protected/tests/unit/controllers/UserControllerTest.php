@@ -151,6 +151,20 @@ class UserControllerTest extends CTestCase
     $this->controller->run('restore');
   }
 
+  /**
+   * @expectedException TRedirectException
+   * @expectedExceptionMessage Location: /user/restore/
+   */
+  public function testRestoreConfirmedWithBadCode()
+  {
+    $this->restoreUser->restore_code = 'restorecode';
+    $this->restoreUser->save(false);
+
+    $_GET['code'] = 'bad code';
+    $_SESSION = array();
+    $this->controller->run('restoreConfirmed');
+  }
+
   public function testRestoreConfirmed()
   {
     $this->restoreUser->restore_code = 'restorecode';

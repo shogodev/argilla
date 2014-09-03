@@ -52,6 +52,7 @@ class BFrontendUser extends BActiveRecord
   public function rules()
   {
     return array(
+      array('login, email', 'filter', 'filter' => array('BFrontendUser', 'clear')),
       array('login, email', 'required'),
       array('email', 'email'),
       array('email', 'unique'),
@@ -130,5 +131,10 @@ class BFrontendUser extends BActiveRecord
       $criteria->addSearchCondition('CONCAT(profile.last_name, " ", profile.name, " ", profile.patronymic)', $this->fullName, true);
 
     return $criteria;
+  }
+
+  public static function clear($login)
+  {
+    return trim(mb_strtolower($login, 'utf-8'));
   }
 }
