@@ -111,7 +111,7 @@ class BControllerTest extends CDbTestCase
      */
     $user = BFrontendUser::model()->findByAttributes(array('login' => $login));
 
-    $this->assertEquals($login, $user->login);
+    $this->assertEquals('testlogin1', $user->login);
     $this->assertEquals($name, $user->profile->name);
   }
 
