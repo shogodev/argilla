@@ -138,3 +138,9 @@ footer {
   body {
     min-width: $wrapper-width + 30px; }
 }
+.phone-number {
+  pointer-events: none;
+  cursor: default;
+  .mobile & {
+    pointer-events: auto; }
+}
