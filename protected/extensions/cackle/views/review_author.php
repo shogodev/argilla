@@ -1,0 +1,1 @@
+{avatar}<div class="mcr-recent-body"><div><span itemprop="author"  class="mcr-recent-author">{name}</span></div></div>

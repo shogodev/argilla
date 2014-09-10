@@ -1,0 +1,1 @@
+<div class="mcr-content mcr-cleanslate"><div class="mcr-reviews"><ul class="mcr-review-list">{items}</ul></div></div>
