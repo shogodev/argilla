@@ -27,78 +27,78 @@
  *
 <?php foreach($relations as $name => $relation): ?>
  * @property <?php
-	if (preg_match("~^array\(self::([^,]+), '([^']+)', '([^']+)'\)$~", $relation, $matches))
+  if (preg_match("~^array\(self::([^,]+), '([^']+)', '([^']+)'\)$~", $relation, $matches))
     {
-        $relationType = $matches[1];
-        $relationModel = $matches[2];
+      $relationType = $matches[1];
+      $relationModel = $matches[2];
 
-        switch($relationType){
-            case 'HAS_ONE':
-                echo $relationModel.' $'.$name."\n";
-            break;
-            case 'BELONGS_TO':
-                echo $relationModel.' $'.$name."\n";
-            break;
-            case 'HAS_MANY':
-                echo $relationModel.'[] $'.$name."\n";
-            break;
-            case 'MANY_MANY':
-                echo $relationModel.'[] $'.$name."\n";
-            break;
-            default:
-                echo 'mixed $'.$name."\n";
-        }
-	}
+      switch($relationType){
+          case 'HAS_ONE':
+              echo $relationModel.' $'.$name."\n";
+          break;
+          case 'BELONGS_TO':
+              echo $relationModel.' $'.$name."\n";
+          break;
+          case 'HAS_MANY':
+              echo $relationModel.'[] $'.$name."\n";
+          break;
+          case 'MANY_MANY':
+              echo $relationModel.'[] $'.$name."\n";
+          break;
+          default:
+              echo 'mixed $'.$name."\n";
+      }
+  }
     ?>
 <?php endforeach; ?>
 <?php endif; ?>
  */
 class <?php echo $modelClass; ?> extends <?php echo $this->baseClass."\n"; ?>
 {
-	public function rules()
-	{
-		return array(
+  public function rules()
+  {
+    return array(
 <?php foreach($rules as $rule): ?>
-			<?php echo $rule.",\n"; ?>
+      <?php echo $rule.",\n"; ?>
 <?php endforeach; ?>
-			array('<?php echo implode(', ', array_keys($columns)); ?>', 'safe', 'on' => 'search'),
-		);
-	}
+      array('<?php echo implode(', ', array_keys($columns)); ?>', 'safe', 'on' => 'search'),
+    );
+  }
 
 <?php if(!empty($relations)): ?>
-	public function relations()
-	{
-		return array(
+  public function relations()
+  {
+    return array(
 <?php foreach($relations as $name => $relation): ?>
-			<?php echo "'$name' => $relation,\n"; ?>
+      <?php echo "'$name' => $relation,\n"; ?>
 <?php endforeach; ?>
-		);
-	}
+    );
+  }
 
 <?php endif; ?>
   /**
    * @return BActiveDataProvider
    */
-	public function search()
-	{
-		$criteria = new CDbCriteria;
+  public function search()
+  {
+    $criteria = new CDbCriteria;
 
 <?php
 foreach($columns as $name=>$column)
 {
-	if( $column->type === 'string' )
-	{
-		echo "\t\t\$criteria->compare('$name', \$this->$name, true);\n";
-	}
-	else
-	{
-		echo "\t\t\$criteria->compare('$name', \$this->$name);\n";
-	}
+  if( $column->type === 'string' )
+  {
+    echo "\t\t\$criteria->compare('$name', \$this->$name, true);\n";
+  }
+  else
+  {
+    echo "\t\t\$criteria->compare('$name', \$this->$name);\n";
+  }
 }
 ?>
 
-		return new BActiveDataProvider($this, array(
-			'criteria' => $criteria,
-		));
-	}
+    return new BActiveDataProvider($this, array(
+      'criteria' => $criteria,
+    ));
+  }
 }

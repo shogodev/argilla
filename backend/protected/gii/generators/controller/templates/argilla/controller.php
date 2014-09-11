@@ -12,7 +12,6 @@
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.<?php echo $this->getModule()->getId(); ?>
-
  */
 class <?php echo $this->controllerClass; ?> extends <?php echo $this->baseClass."\n"; ?>
 {

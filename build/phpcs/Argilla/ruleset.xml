@@ -17,11 +17,11 @@
 
   <rule ref="Generic.CodeAnalysis.UselessOverridingMethod"/>
 
-<!--  <rule ref="Generic.Files.LineEndings">
+  <rule ref="Generic.Files.LineEndings">
     <properties>
       <property name="eolChar" value="\r\n"/>
     </properties>
-  </rule>-->
+  </rule>
 
   <rule ref="Generic.Functions.FunctionCallArgumentSpacing"/>
   <rule ref="Generic.Functions.OpeningFunctionBraceBsdAllman"/>
