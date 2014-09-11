@@ -48,14 +48,14 @@ class BGridSettings extends BActiveRecord
   }
 
   public function rules()
-	{
-		return array(
+  {
+    return array(
       array('name', 'required'),
       array('position, visible, filter', 'numerical', 'integerOnly' => true),
       array('name, header, class, type, filter', 'length', 'max' => 255),
       array('id, position, name, header', 'safe', 'on' => 'search'),
-		);
-	}
+    );
+  }
 
   public function scopes()
   {
@@ -113,6 +113,13 @@ class BGridSettings extends BActiveRecord
     );
   }
 
+  public function getHints()
+  {
+    return CMap::mergeArray(parent::getHints(), array(
+      'name' => $this->getNameHint()
+    ));
+  }
+
   /**
    * @param CDbCriteria $criteria
    *
@@ -128,5 +135,19 @@ class BGridSettings extends BActiveRecord
     $criteria->compare('header', $this->header, true);
 
     return $criteria;
+  }
+
+  protected function getNameHint()
+  {
+    $columns = CHtml::listData(BProduct::model()->metaData->columns, 'name', 'name');
+    $fields = BProductAssignment::model()->getFields();
+    array_walk($fields, function(&$element) {
+      $element = BProductAssignment::model()->toToAssignmentAttribute($element->name);
+    });
+
+    $result = CMap::mergeArray($columns, $fields);
+    asort($result);
+
+    return implode(', ', $result);
   }
 }
