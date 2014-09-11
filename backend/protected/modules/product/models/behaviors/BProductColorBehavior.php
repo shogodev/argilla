@@ -86,12 +86,12 @@ class BProductColorBehavior extends CModelBehavior
   private function getColorVariants()
   {
     $productColors = Yii::app()->db->createCommand()->selectDistinct('color_id')
-                                   ->from(BProductColor::model()->tableName())
-                                   ->where('product_id=:id')->queryColumn(array(':id' => $this->owner->id));
+      ->from(BProductColor::model()->tableName())
+      ->where('product_id=:id')->queryColumn(array(':id' => $this->owner->id));
 
     $colorVariants = Yii::app()->db->createCommand()->selectDistinct('variant_id')
-                                   ->from(BColor::model()->tableName())
-                                   ->where(array('AND', array('IN', 'id', $productColors), 'variant_id IS NOT NULL'))->queryColumn();
+      ->from(BColor::model()->tableName())
+      ->where(array('AND', array('IN', 'id', $productColors), 'variant_id IS NOT NULL'))->queryColumn();
 
     return $colorVariants;
   }

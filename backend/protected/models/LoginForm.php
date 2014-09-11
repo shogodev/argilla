@@ -34,7 +34,7 @@ class LoginForm extends CFormModel
     );
   }
 
-  public function authenticate($attribute, $params)
+  public function authenticate()
   {
     if( !$this->hasErrors() )
     {

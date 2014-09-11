@@ -14,7 +14,7 @@ class LoginValidator extends CValidator
 
   const MAX_WORDS_COUNT = 3;
 
-  protected $delimiters =  '\ \_\-';
+  protected $delimiters = '\ \_\-';
 
   /**
    * @param CModel $object

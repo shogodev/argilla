@@ -10,9 +10,9 @@ class ExCaptchaValidator extends CCaptchaValidator
 {
   protected function validateAttribute($object, $attribute)
   {
-   if( !Yii::app()->request->isAjaxRequest )
-   {
-     parent::validateAttribute($object, $attribute);
-   }
+    if( !Yii::app()->request->isAjaxRequest )
+    {
+      parent::validateAttribute($object, $attribute);
+    }
   }
 }

@@ -5,7 +5,6 @@
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
  * @package frontend.models.product
- *
  * @property integer $id
  * @property integer $parent
  * @property integer $position
@@ -18,14 +17,12 @@
  * @property integer $section
  * @property integer $section_line
  * @property integer $selection
- *
  * @property CDbCriteria $groupCriteria
  * @property ProductParameterName $group
  * @property ProductParameterVariant[] $values
  * @property ProductParameterVariant[] $variants
  * @property integer $productId
  * @property string $value
- *
  * @method static ProductParameterName model(string $class = __CLASS__)
  */
 class ProductParameterName extends FActiveRecord
@@ -102,16 +99,19 @@ class ProductParameterName extends FActiveRecord
 
   /**
    * @param CDbCriteria $criteria
+   *
    * @return $this
    */
   public function setGroupCriteria(CDbCriteria $criteria)
   {
     $this->groupCriteria = $criteria;
+
     return $this;
   }
 
   /**
    * @param CDbCriteria|null $criteria
+   *
    * @return ProductParameterName[]
    */
   public function search(CDbCriteria $criteria = null)
@@ -215,8 +215,10 @@ class ProductParameterName extends FActiveRecord
    */
   public function getParameterKeys()
   {
-    return array_reduce($this->parameters, function($result, $item){
+    return array_reduce($this->parameters, function ($result, $item)
+    {
       $result[] = $item['id'];
+
       return $result;
     }, array());
   }
@@ -234,7 +236,8 @@ class ProductParameterName extends FActiveRecord
 
   public function getParameterById($parameterId)
   {
-    return array_reduce($this->parameters, function($result, $item) use($parameterId) {
+    return array_reduce($this->parameters, function ($result, $item) use ($parameterId)
+    {
       return $parameterId == $item->id ? $item : $result;
     });
   }
@@ -259,6 +262,7 @@ class ProductParameterName extends FActiveRecord
   public function getGroupKey()
   {
     $group = $this->group;
+
     return $group ? $this->group->key : null;
   }
 
@@ -274,10 +278,14 @@ class ProductParameterName extends FActiveRecord
         return Arr::reset($this->parameters)['value'];
 
       default:
-        return implode(", ", array_reduce($this->getValues(), function($result, $item){
-          $result[] = $item['name'];
-          return $result;
-        }, array()));
+        return implode(", ", array_reduce($this->getValues(),
+          function ($result, $item)
+          {
+            $result[] = $item['name'];
+
+            return $result;
+          }, array()
+        ));
     }
   }
 }

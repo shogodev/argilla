@@ -20,7 +20,7 @@ abstract class LocationBase extends CComponent implements ILocationGenerator
   /**
    * @param CController $controller
    */
-  function __construct(CController $controller)
+  public function __construct(CController $controller)
   {
     $this->_controller = $controller;
   }

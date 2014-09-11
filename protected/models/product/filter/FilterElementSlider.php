@@ -77,14 +77,14 @@ class FilterElementSlider extends FilterElementRange implements JsonSerializable
   {
     $range = $range ? $range : $this->borderRange;
 
-    return $this->minValue - ($range ? $this->minValue%$range : 0);
+    return $this->minValue - ($range ? $this->minValue % $range : 0);
   }
 
   public function getMaxValue($range = 0)
   {
     $range = $range ? $range : $this->borderRange;
 
-    return $this->maxValue + ($range ? $range - $this->maxValue%$range : 0);
+    return $this->maxValue + ($range ? $range - $this->maxValue % $range : 0);
   }
 
   public function jsonSerialize()
@@ -120,7 +120,7 @@ class FilterElementSlider extends FilterElementRange implements JsonSerializable
   {
     $diff = $this->getMaxValue() - $this->getMinValue();
 
-    $step = preg_match('/(\d+)%/', $this->step, $matches) ? intval($diff*$matches[1]/100) : $this->step;
+    $step = preg_match('/(\d+)%/', $this->step, $matches) ? intval($diff * $matches[1] / 100) : $this->step;
 
     return $step >= $diff ? $diff : $step;
   }

@@ -84,110 +84,9 @@ class Search extends CComponent
     {
       foreach($root->childNodes as $lvl1)
       {
-        if( $lvl1->nodeName == 'request' )
-          foreach($lvl1->childNodes as $lvl8)
-          {
-            if( $lvl8->nodeName != 'page' )
-              continue;
+        $this->parseRequest($lvl1);
 
-            $this->page = $lvl8->nodeValue;
-          }
-
-        if( $lvl1->nodeName == 'response' )
-        {
-          foreach($lvl1->childNodes as $lvl2)
-          {
-            if( $lvl2->nodeName != 'results' )
-              continue;
-
-            foreach($lvl2->childNodes as $lvl3)
-            {
-              if( $lvl3->nodeName == 'grouping' )
-                $this->pageSize = $lvl3->GetAttribute('groups-on-page');
-
-              foreach($lvl3->childNodes as $lvl4)
-              {
-                if( $lvl4->nodeName == 'found' )
-                  $this->itemsCount = $lvl4->nodeValue;
-
-                if( $lvl4->nodeName == 'group' )
-                {
-                  foreach($lvl4->childNodes as $lvl5)
-                  {
-                    if( $lvl5->nodeName != 'doc' )
-                      continue;
-
-                    $searchResult[$i]['id'] = $i;
-
-                    foreach($lvl5->childNodes as $lvl6)
-                    {
-                      if( $lvl6->nodeName == 'url' )
-                      {
-                        $searchResult[$i]['url'] = $lvl6->nodeValue;
-                        $searchResult[$i]['url'] = str_replace(array("webds://", "webds/"), "http://", $searchResult[$i]['url']);
-                      }
-                      if( $lvl6->nodeName == 'title' )
-                      {
-                        $searchResult[$i]['title'] = $lvl6->nodeValue;
-                        $searchResult[$i]['title'] = $this->convert($searchResult[$i]['title']);
-
-                        foreach($lvl6->childNodes as $lvl12)
-                        {
-                          if( $lvl12->nodeName == 'hlword' )
-                          {
-                            $val1 = $this->convert($lvl12->nodeValue);
-                            if( !empty($val1) )
-                              $s1[] = $val1;
-                          }
-                        }
-
-                        if( !empty($s1) )
-                        {
-                          foreach($s1 as $value1)
-                          {
-                            if( strlen($value1) > 1 )
-                              $searchResult[$i]['title'] = str_replace($value1, " $value1 ", $searchResult[$i]['title']);
-                          }
-                        }
-                      }
-
-                      if( $lvl6->nodeName == 'passages' )
-                      {
-                        foreach($lvl6->childNodes as $lvl7)
-                        {
-                          $searchResult[$i]['content'] = $lvl7->nodeValue;
-                          $searchResult[$i]['content'] = $this->convert($searchResult[$i]['content']);
-
-                          $s = array();
-                          foreach($lvl7->childNodes as $lvl10)
-                          {
-                            if( $lvl10->nodeName == 'hlword' )
-                            {
-                              $val = $this->convert($lvl10->nodeValue);
-                              if( !empty($val) )
-                                if( strlen($val) > 1 )
-                                  $s[] = $val;
-                            }
-                          }
-
-                          usort($s, function($a, $b){return !strcmp($a, $b) ? 0 : strcmp($b, $a);});
-                        }
-                      }
-
-                      if( !empty($s) && !empty($searchResult[$i]['content']) )
-                        foreach($s as $value)
-                          $searchResult[$i]['content'] = str_replace($value, "<b class=\"red\">$value</b>", $searchResult[$i]['content']);
-                      else
-                        $searchResult[$i]['content'] = "";
-                    }
-
-                    $i++;
-                  }
-                }
-              }
-            }
-          }
-        }
+        $searchResult = $this->parseResponse($lvl1, $i, $searchResult);
       }
     }
 
@@ -195,4 +94,165 @@ class Search extends CComponent
       'pagination' => false,
     ));
   }
+
+  /**
+   * @param $lvl1
+   */
+  protected function parseRequest($lvl1)
+  {
+    if( $lvl1->nodeName == 'request' )
+    {
+      foreach($lvl1->childNodes as $lvl8)
+      {
+        if( $lvl8->nodeName != 'page' )
+          continue;
+
+        $this->page = $lvl8->nodeValue;
+      }
+    }
+  }
+
+  /**
+   * @param $lvl1
+   * @param $i
+   * @param $searchResult
+   *
+   * @return mixed
+   */
+  protected function parseResponse($lvl1, $i, $searchResult)
+  {
+    if( $lvl1->nodeName == 'response' )
+    {
+      foreach($lvl1->childNodes as $lvl2)
+      {
+        if( $lvl2->nodeName != 'results' )
+          continue;
+
+        foreach($lvl2->childNodes as $lvl3)
+        {
+          if( $lvl3->nodeName == 'grouping' )
+            $this->pageSize = $lvl3->GetAttribute('groups-on-page');
+
+          foreach($lvl3->childNodes as $lvl4)
+          {
+            if( $lvl4->nodeName == 'found' )
+              $this->itemsCount = $lvl4->nodeValue;
+
+            $searchResult = $this->parseGroup($i, $searchResult, $lvl4);
+          }
+        }
+      }
+
+      return $searchResult;
+    }
+
+    return $searchResult;
+}
+
+  /**
+   * @param $i
+   * @param $searchResult
+   * @param $lvl4
+   *
+   * @return mixed
+   */
+  protected function parseGroup($i, $searchResult, $lvl4)
+  {
+    if( $lvl4->nodeName == 'group' )
+    {
+      foreach($lvl4->childNodes as $lvl5)
+      {
+        if( $lvl5->nodeName != 'doc' )
+        continue;
+
+        $searchResult = $this->parseItem($i, $searchResult, $lvl5);
+
+        $i++;
+      }
+
+      return $searchResult;
+    }
+
+    return $searchResult;
+}
+
+  /**
+   * @param $i
+   * @param $searchResult
+   * @param $lvl5
+   *
+   * @return mixed
+   */
+  protected function parseItem($i, $searchResult, $lvl5)
+  {
+    $searchResult[$i]['id'] = $i;
+
+    foreach($lvl5->childNodes as $lvl6)
+    {
+      if( $lvl6->nodeName == 'url' )
+      {
+        $searchResult[$i]['url'] = $lvl6->nodeValue;
+        $searchResult[$i]['url'] = str_replace(array("webds://", "webds/"), "http://", $searchResult[$i]['url']);
+      }
+
+      if( $lvl6->nodeName == 'title' )
+      {
+        $searchResult[$i]['title'] = $lvl6->nodeValue;
+        $searchResult[$i]['title'] = $this->convert($searchResult[$i]['title']);
+
+        foreach($lvl6->childNodes as $lvl12)
+        {
+          if( $lvl12->nodeName == 'hlword' )
+          {
+            $val1 = $this->convert($lvl12->nodeValue);
+            if( !empty($val1) )
+              $s1[] = $val1;
+          }
+        }
+
+        if( !empty($s1) )
+        {
+          foreach($s1 as $value1)
+          {
+            if( strlen($value1) > 1 )
+              $searchResult[$i]['title'] = str_replace($value1, " $value1 ", $searchResult[$i]['title']);
+          }
+        }
+      }
+
+      if( $lvl6->nodeName == 'passages' )
+      {
+        foreach($lvl6->childNodes as $lvl7)
+        {
+          $searchResult[$i]['content'] = $lvl7->nodeValue;
+          $searchResult[$i]['content'] = $this->convert($searchResult[$i]['content']);
+
+          $s = array();
+          foreach($lvl7->childNodes as $lvl10)
+          {
+            if( $lvl10->nodeName == 'hlword' )
+            {
+              $val = $this->convert($lvl10->nodeValue);
+              if( !empty($val) )
+                if( strlen($val) > 1 )
+                  $s[] = $val;
+            }
+          }
+
+          usort($s, function ($a, $b)
+          {
+            return !strcmp($a, $b) ? 0 : strcmp($b, $a);
+          });
+        }
+      }
+
+      if( !empty($s) && !empty($searchResult[$i]['content']) )
+        foreach($s as $value)
+          $searchResult[$i]['content'] = str_replace($value, "<b class=\"red\">$value</b>", $searchResult[$i]['content']);
+      else
+        $searchResult[$i]['content'] = "";
+    }
+
+    return $searchResult;
+}
 }

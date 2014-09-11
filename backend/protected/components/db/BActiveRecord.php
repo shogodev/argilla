@@ -84,6 +84,7 @@ abstract class BActiveRecord extends CActiveRecord
    * @param array $relatedData
    * @param bool $ignoreEmptyItems
    *
+   * @return bool
    * @throws CHttpException
    */
   public function saveRelatedModels($relationName, array $relatedData, $ignoreEmptyItems = true)

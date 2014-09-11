@@ -8,9 +8,9 @@
  */
 Yii::import('frontend.models.product.filter.search.*');
 
+
 /**
  * Class Filter
- *
  * @property string $filterKey
  * @property FilterElement[] $elements
  * @property FilterRender $render
@@ -87,7 +87,7 @@ class Filter extends CComponent
 
     if( !isset($filterElement['id']) && !empty($filterElement['key']) )
       $filterElement['id'] = ProductParameterName::model()->findByAttributes(array('key' => $filterElement['key']))->id;
-    else if( empty($filterElement['key']))
+    else if( empty($filterElement['key']) )
       $filterElement['key'] = $filterElement['id'];
 
     if( empty($filterElement['type']) )
@@ -96,7 +96,7 @@ class Filter extends CComponent
     if( class_exists('FilterElement'.ucfirst($filterElement['type'])) )
       $filterElement['class'] = 'FilterElement'.$filterElement['type'];
     else
-      throw new CHttpException(500, "Не удалось найти класс 'FilterElement{$filterElement['type']}.") ;
+      throw new CHttpException(500, "Не удалось найти класс 'FilterElement{$filterElement['type']}.");
 
     /**
      * @var $element FilterElement
@@ -177,7 +177,7 @@ class Filter extends CComponent
    */
   public function setSelectedModels(array $models)
   {
-    $items = array_reduce($models, function($result, $item)
+    $items = array_reduce($models, function ($result, $item)
     {
       if( !($item instanceof FActiveRecord) )
         return null;
@@ -212,7 +212,8 @@ class Filter extends CComponent
    */
   public function getElements(array $exclude = array())
   {
-    return array_filter($this->elements, function(FilterElement $element) use ($exclude) {
+    return array_filter($this->elements, function (FilterElement $element) use ($exclude)
+    {
       return !in_array($element->id, $exclude) && count($element->getItems());
     });
   }

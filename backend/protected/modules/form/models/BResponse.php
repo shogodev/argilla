@@ -5,16 +5,13 @@
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.form.models
- *
  * @method static BResponse model(string $class = __CLASS__)
- *
  * @property string $id
  * @property string $product_id
  * @property string $name
  * @property string $email
  * @property string $content
  * @property integer $visible
- *
  * @property BProduct $product
  */
 class BResponse extends BActiveRecord
@@ -33,9 +30,9 @@ class BResponse extends BActiveRecord
   {
     return array(
       array('name', 'required'),
-      array('visible', 'numerical', 'integerOnly'=>true),
-      array('product_id', 'length', 'max'=>10),
-      array('name, email', 'length', 'max'=>255),
+      array('visible', 'numerical', 'integerOnly' => true),
+      array('product_id', 'length', 'max' => 10),
+      array('name, email', 'length', 'max' => 255),
       array('content', 'safe'),
     );
   }

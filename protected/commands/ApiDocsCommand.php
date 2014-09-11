@@ -104,9 +104,9 @@ class ApiDocsCommand extends ApiCommand
     echo $this->getHelp();
   }
 
-	public function getHelp()
+  public function getHelp()
   {
-    return <<<EOD
+    return "
 USAGE
   createapidocs build
   createapidocs check [mode]
@@ -127,8 +127,7 @@ PARAMETERS
 EXAMPLES
   * createapidocs build - builds api documentation in folder build/docs
   * createapidocs check - cheks PHPDoc @param directives
-
-EOD;
+    ".PHP_EOL;
   }
 
   protected function getFrontendApiModel()
@@ -140,7 +139,7 @@ EOD;
   protected function getBackendApiModel()
   {
     $this->importDependencies(Yii::getPathOfAlias('backend.config.backend').'.php');
-    return $this->buildModel(Yii::getPathOfAlias('backend'),  $this->backendOptions);
+    return $this->buildModel(Yii::getPathOfAlias('backend'), $this->backendOptions);
   }
 
   protected function importDependencies($configPath)

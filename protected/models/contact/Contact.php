@@ -30,7 +30,7 @@ class Contact extends FActiveRecord
   public function relations()
   {
     return array(
-      'blocks' => array(self::HAS_MANY, 'ContactTextBlock', 'contact_id', 'order'=>'b.position ASC', 'alias'=>'b'),
+      'blocks' => array(self::HAS_MANY, 'ContactTextBlock', 'contact_id', 'order' => 'b.position ASC', 'alias' => 'b'),
     );
   }
 

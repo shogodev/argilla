@@ -53,7 +53,7 @@ class BContact extends BActiveRecord
   {
     return array(
       'contactGroups' => array(self::HAS_MANY, 'BContactGroup', 'contact_id'),
-      'textblocks'    => array(self::HAS_MANY, 'BContactTextBlock', 'contact_id', 'order'=>'j.position ASC', 'alias'=>'j'),
+      'textblocks' => array(self::HAS_MANY, 'BContactTextBlock', 'contact_id', 'order' => 'j.position ASC', 'alias' => 'j'),
     );
   }
 

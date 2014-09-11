@@ -283,7 +283,7 @@ class Utils
     if( $level === null || count($elements) < $level )
       return $domain;
 
-    return implode('.', array_slice($elements,  $level * -1));
+    return implode('.', array_slice($elements, $level * -1));
   }
 
   /**

@@ -114,7 +114,7 @@ class BProductCopier extends BAbstractModelCopier
 
     foreach($thumbsSettings as $key => $value)
     {
-     $prefixList[] = $key == 'origin' ?  '' : $key.'_';
+      $prefixList[] = $key == 'origin' ? '' : $key.'_';
     }
 
     return $prefixList;

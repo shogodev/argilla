@@ -82,7 +82,7 @@ class BMetaRoute extends BActiveRecord
     foreach($routes as $value)
     {
       $key = reset($value);
-      $data[$key]['id']= $key;
+      $data[$key]['id'] = $key;
       $data[$key]['name'] = $key;
     }
 

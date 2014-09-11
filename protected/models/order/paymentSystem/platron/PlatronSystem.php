@@ -422,7 +422,7 @@ class PlatronSystem extends AbstractPaymentSystem
   protected function getSalt()
   {
     if( !$this->salt )
-      $this->salt = md5(rand(21,43433).strtotime('now').$this->order->getId());
+      $this->salt = md5(rand(21, 43433).strtotime('now').$this->order->getId());
 
     return $this->salt;
   }

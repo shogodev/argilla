@@ -38,7 +38,7 @@ class SearchController extends FController
       $criteria->addSearchCondition('name', $query);
       $criteria->limit = 10;
 
-      $command = Yii::app()->db->getCommandBuilder()->createFindCommand(Product::model()->tableName(),$criteria);
+      $command = Yii::app()->db->getCommandBuilder()->createFindCommand(Product::model()->tableName(), $criteria);
 
       $data = array();
       foreach($command->queryAll() as $value)

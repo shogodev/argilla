@@ -38,7 +38,7 @@ class ContactGroup extends FActiveRecord
   public function relations()
   {
     return array(
-      'fields' => array(self::HAS_MANY, 'ContactField', 'group_id', 'order'=>'f.position ASC', 'alias'=>'f'),
+      'fields' => array(self::HAS_MANY, 'ContactField', 'group_id', 'order' => 'f.position ASC', 'alias' => 'f'),
     );
   }
 

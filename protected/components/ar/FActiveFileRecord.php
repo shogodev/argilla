@@ -38,9 +38,15 @@ class FActiveFileRecord extends FActiveRecord
     );
   }
 
-  public function getFile(){}
+  public function getFile()
+  {
 
-  public function setFile(){}
+  }
+
+  public function setFile()
+  {
+
+  }
 
   protected function initPath()
   {

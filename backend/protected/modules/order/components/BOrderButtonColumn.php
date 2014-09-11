@@ -49,44 +49,43 @@ class BOrderButtonColumn extends BButtonColumn
       'addButton' => true,
     ));
 
-    Yii::app()->clientScript->registerScript('userSearchPopup', <<<EOD
-jQuery('body').on('click', '.items a.add', function(e){
-  e.preventDefault();
-  var options = {$assignerOptions};
+    Yii::app()->clientScript->registerScript('userSearchPopup', "
+      jQuery('body').on('click', '.items a.add', function(e){
+        e.preventDefault();
+        var options = {$assignerOptions};
 
-  var iframeUrl = $(this).attr('href');
-  var ajaxUrl = $(this).data('ajaxurl') + '?' + iframeUrl.split('?')[1];
+        var iframeUrl = $(this).attr('href');
+        var ajaxUrl = $(this).data('ajaxurl') + '?' + iframeUrl.split('?')[1];
 
-  options.callback = function(elements)
-  {
-    var ids = [];
-    $(elements).filter(':checked').each(function(){
-      ids.push($(this).attr('id').match(/pk_(\d+)/)[1]);
-    });
+        options.callback = function(elements)
+        {
+          var ids = [];
+          $(elements).filter(':checked').each(function(){
+            ids.push($(this).attr('id').match(/pk_(\d+)/)[1]);
+          });
 
-    if( !ids.length )
-      return;
+          if( !ids.length )
+            return;
 
-    var finish = function(){jQuery.fn.yiiGridView.update('{$this->grid->id}');};
-    $.post(ajaxUrl, {'ids' : ids}, finish, 'json').fail(function(xhr){ajaxUpdateError(xhr)});
-  };
+          var finish = function(){jQuery.fn.yiiGridView.update('{$this->grid->id}');};
+          $.post(ajaxUrl, {'ids' : ids}, finish, 'json').fail(function(xhr){ajaxUpdateError(xhr)});
+        };
 
-  options.iframe_load = function()
-  {
-    $('iframe').contents().on('click', '.items .select', function()
-    {
-      var elements = $('iframe').contents().find('.items .select');
-      if( elements.length > 1 )
-      {
-        elements.prop('checked', false);
-        $(this).prop('checked', true);
-      }
-    });
-  };
+        options.iframe_load = function()
+        {
+          $('iframe').contents().on('click', '.items .select', function()
+          {
+            var elements = $('iframe').contents().find('.items .select');
+            if( elements.length > 1 )
+            {
+              elements.prop('checked', false);
+              $(this).prop('checked', true);
+            }
+          });
+        };
 
-  assigner.open(iframeUrl, options);
-});
-EOD
-, CClientScript::POS_READY);
+        assigner.open(iframeUrl, options);
+      });
+    ", CClientScript::POS_READY);
   }
 }

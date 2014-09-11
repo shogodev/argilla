@@ -43,7 +43,7 @@ class RadioToggleBehavior extends CModelBehavior
     }
   }
 
-  public function afterConstruct($event)
+  public function afterConstruct()
   {
     if( empty($this->conditionAttribute) )
      throw new CHttpException('500', "В классе ".get_class($this->owner)." неуказан параметр conditionAttribute для поведения RadioToggleBehavior");

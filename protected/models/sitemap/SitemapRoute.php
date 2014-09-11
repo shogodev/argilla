@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * @author Vladimir Utenkov <utenkov@shogo.ru>
  * @link https://github.com/shogodev/argilla/

@@ -182,9 +182,9 @@ $('#selection-submit').on('click', function (e) {
 SRC;
   }
 
- protected function getSlidersScript()
- {
-  return <<<SRC
+  protected function getSlidersScript()
+  {
+    return <<<SRC
 // Слайдеры водонепроницаемости и цены
 var settings = {
   waterproofness:[0, 12, 1, [0, 12]],
@@ -228,5 +228,5 @@ $('.slider-range').each(function ()
   });
 });
 SRC;
- }
+  }
 }

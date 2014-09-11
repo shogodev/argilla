@@ -15,16 +15,16 @@
  */
 class BHint extends BActiveRecord
 {
-	public function rules()
-	{
-		return array(
-			array('model, attribute, content', 'required'),
-			array('model, attribute', 'length', 'max' => 255),
+  public function rules()
+  {
+    return array(
+      array('model, attribute, content', 'required'),
+      array('model, attribute', 'length', 'max' => 255),
       array('popup', 'numerical', 'integerOnly' => true),
 
-			array('id, model, attribute, content', 'safe', 'on'=>'search'),
-		);
-	}
+      array('id, model, attribute, content', 'safe', 'on' => 'search'),
+    );
+  }
 
   public function attributeLabels()
   {

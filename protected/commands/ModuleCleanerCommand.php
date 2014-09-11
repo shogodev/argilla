@@ -63,7 +63,6 @@ class ModuleCleanerCommand extends CConsoleCommand
 
       $moduleName = ucfirst($module).'Module';
 
-
       if( class_exists($moduleName) === false )
       {
         echo 'Класс модуля '.$moduleName.' не существует'.PHP_EOL;

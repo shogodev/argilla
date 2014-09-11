@@ -133,7 +133,7 @@ class CompareController extends FController
 
     $sectionId = Arr::get($data, 'groupId');
     if( !$sectionId )
-      $sectionId =  Arr::get($data, 'id');
+      $sectionId = Arr::get($data, 'id');
 
     $selectedSection = null;
 

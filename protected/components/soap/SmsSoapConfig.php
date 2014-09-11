@@ -135,5 +135,8 @@ class SmsSoapConfig
     return Yii::getPathOfAlias('webroot').self::PROJECT_SETTING_LOCAL_PATH;
   }
 
-  private function __clone(){}
+  private function __clone()
+  {
+
+  }
 }

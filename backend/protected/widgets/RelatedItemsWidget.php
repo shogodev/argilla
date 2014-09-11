@@ -140,34 +140,33 @@ class RelatedItemsWidget extends CWidget
 
   protected function renderCloneScript()
   {
-    Yii::app()->clientScript->registerScript(__CLASS__.$this->relation, <<<EOD
-var className = '{$this->className}';
-var button    = $('#add-item-btn-{$this->relation}');
-var itemsExp  = '[name*=' + className + '\\\\[template\\\\]]';
+    Yii::app()->clientScript->registerScript(__CLASS__.$this->relation, "
+      var className = '{$this->className}';
+      var button    = $('#add-item-btn-{$this->relation}');
+      var itemsExp  = '[name*=' + className + '\\\\[template\\\\]]';
 
-button.parents('tr').find(itemsExp).attr('disabled', 'disabled');
+      button.parents('tr').find(itemsExp).attr('disabled', 'disabled');
 
-$(button).on('click', function()
-{
-  var tr        = $(this).parents('tr');
-  var template  = tr.find('#' + className + '-template');
-  var ul        = tr.find('td ul');
-  var count     = $(ul).find('li').length;
-  var li        = template.clone();
-  var re        = /(\w+)\[(\w+)\]\[(\w+)\]/;
+      $(button).on('click', function()
+      {
+        var tr        = $(this).parents('tr');
+        var template  = tr.find('#' + className + '-template');
+        var ul        = tr.find('td ul');
+        var count     = $(ul).find('li').length;
+        var li        = template.clone();
+        var re        = /(\w+)\[(\w+)\]\[(\w+)\]/;
 
-  $(li).find(itemsExp).each(function(){
-    var name = $(this).attr('name').replace(re, '$1[new' + String(count) + '][$3]');
-    $(this).attr('name', name);
-    $(this).removeAttr('disabled');
-  });
+        $(li).find(itemsExp).each(function(){
+          var name = $(this).attr('name').replace(re, '$1[new' + String(count) + '][$3]');
+          $(this).attr('name', name);
+          $(this).removeAttr('disabled');
+        });
 
-  li.show().removeAttr('id').find('.delete').remove();
-  li.append('<a class="btn btn-alone delete" rel="tooltip" href="#" data-original-title="Удалить вариант">');
-  $(li).find('a').on('click', function(e){e.preventDefault();$(this).parents('li').remove()});
-  $(ul).append(li);
-});
-EOD
-    ,CClientScript::POS_READY);
+        li.show().removeAttr('id').find('.delete').remove();
+        li.append('<a class=\"btn btn-alone delete\" rel=\"tooltip\" href=\"#\" data-original-title=\"Удалить вариант\">');
+        $(li).find('a').on('click', function(e){e.preventDefault();$(this).parents('li').remove()});
+        $(ul).append(li);
+      });
+    ", CClientScript::POS_READY);
   }
 }

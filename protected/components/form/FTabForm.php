@@ -98,7 +98,7 @@ class FTabForm extends FForm
       $this->getModel()->validate();
 
       foreach($this->getModel()->getErrors() as $attribute => $errors)
-        $result[CHtml::activeId($this->getModel(),'['.$this->tabularKey.']'.$attribute)] = $errors;
+        $result[CHtml::activeId($this->getModel(), '['.$this->tabularKey.']'.$attribute)] = $errors;
 
       foreach($this->getElements() as $element)
         if($element instanceof self)

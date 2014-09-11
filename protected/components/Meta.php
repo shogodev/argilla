@@ -71,7 +71,7 @@ class Meta extends CApplicationComponent
   {
     parent::init();
 
-    if( ($controller = Yii::app()->controller) )
+    if( $controller = Yii::app()->controller )
     {
       $this->setController($controller);
       $this->controller->attachEventHandler('onBeforeRender', array($this, 'setRenderedModels'));

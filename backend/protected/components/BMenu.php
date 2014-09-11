@@ -139,11 +139,9 @@ class BMenu extends CComponent
   private function isModuleActive($currentModule, $id)
   {
     $controllerId = ucfirst(Yii::app()->getController()->id);
-    $keys         = array_keys($this->submodules);
+    $keys = array_keys($this->submodules);
 
-    return isset($currentModule->id) &&
-           $currentModule->id == $id &&
-           in_array(lcfirst(BApplication::cutClassPrefix($controllerId)), $keys);
+    return isset($currentModule->id) && $currentModule->id == $id && in_array(lcfirst(BApplication::cutClassPrefix($controllerId)), $keys);
   }
 
   /**

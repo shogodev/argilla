@@ -1,4 +1,4 @@
-﻿<?php
+<?php
 /**
  * @author Nikita Pimoshenko <pimoshenko@shogo.ru>
  * @link https://github.com/shogodev/argilla/

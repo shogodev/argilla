@@ -17,7 +17,7 @@ class GeneratorFactory extends CComponent
    * @param string $pathToGenerators
    * @param FController $controller
    */
-  function __construct($pathToGenerators, FController $controller)
+  public function __construct($pathToGenerators, FController $controller)
   {
     $generatorNames = new LocationGeneratorFileFilter(new DirectoryIterator($pathToGenerators));
 

@@ -21,7 +21,7 @@ class TreeviewActionsWidget extends CWidget
     }
 
     $actions = array();
-    $items   = $this->model->findAll();
+    $items = $this->model->findAll();
 
     if( method_exists($this->model, 'getTreeActions') )
       $actions = $this->model->getTreeActions();
@@ -42,34 +42,33 @@ class TreeviewActionsWidget extends CWidget
     {
       $class = $id;
       $title = $action;
-      $url   = '#';
+      $url = '#';
 
       if( is_array($action) )
       {
-        $title   = Arr::get($action, 'title', '');
-        $class   = Arr::get($action, 'class', $id);
-        $url     = Arr::get($action, 'url', '#');
-        $submit  = Arr::get($action, 'submit', false);
+        $title = Arr::get($action, 'title', '');
+        $class = Arr::get($action, 'class', $id);
+        $url = Arr::get($action, 'url', '#');
+        $submit = Arr::get($action, 'submit', false);
         $onClick = Arr::get($action, 'onClick');
       }
 
       foreach($items as $item)
       {
         $jdata[$item->id][$id] = array('disabled' => isset($item->$id) && !$item->$id ? true : false,
-                                       'toggle'   => $url === '#' ? true : false,
-                                       'url'      => $url === '#' ? '#' : $this->buildUrl($url, $item),
+          'toggle' => $url === '#' ? true : false,
+          'url' => $url === '#' ? '#' : $this->buildUrl($url, $item),
         );
       }
 
       echo CHtml::link('', $url, array('rel' => 'tooltip',
-                                       'title'       => $title,
-                                       'data-action' => $id,
-                                       'onClick'     => $onClick,
-                                       'class'       => 'btn btn-small '.$class)).PHP_EOL;
+          'title' => $title,
+          'data-action' => $id,
+          'onClick' => $onClick,
+          'class' => 'btn btn-small '.$class)).PHP_EOL;
     }
 
     echo CHtml::closeTag('div');
-
 
     $jdata = CJavaScript::encode($jdata);
 
@@ -90,14 +89,13 @@ class TreeviewActionsWidget extends CWidget
 
   private function registerScriptTreeViewActions($jdata)
   {
-    $modelId    = $this->model->id;
+    $modelId = $this->model->id;
     $modelClass = get_class($this->model);
-    $indexUrl   = Yii::app()->controller->createUrl('index');
-    $ajaxUrl    = Yii::app()->controller->createUrl('toggle', array('attribute' => '_attr_', 'id' => '_id_'));
-    $deleteUrl  = Yii::app()->controller->createUrl('delete', array('id' => '_id_'));
+    $indexUrl = Yii::app()->controller->createUrl('index');
+    $ajaxUrl = Yii::app()->controller->createUrl('toggle', array('attribute' => '_attr_', 'id' => '_id_'));
+    $deleteUrl = Yii::app()->controller->createUrl('delete', array('id' => '_id_'));
 
-    Yii::app()->clientScript->registerScript(__CLASS__.'_InitPlugin', <<<EOD
-
+    Yii::app()->clientScript->registerScript(__CLASS__.'_InitPlugin', "
       var treeActions = {$jdata};
       var modelClass  = '{$modelClass}';
       var modelId     = '{$modelId}';
@@ -130,12 +128,9 @@ class TreeviewActionsWidget extends CWidget
           }
         });
       }
+    ", CClientScript::POS_READY);
 
-EOD
-    ,CClientScript::POS_READY);
-
-    Yii::app()->clientScript->registerScript(__CLASS__, <<<EOD
-
+    Yii::app()->clientScript->registerScript(__CLASS__, "
       initTreeActions();
 
       $('#treeview-actions a').on('click', function(e)
@@ -188,9 +183,7 @@ EOD
         if( treeActions[id].visible && treeActions[id].visible.disabled === true )
           $(this).parent().addClass('disabled');
       });
-
-EOD
-      ,CClientScript::POS_READY);
+    ", CClientScript::POS_READY);
   }
 
   private function registerScriptTreeViewActionsDragAndDrop()
@@ -198,114 +191,112 @@ EOD
     $treeId = 'tree_'.get_class($this->model);
     $dragAndDropUrl = Yii::app()->controller->createUrl('info/dragAndDrop');
 
-    Yii::app()->clientScript->registerScript(__CLASS__.'_dragAndDrop', <<<EOD
+    Yii::app()->clientScript->registerScript(__CLASS__.'_dragAndDrop', "
+      var treeId = '{$treeId}';
 
-    var treeId = '{$treeId}';
+      var dragAndDropUrl = '{$dragAndDropUrl}';
+      var parentSelector;
+      var targetSelector;
 
-    var dragAndDropUrl = '{$dragAndDropUrl}';
-    var parentSelector;
-    var targetSelector;
-
-    $('ul.filetree').on('click', 'li#node_1>a', function(e){
-      e.preventDefault();
-    });
-
-    var dropCallback = function(target, draggableItem)
-    {
-      var callback = function callback(resp)
-      {
-        if( $(resp).attr('id') == treeId )
-        {
-          $('#sidebar').find('#'+treeId).html($(resp).html());
-          $('#' + treeId).treeview({'persist':'cookie', 'collapsed':true, 'animated':'fast'});
-          initTreeDragAndDrop($('#' + treeId));
-          initTreeActions();
-        }
-      }
-
-      var draggableText = draggableItem.children('a').text()
-      var targetText = target.children('a').text()
-      var current = $('#' + treeId + ' li.current').length > 0 ? $('#' + treeId + ' li.current').attr('id').match(/node_(\d+)/)[1] : 0
-
-      var dragId = draggableItem.attr('id').match(/node_(\d+)/)[1];
-      var dropId = target.attr('id').match(/node_(\d+)/)[1];
-      var parentDragId = parentSelector.attr('id').match(/node_(\d+)/)[1];
-
-      if( parentDragId == dropId )
-        return false;
-
-      if( confirm('Вы действительно хотите перенести раздел "' + draggableText + '" в "' + targetText + '"' ) )
-      {
-        $.post(dragAndDropUrl, {
-            'action' : 'move',
-            'drag' : dragId,
-            'drop' : dropId,
-            'current' : current
-          }
-          , callback);
-
-        return true;
-      }
-      else
-       return false;
-    };
-
-    var initTreeDragAndDrop = function(tree)
-    {
-      var treeItems = tree.find('li');
-
-      $(treeItems).droppable({
-        tolerance : 'pointer',
-        hoverClass: 'drop-hover',
-        greedy: true,
-        drop: function() {
-          targetSelector = $(this);
-        }
+      $('ul.filetree').on('click', 'li#node_1>a', function(e){
+        e.preventDefault();
       });
 
-      $(treeItems).draggable({
-        connectToSortable: '#' + tree.attr('id'),
-        revert: true,
-        revertDuration: 0,
-        draggableItem: null,
-        start: function() {
-          this.draggableItem = $(this);
-          parentSelector = $(this).parent().parent();
-          targetSelector = null;
-        },
-        stop: function()
+      var dropCallback = function(target, draggableItem)
+      {
+        var callback = function callback(resp)
         {
-          if( targetSelector && !dropCallback(targetSelector, this.draggableItem) )
-            return;
-
-          if ( targetSelector !== null )
+          if( $(resp).attr('id') == treeId )
           {
-            if ( targetSelector.hasClass('folder') )
+            $('#sidebar').find('#'+treeId).html($(resp).html());
+            $('#' + treeId).treeview({'persist':'cookie', 'collapsed':true, 'animated':'fast'});
+            initTreeDragAndDrop($('#' + treeId));
+            initTreeActions();
+          }
+        }
+
+        var draggableText = draggableItem.children('a').text()
+        var targetText = target.children('a').text()
+        var current = $('#' + treeId + ' li.current').length > 0 ? $('#' + treeId + ' li.current').attr('id').match(/node_(\d+)/)[1] : 0
+
+        var dragId = draggableItem.attr('id').match(/node_(\d+)/)[1];
+        var dropId = target.attr('id').match(/node_(\d+)/)[1];
+        var parentDragId = parentSelector.attr('id').match(/node_(\d+)/)[1];
+
+        if( parentDragId == dropId )
+          return false;
+
+        if( confirm('Вы действительно хотите перенести раздел \"' + draggableText + '\" в \"' + targetText + '\"' ) )
+        {
+          $.post(dragAndDropUrl, {
+              'action' : 'move',
+              'drag' : dragId,
+              'drop' : dropId,
+              'current' : current
+            }
+            , callback);
+
+          return true;
+        }
+        else
+         return false;
+      };
+
+      var initTreeDragAndDrop = function(tree)
+      {
+        var treeItems = tree.find('li');
+
+        $(treeItems).droppable({
+          tolerance : 'pointer',
+          hoverClass: 'drop-hover',
+          greedy: true,
+          drop: function() {
+            targetSelector = $(this);
+          }
+        });
+
+        $(treeItems).draggable({
+          connectToSortable: '#' + tree.attr('id'),
+          revert: true,
+          revertDuration: 0,
+          draggableItem: null,
+          start: function() {
+            this.draggableItem = $(this);
+            parentSelector = $(this).parent().parent();
+            targetSelector = null;
+          },
+          stop: function()
+          {
+            if( targetSelector && !dropCallback(targetSelector, this.draggableItem) )
+              return;
+
+            if ( targetSelector !== null )
             {
-              $(this).appendTo(targetSelector.children('ul'));
+              if ( targetSelector.hasClass('folder') )
+              {
+                $(this).appendTo(targetSelector.children('ul'));
+              }
+              else
+              {
+                var htmlContent = '<div class=\"hitarea folder-hitarea collapsable-hitarea\"></div>'+ targetSelector.html() +'<ul style=\"display: block;\"></ul>';
+                targetSelector.removeClass('file').addClass('folder collapsable').html(htmlContent);
+                $(this).appendTo(targetSelector.children('ul'));
+              }
             }
             else
+              $(this).appendTo(tree);
+
+            if( !parentSelector.children('ul').has('li').length )
             {
-              var htmlContent = '<div class="hitarea folder-hitarea collapsable-hitarea"></div>'+ targetSelector.html() +'<ul style="display: block;"></ul>';
-              targetSelector.removeClass('file').addClass('folder collapsable').html(htmlContent);
-              $(this).appendTo(targetSelector.children('ul'));
+              parentSelector.removeClass('folder')
+                .addClass('file')
+                .html('<a href=\"'+ parentSelector.children('a').attr('href') +'\">' + parentSelector.children('a').html() + '</a>');
             }
           }
-          else
-            $(this).appendTo(tree);
+        });
+      };
 
-          if( !parentSelector.children('ul').has('li').length )
-          {
-            parentSelector.removeClass('folder')
-              .addClass('file')
-              .html('<a href="'+ parentSelector.children('a').attr('href') +'">' + parentSelector.children('a').html() + '</a>');
-          }
-        }
-      });
-    };
-
-    initTreeDragAndDrop($('#' + treeId));
-EOD
-   , CClientScript::POS_READY);
+      initTreeDragAndDrop($('#' + treeId));
+    ", CClientScript::POS_READY);
   }
 }

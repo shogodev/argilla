@@ -23,7 +23,7 @@ class DateIntervalWidget extends CWidget
   public function init()
   {
     if( empty($this->rangeYears) )
-      $this->rangeYears = array(intval(date("Y")), intval(date("Y"))+1);
+      $this->rangeYears = array(intval(date("Y")), intval(date("Y")) + 1);
 
     if( empty($this->value) && isset($this->form->elements[$this->attribute]) )
       $this->value = $this->form->elements[$this->attribute];

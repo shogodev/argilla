@@ -38,7 +38,7 @@ class UserProfile extends FActiveRecord
 
   public function attributeLabels()
   {
-    return CMap::mergeArray(parent::attributeLabels() , array(
+    return CMap::mergeArray(parent::attributeLabels(), array(
       'name' => 'Имя',
       'last_name' => 'Фамилия',
       'patronymic' => 'Отчество',

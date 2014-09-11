@@ -131,7 +131,7 @@ class BProductParam extends BActiveRecord
     }
 
     $model->setAttributes($attributes);
-    $model->value = !isset($attributes['variant_id']) ? $attributes['value']: null;
+    $model->value = !isset($attributes['variant_id']) ? $attributes['value'] : null;
 
     if( !$model->save() )
     {

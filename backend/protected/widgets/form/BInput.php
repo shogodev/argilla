@@ -91,9 +91,9 @@ abstract class BInput extends TbInput
     if( isset($this->label) )
       $this->labelOptions['label'] = $this->label;
 
-    if ($this->label !== false && !in_array($this->type, array('checkbox', 'radio')) && $this->hasModel())
+    if($this->label !== false && !in_array($this->type, array('checkbox', 'radio')) && $this->hasModel())
       return $this->form->labelEx($this->model, $this->attribute, $this->labelOptions);
-    else if ($this->label !== null)
+    else if( $this->label !== null )
       return $this->label;
     else
       return '';

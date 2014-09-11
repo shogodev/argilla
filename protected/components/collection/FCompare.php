@@ -71,7 +71,7 @@ class FCompare extends FCollectionUI
 
   public function buttonChangeTab($text, $groupId, $htmlOptions = array())
   {
-    $htmlOptions['class'] = empty($htmlOptions['class']) ? $this->classChangeTab :  $htmlOptions['class'].' '.$this->classChangeTab;
+    $htmlOptions['class'] = empty($htmlOptions['class']) ? $this->classChangeTab : $htmlOptions['class'].' '.$this->classChangeTab;
     $htmlOptions['data-id'] = $groupId;
 
     return CHtml::link($text, '#', $htmlOptions);

@@ -5,9 +5,7 @@
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
  * @package frontend.components.form
- *
  * Компонент для работы с формами
- *
  * @property string returnUrl
  * @property string successMessage
  */
@@ -24,7 +22,7 @@ class FForm extends CForm
   public $inputElementClass = 'FFormInputElement';
 
   public $activeForm = array('class' => 'CActiveForm',
-                             'enableAjaxValidation' => true);
+    'enableAjaxValidation' => true);
 
   public $ajaxSubmit = true;
 
@@ -32,9 +30,9 @@ class FForm extends CForm
 
   public $validateOnChange = true;
 
-  public $autocomplete     = false;
+  public $autocomplete = false;
 
-  public $loadFromSession  = false;
+  public $loadFromSession = false;
 
   public $clearAfterSubmit = false;
 
@@ -59,7 +57,7 @@ class FForm extends CForm
   {
     if( is_string($config) )
     {
-      $pathToForm     = self::$DEFAULT_FORMS_PATH.$config;
+      $pathToForm = self::$DEFAULT_FORMS_PATH.$config;
       $this->formName = get_class($model);
     }
     else
@@ -123,7 +121,6 @@ class FForm extends CForm
 
   /**
    * Добавление всплывающего окна после отправки формы
-   *
    * @HINT сообщение добавляется только при отправки формы НЕ через ajax
    *
    * @param string $message
@@ -136,7 +133,7 @@ class FForm extends CForm
   }
 
   /**
-   * @param int    $delay
+   * @param int $delay
    * @param string $url
    *
    * @return void
@@ -144,7 +141,7 @@ class FForm extends CForm
   public function setRedirectDelay($delay, $url = null)
   {
     $this->redirectDelay = $delay;
-    $this->redirectUrl   = !empty($url) ? $url : Yii::app()->request->requestUri;
+    $this->redirectUrl = !empty($url) ? $url : Yii::app()->request->requestUri;
     $this->registerRedirectScript();
   }
 
@@ -155,7 +152,7 @@ class FForm extends CForm
    */
   public function getReturnUrl($defaultUrl = null)
   {
-    return Yii::app()->user->getState('__'.$this->formName.'ReturnUrl', $defaultUrl===null ? Yii::app()->getRequest()->getScriptUrl() : CHtml::normalizeUrl($defaultUrl));
+    return Yii::app()->user->getState('__'.$this->formName.'ReturnUrl', $defaultUrl === null ? Yii::app()->getRequest()->getScriptUrl() : CHtml::normalizeUrl($defaultUrl));
   }
 
   /**
@@ -209,16 +206,17 @@ class FForm extends CForm
       $this->activeForm['htmlOptions']['autocomplete'] = 'off';
 
     $this->activeForm['clientOptions'] = CMap::mergeArray($options, Arr::get($this->activeForm, 'clientOptions', array()));
+
     return parent::renderBegin();
   }
 
   public function renderBody()
   {
-    $output = array('{title}'       => $this->renderTitle(),
-                    '{elements}'    => $this->renderElements(),
-                    '{errors}'      => $this->getActiveFormWidget()->errorSummary($this->getModel()),
-                    '{description}' => $this->description,
-                    '{buttons}'     => $this->renderButtons());
+    $output = array('{title}' => $this->renderTitle(),
+      '{elements}' => $this->renderElements(),
+      '{errors}' => $this->getActiveFormWidget()->errorSummary($this->getModel()),
+      '{description}' => $this->description,
+      '{buttons}' => $this->renderButtons());
 
     // Рендерим представления динамически
     $output = CMap::mergeArray($output, $this->renderLayoutViews($this->layout));
@@ -242,7 +240,7 @@ class FForm extends CForm
   {
     $output = '';
 
-    if($this->title !== null)
+    if( $this->title !== null )
     {
       if( $this->getParent() instanceof self )
       {
@@ -271,35 +269,38 @@ class FForm extends CForm
 
   /**
    * Renders a single element which could be an input element, a sub-form, a string, or a button.
+   *
    * @param mixed $element the form element to be rendered. This can be either a {@link CFormElement} instance
    * or a string representing the name of the form element.
+   *
    * @return string the rendering result
    */
   public function renderElement($element)
   {
-    if(is_string($element))
+    if( is_string($element) )
     {
-      if(($e=$this[$element])===null && ($e=$this->getButtons()->itemAt($element))===null)
+      if( ($e = $this[$element]) === null && ($e = $this->getButtons()->itemAt($element)) === null )
         return $element;
       else
-        $element=$e;
+        $element = $e;
     }
-    if($element->getVisible())
+    if( $element->getVisible() )
     {
-      if($element instanceof CFormInputElement)
+      if( $element instanceof CFormInputElement )
       {
-        if($element->type==='hidden')
+        if( $element->type === 'hidden' )
           return "<div style=\"visibility:hidden\">\n".$element->render()."</div>\n";
         else
         {
           return $element->render()."\n";
         }
       }
-      else if($element instanceof CFormButtonElement)
+      else if( $element instanceof CFormButtonElement )
         return $element->render()."\n";
       else
         return $element->render();
     }
+
     return '';
   }
 
@@ -334,6 +335,7 @@ class FForm extends CForm
 
   /**
    * Посылает сообщение о успешной обработке данных
+   *
    * @param string $message - сообщение
    * @param bool $scrollOnMessage - скролить страницу на сообщение
    * @param array $responseData
@@ -350,7 +352,6 @@ class FForm extends CForm
 
   /**
    * Валидация и сохранение данных в модель
-   *
    * @return bool
    * @throws CHttpException
    */
@@ -409,7 +410,7 @@ class FForm extends CForm
     // todo: сделать проверку на password и не сохранять его
     if( $this->getModel() !== null && Yii::app()->request->isPostRequest )
     {
-      $class         = get_class($this->getModel());
+      $class = get_class($this->getModel());
       $sessionParams = Yii::app()->request->getPost($class, array());
 
       if( !isset(Yii::app()->session['form_'.$class]) )
@@ -420,7 +421,7 @@ class FForm extends CForm
     }
 
     foreach($this->getElements() as $element)
-      if($element instanceof self)
+      if( $element instanceof self )
         $element->saveToSession();
   }
 
@@ -441,7 +442,7 @@ class FForm extends CForm
     }
 
     foreach($this->getElements() as $element)
-      if($element instanceof self)
+      if( $element instanceof self )
         $element->loadFromSession();
   }
 
@@ -469,10 +470,10 @@ class FForm extends CForm
       $this->getModel()->validate();
 
       foreach($this->getModel()->getErrors() as $attribute => $errors)
-        $result[CHtml::activeId($this->getModel(),$attribute)] = $errors;
+        $result[CHtml::activeId($this->getModel(), $attribute)] = $errors;
 
       foreach($this->getElements() as $element)
-        if($element instanceof self)
+        if( $element instanceof self )
           $result = CMap::mergeArray($result, $element->performAjaxValidation());
     }
 
@@ -518,7 +519,7 @@ class FForm extends CForm
       {
         $name = Utils::translite($file->name, false);
 
-        while( file_exists($model->uploadPath.$name) )
+        while(file_exists($model->uploadPath.$name))
           $name = Utils::doCustomFilename($name);
 
         $path = $model->uploadPath.$name;
@@ -534,10 +535,10 @@ class FForm extends CForm
           }
           else
           {
-            $fileModel         = new $model->fileModel;
-            $fileModel->name   = $name;
+            $fileModel = new $model->fileModel;
+            $fileModel->name = $name;
             $fileModel->parent = $model->id;
-            $fileModel->size   = Yii::app()->format->formatSize($file->size);
+            $fileModel->size = Yii::app()->format->formatSize($file->size);
           }
 
           if( !$fileModel->save() )
@@ -551,7 +552,6 @@ class FForm extends CForm
 
   /**
    * Создание скрипта для редиректа после сабмита формы
-   *
    * @return void
    */
   protected function registerRedirectScript()
@@ -585,15 +585,15 @@ class FForm extends CForm
       $button->attributes['ajax'] = array();
 
     $button->attributes['ajax'] = CMap::mergeArray(array(
-      'type'       => 'POST',
-      'dataType'   => 'json',
+      'type' => 'POST',
+      'dataType' => 'json',
       'beforeSend' => 'function(){
         //$("#'.$this->getActiveFormWidget()->id.'").data("settings").submitting = true;
         $.mouseLoader(true);
       }',
-      'url'        => $this->action,
-      'success'    => 'function(resp){checkResponse(resp, $("#'.$this->getActiveFormWidget()->id.'"))}',
-      'error'      => 'function(resp){alert(resp.responseText)}',
+      'url' => $this->action,
+      'success' => 'function(resp){checkResponse(resp, $("#'.$this->getActiveFormWidget()->id.'"))}',
+      'error' => 'function(resp){alert(resp.responseText)}',
     ), $button->attributes['ajax']);
 
     $button->attributes['id'] = $this->getActiveFormWidget()->id.'_'.$button->name;

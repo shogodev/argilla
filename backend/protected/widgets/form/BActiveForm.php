@@ -29,7 +29,7 @@ class BActiveForm extends TbActiveForm
   {
     parent::run();
 
-    Yii::app()->clientScript->registerScript(__CLASS__.'AjaxError#'.$this->id,'
+    Yii::app()->clientScript->registerScript(__CLASS__.'AjaxError#'.$this->id, '
       $(document).ajaxError(function(event, xhr){
         ajaxUpdateError(xhr);
       });'

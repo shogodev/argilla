@@ -9,9 +9,7 @@
 class SubdomainAuth extends CComponent
 {
   const ACTION_LOGIN = 'login';
-  
   const ACTION_LOGOUT = 'logout';
-  
   /**
    * @var CDbHttpSession
    */
@@ -101,7 +99,7 @@ class SubdomainAuth extends CComponent
       'userId' => $id,
       'action' => $action
     );
-    
+
     $this->storage->writeSession($userUniqueHash, serialize($data));
   }
 

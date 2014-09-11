@@ -1,5 +1,4 @@
 <?php
-
 /**
  * @author Sergey Glagolev <glagolev@shogo.ru>
  * @link https://github.com/shogodev/argilla/

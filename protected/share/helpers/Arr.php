@@ -29,8 +29,7 @@ class Arr
   }
 
   /**
-   * вырезаем ключ из массива
-   *
+   * Вырезает ключ из массива
    * @static
    *
    * @param      $array
@@ -59,13 +58,13 @@ class Arr
   /**
    * Retrieves multiple keys from an array. If the key does not exist in the
    * array, the default value will be added instead.
-   *     // Get the values "username", "password" from $_POST
-   *     $auth  = Arr::extract($_POST, array('username', 'password'));
-   *     $param = Arr::extract($_POST, $param);
+   * Get the values "username", "password" from $_POST
+   * $auth  = Arr::extract($_POST, array('username', 'password'));
+   * $param = Arr::extract($_POST, $param);
    *
-   * @param   array   array to extract keys from
-   * @param   mixed   key or list of key names
-   * @param   mixed   default value
+   * @param array array to extract keys from
+   * @param mixed key or list of key names
+   * @param mixed default value
    *
    * @return  mixed
    */
@@ -89,7 +88,8 @@ class Arr
   }
 
   /**
-   * возвращаем первый эелемент массива
+   * Возвращает первый элемент массива
+   *
    * @param mixed $array
    *
    * @return mixed $first_value
@@ -97,11 +97,13 @@ class Arr
   public static function reset(array $array)
   {
     $item = reset($array);
+
     return $item;
   }
 
   /**
-   * возвращаем последний эелемент массива
+   * Возвращает последний элемент массива
+   *
    * @param mixed $array
    *
    * @return mixed $last_value
@@ -109,11 +111,13 @@ class Arr
   public static function end(array $array)
   {
     $item = end($array);
+
     return $item;
   }
 
   /**
-   * Провеворка массива на наличие ключей
+   * Проверка массива на наличие ключей
+   *
    * @param array $search
    * @param mixed $keys
    *
@@ -142,8 +146,9 @@ class Arr
   }
 
   /**
-   *  Преобразуем объект данных в ассоциативный массив
-   * @param  $obj
+   * Преобразует объект данных в ассоциативный массив
+   *
+   * @param $obj
    *
    * @return array
    */
@@ -169,7 +174,8 @@ class Arr
   }
 
   /**
-   * проверим, пересекаются ли два массива
+   * Проверим, пересекаются ли два массива
+   *
    * @param mixed $arr1
    * @param mixed $arr2
    *
@@ -178,13 +184,14 @@ class Arr
   public static function isIntersec(array $arr1 = array(), array $arr2 = array())
   {
     $intersec = array_intersect($arr1, $arr2);
+
     return !empty($intersec);
   }
 
   /**
-   * Выполняем trim над всеми элементами массива
+   * Выполняет trim над всеми элементами массива
    *
-   * @param array  $array
+   * @param array $array
    * @param string $charlist
    *
    * @return array $array
@@ -223,7 +230,7 @@ class Arr
   /**
    * @static
    *
-   * @param       $glue
+   * @param $glue
    * @param array $array
    *
    * @return mixed
@@ -266,16 +273,18 @@ class Arr
   /**
    * Объединение ассоциативных массивов.
    * В отличие от CMap::mergeArray перекрывает целочисленные ключи, а не увеличивает индекс элементов
+   *
    * @param array $a
    * @param array $b
+   *
    * @return array
    */
   public static function mergeAssoc(array $a, array $b)
   {
     $args = func_get_args();
-    $res  = array_shift($args);
+    $res = array_shift($args);
 
-    while( !empty($args) )
+    while(!empty($args))
     {
       $next = array_shift($args);
       foreach($next as $k => $v)
@@ -338,15 +347,15 @@ class Arr
 
     $array_head = array_slice($array, 0, $counter, true);
     $array_tail = array_slice($array, $counter, null, true);
-    $array      = self::mergeAssoc($array_head, array($itemKey => $item));
-    $array      = self::mergeAssoc($array, $array_tail);
+    $array = self::mergeAssoc($array_head, array($itemKey => $item));
+    $array = self::mergeAssoc($array, $array_tail);
   }
 
   /**
-   * @param $array - масив элементы которого нужно отфильтровать
+   * @param $array - массив элементы которого нужно отфильтровать
    * @param string|array $keys - ключ или массив ключей элементов $array которые нужно сравнить с $value
    * @param $value
-   * @param $condition - OR или AND условие срамнения нескольких ключей
+   * @param $condition - OR или AND условие сравнения нескольких ключей
    *
    * @return array
    */
@@ -355,7 +364,7 @@ class Arr
     $keys = !is_array($keys) ? array($keys) : $keys;
     $condition = strtolower($condition);
 
-    return array_filter($array, function($element) use ($keys, $value, $condition)
+    return array_filter($array, function ($element) use ($keys, $value, $condition)
     {
       foreach($keys as $key)
       {
@@ -383,7 +392,8 @@ class Arr
   public static function flatten(array $array)
   {
     $result = array();
-    array_walk_recursive($array, function ($value, $key) use (&$result) {
+    array_walk_recursive($array, function ($value, $key) use (&$result)
+    {
       $result[$key] = $value;
     });
 

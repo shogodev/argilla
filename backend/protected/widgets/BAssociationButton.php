@@ -54,7 +54,7 @@ class BAssociationButton extends CWidget
       'data-ajaxurl' => $this->ajaxUrl,
       'href' => '#'.($this->count ? $this->count : ''),
       'onClick' => 'assigner.ajaxHandler(this,'.CJavaScript::encode($this->assignerOptions).')',
-    ), $this->count ?  '<span>'.$this->count.'</span>' : '');
+    ), $this->count ? '<span>'.$this->count.'</span>' : '');
   }
 
   protected function getAssociationsCount($parameters)

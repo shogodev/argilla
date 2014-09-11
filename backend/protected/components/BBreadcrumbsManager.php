@@ -112,7 +112,7 @@ class BBreadcrumbsManager
     $controllerName  = $this->module->defaultController;
     $controllerClass = ucfirst($controllerName).'Controller';
 
-    if( @class_exists($controllerClass) === false )
+    if( class_exists($controllerClass, false) === false )
       throw new BBreadcrumbsManagerException('Невозможно найти класс '.$controllerClass);
 
     $this->defaultModuleController = new $controllerClass($controllerName);

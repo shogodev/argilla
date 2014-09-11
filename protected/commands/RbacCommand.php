@@ -158,7 +158,7 @@ class RbacCommand extends CConsoleCommand
     Yii::import('backend.modules.'.$module.'.*');
     $moduleName = ucfirst($module).'Module';
 
-    if( @class_exists($moduleName) !== false )
+    if( class_exists($moduleName, false) !== false )
     {
       echo "Найден модуль: $module\n";
 
@@ -274,7 +274,7 @@ class RbacCommand extends CConsoleCommand
 
     $criteria = new CDbCriteria();
     $criteria->compare('title', $title);
-    $criteria->compare('type',CAuthItem::TYPE_ROLE);
+    $criteria->compare('type', CAuthItem::TYPE_ROLE);
     $criteria->compare('name', $this->roleSystemName);
 
     $this->root = BRbacRole::model()->find($criteria);

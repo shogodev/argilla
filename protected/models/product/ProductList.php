@@ -125,7 +125,7 @@ class ProductList extends CComponent
     $builder = new CDbCommandBuilder(Yii::app()->db->getSchema());
     $command = $builder->createFindCommand($productModel->tableName(), $this->getFilterCriteria());
 
-    return CHtml::listData($command->queryAll(),'id', 'id') ;
+    return CHtml::listData($command->queryAll(), 'id', 'id') ;
   }
 
   public function getCacheKey()

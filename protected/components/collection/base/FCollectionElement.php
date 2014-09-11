@@ -64,9 +64,8 @@ class FCollectionElement extends CComponent implements JsonSerializable
 
   /**
    * @param FCollectionElement $element
-
    *
-*@return bool
+   * @return bool
    */
   public function merge($element)
   {
@@ -83,9 +82,8 @@ class FCollectionElement extends CComponent implements JsonSerializable
 
   /**
    * @param FCollectionElement $element
-
    *
-*@return bool
+   * @return bool
    */
   public function compare($element)
   {
@@ -310,6 +308,7 @@ class FCollectionElement extends CComponent implements JsonSerializable
     }
 
     ksort($ids);
+
     return $ids;
   }
 }

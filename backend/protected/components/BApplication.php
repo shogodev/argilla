@@ -25,7 +25,6 @@ class BApplication extends CWebApplication
   /**
    * Получение id контроллера из BModule::$controllerMap
    * если он не находится, то возвращается обычный ID контроллера
-   *
    * @return string
    */
   public static function getMappedControllerId()
@@ -33,7 +32,8 @@ class BApplication extends CWebApplication
     $controllerMap = Yii::app()->controller->module->controllerMap;
     $controllerClass = get_class(Yii::app()->controller);
     $mappedId = array_search($controllerClass, $controllerMap);
-    return $mappedId ?: Yii::app()->controller->id;
+
+    return $mappedId ? : Yii::app()->controller->id;
   }
 
   public function getFrontendRoot()
@@ -70,8 +70,7 @@ class BApplication extends CWebApplication
 
           alert(err);
         }
-      }'
-    , CClientScript::POS_HEAD);
+      }', CClientScript::POS_HEAD);
   }
 
   protected function init()
@@ -92,6 +91,6 @@ class BApplication extends CWebApplication
   protected function setMbEncoding()
   {
     mb_internal_encoding("UTF-8");
-    mb_http_output("UTF-8" );
+    mb_http_output("UTF-8");
   }
 }

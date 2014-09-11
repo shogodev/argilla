@@ -21,7 +21,7 @@ class StringBuilder
     $this->string = $string;
   }
 
-  function __toString()
+  public function __toString()
   {
     return $this->string;
   }

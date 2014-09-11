@@ -39,8 +39,8 @@ class BContactGroup extends BActiveRecord
   {
     return array(
       array('contact_id, name, sysname', 'required'),
-      array('id, contact_id, position, visible', 'numerical', 'integerOnly'=>true),
-      array('name', 'length', 'max'=>45),
+      array('id, contact_id, position, visible', 'numerical', 'integerOnly' => true),
+      array('name', 'length', 'max' => 45),
     );
   }
 
@@ -51,7 +51,7 @@ class BContactGroup extends BActiveRecord
   {
     return array(
       'contact' => array(self::BELONGS_TO, 'BContact', 'contact_id'),
-      'contactFields' => array(self::HAS_MANY, 'BContactField', 'group_id', 'order'=>'j.position ASC', 'alias'=>'j'),
+      'contactFields' => array(self::HAS_MANY, 'BContactField', 'group_id', 'order' => 'j.position ASC', 'alias' => 'j'),
     );
   }
 

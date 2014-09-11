@@ -28,9 +28,9 @@ class BContactField extends BActiveRecord
   {
     return array(
       array('group_id, value', 'required'),
-      array('id, group_id, position, visible', 'numerical', 'integerOnly'=>true),
-      array('value', 'length', 'max'=>512),
-      array('description', 'length', 'max'=>128),
+      array('id, group_id, position, visible', 'numerical', 'integerOnly' => true),
+      array('value', 'length', 'max' => 512),
+      array('description', 'length', 'max' => 128),
     );
   }
 

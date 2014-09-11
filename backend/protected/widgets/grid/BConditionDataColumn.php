@@ -63,13 +63,16 @@ class BConditionDataColumn extends BDataColumn
     try
     {
       $reflectionProperty = new ReflectionProperty($className, $property);
-      if ($reflectionProperty->isPublic() )
+      if( $reflectionProperty->isPublic() )
+      {
         return true;
+      }
     }
     catch(ReflectionException $e)
     {
-     return false;
+      return false;
     }
+
     return false;
   }
 }

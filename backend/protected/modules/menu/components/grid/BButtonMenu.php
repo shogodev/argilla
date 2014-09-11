@@ -21,7 +21,7 @@ class BButtonMenu extends BButtonColumn
 
     $this->buttons['updateItem'] = array(
       'label' => '',
-      'url'=>'Yii::app()->controller->createUrl("menuCustomItem/update", array("id" => $data->primaryKey, "popup" => true))',
+      'url' => 'Yii::app()->controller->createUrl("menuCustomItem/update", array("id" => $data->primaryKey, "popup" => true))',
       'click' => new CJavaScriptExpression($script),
       'options' => array(
         'rel' => 'tooltip',

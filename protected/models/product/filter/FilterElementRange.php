@@ -55,7 +55,7 @@ class FilterElementRange extends FilterElement
 
     if( $range[1] < self::MAX_RANGE )
     {
-      $data[] = 'до '.Yii::app()->format->formatNumber($range[1] + ($range[1]%100 ? 1 : 0)).' '.$postfix;
+      $data[] = 'до '.Yii::app()->format->formatNumber($range[1] + ($range[1] % 100 ? 1 : 0)).' '.$postfix;
     }
     else
     {

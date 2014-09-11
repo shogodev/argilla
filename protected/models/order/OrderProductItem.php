@@ -24,8 +24,8 @@ class OrderProductItem extends FActiveRecord
     return array(
       array('order_product_id, name, value', 'required'),
       array('amount', 'numerical', 'integerOnly' => true),
-      array('order_product_id', 'length', 'max'=>10),
-      array('type, name, value, pk, price', 'length', 'max'=>255),
+      array('order_product_id', 'length', 'max' => 10),
+      array('type, name, value, pk, price', 'length', 'max' => 255),
       array('id, order_product_id, type, name, amount, value', 'safe', 'on' => 'search'),
     );
   }

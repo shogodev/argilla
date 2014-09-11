@@ -124,13 +124,13 @@ return array_merge_recursive(array(
     ),
 
     'cache' => array(
-      'class'=>'system.caching.CDummyCache',
+      'class' => 'system.caching.CDummyCache',
     ),
   ),
 
   'params' => array(
-    'mode'        => 'frontend',
-    'salt'        => 'random_salt',
+    'mode' => 'frontend',
+    'salt' => 'random_salt',
   ),
 
   'sourceLanguage' => 'ru_ru',

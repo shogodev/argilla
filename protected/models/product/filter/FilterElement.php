@@ -82,10 +82,10 @@ abstract class FilterElement extends CComponent
   }
 
   /**
- * @param $itemId
- *
- * @return bool
- */
+  * @param $itemId
+  *
+  * @return bool
+  */
   public function isItemSelected($itemId)
   {
     return $this->parent->state->isSelected($this->id, $itemId);

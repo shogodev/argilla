@@ -8,24 +8,24 @@
  */
 class FFormInputElement extends CFormInputElement
 {
-  public static $coreTypes=array(
-    'text'=>'activeTextField',
-    'hidden'=>'activeHiddenField',
-    'password'=>'activePasswordField',
-    'textarea'=>'activeTextArea',
-    'file'=>'activeFileField',
-    'radio'=>'activeRadioButton',
-    'checkbox'=>'activeCheckBox',
-    'listbox'=>'activeListBox',
-    'dropdownlist'=>'activeDropDownList',
-    'checkboxlist'=>'activeCheckBoxList',
-    'radiolist'=>'activeRadioButtonList',
-    'url'=>'activeUrlField',
-    'email'=>'activeEmailField',
-    'number'=>'activeNumberField',
-    'range'=>'activeRangeField',
-    'date'=>'activeDateField',
-    'tel'=>'activeTelField'
+  public static $coreTypes = array(
+    'text' => 'activeTextField',
+    'hidden' => 'activeHiddenField',
+    'password' => 'activePasswordField',
+    'textarea' => 'activeTextArea',
+    'file' => 'activeFileField',
+    'radio' => 'activeRadioButton',
+    'checkbox' => 'activeCheckBox',
+    'listbox' => 'activeListBox',
+    'dropdownlist' => 'activeDropDownList',
+    'checkboxlist' => 'activeCheckBoxList',
+    'radiolist' => 'activeRadioButtonList',
+    'url' => 'activeUrlField',
+    'email' => 'activeEmailField',
+    'number' => 'activeNumberField',
+    'range' => 'activeRangeField',
+    'date' => 'activeDateField',
+    'tel' => 'activeTelField'
   );
 
   public $layout = null;
@@ -45,7 +45,7 @@ class FFormInputElement extends CFormInputElement
     $output = array(
       '{label}' => $this->renderLabel(),
       '{input}' => $this->renderInput(),
-      '{hint}'  => $this->renderHint(),
+      '{hint}' => $this->renderHint(),
       '{error}' => $this->getParent()->showErrorSummary ? '' : $this->renderError(),
     );
 
@@ -54,7 +54,7 @@ class FFormInputElement extends CFormInputElement
 
   public function getLabel()
   {
-    if($this->_label!==null)
+    if( $this->_label !== null )
       return $this->_label;
     else
       return $this->getParent()->getModel()->getAttributeLabel(preg_replace('/(\[\w+\])?(\w+)/', '$2', $this->name));
@@ -70,21 +70,22 @@ class FFormInputElement extends CFormInputElement
 
   public function renderInput()
   {
-    if(isset(self::$coreTypes[$this->type]))
+    if( isset(self::$coreTypes[$this->type]) )
     {
-      $method=self::$coreTypes[$this->type];
-      if(strpos($method,'List')!==false)
+      $method = self::$coreTypes[$this->type];
+      if( strpos($method, 'List') !== false )
         return CHtml::$method($this->getParent()->getModel(), $this->name, $this->items, $this->attributes);
       else
         return CHtml::$method($this->getParent()->getModel(), $this->name, $this->attributes);
     }
     else
     {
-      $attributes=$this->attributes;
-      $attributes['model']=$this->getParent()->getModel();
-      $attributes['attribute']=$this->name;
+      $attributes = $this->attributes;
+      $attributes['model'] = $this->getParent()->getModel();
+      $attributes['attribute'] = $this->name;
       ob_start();
       $this->getParent()->getOwner()->widget($this->type, $attributes);
+
       return ob_get_clean();
     }
   }

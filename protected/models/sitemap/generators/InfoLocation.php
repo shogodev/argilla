@@ -11,7 +11,7 @@ class InfoLocation extends LocationBase
   /**
    * @param CController $controller
    */
-  function __construct(CController $controller)
+  public function __construct(CController $controller)
   {
     parent::__construct($controller);
 

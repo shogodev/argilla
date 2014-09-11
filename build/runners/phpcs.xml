@@ -3,15 +3,16 @@
     <if>
       <isset property="ci"/>
       <then>
-        <PhpCodeSniffer standard="build/phpcs/Argilla/ruleset.xml" encoding="utf-8">
-          <fileset dir="${checkdir}" excludesfile="build/phpcs/exclude.patterns"/>
+        <exec command="mkdir 'build/logs/'"/>
+        <phpcodesniffer standard="build/phpcs/Argilla/ruleset.xml" encoding="utf-8">
+          <fileset dir="${checkdir}" includes="**/*.php"/>
           <formatter type="checkstyle" outfile="build/logs/checkstyle_${log}.xml"/>
-        </PhpCodeSniffer>
+        </phpcodesniffer>
       </then>
       <else>
-        <PhpCodeSniffer standard="build/phpcs/Argilla/ruleset.xml" encoding="utf-8">
-          <fileset dir="${checkdir}" excludesfile="build/phpcs/exclude.patterns"/>
-        </PhpCodeSniffer>
+        <phpcodesniffer standard="build/phpcs/Argilla/ruleset.xml" encoding="utf-8">
+          <fileset dir="${checkdir}" includes="**/*.php"/>
+        </phpcodesniffer>
       </else>
     </if>
   </target>

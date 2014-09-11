@@ -41,7 +41,7 @@ class BBanner extends BActiveRecord
       array('title', 'length', 'max' => 128),
       array('url, code', 'length', 'max' => 512),
       array('location, title, url, pagelist, swf_w, swf_h, new_window, visible, pagelist_exc', 'safe'),
-  );
+    );
   }
 
   public function behaviors()

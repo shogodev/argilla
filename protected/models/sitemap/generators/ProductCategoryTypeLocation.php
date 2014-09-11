@@ -10,7 +10,7 @@
  */
 class ProductCategoryTypeLocation extends LocationBase
 {
-  function __construct(CController $controller)
+  public function __construct(CController $controller)
   {
     parent::__construct($controller);
 

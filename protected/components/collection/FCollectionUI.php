@@ -489,7 +489,7 @@ class FCollectionUI extends FCollection
    */
   protected function appendHtmlOption(&$htmlOptions, $value, $key = 'class')
   {
-    $htmlOptions[$key] = !isset($htmlOptions[$key]) ? $value :  $htmlOptions[$key].' '.$value;
+    $htmlOptions[$key] = !isset($htmlOptions[$key]) ? $value : $htmlOptions[$key].' '.$value;
   }
 
   /**

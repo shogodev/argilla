@@ -66,7 +66,7 @@ class BasketController extends FController
       if( !Yii::app()->user->isGuest )
       {
         $orderForm->model->setAttributes(array(
-          'name' =>Yii::app()->user->data->name,
+          'name' => Yii::app()->user->data->name,
           'address' => Yii::app()->user->data->address,
           'email' => Yii::app()->user->email
         ));

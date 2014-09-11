@@ -45,4 +45,4 @@
       protected/yiic cacklesync
 
 5) Прописываем команду обновления в cron
-  * */1 * * * /usr/local/bin/php /usr/www/проект/html/protected/yiic cacklesync 1>/dev/null
+  0 4 */1 * * /usr/local/bin/php /usr/www/проект/html/protected/yiic cacklesync 1>/dev/null

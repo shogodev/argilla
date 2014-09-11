@@ -49,7 +49,7 @@ class DateFilterBehavior extends DateFormatBehavior
     $validator->on = array('search' => 'search');
     $this->owner->validatorList->add($validator);
 
-   $this->owner->attachEventHandler('onBeforeSearch', array($this, 'beforeSearch'));
+    $this->owner->attachEventHandler('onBeforeSearch', array($this, 'beforeSearch'));
   }
 
   public function beforeSearch(CEvent $event)
