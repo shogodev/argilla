@@ -23,7 +23,7 @@ class SubdomainAuth extends CComponent
   public function __construct($salt, $connectionID)
   {
     $this->salt = $salt;
-    $this->storage = $this->getDBAuthStorage($connectionID);
+    $this->storage = $this->getDbAuthStorage($connectionID);
   }
 
   public function autoLogin(CommonSubdomainUser $user)
@@ -77,7 +77,7 @@ class SubdomainAuth extends CComponent
    *
    * @return CDbHttpSession
    */
-  private function getDBAuthStorage($connectionID)
+  private function getDbAuthStorage($connectionID)
   {
     $storage = new CDbHttpSession();
     $storage->connectionID = $connectionID;

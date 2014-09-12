@@ -53,7 +53,7 @@ class FCollectionElement extends CComponent implements JsonSerializable
 
   public function validate()
   {
-    if( in_array($this->type, array(FCollectionElement::COLLECTION, FCollectionElement::CUSTOM)) )
+    if( in_array($this->type, array(self::COLLECTION, self::CUSTOM)) )
       return true;
 
     if( $this->createObject() )

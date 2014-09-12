@@ -75,7 +75,7 @@ class BFrontendMenuItem extends BActiveRecord
   {
     if( !empty($this->type) && class_exists($this->type) )
     {
-      $className   = $this->type;
+      $className = $this->type;
       $this->setModel($className::model()->findByPk($this->item_id));
     }
 

@@ -55,7 +55,7 @@ class DateFormatBehaviorTest extends CTestCase
     $model->id = 5;
     $model->save();
     $model = TDateFormatTestModel::model()->findByPk(5);
-    $this->assertEquals(date('d.m.Y') , $model->date);
+    $this->assertEquals(date('d.m.Y'), $model->date);
   }
 
   public function tearDown()

@@ -390,7 +390,7 @@ class BInputHorizontal extends BInput
   protected function association()
   {
     if( isset($this->data['label']) )
-      $this->label = Arr::cut($this->data, 'label', '') ;
+      $this->label = Arr::cut($this->data, 'label', '');
 
     echo $this->getLabel();
     echo '<td>';

@@ -17,7 +17,7 @@ return [
   'link7' => ['section_id' => 1, 'email' => 'link7@email.org', 'visible' => 0, 'page' => 2],
   'link8' => ['section_id' => 1, 'email' => 'link8@email.org', 'visible' => 0, 'page' => 2],
 
-  'link9'  => ['section_id' => 2, 'email' => 'link9@email.org',  'visible' => 1, 'page' => 2, 'position' => 5],
+  'link9' => ['section_id' => 2, 'email' => 'link9@email.org', 'visible' => 1, 'page' => 2, 'position' => 5],
   'link10' => ['section_id' => 2, 'email' => 'link10@email.org', 'visible' => 1, 'page' => 2, 'position' => 6],
   'link11' => ['section_id' => 2, 'email' => 'link11@email.org', 'visible' => 1, 'page' => 2, 'position' => 7],
 

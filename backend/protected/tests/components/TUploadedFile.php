@@ -5,23 +5,27 @@
  */
 class TUploadedFile
 {
-  public static $testFile = array('name'     => 'img.jpg',
-                                  'tmp_name' => '/var/tmp/tmpimg.jpg',
-                                  'type'     => 'image/jpg',
-                                  'size'     => 100,
-                                  'error'    => 0
-                                 );
+  public static $testFile = array(
+    'name' => 'img.jpg',
+    'tmp_name' => '/var/tmp/tmpimg.jpg',
+    'type' => 'image/jpg',
+    'size' => 100,
+    'error' => 0
+  );
 
   public static function init()
   {
-    $mock = PHPUnit_Framework_MockObject_Generator::getMock('CUploadedFile',
-                                                             array('saveAs'),
-                                                             array(self::$testFile['name'],
-                                                                   self::$testFile['tmp_name'],
-                                                                   self::$testFile['type'],
-                                                                   self::$testFile['size'],
-                                                                   self::$testFile['error'])
-                                                             );
+    $mock = PHPUnit_Framework_MockObject_Generator::getMock(
+      'CUploadedFile',
+      array('saveAs'),
+      array(
+        self::$testFile['name'],
+        self::$testFile['tmp_name'],
+        self::$testFile['type'],
+        self::$testFile['size'],
+        self::$testFile['error']
+      )
+    );
 
     $callback = function()
     {
@@ -29,8 +33,8 @@ class TUploadedFile
     };
 
     $mock->expects(new PHPUnit_Framework_MockObject_Matcher_AnyInvokedCount)
-         ->method('saveAs')
-         ->will(new PHPUnit_Framework_MockObject_Stub_ReturnCallback($callback));
+      ->method('saveAs')
+      ->will(new PHPUnit_Framework_MockObject_Stub_ReturnCallback($callback));
 
     return $mock;
   }
@@ -57,5 +61,3 @@ class TUploadedFile
   {
   }
 }
-
-?>

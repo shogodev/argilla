@@ -1,5 +1,4 @@
 <?php
-
 class CActiveDataProviderTest extends CTestCase
 {
   public function setUp()
@@ -21,11 +20,11 @@ class CActiveDataProviderTest extends CTestCase
     $dataProvider = new BActiveDataProvider('BNews', array());
 
     $elements = array(10000000 => 'Все',
-                      5        => 5,
-                      10       => 10,
-                      15       => 10,
-                      50       => 50,
-                     );
+      5 => 5,
+      10 => 10,
+      15 => 10,
+      50 => 50,
+    );
 
     $dataProvider->setPageSizeElements($elements);
 
@@ -34,8 +33,8 @@ class CActiveDataProviderTest extends CTestCase
 
   public function testForm()
   {
-    Yii::app()->controller             = new BNewsController('news');
-    Yii::app()->controller->action     = new CInlineAction(Yii::app()->controller, 'index');
+    Yii::app()->controller = new BNewsController('news');
+    Yii::app()->controller->action = new CInlineAction(Yii::app()->controller, 'index');
 
     $dataProvider = new BActiveDataProvider('BNews', array());
     $dataProvider->getPageSizeForm();

@@ -7,15 +7,15 @@
  */
 class PlatronSystem extends AbstractPaymentSystem
 {
-  const SYSTEM_URL       = 'https://www.platron.ru/';
+  const SYSTEM_URL = 'https://www.platron.ru/';
 
   const PAYMENT_USER_URL = 'payment.php';
 
-  const PAYMENT_URL      = 'init_payment.php';
+  const PAYMENT_URL = 'init_payment.php';
 
-  const STATUS_URL       = 'get_status.php';
+  const STATUS_URL = 'get_status.php';
 
-  const CAPTURE_URL      = 'do_capture.php';
+  const CAPTURE_URL = 'do_capture.php';
 
   /**
    * Результат успешной оплаты заказа
@@ -28,9 +28,9 @@ class PlatronSystem extends AbstractPaymentSystem
   public static $statuses = array(
     'partial' => 'Создание платежа',
     'pending' => 'Ожидание оплаты',
-    'failed'  => 'Платеж не прошел',
+    'failed' => 'Платеж не прошел',
     'revoked' => 'Платеж отозван',
-    'ok'      => 'Платеж завершен успешно'
+    'ok' => 'Платеж завершен успешно'
   );
 
   /**
@@ -82,6 +82,7 @@ class PlatronSystem extends AbstractPaymentSystem
    * Возвращаем текстовый статус платежа
    *
    * @param $statusKey
+   *
    * @return string
    */
   public static function getStatus($statusKey)
@@ -119,13 +120,13 @@ class PlatronSystem extends AbstractPaymentSystem
     else
     {
       echo $data;
+
       return null;
     }
   }
 
   /**
    * Инициализация платежа для оправки его в платежную систему
-   *
    * @throws CException
    * @return array $response
    */
@@ -147,7 +148,6 @@ class PlatronSystem extends AbstractPaymentSystem
 
   /**
    * Запрос на получение статуса платежа у платежной системы
-   *
    * @return array $response
    * @throws CException
    */
@@ -157,12 +157,12 @@ class PlatronSystem extends AbstractPaymentSystem
       throw new CException('Не задан заказ для получения статуса платежа');
 
     $request = array();
-    $url     = self::SYSTEM_URL.self::STATUS_URL;
+    $url = self::SYSTEM_URL.self::STATUS_URL;
 
     $request['pg_merchant_id'] = $this->merchantId;
-    $request['pg_payment_id']  = $this->order->getPaymentId();
-    $request['pg_salt'] 			 = $this->getSalt();
-    $request['pg_sig'] 			   = $this->getSignature($request, PG_Signature::getScriptNameFromUrl($url));
+    $request['pg_payment_id'] = $this->order->getPaymentId();
+    $request['pg_salt'] = $this->getSalt();
+    $request['pg_sig'] = $this->getSignature($request, PG_Signature::getScriptNameFromUrl($url));
 
     $data = $this->doRequest($url, $request);
     $this->checkSignature($data, PG_Signature::getScriptNameFromUrl($url));
@@ -177,7 +177,6 @@ class PlatronSystem extends AbstractPaymentSystem
 
   /**
    * Запрос на проведение операции клиринга
-   *
    * @return array $response
    * @throws CException
    */
@@ -187,12 +186,12 @@ class PlatronSystem extends AbstractPaymentSystem
       throw new CException('Не задан заказ для проведения клиринга платежа');
 
     $request = array();
-    $url     = self::SYSTEM_URL.self::CAPTURE_URL;
+    $url = self::SYSTEM_URL.self::CAPTURE_URL;
 
     $request['pg_merchant_id'] = $this->merchantId;
-    $request['pg_payment_id']  = $this->order->getPaymentId();
-    $request['pg_salt'] 			 = $this->getSalt();
-    $request['pg_sig'] 			   = $this->getSignature($request, PG_Signature::getScriptNameFromUrl($url));
+    $request['pg_payment_id'] = $this->order->getPaymentId();
+    $request['pg_salt'] = $this->getSalt();
+    $request['pg_sig'] = $this->getSignature($request, PG_Signature::getScriptNameFromUrl($url));
 
     $data = $this->doRequest($url, $request);
     $this->checkSignature($data, PG_Signature::getScriptNameFromUrl($url));
@@ -211,12 +210,12 @@ class PlatronSystem extends AbstractPaymentSystem
     $this->order->setPaymentId(Arr::get($data, 'pg_payment_id'));
 
     $response = array();
-    $error    = '';
+    $error = '';
 
-    $response['pg_salt']              = $this->getSalt();
-    $response['pg_status']            = $this->order->isOrderAvailable($data, $error) ? 'ok' : 'error';
+    $response['pg_salt'] = $this->getSalt();
+    $response['pg_status'] = $this->order->isOrderAvailable($data, $error) ? 'ok' : 'error';
     $response['pg_error_description'] = $error;
-    $response['pg_sig']               = $this->getSignature($response);
+    $response['pg_sig'] = $this->getSignature($response);
 
     $this->sendXmlResponse($response);
   }
@@ -231,14 +230,14 @@ class PlatronSystem extends AbstractPaymentSystem
     $this->setOrder($data['pg_order_id']);
     $this->order->setPaymentId(Arr::get($data, 'pg_payment_id'));
 
-    $response    = array();
+    $response = array();
     $description = '';
-    $payed       = $data['pg_result'] == self::PAYMENT_SUCCESS;
+    $payed = $data['pg_result'] == self::PAYMENT_SUCCESS;
 
-    $response['pg_salt']        = $this->getSalt();
-    $response['pg_status']      = $this->order->setPaymentResult($payed, $data, $description) ? 'ok' : 'error';
+    $response['pg_salt'] = $this->getSalt();
+    $response['pg_status'] = $this->order->setPaymentResult($payed, $data, $description) ? 'ok' : 'error';
     $response['pg_description'] = $description;
-    $response['pg_sig']         = $this->getSignature($response);
+    $response['pg_sig'] = $this->getSignature($response);
 
     $this->sendXmlResponse($response);
   }
@@ -253,14 +252,14 @@ class PlatronSystem extends AbstractPaymentSystem
     $this->setOrder($data['pg_order_id']);
     $this->order->setPaymentId(Arr::get($data, 'pg_payment_id'));
 
-    $response    = array();
+    $response = array();
     $description = '';
-    $clearing    = $data['pg_result'] == self::PAYMENT_SUCCESS;
+    $clearing = $data['pg_result'] == self::PAYMENT_SUCCESS;
 
-    $response['pg_salt']        = $this->getSalt();
-    $response['pg_status']      = $this->order->setCaptureResult($clearing, $data, $description) ? 'ok' : 'error';
+    $response['pg_salt'] = $this->getSalt();
+    $response['pg_status'] = $this->order->setCaptureResult($clearing, $data, $description) ? 'ok' : 'error';
     $response['pg_description'] = $description;
-    $response['pg_sig']         = $this->getSignature($response);
+    $response['pg_sig'] = $this->getSignature($response);
 
     $this->sendXmlResponse($response);
   }
@@ -292,39 +291,39 @@ class PlatronSystem extends AbstractPaymentSystem
     $request = array();
 
     // Выставляем ссылки на страницы статусов
-    $request['pg_check_url'] 	        = $this->getCheckUrl();
-    $request['pg_result_url']         = $this->getResultUrl();
-    $request['pg_success_url'] 	      = $this->getSuccessUrl();
-    $request['pg_failure_url'] 	      = $this->getFailureUrl();
-    $request['pg_capture_url'] 	      = $this->getCaptureUrl();
+    $request['pg_check_url'] = $this->getCheckUrl();
+    $request['pg_result_url'] = $this->getResultUrl();
+    $request['pg_success_url'] = $this->getSuccessUrl();
+    $request['pg_failure_url'] = $this->getFailureUrl();
+    $request['pg_capture_url'] = $this->getCaptureUrl();
 
     // Методы передачи данных
-    $request['pg_request_method']     = $this->requestMethod;
+    $request['pg_request_method'] = $this->requestMethod;
     $request['pg_success_url_method'] = $this->successUrlMethod;
     $request['pg_failure_url_method'] = $this->failureUrlMethod;
 
     // Данные магазина
-    $request['pg_merchant_id']  	    = $this->merchantId;
-    $request['pg_lifetime']     	    = $this->lifeTime;
-    $request['pg_description']  	    = $this->getPaymentDescription();
+    $request['pg_merchant_id'] = $this->merchantId;
+    $request['pg_lifetime'] = $this->lifeTime;
+    $request['pg_description'] = $this->getPaymentDescription();
 
     // Данные заказа
-    $request['pg_order_id']     	    = $this->order->getId();
-    $request['pg_amount']       	    = $this->order->getAmount();
-    $request['pg_currency']     	    = $this->order->getCurrency();
-    $request['pg_payment_system']	    = $this->getPaymentSystem();
+    $request['pg_order_id'] = $this->order->getId();
+    $request['pg_amount'] = $this->order->getAmount();
+    $request['pg_currency'] = $this->order->getCurrency();
+    $request['pg_payment_system'] = $this->getPaymentSystem();
 
     // Данные пользователя
-    $request['pg_user_phone']  	      = $this->order->getUserPhone();
+    $request['pg_user_phone'] = $this->order->getUserPhone();
     $request['pg_user_contact_email'] = $this->order->getUserEmail();
-    $request['pg_user_ip']            = Yii::app()->request->userHostAddress;
+    $request['pg_user_ip'] = Yii::app()->request->userHostAddress;
 
     // Режим работы
-    $request['pg_testing_mode']	      = $this->getTestMode();
+    $request['pg_testing_mode'] = $this->getTestMode();
 
     // Подписываем заказ
-    $request['pg_salt'] 			        = $this->getSalt();
-    $request['pg_sig'] 			          = $this->getSignature($request, PG_Signature::getScriptNameFromUrl($url));
+    $request['pg_salt'] = $this->getSalt();
+    $request['pg_sig'] = $this->getSignature($request, PG_Signature::getScriptNameFromUrl($url));
 
     return $request;
   }
@@ -396,7 +395,6 @@ class PlatronSystem extends AbstractPaymentSystem
 
   /**
    * Формируем описание платежа
-   *
    * @return string
    */
   protected function getPaymentDescription()
@@ -406,7 +404,6 @@ class PlatronSystem extends AbstractPaymentSystem
 
   /**
    * Идентификатор выбранной платежной системы
-   *
    * @return null
    */
   protected function getPaymentSystem()
@@ -416,7 +413,6 @@ class PlatronSystem extends AbstractPaymentSystem
 
   /**
    * Формируем случайную соль
-   *
    * @return string
    */
   protected function getSalt()
@@ -450,7 +446,8 @@ class PlatronSystem extends AbstractPaymentSystem
       $script = PG_Signature::getOurScriptName();
     }
 
-    $request = array_filter($request, function($item){
+    $request = array_filter($request, function ($item)
+    {
       return isset($item);
     });
 
@@ -472,7 +469,7 @@ class PlatronSystem extends AbstractPaymentSystem
 
     $signature = isset($request['pg_sig']) ? $request['pg_sig'] : null;
 
-    if ( !PG_Signature::check($signature, $scriptName, $request, $this->secretKey) )
+    if( !PG_Signature::check($signature, $scriptName, $request, $this->secretKey) )
     {
       throw new CException('Невозможно выполнить операцию. Получены неверные данные');
     }

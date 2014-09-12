@@ -34,15 +34,15 @@ class BControllerTest extends CDbTestCase
    */
   public function testBeforeAction()
   {
-    $action     = new CInlineAction($this->controller, 'index');
-    $result     = $this->controller->beforeAction($action);
-    $url_index  = Yii::app()->user->getState('secure');
+    $action = new CInlineAction($this->controller, 'index');
+    $result = $this->controller->beforeAction($action);
+    $url_index = Yii::app()->user->getState('secure');
 
     $this->assertTrue($result);
     $this->assertNotEmpty($url_index);
 
-    $action     = new CInlineAction($this->controller, 'update');
-    $result     = $this->controller->beforeAction($action);
+    $action = new CInlineAction($this->controller, 'update');
+    $result = $this->controller->beforeAction($action);
     $url_update = Yii::app()->user->getState('secure');
 
     $this->assertTrue($result);
@@ -77,7 +77,7 @@ class BControllerTest extends CDbTestCase
    */
   public function testSaveModel()
   {
-    $name  = 'testSaveModel';
+    $name = 'testSaveModel';
     $model = new BNews;
     $_POST['BNews'] = array('name' => $name, 'url' => 'testUrl1', 'section_id' => '1');
 
@@ -93,14 +93,14 @@ class BControllerTest extends CDbTestCase
   public function testSaveModels()
   {
     $login = 'testLogin1';
-    $name  = 'testName1';
+    $name = 'testName1';
 
     $userModel = new BFrontendUser();
     $dataModel = new BUserProfile();
 
     $_POST['BFrontendUser'] = array('email' => '123@123.ru', 'login' => $login);
     $_POST['BUserProfile'] = array('name' => $name);
-    $_SERVER['REQUEST_METHOD']  = 'POST';
+    $_SERVER['REQUEST_METHOD'] = 'POST';
 
     $method = new ReflectionMethod('BController', 'saveModels');
     $method->setAccessible(true);
@@ -117,13 +117,13 @@ class BControllerTest extends CDbTestCase
 
   public function testValidateModels()
   {
-    $productModel     = new BProduct;
-    $assignmentModel  = new BProductAssignment;
+    $productModel = new BProduct;
+    $assignmentModel = new BProductAssignment;
 
     $method = new ReflectionMethod('BController', 'validateModels');
     $method->setAccessible(true);
 
-    $_POST['BProduct']           = array('name' => 'testValidateModels', 'url' => 'testUrl3', 'articul' => 'articul3', 'section_id' => '1103');
+    $_POST['BProduct'] = array('name' => 'testValidateModels', 'url' => 'testUrl3', 'articul' => 'articul3', 'section_id' => '1103');
     $_POST['BProductAssignment'] = array_fill_keys(array_keys($assignmentModel->getFields()), '1103');
 
     $result = $method->invoke($this->controller, array($productModel, $assignmentModel));
@@ -140,12 +140,12 @@ class BControllerTest extends CDbTestCase
    */
   public function testPerformAjaxValidationForSeveralModels()
   {
-    $name            = 'testPerformAjaxValidationForSeveralModels';
-    $productModel    = new BProduct;
+    $name = 'testPerformAjaxValidationForSeveralModels';
+    $productModel = new BProduct;
     $assignmentModel = new BProductAssignment;
 
-    $_POST['ajax']               = $productModel->getFormId();
-    $_POST['BProduct']           = array('name' => $name, 'url' => 'testUrl4', 'articul' => 'articul4', 'section_id' => '1104');
+    $_POST['ajax'] = $productModel->getFormId();
+    $_POST['BProduct'] = array('name' => $name, 'url' => 'testUrl4', 'articul' => 'articul4', 'section_id' => '1104');
     $_POST['BProductAssignment'] = array_fill_keys(array_keys($assignmentModel->getFields()), '1104');
 
     $method = new ReflectionMethod('BController', 'performAjaxValidationForSeveralModels');
@@ -160,10 +160,10 @@ class BControllerTest extends CDbTestCase
    */
   public function testErrorPerformAjaxValidationForSeveralModels()
   {
-    $name             = 'testPerformAjaxValidationForSeveralModels';
-    $productModel     = new BProduct;
+    $name = 'testPerformAjaxValidationForSeveralModels';
+    $productModel = new BProduct;
 
-    $_POST['ajax']    = $productModel->getFormId();
+    $_POST['ajax'] = $productModel->getFormId();
     $_POST['BProduct'] = array('name' => $name);
 
     $method = new ReflectionMethod('BController', 'performAjaxValidationForSeveralModels');
@@ -178,9 +178,9 @@ class BControllerTest extends CDbTestCase
    */
   public function testPerformAjaxValidation()
   {
-    $name              = 'testPerformAjaxValidation';
-    $productModel      = new BProduct;
-    $_POST['ajax']     = $productModel->getFormId();
+    $name = 'testPerformAjaxValidation';
+    $productModel = new BProduct;
+    $_POST['ajax'] = $productModel->getFormId();
     $_POST['BProduct'] = array('name' => $name, 'url' => 'testUrl4', 'articul' => 'articul4', 'section_id' => 1);
 
     $method = new ReflectionMethod('BController', 'performAjaxValidation');
@@ -195,9 +195,9 @@ class BControllerTest extends CDbTestCase
    */
   public function testErrorPerformAjaxValidation()
   {
-    $name              = 'testPerformAjaxValidation';
-    $productModel      = new BProduct;
-    $_POST['ajax']     = $productModel->getFormId();
+    $name = 'testPerformAjaxValidation';
+    $productModel = new BProduct;
+    $_POST['ajax'] = $productModel->getFormId();
     $_POST['BProduct'] = array('name' => $name);
 
     $method = new ReflectionMethod('BController', 'performAjaxValidation');

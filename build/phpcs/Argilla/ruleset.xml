@@ -1,7 +1,6 @@
 <?xml version="1.0"?>
 <ruleset name="Argilla">
   <exclude-pattern>*/views/*</exclude-pattern>
-  <exclude-pattern>*/tests/*</exclude-pattern>
   <exclude-pattern>*/extensions/*</exclude-pattern>
   <exclude-pattern>*/runtime/*</exclude-pattern>
   <exclude-pattern>*/migrations/*</exclude-pattern>
@@ -11,9 +10,7 @@
   <description>Argilla CMS coding standard.</description>
 
   <rule ref="Generic.CodeAnalysis.UnconditionalIfStatement"/>
-  <rule ref="Generic.CodeAnalysis.UnusedFunctionParameter">
-    <exclude-pattern>*/components/db/BActiveRecord.php</exclude-pattern>
-  </rule>
+  <rule ref="Generic.CodeAnalysis.UnusedFunctionParameter"/>
 
   <rule ref="Generic.CodeAnalysis.UselessOverridingMethod"/>
 
@@ -45,30 +42,48 @@
       <property name="indent" value="2"/>
     </properties>
   </rule>
+  <rule ref="Generic.WhiteSpace.DisallowTabIndent"/>
 
   <rule ref="Squiz.Classes.ValidClassName"/>
-
   <rule ref="Squiz.WhiteSpace.LogicalOperatorSpacing"/>
 
-  <!--
-  <rule ref="Squiz.WhiteSpace.ObjectOperatorSpacing"/>
-  Не позволяет писать код вида:
-    $productColors = Yii::app()->db->createCommand()->selectDistinct('color_id')
-      ->from(BProductColor::model()->tableName())
-      ->where('product_id=:id')->queryColumn(array(':id' => $this->owner->id));
-  -->
+  <rule ref="PEAR.WhiteSpace.ObjectOperatorIndent">
+    <properties>
+      <property name="indent" value="2"></property>
+    </properties>
+  </rule>
 
   <rule ref="Squiz.WhiteSpace.OperatorSpacing"/>
-
   <rule ref="Squiz.WhiteSpace.SuperfluousWhitespace"/>
+  <rule ref="Squiz.WhiteSpace.ScopeKeywordSpacing"/>
+  <rule ref="Squiz.WhiteSpace.SemicolonSpacing"/>
 
   <rule ref="Squiz.PHP.InnerFunctions"/>
+  <rule ref="Squiz.Classes.LowercaseClassKeywords"/>
+  <rule ref="Squiz.Classes.SelfMemberReference"/>
 
- <!-- <rule ref="Squiz.PHP.NonExecutableCode"/>-->
+  <rule ref="Squiz.Functions.FunctionDuplicateArgument"/>
+  <rule ref="Squiz.Functions.LowercaseFunctionKeywords"/>
+  <rule ref="Squiz.Scope.StaticThisUsage"/>
+  <rule ref="Squiz.Strings.EchoedStrings"/>
+
+  <!-- <rule ref="Squiz.PHP.NonExecutableCode"/>-->
 
   <rule ref="Squiz.Scope.MethodScope"/>
   <rule ref="Squiz.Scope.StaticThisUsage"/>
 
- <rule ref="Argilla.ControlStructures.ControlSignature"/>
+  <rule ref="Generic.Formatting.MultipleStatementAlignment">
+    <properties>
+      <property name="maxPadding" value="1"/>
+      <property name="ignoreMultiLine" value="false"/>
+      <property name="error" value="true"/>
+    </properties>
+  </rule>
+
+  <rule ref="Generic.NamingConventions.CamelCapsFunctionName"/>
+  <rule ref="Generic.NamingConventions.UpperCaseConstantName"/>
+  <rule ref="Generic.NamingConventions.ConstructorName"/>
+
+  <rule ref="Argilla.ControlStructures.ControlSignature"/>
 
 </ruleset>

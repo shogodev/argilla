@@ -99,8 +99,8 @@ class RelatedItemsWidget extends CWidget
       if( isset($attribute['class']) )
         $options['class'] = $attribute['class'];
 
-      $options['name']    = "{$this->className}[{$id}][{$name}]";
-      $options['value']   = $element->$name;
+      $options['name'] = "{$this->className}[{$id}][{$name}]";
+      $options['value'] = $element->$name;
 
       if( is_string($tag) )
       {

@@ -31,11 +31,11 @@ class BProductAssignment extends BActiveRecord
    */
   public function getDepends($attribute, $dependedAttribute)
   {
-    $attribute         = $this->toToAssignmentAttribute($attribute);
+    $attribute = $this->toToAssignmentAttribute($attribute);
     $dependedAttribute = $this->toToAssignmentAttribute($dependedAttribute);
 
-    $criteria          = $this->getCriteria($attribute, $dependedAttribute);
-    $data              = $this->getDependedModels($dependedAttribute, $criteria);
+    $criteria = $this->getCriteria($attribute, $dependedAttribute);
+    $data = $this->getDependedModels($dependedAttribute, $criteria);
 
     return $data;
   }
@@ -51,7 +51,7 @@ class BProductAssignment extends BActiveRecord
    */
   public function getListOptions($model, $attribute, $data)
   {
-    $data    = CHtml::listData($data, 'id', 'name');
+    $data = CHtml::listData($data, 'id', 'name');
     $options = CHtml::tag('option', array('value' => ''), 'Не задано', true);
 
     foreach($data as $value => $name)
@@ -201,8 +201,8 @@ class BProductAssignment extends BActiveRecord
       'dst_id' => $this->{$dstAttribute}
     );
 
-    $assignments = BProductTreeAssignment::model()->findAllByAttributes($attributes);
-    $ids         = array_map(function($model){return $model->src_id;}, $assignments);
+    $assignments = self::model()->findAllByAttributes($attributes);
+    $ids = array_map(function($model){return $model->src_id;}, $assignments);
 
     $criteria = new CDbCriteria();
     $criteria->addInCondition("id", $ids);

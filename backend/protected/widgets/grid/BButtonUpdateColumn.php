@@ -12,7 +12,7 @@ class BButtonUpdateColumn extends BButtonColumn
 {
   public $template = '{update}';
 
-  public $header   = 'Действия';
+  public $header = 'Действия';
 
   protected function renderFilterCellContent()
   {

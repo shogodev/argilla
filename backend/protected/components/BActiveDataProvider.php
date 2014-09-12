@@ -29,7 +29,7 @@ class BActiveDataProvider extends CActiveDataProvider
 {
   const PAGINATION_PAGE_SIZE = 10;
 
-  const MAX_PAGE_SIZE        = PHP_INT_MAX;
+  const MAX_PAGE_SIZE = PHP_INT_MAX;
 
   /**
    * Хранит в себе строку тэгов формы с заданными параметрами
@@ -68,7 +68,7 @@ class BActiveDataProvider extends CActiveDataProvider
   {
     parent::__construct($modelClass, $config);
 
-    $this->attributeName  = $this->getId() . '_count';
+    $this->attributeName = $this->getId() . '_count';
 
     if( $this->pagination !== false )
       $this->pagination = array('pageSize' => $this->createPageSize());

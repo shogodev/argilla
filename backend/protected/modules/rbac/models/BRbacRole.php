@@ -22,7 +22,7 @@ class BRbacRole extends BAuthItem
 
     foreach( $roles as $role )
     {
-      $item = BRbacRole::model()->findByPk($role->name);
+      $item = self::model()->findByPk($role->name);
 
       $data[$item->name] = $item->title;
     }

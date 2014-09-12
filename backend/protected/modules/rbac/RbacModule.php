@@ -14,8 +14,8 @@ class RbacModule extends BModule
 
   public $controllerMap = [
     'operation' => 'BRbacOperationController',
-    'role'      => 'BRbacRoleController',
-    'task'      => 'BRbacTaskController',
-    'user'      => 'BUserController',
+    'role' => 'BRbacRoleController',
+    'task' => 'BRbacTaskController',
+    'user' => 'BUserController',
   ];
 }

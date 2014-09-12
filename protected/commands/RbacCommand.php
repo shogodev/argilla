@@ -88,9 +88,9 @@ class RbacCommand extends CConsoleCommand
    */
   public function actionBuild($username = 'admin', $password = '123')
   {
-    $this->path       = dirname(dirname(dirname(__FILE__)));
-    $this->username   = $username;
-    $this->password   = $password;
+    $this->path = dirname(dirname(dirname(__FILE__)));
+    $this->username = $username;
+    $this->password = $password;
 
     echo "-------------------------------------------------------------".PHP_EOL;
     $this->getFiles();

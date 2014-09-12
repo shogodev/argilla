@@ -219,7 +219,7 @@ class BFrontendMenu extends BAbstractMenuEntry
 
     foreach( $this->getAvailableEntries() as $entry )
     {
-      $data[] = new BFrontendMenuGridAdapter($entry, false);;
+      $data[] = new BFrontendMenuGridAdapter($entry, false);
     }
 
     return new CArrayDataProvider($data);

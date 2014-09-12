@@ -83,12 +83,14 @@ class LinkSection extends FActiveRecord
    */
   public function getPageCount()
   {
-    return intval($this->dbConnection->createCommand()
-      ->select('MAX(page)')
-      ->from(Link::model()->tableName())
-      ->where('section_id = :sectionId', [':sectionId' => $this->id])
-      ->andWhere('visible = :visible', [':visible' => '1'])
-      ->queryScalar());
+    return intval(
+      $this->dbConnection->createCommand()
+        ->select('MAX(page)')
+        ->from(Link::model()->tableName())
+        ->where('section_id = :sectionId', [':sectionId' => $this->id])
+        ->andWhere('visible = :visible', [':visible' => '1'])
+        ->queryScalar()
+    );
   }
 
   /**

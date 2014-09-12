@@ -35,7 +35,7 @@ class RedirectHelper
    */
   public static function isRegExp($expression)
   {
-    return stripos($expression, RedirectHelper::REGEXP_START_CHAR) === 0;
+    return stripos($expression, self::REGEXP_START_CHAR) === 0;
   }
 
   /**

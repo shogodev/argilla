@@ -146,7 +146,7 @@ class BProductParamName extends BActiveRecord
     $criteria->compare('parent', '='.self::ROOT_ID);
     $criteria->order = 't.position';
 
-    $condition  = '(assignment.section_id IS NULL OR assignment.section_id = 0)';
+    $condition = '(assignment.section_id IS NULL OR assignment.section_id = 0)';
 
     if( $this->section_id )
     {

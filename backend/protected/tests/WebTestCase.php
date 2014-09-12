@@ -4,8 +4,9 @@
  * Change the following URL based on your server configuration
  * Make sure the URL ends with a slash so that we can use relative URLs in test cases
  */
-if(!defined('TEST_BASE_URL'))
-  define('TEST_BASE_URL','http://www.argilla.dev.shogo.ru/index-test.php/');
+if( !defined('TEST_BASE_URL') )
+  define('TEST_BASE_URL', 'http://www.argilla.dev.shogo.ru/index-test.php/');
+
 
 /**
  * The base class for functional test cases.
@@ -14,13 +15,13 @@ if(!defined('TEST_BASE_URL'))
  */
 class WebTestCase extends CWebTestCase
 {
-	/**
-	 * Sets up before each test method runs.
-	 * This mainly sets the base URL for the test application.
-	 */
-	protected function setUp()
-	{
-		parent::setUp();
-		$this->setBrowserUrl(TEST_BASE_URL);
-	}
+  /**
+   * Sets up before each test method runs.
+   * This mainly sets the base URL for the test application.
+   */
+  protected function setUp()
+  {
+    parent::setUp();
+    $this->setBrowserUrl(TEST_BASE_URL);
+  }
 }

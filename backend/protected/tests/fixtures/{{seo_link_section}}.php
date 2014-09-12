@@ -6,5 +6,5 @@
  * @license http://argilla.ru/LICENSE
  */
 return [
-  'section1'  => ['id' => 1, 'name' => 'new section', 'utl' => 'url1', 'visible' => 1],
+  'section1' => ['id' => 1, 'name' => 'new section', 'utl' => 'url1', 'visible' => 1],
 ];

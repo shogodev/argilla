@@ -68,7 +68,7 @@ class BFrontendUser extends BActiveRecord
     return array(
       'order' => 'date_create DESC',
       'condition' => 'type = :type_user',
-      'params' => array(':type_user' => BFrontendUser::TYPE_USER)
+      'params' => array(':type_user' => self::TYPE_USER)
     );
   }
 

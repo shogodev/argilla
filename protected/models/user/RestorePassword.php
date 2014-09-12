@@ -35,7 +35,7 @@ class RestorePassword extends CFormModel
 
   public function getRestoreUrl()
   {
-    return Yii::app()->createAbsoluteUrl('user/restoreConfirmed', array('code' => $this->restoreCode)) ;
+    return Yii::app()->createAbsoluteUrl('user/restoreConfirmed', array('code' => $this->restoreCode));
   }
 
   public function generateRestoreCode($attribute, $params)

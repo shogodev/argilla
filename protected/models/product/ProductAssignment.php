@@ -59,7 +59,7 @@ class ProductAssignment extends FActiveRecord
     $modelId = preg_replace('/product([a-z]+)/i', 'a.$1_id', $modelName);
 
     $criteria = new CDbCriteria(array('distinct' => true));
-    $criteria->join = 'JOIN `'.ProductAssignment::table().'` AS a ON t.id = '.$modelId.' ';
+    $criteria->join = 'JOIN `'.self::table().'` AS a ON t.id = '.$modelId.' ';
     $criteria->join .= 'JOIN `'.Product::table().'` AS p ON p.id = a.product_id';
 
     $criteria->compare('p.visible', 1);

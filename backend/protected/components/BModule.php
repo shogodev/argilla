@@ -20,7 +20,7 @@ class BModule extends CWebModule
 
   public $autoloaded;
 
-  public $defaultUploadDir  = 'f/';
+  public $defaultUploadDir = 'f/';
 
   public $thumbsSettings = [];
 

@@ -12,7 +12,7 @@ class BButtonColumn extends TbButtonColumn
 {
   public $template = '{update} {delete}';
 
-  public $header   = 'Действия';
+  public $header = 'Действия';
 
   public function renderFilterCell()
   {

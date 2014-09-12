@@ -45,7 +45,7 @@ class FCollectionUITest extends CTestCase
     $collection = new FCollectionUI('test');
     $collection->add(array('id' => 2, 'type' => 'product'));
 
-    $button = $collection->buttonAdd(array('id' => 1, 'type' => 'product'), array('Добавить', 'Удалить'), array() ,FCollectionUI::BT_ADD_ONCE);
+    $button = $collection->buttonAdd(array('id' => 1, 'type' => 'product'), array('Добавить', 'Удалить'), array(), FCollectionUI::BT_ADD_ONCE);
     $this->assertContains('>Добавить</a>', $button);
     $this->assertContains('data-do-not-add="0"', $button);
     $this->assertContains('data-not-added-text="Добавить"', $button);

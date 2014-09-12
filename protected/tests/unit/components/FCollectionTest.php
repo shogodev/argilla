@@ -511,7 +511,6 @@ class FCollectionTest extends CDbTestCase
     $this->assertEquals($productCollection[6]->collectionItems['size'], '10');
     $this->assertEquals($productCollection[6]->collectionItems['color']->primaryKey, 504);
 
-
     $_SESSION['basket'] = json_encode(array(
       array(
         'id' => 502,
@@ -637,7 +636,7 @@ class FCollectionTest extends CDbTestCase
 
     $collection->changeItems(2, array(
       'size' => 40,
-      'options' =>  array(
+      'options' => array(
         array(
           'id' => 502,
           'type' => 'product',

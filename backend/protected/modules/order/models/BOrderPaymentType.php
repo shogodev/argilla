@@ -18,7 +18,7 @@ class BOrderPaymentType extends BActiveRecord
 {
   const CASH = 1;
 
-  const NON_CASH  = 2;
+  const NON_CASH = 2;
 
   const EPAY = 3;
 

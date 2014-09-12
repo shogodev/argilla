@@ -19,7 +19,7 @@ class VacancyController extends FController
   {
     $scenario = Yii::app()->request->isAjaxRequest ? '' : 'upload';
     $model = new Vacancy($scenario);
-    $form  = new FForm('Vacancy', $model);
+    $form = new FForm('Vacancy', $model);
 
     if( $form->save() )
     {

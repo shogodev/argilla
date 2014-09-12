@@ -18,7 +18,7 @@ class OrderPaymentType extends FActiveRecord
 {
   const CASH = 1;
 
-  const NON_CASH  = 2;
+  const NON_CASH = 2;
 
   const E_PAY = 3;
 

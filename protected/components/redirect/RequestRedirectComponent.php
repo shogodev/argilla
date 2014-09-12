@@ -126,7 +126,7 @@ class RequestRedirectComponent extends FRedirectComponent
 
       $builder = new CDbCommandBuilder(Yii::app()->db->getSchema());
       $builder->createSqlCommand('UPDATE '.Redirect::table().' SET counter = counter + 1, last_used = ? WHERE id = ?')
-              ->execute(array(date(DATE_ATOM), $this->usedRedirect));
+        ->execute(array(date(DATE_ATOM), $this->usedRedirect));
     }
   }
 

@@ -81,7 +81,7 @@ class LinkTest extends CDbTestCase
     $this->assertEmpty($links);
   }
 
-  public function testBeforeSaveSavesANewLinkAsInvisible()
+  public function testBeforeSaveSavesNewLinkAsInvisible()
   {
     // Добавим новую ссылку.
     $link = new Link();
@@ -105,7 +105,7 @@ class LinkTest extends CDbTestCase
     $this->assertEquals('0', $link->visible);
   }
 
-  public function testBeforeSaveChoosesThePageForANewLinkCorrectly()
+  public function testBeforeSaveChoosesThePageForNewLinkCorrectly()
   {
     // Добавим новую ссылку.
     $link = new Link();

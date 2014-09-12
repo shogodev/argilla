@@ -19,7 +19,7 @@ class BApplication extends CWebApplication
    */
   public static function cutClassPrefix($className)
   {
-    return preg_replace('/^'.BApplication::CLASS_PREFIX.'([A-Z])(.*)/', '$1$2', $className);
+    return preg_replace('/^'.self::CLASS_PREFIX.'([A-Z])(.*)/', '$1$2', $className);
   }
 
   /**

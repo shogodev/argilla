@@ -34,7 +34,7 @@ class BAssociation extends BActiveRecord
   public function updateAssociations(BActiveRecord $model, $dst, array $ids, $deleteAssociations = true)
   {
     if( $deleteAssociations )
-      BAssociation::model()->deleteAssociations($model, $dst);
+      self::model()->deleteAssociations($model, $dst);
 
     foreach($ids as $id)
     {
@@ -110,6 +110,6 @@ class BAssociation extends BActiveRecord
       $data['src_id'] = Arr::cut($data, 'srcId');
     }
 
-    return CHtml::listData(BAssociation::model()->findAllByAttributes($data), 'dst_id', 'dst_id');
+    return CHtml::listData(self::model()->findAllByAttributes($data), 'dst_id', 'dst_id');
   }
 }
