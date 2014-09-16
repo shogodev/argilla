@@ -8,7 +8,7 @@
 class Yii extends YiiBase
 {
   /**
-   * @return FApplication|FTestApplication|BApplication|BTestApplication
+   * @return FApplication|FTestApplication|BApplication|BTestApplication|CConsoleApplication
    */
   public static function app()
   {
