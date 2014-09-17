@@ -54,7 +54,7 @@ class ProductAssignment extends FActiveRecord
    *
    * @return FActiveRecord[]
    */
-  public function getModels($modelName, CDbCriteria $defaultCriteria)
+  public function getModels($modelName, CDbCriteria $defaultCriteria = null)
   {
     $modelId = preg_replace('/product([a-z]+)/i', 'a.$1_id', $modelName);
 
@@ -64,7 +64,9 @@ class ProductAssignment extends FActiveRecord
 
     $criteria->compare('p.visible', 1);
     $criteria->compare('a.visible', 1);
-    $criteria->mergeWith($defaultCriteria);
+
+    if( $defaultCriteria )
+      $criteria->mergeWith($defaultCriteria);
 
     return $modelName::model()->findAll($criteria);
   }

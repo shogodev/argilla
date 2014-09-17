@@ -26,6 +26,8 @@ $form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId()));
 
   <?php echo $form->dropDownListDefaultRow($model, 'parent_id', CHtml::listData($model->getParents(), 'id', 'name'))?>
 
+  <?php echo $form->uploadRow($model, 'img', false)?>
+
   <?php echo $form->ckeditorRow($model, 'notice');?>
 
   <?php echo $form->checkBoxRow($model, 'visible');?>

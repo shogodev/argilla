@@ -34,6 +34,7 @@ class BProductType extends BProductStructure
   {
     return array(
       'tree' => array('class' => 'BTreeAssignmentBehavior', 'parentModel' => 'BProductSection'),
+      'uploadBehavior' => array('class' => 'UploadBehavior', 'validAttributes' => 'img'),
     );
   }
 

@@ -11,6 +11,10 @@
  * @property string  $url
  * @property string  $name
  * @property string  $notice
+ *
+ * @property string  $image
+ *
+ * @method static ProductType model(string $class = __CLASS__)
  */
 class ProductType extends FActiveRecord
 {
@@ -28,19 +32,29 @@ class ProductType extends FActiveRecord
     );
   }
 
-  public function getMenu()
+  public function behaviors()
+  {
+    return array(
+      'imageBehavior' => array('class' => 'SingleImageBehavior', 'path' => 'product'),
+    );
+  }
+
+  public function getMenu(CDbCriteria $criteria = null)
   {
     /**
      * @var ProductType[] $types
      */
     $menu = array();
-    $types = $sections = ProductAssignment::model()->getModels('ProductType', new CDbCriteria());
+    $types = ProductAssignment::model()->getModels('ProductType', $criteria);
 
     foreach($types as $type)
+    {
       $menu[$type->id] = array(
         'id' => $type->id,
         'label' => $type->name,
-        'url' => array('product/type', 'type' => $type->url));
+        'url' => array('product/type', 'type' => $type->url),
+      );
+    }
 
     return $menu;
   }
