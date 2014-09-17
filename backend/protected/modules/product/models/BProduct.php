@@ -167,6 +167,7 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
     return CMap::mergeArray(parent::attributeLabels(), array(
       'product_img' => 'Изображения',
       'BProduct' => 'Продукты',
+      'spec' => 'Лидер продаж',
     ));
   }
 

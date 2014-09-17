@@ -45,6 +45,10 @@ $form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId()));
 
   <?php echo $form->checkBoxRow($model, 'novelty');?>
 
+  <?php echo $form->checkBoxRow($model, 'spec');?>
+
+  <?php echo $form->checkBoxRow($model, 'discount');?>
+
   <?php echo $form->checkBoxRow($model, 'dump');?>
 
   <?php echo $form->checkBoxRow($model, 'xml');?>
