@@ -8,7 +8,7 @@
  *
  * @method static BProductType model(string $class = __CLASS__)
  *
- * @property string  $id
+ * @property integer $id
  * @property integer $position
  * @property string  $url
  * @property string  $name

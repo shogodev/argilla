@@ -6,11 +6,11 @@
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.product.controllers
  */
-class BProductTypeController extends BController
+class BProductCollectionController extends BController
 {
-  public $position = 30;
+  public $position = 50;
 
-  public $name = 'Типы';
+  public $name = 'Коллекции';
 
-  public $modelClass = 'BProductType';
+  public $modelClass = 'BProductCollection';
 }
