@@ -5,6 +5,8 @@
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
  * @package frontend.controllers.behaviors
+ *
+ * @var Contact $headerContacts
  */
 class FControllerBehavior extends CBehavior
 {
@@ -43,7 +45,15 @@ class FControllerBehavior extends CBehavior
    */
   private $compare;
 
+  /**
+   * @var array
+   */
   private $sectionMenu;
+
+  /**
+   * @var Contact
+   */
+  private $headerContacts;
 
   /**
    * @return FBasket|null
@@ -153,5 +163,18 @@ class FControllerBehavior extends CBehavior
     }
 
     return $this->fastOrderForm;
+  }
+
+  /**
+   * @return FActiveRecord|Contact
+   */
+  public function getHeaderContacts()
+  {
+    if( $this->headerContacts === null )
+    {
+      $this->headerContacts = Contact::model()->findByAttributes(array('sysname' => 'header'));
+    }
+
+    return $this->headerContacts;
   }
 }

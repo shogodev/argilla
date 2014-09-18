@@ -25,7 +25,7 @@ class CommonBehavior extends CBehavior
   {
     if( $this->contacts === null )
     {
-      $this->contacts = Contact::model()->findAll();
+      $this->contacts = Contact::model()->findByAttributes(array('sysname' => 'system'));
     }
 
     return $this->contacts;
