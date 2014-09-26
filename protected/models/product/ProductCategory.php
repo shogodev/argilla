@@ -14,12 +14,13 @@
  * @property string  $notice
  * @property integer $visible
  *
+ * @property FActiveImage $image
+ * @property ProductCollection[] $collections
+ *
  * @method static ProductCategory model(string $class = __CLASS__)
  */
 class ProductCategory extends FActiveRecord
 {
-  protected $products;
-
   public function defaultScope()
   {
     $alias = $this->getTableAlias(false, false);
@@ -27,6 +28,21 @@ class ProductCategory extends FActiveRecord
     return array(
       'condition' => $alias.'.visible=1',
       'order' => $alias.'.position',
+    );
+  }
+
+  public function relations()
+  {
+    return array(
+      'assignment' => array(self::HAS_MANY, 'ProductTreeAssignment', 'dst_id', 'condition' => 'dst = "category"'),
+      'collections' => array(self::HAS_MANY, 'ProductCollection', array('src_id' => 'id'), 'through' => 'assignment', 'condition' => 'src = "collection"'),
+    );
+  }
+
+  public function behaviors()
+  {
+    return array(
+      'imageBehavior' => array('class' => 'SingleImageBehavior', 'path' => 'product'),
     );
   }
 }
