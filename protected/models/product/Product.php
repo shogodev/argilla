@@ -33,6 +33,7 @@
  * @property ProductSection $section
  * @property ProductType $type
  * @property ProductCategory $category
+ * @property ProductCollection $collection
  * @property ProductParameterName[] $parameters
  *
  * collectionElement behavior
@@ -67,6 +68,7 @@ class Product extends FActiveRecord
       'section' => array(self::HAS_ONE, 'ProductSection', array('section_id' => 'id'), 'through' => 'assignment'),
       'type' => array(self::HAS_ONE, 'ProductType', array('type_id' => 'id'), 'through' => 'assignment'),
       'category' => array(self::HAS_ONE, 'ProductCategory', array('category_id' => 'id'), 'through' => 'assignment'),
+      'collection' => array(self::HAS_ONE, 'ProductCollection', array('collection_id' => 'id'), 'through' => 'assignment'),
     );
   }
 
@@ -99,5 +101,29 @@ class Product extends FActiveRecord
       $this->url = Yii::app()->controller->createUrl('product/one', array('url' => $this->url));
 
     parent::afterFind();
+  }
+
+  /**
+   * @return string
+   */
+  public function getHeader()
+  {
+    return $this->name;
+  }
+
+  /**
+   * @return string
+   */
+  public function getPrice()
+  {
+    return $this->price;
+  }
+
+  /**
+   * @return string
+   */
+  public function getPriceOld()
+  {
+    return $this->price_old;
   }
 }

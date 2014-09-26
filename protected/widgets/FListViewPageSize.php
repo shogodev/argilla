@@ -23,7 +23,7 @@ class FListViewPageSize extends CWidget
   public function init()
   {
     if( !isset($this->postUrl) )
-      $this->postUrl = $this->owner->getActionUrl(false);
+      $this->postUrl = $this->owner->getActionUrl(true);
 
     parent::init();
   }

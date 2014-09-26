@@ -1,36 +1,33 @@
 <?php
 /**
  * @var IndexController $this
- * @var Showcase|Tab[] $showcase
+ * @var Showcase|ShowcaseTab[] $showcase
  */
 ?>
-<?php if( $showcase->count() ) { ?>
-<div id="vitrine-tabs">
 
-  <ul>
-    <?php foreach($showcase as $tab) { ?>
-      <li><a href="<?php echo $this->renderDynamic(array($tab, 'getUrl'));?>"><?php echo $tab->name?></a></li>
-    <?php } ?>
-  </ul>
+<?php if( $showcase->count() ) { ?>
+<div id="vitrine-tabs" class="main-tabs wrapper nofloat">
+  <div class="main-tabs-menu menu m25">
+    <ul>
+      <?php foreach($showcase as $tab) { ?>
+        <li>
+          <a href="<?php echo $this->renderDynamic(array($tab, 'getUrl'));?>">
+            <i class="icon card-icon card-icon-<?php echo $tab->index?>"></i> <span><?php echo $tab->name?></span>
+          </a>
+        </li>
+      <?php } ?>
+    </ul>
+  </div>
 
   <?php foreach($showcase as $tab) { ?>
-    <div id="<?php echo $tab->index?>">
+    <div id="<?php echo $tab->prefix?>">
       <?php $this->widget('FListView', array(
-        'columnsCount' => 5,
         'dataProvider' => $tab->getRandomDataProvider(),
-        'itemsCssClass' => 'vitrine',
-        'itemView' => '/product/_product_block_tablet',
+        'itemView' => '/product/_product_block',
+        'itemsCssClass' => 'omega-four nofloat',
       ));?>
     </div>
   <?php } ?>
 
 </div>
-
-<script>
-  //<![CDATA[
-  $(function(){
-    $('#vitrine-tabs').tabs();
-  });
-  //]]>
-</script>
 <?php } ?>

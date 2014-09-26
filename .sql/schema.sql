@@ -322,7 +322,8 @@ CREATE TABLE `argilla_faceted_search` (
   `product_id` int(10) unsigned NOT NULL,
   `param_id` varchar(50) NOT NULL,
   `value` varchar(512) DEFAULT NULL,
-  PRIMARY KEY (`id`)
+  PRIMARY KEY (`id`),
+  KEY `product_id` (`product_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1100,6 +1101,7 @@ CREATE TABLE `argilla_product_type` (
   `position` int(11) DEFAULT '0',
   `url` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
+  `img` varchar(255) NOT NULL DEFAULT '',
   `notice` text,
   `visible` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`)

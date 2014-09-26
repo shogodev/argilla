@@ -8,7 +8,7 @@
  */
 class YandexShare extends CWidget
 {
-  public $htmlOptions;
+  public $htmlOptions = array();
 
   public $type = 'button';
 
@@ -16,7 +16,9 @@ class YandexShare extends CWidget
 
   public $class = 'yashare-auto-init';
 
-  public $services = 'yaru,vkontakte,facebook,twitter,odnoklassniki,moimir,lj';
+  public $services = 'vkontakte,facebook,twitter,odnoklassniki,moimir,gplus';
+
+  public $theme = 'counter';
 
   public function run()
   {
@@ -28,6 +30,7 @@ class YandexShare extends CWidget
       'data-yashareL10n' => $this->language,
       'data-yashareType' => $this->type,
       'data-yashareQuickServices' => $this->services,
+      'data-yashareTheme' => $this->theme,
     ), false, false);
     echo CHtml::closeTag('div');
     echo CHtml::closeTag('div');

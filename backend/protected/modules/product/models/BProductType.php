@@ -8,7 +8,7 @@
  *
  * @method static BProductType model(string $class = __CLASS__)
  *
- * @property string  $id
+ * @property integer $id
  * @property integer $position
  * @property string  $url
  * @property string  $name
@@ -34,6 +34,7 @@ class BProductType extends BProductStructure
   {
     return array(
       'tree' => array('class' => 'BTreeAssignmentBehavior', 'parentModel' => 'BProductSection'),
+      'uploadBehavior' => array('class' => 'UploadBehavior', 'validAttributes' => 'img'),
     );
   }
 

@@ -24,6 +24,7 @@ class ProductAssignment extends FActiveRecord
       'product' => array(self::BELONGS_TO, 'ProductProduct', 'product_id'),
       'section' => array(self::BELONGS_TO, 'ProductSection', 'section_id'),
       'type' => array(self::BELONGS_TO, 'ProductType', 'type_id'),
+      'category' => array(self::BELONGS_TO, 'ProductCategory', 'category_id'),
       'collection' => array(self::BELONGS_TO, 'ProductCollection', 'collection_id'),
     );
   }
@@ -54,7 +55,7 @@ class ProductAssignment extends FActiveRecord
    *
    * @return FActiveRecord[]
    */
-  public function getModels($modelName, CDbCriteria $defaultCriteria)
+  public function getModels($modelName, CDbCriteria $defaultCriteria = null)
   {
     $modelId = preg_replace('/product([a-z]+)/i', 'a.$1_id', $modelName);
 
@@ -64,7 +65,9 @@ class ProductAssignment extends FActiveRecord
 
     $criteria->compare('p.visible', 1);
     $criteria->compare('a.visible', 1);
-    $criteria->mergeWith($defaultCriteria);
+
+    if( $defaultCriteria )
+      $criteria->mergeWith($defaultCriteria);
 
     return $modelName::model()->findAll($criteria);
   }
@@ -87,11 +90,11 @@ class ProductAssignment extends FActiveRecord
     ));
 
     $join = array(
-      'product' => Product::table(),
       'section' => ProductSection::table(),
       'type' => ProductType::table(),
       'category' => ProductCategory::table(),
       'collection' => ProductCollection::table(),
+      'product' => Product::table(),
     );
 
     array_walk($join, function(&$value, $key){
