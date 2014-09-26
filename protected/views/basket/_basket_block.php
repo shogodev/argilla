@@ -66,7 +66,7 @@
   </td>
   <td>
     <div class="block-center"><div class="block-center-div"><div class="block-center-div-div">
-          <?php if( !Utils::isDecimalEmpty($data->price_old) ) {?>
+          <?php if( PriceHelper::isNotEmpty($data->price_old) ) {?>
             <div class="nofloat">
               <div class="s12 center m3 old-price fr"><?php echo Yii::app()->format->formatNumber($data->price_old)?> руб.</div>
             </div>
