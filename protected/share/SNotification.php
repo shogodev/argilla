@@ -89,6 +89,14 @@ class SNotification extends CActiveRecord
     }
   }
 
+  public function sendByLayout($index, $varsForView = array(), $mailForSend = '', $layout = null)
+  {
+    $oldLayout = $this->layout;
+    $this->layout = $layout;
+    $this->send($index, $varsForView, $mailForSend);
+    $this->layout = $oldLayout;
+  }
+
   /**
    * @param $varsForView
    * @param $data
