@@ -130,7 +130,7 @@ function show_yii_errors_messages(form, messages)
     if( $('#' + this.errorID).length )
     {
       form.yiiactiveform.updateInput(this, messages, form)
-      delete messages[this.inputID];
+      delete messages[this.id];
     }
   });
 

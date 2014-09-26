@@ -70,6 +70,9 @@ class FFormInputElement extends CFormInputElement
 
   public function renderInput()
   {
+    if( $this->getParent()->getModel()->asa('relatedFormElements') )
+      $this->getParent()->getModel()->registerScriptByElement($this);
+
     if( isset(self::$coreTypes[$this->type]) )
     {
       $method = self::$coreTypes[$this->type];
