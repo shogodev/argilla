@@ -18,8 +18,8 @@ class FMenu extends CMenu
   public function init()
   {
     $this->htmlOptions['id'] = $this->getId();
-    $route                   = !empty($this->controller->activeUrl) ? $this->controller->activeUrl : $this->controller->route;
-    $this->items             = $this->normalizeItems($this->items, $route, $hasActiveChild);
+
+    $this->activeSelected();
   }
 
   protected function isItemActive($item, $route)
@@ -62,5 +62,35 @@ class FMenu extends CMenu
     }
 
     parent::renderMenuRecursive($items);
+  }
+
+  protected function clearNoActiveItems(&$items)
+  {
+    foreach($items as $i => $item)
+    {
+      if( isset($item['items']) )
+      {
+        $this->clearNoActiveItems($items[$i]['items']);
+      }
+
+      if( isset($item['active']) && $item['active'] == false )
+      {
+        unset($items[$i]['active']);
+      }
+    }
+  }
+
+  protected function activeSelected()
+  {
+    $routes = !empty($this->controller->activeUrl) ? $this->controller->activeUrl : $this->controller->route;
+
+  if( !is_array($routes) || !is_array(Arr::reset($routes)) )
+      $routes = array($routes);
+
+    foreach($routes as $route)
+    {
+      $this->clearNoActiveItems($this->items);
+      $this->items = $this->normalizeItems($this->items, $route, $hasActiveChild);
+    }
   }
 }
