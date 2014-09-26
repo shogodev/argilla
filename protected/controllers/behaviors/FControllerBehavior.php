@@ -46,9 +46,9 @@ class FControllerBehavior extends CBehavior
   private $compare;
 
   /**
-   * @var array
+   * @var MenuBuilder
    */
-  private $sectionMenu;
+  private $menuBuilder;
 
   /**
    * @var Contact
@@ -60,7 +60,7 @@ class FControllerBehavior extends CBehavior
    */
   public function getBasket()
   {
-    if ( $this->basket == null )
+    if( !isset($this->basket) )
     {
       $this->basket = new FBasket('basket', array('color', 'size'), array('Product', 'ProductColor', 'ProductParameter'));
       $this->basket->ajaxUrl = Yii::app()->createUrl('basket/index');
@@ -72,19 +72,22 @@ class FControllerBehavior extends CBehavior
 
   public function getFavorite()
   {
-    if ( $this->favorite == null )
+    if( !isset($this->favorite) )
+    {
       $this->favorite = new FFavorite('favorite', array(), array('Product'));
+    }
 
     return $this->favorite;
   }
 
   public function getVisits()
   {
-    if ( $this->visits == null )
+    if( !isset($this->visits) )
     {
       $this->visits = new FFavorite('visits', array(), array('Product'));
       $this->visits->ajaxUrl = Yii::app()->createUrl('visits/index');
     }
+
     return $this->visits;
   }
 
@@ -93,7 +96,7 @@ class FControllerBehavior extends CBehavior
    */
   public function getCompare()
   {
-    if ( $this->compare == null )
+    if( !isset($this->compare) )
     {
       $this->compare = new FCompare('compare', array(), array('Product', 'ProductSection'));
       $this->compare->ajaxUrl = Yii::app()->createUrl('compare/index');
@@ -103,22 +106,33 @@ class FControllerBehavior extends CBehavior
     return $this->compare;
   }
 
+  /**
+   * @return array
+   */
   public function getTopMenu()
   {
     return Menu::model()->getMenu('top');
   }
 
+  /**
+   * @return array
+   */
   public function getBottomMenu()
   {
     return Menu::model()->getMenu('bottom');
   }
 
-  public function getSectionMenu()
+  /**
+   * @return MenuBuilder
+   */
+  public function getMenuBuilder()
   {
-    if( $this->sectionMenu === null )
-      $this->sectionMenu = ProductAssignment::model()->getSectionMenu();
+    if( !isset($this->menuBuilder) )
+    {
+      $this->menuBuilder = new MenuBuilder();
+    }
 
-    return $this->sectionMenu;
+    return $this->menuBuilder;
   }
 
   /**
@@ -126,7 +140,7 @@ class FControllerBehavior extends CBehavior
    */
   public function getLoginPopupForm()
   {
-    if( !$this->loginPopupForm )
+    if( !isset($this->loginPopupForm) )
     {
       $this->loginPopupForm = new FForm('LoginPopupForm', new Login());
       $this->loginPopupForm->action = Yii::app()->createUrl('user/login');
@@ -142,7 +156,7 @@ class FControllerBehavior extends CBehavior
    */
   public function getCallbackForm()
   {
-    if( !$this->callbackForm )
+    if( !isset($this->callbackForm) )
     {
       $this->callbackForm = new FForm('CallbackForm', new Callback());
       $this->callbackForm->action = Yii::app()->createUrl('callback/index');
@@ -156,7 +170,7 @@ class FControllerBehavior extends CBehavior
    */
   public function getFastOrderForm()
   {
-    if( !$this->fastOrderForm )
+    if( !isset($this->fastOrderForm) )
     {
       $this->fastOrderForm = new FForm('FastOrder', new Order('fastOrder'));
       $this->fastOrderForm->action = Yii::app()->createUrl('basket/fastOrder');
@@ -170,7 +184,7 @@ class FControllerBehavior extends CBehavior
    */
   public function getHeaderContacts()
   {
-    if( $this->headerContacts === null )
+    if( !isset($this->headerContacts) )
     {
       $this->headerContacts = Contact::model()->findByAttributes(array('sysname' => 'header'));
     }
