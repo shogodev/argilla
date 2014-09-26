@@ -50,17 +50,4 @@ class UtilsTest extends CTestCase
       $this->assertEquals($url, $processedUrl);
     }
   }
-
-  public function testIsDecimalEmpty()
-  {
-    $this->assertTrue(Utils::isDecimalEmpty(0));
-
-    $this->assertFalse(Utils::isDecimalEmpty(1));
-
-    $this->assertFalse(Utils::isDecimalEmpty('0.06'));
-
-    $this->assertTrue(Utils::isDecimalEmpty('0.000'));
-
-    $this->assertFalse(Utils::isDecimalEmpty('0.010'));
-  }
 }
