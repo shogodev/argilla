@@ -186,30 +186,7 @@
   },
 
   animate : function(pic, panelHeader) {
-    if ( pic == undefined || pic.size() == 0 )
-     return;
-
-    var targetBlock = this.options.controls[panelHeader];
-
-    var clonedPic = pic.clone().css({
-      position: 'fixed',
-      left: pic.offset().left - $(window).scrollLeft(),
-      top: pic.offset().top - $(window).scrollTop(),
-      height: pic.height(),
-      width: pic.width()
-    }).addClass('movin-to-basket');
-    $('body').append(clonedPic);
-
-    var targetPos = { top: targetBlock.offset().top - $(window).scrollTop(), left: targetBlock.offset().left - $(window).scrollLeft() };
-    clonedPic.css({
-      top: targetPos.top,
-      left: targetPos.left,
-      opacity: 0
-    }).addClass('scale');
-
-    setTimeout(function(){
-      clonedPic.remove();
-    }, 500)
+    $(this.options.controls[panelHeader].selector).addInCollection(pic)
   },
 
   destroy: function() {
