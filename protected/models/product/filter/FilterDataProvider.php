@@ -54,7 +54,7 @@ class FilterDataProvider
     $this->fetchData();
 
     $criteria = new CDbCriteria();
-    $criteria->addInCondition('id', $this->filteredIds);
+    $this->createFastInCondition($criteria, 't.id', $this->filteredIds);
 
     return $criteria;
   }
@@ -69,9 +69,14 @@ class FilterDataProvider
     return $this->amounts;
   }
 
+  public function getAmountsTotal()
+  {
+    return count($this->filteredIds);
+  }
+
   private function fetchData()
   {
-    if( $this->amounts === null && !$this->initFromCache() )
+    if( $this->amounts === null )
     {
       foreach($this->getFacetedData() as $data)
       {
@@ -80,8 +85,6 @@ class FilterDataProvider
 
       $this->filteredIds = $this->amountCounter->getFilteredIds();
       $this->amounts = $this->amountCounter->getAmounts();
-
-      $this->setCache();
     }
   }
 
@@ -95,7 +98,7 @@ class FilterDataProvider
     $this->facetedCriteria = new CDbCriteria();
     $this->facetedCriteria->distinct = true;
     $this->facetedCriteria->select = 'product_id, param_id, value';
-    $this->facetedCriteria->addInCondition('product_id', $productIds);
+    $this->createFastInCondition($this->facetedCriteria, 'product_id', $productIds);
   }
 
   /**
@@ -121,19 +124,16 @@ class FilterDataProvider
     return $command->queryColumn();
   }
 
-  /**
-   * @return bool
-   */
-  private function initFromCache()
+  private function escapeIdsArray(&$idsArray)
   {
-    $this->filteredIds = array();
-    $this->amounts = array();
-
-    return false;
+    array_walk($idsArray, function(&$element) {
+      $element = intval($element);
+    });
   }
 
-  private function setCache()
+  private function createFastInCondition(CDbCriteria $criteria, $field, array $idsArray)
   {
-    $cache = array($this->filteredIds, $this->amounts);
+    $this->escapeIdsArray($idsArray);
+    $criteria->condition = $field.' IN ('.implode(', ', $idsArray).')';
   }
 }

@@ -21,7 +21,7 @@ class FilterProcessor extends CComponent
   /**
    * @var array
    */
-  private $selectedData;
+  private $selectedData = array();
 
   /**
    * @var array
@@ -45,7 +45,7 @@ class FilterProcessor extends CComponent
 
   public function getSelectedIds()
   {
-    return $this->selectedIds;
+    return array_unique($this->selectedIds);
   }
 
   public function isStateEmpty()
