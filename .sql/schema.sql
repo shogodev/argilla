@@ -609,7 +609,7 @@ CREATE TABLE `argilla_order` (
   `sum` decimal(10,2) NOT NULL,
   `ip` int(10) unsigned NOT NULL,
   `date_create` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `status_id` int(10) unsigned NOT NULL,
+  `status_id` int(10) unsigned NOT NULL DEFAULT '1',
   `order_comment` varchar(255) NOT NULL,
   `deleted` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
