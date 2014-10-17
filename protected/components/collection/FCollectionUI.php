@@ -49,21 +49,21 @@ class FCollectionUI extends FCollection
 
   protected $popupAutofocusFieldId = 'autofocus-field';
 
-  public function sum()
+  public function getSum()
   {
     $sum = 0;
 
     foreach($this as $element)
     {
-      $sum += $element->sum;
+      $sum += $element->getSum();
     }
 
     return $sum;
   }
 
-  public function totalSum()
+  public function getSumTotal()
   {
-    return $this->sum();
+    return $this->getSum();
   }
 
   /**
@@ -142,9 +142,9 @@ class FCollectionUI extends FCollection
    * Строит input меняющий количество на кнопке добавления в коллекцию.
    * Пример:
    * <pre>
-   *   echo $this->basket->inputAmountButton('#button-id', array('class' => 'inp'))
+   *   echo $this->basket->inputAmountButtonAdd('#button-id', array('class' => 'inp'))
    *   или
-   *   echo $this->basket->inputAmountButton('.calculator-popup')
+   *   echo $this->basket->inputAmountButtonAdd('.calculator-popup')
    * </pre>
    *
    * @param string $targetSelector селектор кнопки добавления в коллекцию или селектор блока содержащего кнопку добавления в коллекцию
@@ -154,7 +154,27 @@ class FCollectionUI extends FCollection
    *
    * @return string
    */
-  public function inputAmountButton($targetSelector, $htmlOptions = array(), $defaultAmount = 1, $step = 1)
+  public function inputAmountButtonAdd($targetSelector, $htmlOptions = array(), $defaultAmount = 1, $step = 1)
+  {
+    $this->appendHtmlOption($htmlOptions, $this->classAmount);
+    $this->appendHtmlOption($htmlOptions, $targetSelector, 'data-target-selector');
+    $this->appendHtmlOption($htmlOptions, '.'.$this->classAdd, 'data-button-selector');
+    $this->appendHtmlOption($htmlOptions, $step, 'data-step');
+
+    return CHtml::textField('amount', $defaultAmount, $htmlOptions);
+  }
+
+  /**
+   * Строит input меняющий количество у элемента с селектором $targetSelector
+   *
+   * @param $targetSelector
+   * @param array $htmlOptions
+   * @param int $defaultAmount
+   * @param int $step
+   *
+   * @return string
+   */
+  public function inputAmountElement($targetSelector, $htmlOptions = array(), $defaultAmount = 1, $step = 1)
   {
     $this->appendHtmlOption($htmlOptions, $this->classAmount);
     $this->appendHtmlOption($htmlOptions, $targetSelector, 'data-target-selector');
@@ -213,7 +233,7 @@ class FCollectionUI extends FCollection
    *
    * @return array
    */
-  protected function prepareInputData($data)
+  public function prepareInputData($data)
   {
     $preparedData = array();
 
@@ -441,8 +461,17 @@ class FCollectionUI extends FCollection
     $this->registerScript("$('body').on('change', '.{$this->classAmount}', function(e){
       e.preventDefault();
       var targetSelector = $(this).data('target-selector');
-      var target = $(targetSelector + '.{$this->classAdd}').length > 0 ? $(targetSelector + '.{$this->classAdd}') : $(this).closest(targetSelector).find('.{$this->classAdd}');
-      target.data('amount', $(this).val() / $(this).data('step') );
+      var buttonSelector = $(this).data('button-selector');
+      if( buttonSelector )
+      {
+        var target = $(targetSelector + buttonSelector).length > 0 ? $(targetSelector + buttonSelector) : $(this).closest(targetSelector).find(buttonSelector);
+      }
+      else
+      {
+        var target = $(targetSelector);
+      }
+
+      target.data('amount', $(this).val() / $(this).data('step')).change();
     });");
   }
 

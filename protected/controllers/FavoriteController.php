@@ -15,7 +15,18 @@ class FavoriteController extends FController
 
   public function actionIndex()
   {
-    $this->renderPartial('/product_panel');
+    $this->forward('basket/add');
+  }
+
+  public function actionMergeWithBasket()
+  {
+    foreach($this->favorite as $item)
+    {
+      $this->basket->add($item);
+    }
+    $this->favorite->clear();
+
+    $this->forward('basket/add');
   }
 
   protected function processFavoriteAction()
@@ -33,12 +44,17 @@ class FavoriteController extends FController
       switch($action)
       {
         case 'remove':
-          $this->favorite->remove(Arr::get($data, 'id'));
-          break;
+          $index = Arr::get($data, 'index');
+          if( !$index )
+            $index = $this->favorite->getIndex($data);
+          $this->favorite->remove($index);
+        break;
 
         case 'add':
-          if( !$this->favorite->isInCollectionData(Arr::get($data, 'type'), Arr::get($data, 'id')) )
+          if( !$this->favorite->isInCollection($data) )
+          {
             $this->favorite->add($data);
+          }
         break;
       }
     }

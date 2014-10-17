@@ -62,9 +62,10 @@ class FControllerBehavior extends CBehavior
   {
     if( !isset($this->basket) )
     {
-      $this->basket = new FBasket('basket', array('color', 'size'), array('Product', 'ProductColor', 'ProductParameter'));
+      $this->basket = new FBasket('basket', array('options', 'ingredients'));
       $this->basket->ajaxUrl = Yii::app()->createUrl('basket/index');
       $this->basket->addButtonAjaxUrl = Yii::app()->createUrl('basket/add');
+      $this->basket->collectionItemsForSum = array('ingredients');
     }
 
     return $this->basket;
@@ -74,7 +75,8 @@ class FControllerBehavior extends CBehavior
   {
     if( !isset($this->favorite) )
     {
-      $this->favorite = new FFavorite('favorite', array(), array('Product'));
+      $this->favorite = new FFavorite('favorite');
+      $this->favorite->ajaxUrl = Yii::app()->controller->createUrl('favorite/index');
     }
 
     return $this->favorite;
@@ -84,7 +86,7 @@ class FControllerBehavior extends CBehavior
   {
     if( !isset($this->visits) )
     {
-      $this->visits = new FFavorite('visits', array(), array('Product'));
+      $this->visits = new FFavorite('visits');
       $this->visits->ajaxUrl = Yii::app()->createUrl('visits/index');
     }
 
@@ -145,6 +147,8 @@ class FControllerBehavior extends CBehavior
       $this->loginPopupForm = new FForm('LoginPopupForm', new Login());
       $this->loginPopupForm->action = Yii::app()->createUrl('user/login');
       $this->loginPopupForm->ajaxSubmit = false;
+      $this->loginPopupForm->validateOnChange = false;
+      $this->loginPopupForm->validateOnSubmit = false;
       $this->loginPopupForm->autocomplete = true;
     }
 
@@ -170,7 +174,7 @@ class FControllerBehavior extends CBehavior
    */
   public function getFastOrderForm()
   {
-    if( !isset($this->fastOrderForm) )
+    if( !isset($this->fastOrderForm) && $this->owner->id != 'basket' )
     {
       $this->fastOrderForm = new FForm('FastOrder', new Order('fastOrder'));
       $this->fastOrderForm->action = Yii::app()->createUrl('basket/fastOrder');

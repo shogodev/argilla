@@ -58,6 +58,7 @@ return array(
 
   // favorite
   'favorite' => array('favorite/index', 'pattern' => 'favorite'),
+  'favoriteMergeWithBasket' => array('favorite/mergeWithBasket', 'pattern' => 'basket/favorite_to_basket'),
 
   // visits
   'visits' => array('visits/index', 'pattern' => 'visits'),

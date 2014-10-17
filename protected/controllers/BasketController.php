@@ -21,7 +21,8 @@ class BasketController extends FController
 
     if( Yii::app()->request->isAjaxRequest )
     {
-      $this->renderOverride('_basket_header');
+      $this->renderPartial('/_basket_header');
+      $this->renderPartial('/panel/panel');
       $this->renderPartial('index');
     }
     else
@@ -41,7 +42,7 @@ class BasketController extends FController
 
     $this->breadcrumbs = array('Корзина');
 
-    $orderForm = new FForm('Order', new Order());
+    $orderForm = new FForm('OrderForm', new Order());
     $orderForm->loadFromSession = true;
     $orderForm->autocomplete = true;
     $orderForm->ajaxValidation();
@@ -59,6 +60,7 @@ class BasketController extends FController
       ));
 
       Yii::app()->session['orderSuccess'] = true;
+      Yii::app()->session['orderId'] = $orderForm->model->id;
       Yii::app()->end();
     }
     else
@@ -66,9 +68,9 @@ class BasketController extends FController
       if( !Yii::app()->user->isGuest )
       {
         $orderForm->model->setAttributes(array(
-          'name' => Yii::app()->user->data->name,
-          'address' => Yii::app()->user->data->address,
-          'email' => Yii::app()->user->email
+          'name' => Yii::app()->user->profile->name,
+          'address' => Yii::app()->user->profile->address,
+          'email' => Yii::app()->user->data->email
         ));
       }
 
@@ -81,10 +83,12 @@ class BasketController extends FController
     if( $this->basket->isEmpty() && !Yii::app()->session->get('orderSuccess', false) )
       Yii::app()->request->redirect($this->createUrl('basket/index'));
 
+    $orderId = Yii::app()->session['orderId'];
+    Yii::app()->session->remove('orderId');
     Yii::app()->session->remove('orderSuccess');
 
     $this->breadcrumbs = array('Корзина');
-    $this->render('success');
+    $this->render('success', array('orderId' => $orderId));
   }
 
   public function actionFastOrder()
@@ -92,7 +96,7 @@ class BasketController extends FController
     $form = $this->fastOrderForm;
     $form->ajaxValidation();
 
-    $fastOrderBasket = new FBasket('fastOrderBasket', array(), array('Product'), false);
+    $fastOrderBasket = new FBasket('fastOrderBasket', array(), false);
     $fastOrderBasket->add(Yii::app()->request->getPost($this->basket->keyCollection));
     $form->model->setFastOrderBasket($fastOrderBasket);
 
@@ -122,6 +126,59 @@ class BasketController extends FController
     $this->renderPartial('/product_panel');
   }
 
+  public function actionRepeatOrder()
+  {
+    $data = Yii::app()->request->getPost($this->basket->keyCollection);
+    $orderId = Arr::get($data, 'order-id');
+
+    try
+    {
+      /**
+       * @var OrderHistory $order
+       */
+      if( $order = OrderHistory::model()->findByPk($orderId) )
+      {
+        foreach($order->products as $orderProduct)
+        {
+          $data = array(
+            'type' => 'product',
+            'id' => $orderProduct->history->product_id,
+            'amount' => $orderProduct->count,
+            'items' => array()
+          );
+
+          if( $options = $orderProduct->getItems('ProductOption') )
+          {
+            foreach($options as $option)
+            {
+              $data['items']['options'][] = array('id' => $option->pk, 'type' => $option->type);
+            }
+          }
+
+          if( $ingredients = $orderProduct->getItems('ProductIngredientAssignment') )
+          {
+            foreach($ingredients as $ingredient)
+            {
+              $data['items']['ingredients'][] = array(
+                'id' => $ingredient->pk,
+                'type' => $ingredient->type,
+                'amount' => $ingredient->amount
+              );
+            }
+          }
+          $this->basket->add($data);
+        }
+
+        $this->actionAdd();
+      }
+    }
+    catch(CHttpException $e)
+    {
+      $e->handled = true;
+      throw new CHttpException(500, 'Ошибка. Невозможно выполнить повтрный заказ');
+    }
+  }
+
   protected function processBasketAction()
   {
     $request = Yii::app()->request;
@@ -137,32 +194,31 @@ class BasketController extends FController
       switch($action)
       {
         case 'remove':
-          $id = Arr::get($data, 'id');
+          $index = Arr::get($data, 'index');
 
-          if( !$this->basket->getElementByIndex($id) )
+          if( is_null($index) )
+            $index = $this->basket->getIndex($data);
+
+          if( is_null($index) || !$this->basket->exists($index) )
             throw new CHttpException(500, 'Данный продукт уже удален. Обновите страницу.');
 
-          $this->basket->remove($id);
-          break;
-
-        case 'changeAmount':
-          if( !$this->basket->getElementByIndex($data['id']) )
-            throw new CHttpException(500, 'Продукт не найден. Обновите страницу.');
-          $this->basket->changeAmount($data['id'], intval($data['amount']));
+          $this->basket->remove($index);
         break;
 
-        case 'changeSize':
-          $element = $this->basket->getElementByIndex($data['index']);
-          if( !$element )
+        case 'changeAmount':
+          if( !$this->basket->exists($data['index']) )
+            throw new CHttpException(500, 'Продукт не найден. Обновите страницу.');
+          $amount = intval($data['amount']);
+          $this->basket->changeAmount($data['index'], $amount > 0 ? $amount : 1);
+        break;
+
+        case 'changeOptions':
+          if( !$this->basket->exists($data['index']) )
             throw new CHttpException(500, 'Продукт не найден. Обновите страницу.');
 
-          $this->basket->changeItems($data['index'], array(
-            'size' => array(
-              'id' => Arr::get($data, 'id'),
-              'type' => 'product_parameter'
-            )
-          ));
-          $this->basket->update();
+          $items = Arr::get($this->basket[$data['index']]->getCollectionElement()->toArray(), 'items', array());
+          $items['options'] = $data['options'];
+          $this->basket->changeItems($data['index'], $items);
         break;
 
         case 'add':

@@ -5,86 +5,50 @@
  * @var ProductParameter|null $size
  */
 ?>
-<tr>
-  <td style="width: 265px">
+<tr class="product-row" data-index="<?php echo $data->collectionIndex?>">
+  <td>
     <?php if( $image = Arr::reset($data->getImages()) ) { ?>
-      <a href="<?php echo $data->url?>"><img src="<?php echo $image->pre?>" alt="" /></a>
+      <a href="<?php echo $data->url?>" class="product-pic"><img src="<?php echo $image->pre?>" alt="" /></a>
     <?php }?>
-  </td>
-  <td style="width: 300px">
-    <div class="m15">
-      <a href="<?php echo $data->url?>" class="h3 s18 bb"><?php echo $data->name?></a>
-    </div>
-    <table class="zero short-description-table">
-      <?php if( $data->category ) {?>
-        <tr>
-          <th>Бренд:</th>
-          <td><?php echo $data->category->name?></td>
-        </tr>
-      <?php }?>
-      <tr>
-        <th>Тип:</th>
-        <td><?php echo $data->type->name?></td>
-      </tr>
 
-      <?php if( $color = $data->getProductColorParameter()  ) { ?>
-        <tr>
-          <td colspan="2" height="15"></td>
-        </tr>
-        <tr>
-          <th><?php echo $color->name?>:</th>
-          <td><?php echo $color->value?></td>
-        </tr>
-      <?php }?>
-
-      <?php $sizeParameter = $data->getProductSizeParameter()?>
-      <?php if( $sizeParameter && $sizeParameter->isAvailableValues()  ) { ?>
-        <tr>
-          <td colspan="2" height="15"></td>
-        </tr>
-        <tr>
-          <th><?php echo $sizeParameter->name?>:</th>
-          <?php if( $size = $data->getCollectionItems('size') ) {?>
-            <td><?php echo $size->variant->name?><br /><a href="" class="chose-size-link" data-index="<?php echo $data->collectionIndex?>">Выбрать другой</a></td>
-          <?php } else {?>
-            <td><a href="" class="chose-size-link" data-index="<?php echo $data->collectionIndex?>">Выбрать</a></td>
-          <?php }?>
-        </tr>
-      <?php }?>
-    </table>
-
-    <?php if( $sizeParameter ) {?>
-      <div id="size-index-<?php echo $data->collectionIndex?>" style="display: none">
-        <?php foreach($sizeParameter->parameters as $paramNameId => $parameter) {?>
-          <a href=""
-             class="size-btn select-size<?php echo !$sizeParameter->values[$paramNameId]->available ? ' disabled' : ''?><?php echo isset($size) && $size->id == $parameter->id ? ' selected' : ''?>"
-             data-id="<?php echo $parameter->id?>"
-             data-index="<?php echo $data->collectionIndex?>"><?php echo $sizeParameter->values[$paramNameId]?></a>
-        <?php }?>
+    <div class="product-info">
+      <div class="m20 nova">
+        <a href="<?php echo $data->url?>" class="s24 uppercase"><?php echo $data->name?></a>
       </div>
-    <?php }?>
-  </td>
-  <td>
-    <div class="block-center"><div class="block-center-div"><div class="block-center-div-div">
-          <?php if( PriceHelper::isNotEmpty($data->price_old) ) {?>
-            <div class="nofloat">
-              <div class="s12 center m3 old-price fr"><?php echo Yii::app()->format->formatNumber($data->price_old)?> руб.</div>
-            </div>
+      <?php if( $optionGroup = $data->getOptionGroup() ) {?>
+        <table class="zero product-params-choice-table">
+          <?php foreach($optionGroup as $group) {?>
+            <tr>
+              <td class="grey"><?php echo $group->name?>:</td>
+              <td>
+                <?php $group->renderOptions(array('class' => 'product-option'))?>
+              </td>
+            </tr>
           <?php }?>
-          <div class="s28 center jurabold m3 price"><?php echo Yii::app()->format->formatNumber($data->price)?> <span class="s24 jurabold">руб.</span></div>
-        </div></div></div>
+        </table>
+      <?php }?>
+      <?php if( $ingredients = $data->getCollectionItems('ingredients') ) {?>
+        <?php foreach($ingredients as $ingredient) {?>
+          <?php echo $ingredient->name?> <?php echo $ingredient->collectionAmount?><br/>
+        <?php }?>
+      <?php }?>
+    </div>
   </td>
   <td>
-      <span class="spinner">
-        <span class="spinner-up"></span>
-        <?php echo $this->basket->changeAmountInput($data, array('class' => 'inp'))?>
-        <span class="spinner-down"></span>
-      </span>
+    <span class="s34 bb nowrap"><?php echo PriceHelper::price($data->getPrice(), ' руб.')?></span>
   </td>
   <td>
-    <div class="s28 center jurabold m3 price"><?php echo Yii::app()->format->formatNumber($data->sum)?> <span class="s24 jurabold">руб.</span></div>
+        <span class="spinner">
+          <span class="spinner-down"></span>
+          <?php echo $this->basket->inputAmountCollection($data, array('class' => 'inp')) ?>
+          <span class="spinner-up"></span>
+        </span>
   </td>
-  <td style="width: 59px">
-    <a class="remove-from-basket" href="#" data-id="<?php echo $data->collectionExternalIndex?>"><img alt="Удалить" src="i/remove-btn.png"></a>
+  <td>
+    <span class="s34 bb nowrap"><?php echo PriceHelper::price($data->sum, ' руб.')?></span>
+  </td>
+  <td>
+    <?php echo $this->basket->buttonRemove($data, '', array('class' => 'remove'))?>
   </td>
 </tr>
+<tr class="spacer"><td colspan="5"></td></tr>

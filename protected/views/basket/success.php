@@ -1,13 +1,13 @@
 <?php
 /**
  * @var BasketController $this
+ * @var integer $orderId
  */
 ?>
-<div id="content" class="paddings">
-  <?php $this->renderPartial('/breadcrumbs');?>
+<div class="wrapper">
+  <?php $this->renderPartial('/_breadcrumbs');?>
 
-  <div class="nofloat m10">
-    <h1 class="left"><?php echo $this->clip('h1', 'Корзина')?></h1>
+  <div class="center">
+    <?php echo $this->textBlockRegister('Заказ принят', null, null, array('{orderId}' => $orderId))?>
   </div>
-  <?php echo $this->textBlockRegister('Заказ принят', 'Заказ принят')?>
 </div>
