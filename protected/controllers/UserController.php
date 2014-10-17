@@ -57,10 +57,14 @@ class UserController extends FController
 
       if( Yii::app()->request->isAjaxRequest && $registrationForm->save() )
       {
-        Yii::app()->notification->send(
-          $registrationForm->model,
-          array('profile' => $registrationForm['profile']->model),
-          $registrationForm->model->email
+
+          Yii::app()->notification->send(
+            'UserRegistration',
+            array(
+              'model' => $registrationForm->model,
+              'profile' => $registrationForm['profile']->model
+            ),
+            $registrationForm->model->email
         );
 
         Yii::app()->notification->send(

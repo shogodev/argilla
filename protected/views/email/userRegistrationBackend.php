@@ -1,7 +1,7 @@
 <?php
 /**
  * @var User $model
- * @var UserProfile $userData
+ * @var UserProfile $profile
  * @var string $adminUrl
  */
 ?>
@@ -12,12 +12,12 @@ $fields = array(
   'E-mail' => $model->email
 );
 
-foreach($userData->attributeLabels() as $attribute => $label)
-  if( !empty($userData->$attribute) )
-    $fields[$label] = $userData->$attribute;
+foreach($profile->attributeLabels() as $attribute => $label)
+  if( !empty($profile->$attribute) )
+    $fields[$label] = $profile->$attribute;
 
 $data = array(
- 'header' => "Регистрация ползвателя",
+ 'header' => "Регистрация пользователя",
  'top' => '',
  'fields' => $fields,
  'bottom' => '',
