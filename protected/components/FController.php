@@ -27,11 +27,6 @@ class FController extends CController
   public $breadcrumbs = array();
 
   /**
-   * @var Meta
-   */
-  public $meta = null;
-
-  /**
    * @var array $activeUrl
    */
   public $activeUrl = array();
@@ -140,18 +135,6 @@ class FController extends CController
   public function onBeforeRenderLayout(CEvent $event)
   {
     $this->raiseEvent('onBeforeRenderLayout', $event);
-  }
-
-  public function clip($id, $value)
-  {
-    $this->beginClip($id);
-    echo $value;
-    $this->endClip();
-
-    if( Yii::app()->meta )
-      Yii::app()->meta->registerClip($id, $value);
-
-    return $this->clips[$id];
   }
 
   /**
