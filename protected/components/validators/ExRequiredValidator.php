@@ -9,6 +9,7 @@
  * Example:
  *
  * array('payer_name', 'ExRequiredValidator', 'dependedAttribute' => 'payment_id', 'dependedValue' => OrderPaymentType::BANK_PAYMENT)
+ * array('payer_name', 'ExRequiredValidator', 'dependedAttribute' => 'payment_id', 'dependedValue' => array(1, 3, 4), 'not' => true)
  */
 class ExRequiredValidator extends CRequiredValidator
 {
@@ -16,9 +17,22 @@ class ExRequiredValidator extends CRequiredValidator
 
   public $dependedValue;
 
+  public $not = false;
+
   public function validateAttribute($object, $attribute)
   {
-    if( $object->{$this->dependedAttribute} == $this->dependedValue )
+    $equal = false;
+
+    if( is_array($this->dependedValue) )
+    {
+      $equal = in_array($object->{$this->dependedAttribute}, $this->dependedValue);
+    }
+    else
+    {
+      $equal = $object->{$this->dependedAttribute} == $this->dependedValue;
+    }
+
+    if( !$this->not ? $equal : !$equal  )
     {
       parent::validateAttribute($object, $attribute);
     }
