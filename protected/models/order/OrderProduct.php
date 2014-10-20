@@ -42,14 +42,46 @@ class OrderProduct extends FActiveRecord
     $this->discount = floatval($this->discount);
   }
 
-  public function getItemsType($type)
+  /**
+   * @param $type
+   * @param array $typeExceptions
+   *
+   * @return OrderProductItem[]|array
+   */
+  public function getItems($type = null, array $typeExceptions = array())
   {
     $items = array();
 
     foreach($this->items as $item)
-      if( $item->type == $type )
-        $items[] = $item;
+    {
+      if( !is_null($type) && $item->type != $type )
+        continue;
+
+      if( in_array($item->type, $typeExceptions) )
+        continue;
+
+      $items[] = $item;
+    }
 
     return $items;
   }
+
+  /**
+   * @param $type
+   * @param $pk
+   *
+   * @return OrderProductItem|null
+   */
+  public function getItem($type, $pk = null)
+  {
+    foreach($this->items as $item)
+    {
+      if( $item->type == $type && (is_null($pk) ? 1 : $item->primaryKey == $pk) )
+      {
+        return $item;
+      }
+    }
+    return null;
+  }
+
 }

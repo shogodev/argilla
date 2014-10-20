@@ -91,7 +91,7 @@ class Order extends FActiveRecord
     if( !$this->isNewRecord )
       return parent::beforeSave();
 
-    $this->sum = $this->basket->totalSum();
+    $this->sum = $this->basket->getSumTotal();
     $this->ip = ip2long(Yii::app()->request->userHostAddress);
     $this->type = $this->isFast() ? self::TYPE_FAST : self::TYPE_BASKET;
     $this->user_id = !Yii::app()->user->isGuest ? Yii::app()->user->getId() : null;
@@ -148,7 +148,7 @@ class Order extends FActiveRecord
         'price' => $product->price,
         'count' => $product->collectionAmount,
         'discount' => $product->discount,
-        'sum' => $product->sum,
+        'sum' => $product->getSumTotal(),
       ));
 
       $image = Arr::reset($product->getImages());
@@ -157,7 +157,7 @@ class Order extends FActiveRecord
         'order_product_id' => $orderProduct->getPrimaryKey(),
         'product_id' => $product->id,
         'url' => $product->url,
-        'img' => isset($image) ? $image->pre : '',
+        'img' => $image ? $image->pre : '',
         'articul' => $product->articul
       ));
 
@@ -172,21 +172,45 @@ class Order extends FActiveRecord
    */
   protected function saveCollectionItems(Product $product, $orderProduct)
   {
+    if( empty($product->collectionItems) )
+      return;
+
     foreach($product->collectionItems as $item)
     {
-      if( !is_a($item->asa('collectionElement'), 'FCollectionElement') )
-        continue;
-
-      $this->saveModel(new OrderProductItem(), array(
-        'order_product_id' => $orderProduct->primaryKey,
-        'type' => $item->getOrderItemType(),
-        'pk' => $item->getPrimaryKey(),
-        'name' => $item->getOrderItemName(),
-        'value' => $item->getOrderItemValue(),
-        'amount' => $item->getOrderItemAmount(),
-        'price' => $item->getOrderItemPrice(),
-      ));
+      if( $item instanceof FCollection )
+      {
+        foreach($item as $oneItem)
+        {
+          $this->saveCollectionItem($oneItem, $orderProduct);
+        }
+      }
+      else
+      {
+        $this->saveCollectionItem($item, $orderProduct);
+      }
     }
+  }
+
+  /**
+   * @param $item
+   * @param $orderProduct
+   *
+   * @throws CHttpException
+   */
+  protected function saveCollectionItem($item, $orderProduct)
+  {
+    if( !($item->asa('collectionElement') instanceof FCollectionElementBehavior) )
+      return;
+
+    $this->saveModel(new OrderProductItem(), array(
+      'order_product_id' => $orderProduct->primaryKey,
+      'type' => $item->getOrderItemType(),
+      'pk' => $item->getPrimaryKey(),
+      'name' => $item->getOrderItemName(),
+      'value' => $item->getOrderItemValue(),
+      'amount' => $item->getOrderItemAmount(),
+      'price' => $item->getOrderItemPrice(),
+    ));
   }
 
   /**
