@@ -93,7 +93,7 @@ class FFormInputElement extends CFormInputElement
     }
   }
 
-  protected function getLayout()
+  public function getLayout()
   {
     return $this->layout ? $this->layout : $this->getElementsLayout($this->parent);
   }
