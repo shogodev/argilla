@@ -13,6 +13,7 @@
  * @property string $name
  * @property string $notice
  * @property string $position
+ * @property string $type
 
  * @property BProduct $product
  */
