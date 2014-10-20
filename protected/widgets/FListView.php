@@ -64,7 +64,8 @@ class FListView extends CListView
 
   public function renderEmptyText()
   {
-    echo CHtml::tag('div', array('class' => 'empty m20'), $this->emptyText);
+    if( $this->emptyText )
+      echo CHtml::tag('div', array('class' => 'empty m20'), $this->emptyText);
   }
 
   public function run()

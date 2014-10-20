@@ -134,6 +134,6 @@ class FilterDataProvider
   private function createFastInCondition(CDbCriteria $criteria, $field, array $idsArray)
   {
     $this->escapeIdsArray($idsArray);
-    $criteria->condition = $field.' IN ('.implode(', ', $idsArray).')';
+    $criteria->condition = !empty($idsArray) ? $field.' IN ('.implode(', ', $idsArray).')' : 'false';
   }
 }
