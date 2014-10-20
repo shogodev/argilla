@@ -64,11 +64,10 @@
       <span style="font-size: 14px">C наилучшими пожеланиями, <?php echo Yii::app()->params->project?></span><br />
       <br /><br />
       <?php if( $this->asa('common') ) {?>
-        <?php foreach( $this->getContacts() as $contact ) { ?>
+        <?php if( $contact = $this->getHeaderContacts() ) {?>
           <?php $phones = $contact->getFields('phones');?>
-          <?php if( empty($phones) ) continue;?>
           <?php foreach($phones as $phone) {?>
-            <span style="font-size: 14px"> <?php echo $phone; ?> </span><br />
+            <span style="font-size: 14px"> <?php echo $phone->value.' '.$phone->description; ?> </span><br />
           <?php }?>
         <?php } ?>
       <?php } ?>

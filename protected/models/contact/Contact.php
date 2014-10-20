@@ -43,6 +43,11 @@ class Contact extends FActiveRecord
     );
   }
 
+  /**
+   * @param $groupName
+   *
+   * @return ContactField[]
+   */
   public function getFields($groupName)
   {
     if( $this->groups === null )

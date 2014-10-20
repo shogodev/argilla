@@ -32,6 +32,11 @@ class ContactField extends FActiveRecord
     );
   }
 
+  public function getClearPhone()
+  {
+    return preg_replace('/[^\d\+]/', '', $this->value.$this->description);
+  }
+
   public function __toString()
   {
     return $this->value;
