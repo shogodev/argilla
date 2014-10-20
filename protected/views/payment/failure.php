@@ -13,7 +13,7 @@
 
   <div class="nofloat m20">
 
-    <h1><?php echo $this->clip('h1', 'Оплата не произведена')?></h1>
+    <h1><?php echo Yii::app()->meta->setHeader('Оплата не произведена')?></h1>
     <?php echo $textBlock?>
 
   </div>

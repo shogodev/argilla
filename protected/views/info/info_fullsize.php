@@ -13,7 +13,7 @@
   <div class="container container_16 nofloat">
 
     <div class="csc-default">
-      <h3><?php echo $this->clip('h1', $model->name)?></h3>
+      <h3><?php echo Yii::app()->meta->setHeader($model->name)?></h3>
     </div>
 
     <?php echo $model->content?>

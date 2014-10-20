@@ -14,7 +14,7 @@
       <?php echo $this->renderPartial('_sections_menu', $_data_)?>
     </div>
     <div class="span10">
-      <h1><?php echo $this->clip('h1', $model->name)?></h1>
+      <h1><?php echo Yii::app()->meta->setHeader($model->name)?></h1>
 
       <?php if( $model->getImages('big') && $model->getImages('middle') ) {?>
       <img width="734" height="448" alt="<?php echo $model->name?>" src="<?php echo $model->getImages('middle')[0]?>" style="display: block;">

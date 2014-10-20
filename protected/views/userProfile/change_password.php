@@ -8,7 +8,7 @@
 <div class="wrapper" style="background-color: #F4F4F4;">
 
   <?php $this->renderPartial('/_breadcrumbs'); ?>
-   <h1><?php echo $this->clip('h1', 'Личный кабинет') ?></h1>
+   <h1><?php echo Yii::app()->meta->setHeader('Личный кабинет') ?></h1>
 
    <?php $this->renderPartial('_menu', $_data_) ?>
 
