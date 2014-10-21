@@ -64,16 +64,35 @@ class RelatedItemsWidget extends CWidget
 
   protected function renderElements()
   {
-    echo CHtml::openTag('td', array('class' => 'multi-list'));
-    echo CHtml::openTag('ul');
+    $element = new $this->className;
 
-    $this->renderElement(new $this->className, array('id' => 'template', 'style' => 'display: none;'));
+    echo CHtml::openTag('td', array('class' => 'multi-list'));
+    $this->renderHeader($element);
+
+    echo CHtml::openTag('ul', array('class' => 'multi-list-items'));
+    $this->renderElement($element, array('id' => 'template', 'style' => 'display: none;'));
 
     foreach($this->model->{$this->relation} as $element)
       $this->renderElement($element);
 
     echo CHtml::closeTag('ul');
     echo CHtml::closeTag('td');
+  }
+
+  /**
+   * @param BActiveRecord $element
+   */
+  protected function renderHeader($element)
+  {
+    echo CHtml::openTag('ul', array('class' => 'multi-list-header clearfix'));
+    foreach($this->attributes as $key => $attribute)
+    {
+      $name = is_array($attribute) ? $key : $attribute;
+      echo CHtml::tag('li', array('class' => 'multi-list-header-col'), $element->getAttributeLabel($name), false);
+      echo '&nbsp;';
+    }
+
+    echo CHtml::closeTag('ul');
   }
 
   /**
@@ -151,7 +170,7 @@ class RelatedItemsWidget extends CWidget
       {
         var tr        = $(this).parents('tr');
         var template  = tr.find('#' + className + '-template');
-        var ul        = tr.find('td ul');
+        var ul        = tr.find('td ul.multi-list-items');
         var count     = $(ul).find('li').length;
         var li        = template.clone();
         var re        = /(\w+)\[(\w+)\]\[(\w+)\]/;
@@ -163,10 +182,19 @@ class RelatedItemsWidget extends CWidget
         });
 
         li.show().removeAttr('id').find('.delete').remove();
-        li.append('<a class=\"btn btn-alone delete\" rel=\"tooltip\" href=\"#\" data-original-title=\"Удалить вариант\">');
+        li.append('<a class=\"btn btn-alone delete\" rel='tooltip' href=\"#\" data-original-title=\"Удалить вариант\">');
         $(li).find('a').on('click', function(e){e.preventDefault();$(this).parents('li').remove()});
         $(ul).append(li);
       });
-    ", CClientScript::POS_READY);
+
+      var setHeaderSizes = function() {
+        $('.multi-list-header li').each(function(index) {
+          $(this).width( $(this).closest('.multi-list-header').next('ul').find('li:eq(2) :eq('+ index +')').outerWidth() );
+        });
+      }
+      setHeaderSizes();
+      $(window).on('resize', function() {
+        setHeaderSizes()
+      });", CClientScript::POS_READY);
   }
 }

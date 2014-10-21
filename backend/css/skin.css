@@ -613,3 +613,10 @@ span.cke_skin_kama table.cke_editor td {
   margin-top: 5px;
   font-size: 10px;
   line-height: 110%}
+
+.multi-list-header-col {
+  font-weight: bold;
+  display: inline-block;
+  margin-left: 5px; }
+.multi-list-header .multi-list-header-col:first-child {
+  margin-left: 0; }
