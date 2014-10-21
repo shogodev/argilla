@@ -38,4 +38,14 @@ class SFormatter extends CFormatter
   {
     return mb_strtolower($value);
   }
+
+  /**
+   * Преабразует пустое значение в null
+   * @param $value
+   * @return mixed
+   */
+  public function emptyToNull($value)
+  {
+    return empty($value) && $value !== '0' ? null : $value;
+  }
 }
