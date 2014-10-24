@@ -20,7 +20,7 @@ return array(
       'form' => $this,
     ),
 
-    'phone' => array('type' => 'text'),
+    'phone' => array('type' => 'tel'),
 
     'content' => array(
       'type' => 'textarea',

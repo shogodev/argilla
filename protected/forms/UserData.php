@@ -6,20 +6,11 @@ return array(
   'elementsLayout' => '<div class="form-row m20">{label}<div class="form-field">{input}{error}</div></div>',
 
   'elements' => array(
-    'name' => array(
-      'type' => 'text',
-      'class' => 'inp'
-    ),
+    'name' => array('type' => 'text'),
 
-    'address' => array(
-      'type' => 'text',
-      'class' => 'inp'
-    ),
+    'address' => array('type' => 'text'),
 
-    'phone' => array(
-      'type' => 'tel',
-      'class' => 'inp'
-    ),
+    'phone' => array('type' => 'tel'),
 
     'birthday' => array(
       'type' => 'DateIntervalWidget',

@@ -3,7 +3,7 @@ return array(
   'class' => 'form callback-form',
 
   'elements' => array(
-    'phone' => array('type' => 'text'),
+    'phone' => array('type' => 'tel'),
     'name' => array('type' => 'text'),
   ),
 

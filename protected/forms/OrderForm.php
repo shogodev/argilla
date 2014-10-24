@@ -13,7 +13,7 @@ return array(
     ),
 
     'phone' => array(
-      'type' => 'text'
+      'type' => 'tel'
     ),
 
     'email' => array(

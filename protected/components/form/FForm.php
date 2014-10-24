@@ -231,7 +231,7 @@ class FForm extends CForm
    */
   public function addedElement($name, $element, $forButtons)
   {
-    if( isset($element->type) && in_array($element->type, array('text', 'password')) )
+    if( isset($element->type) && in_array($element->type, array('text', 'password', 'tel', 'textarea')) )
       if( empty($element->attributes['class']) )
         $element->attributes['class'] = 'inp';
   }
