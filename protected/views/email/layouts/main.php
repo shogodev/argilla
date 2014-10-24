@@ -4,6 +4,7 @@
 /**
  * @var FController $this
  */
+$host = Yii::app()->request->hostInfo
 ?>
 
 <html xmlns="http://www.w3.org/1999/xhtml">
@@ -47,7 +48,7 @@
 <table cellpadding="0" cellspacing="0" width="680" align="center" style="border-collapse:collapse; margin: 0 auto; background: #f9f9f9">
   <tr>
     <td colspan="2" align="left" style="height: 157px">
-      <img src="<?php echo Yii::app()->request->hostInfo;?>/i/logo.png" style="padding-left: 32px" />
+      <img src="<?php echo $host;?>/i/logo.png" style="padding-left: 32px" />
     </td>
   </tr>
 
@@ -71,7 +72,7 @@
           <?php }?>
         <?php } ?>
       <?php } ?>
-      <span style="font-size: 14px"><a href="<?php echo Yii::app()->request->hostInfo;?>"><?php echo Yii::app()->request->hostInfo;?></a></span>
+      <span style="font-size: 14px"><a href="<?php echo $host;?>"><?php echo $host;?></a></span>
     </td>
   </tr>
 </table>
