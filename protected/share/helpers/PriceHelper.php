@@ -38,6 +38,7 @@ class PriceHelper
   }
 
   /**
+   * Форматирует цену
    * @param $price
    * @param string $priceSuffix
    * @param string $alternativeText
@@ -50,22 +51,40 @@ class PriceHelper
   }
 
   /**
-   * Считает процент новой цены от старой
+   * Возврашает разницу цен
+   * @param $oldPrice
+   * @param $price
+   * @param bool $ceil округлять до целого
+   *
+   * @return float|int
+   */
+  public static function getEconomy($oldPrice, $price, $ceil = true)
+  {
+    $economy = $oldPrice - $price;
+
+    if( $ceil )
+      $economy = ceil($economy);
+
+    return $economy > 0 ? $economy : 0;
+  }
+
+  /**
+   * Возвращает процент "экономии"
    * @param $oldPrice
    * @param $price
    * @param bool $ceil округлять до целого
    *
    * @return float
    */
-  public static function percentByPrice($oldPrice, $price, $ceil = true)
+  public static function getEconomyPercent($oldPrice, $price, $ceil = true)
   {
-    $economy = self::economy($oldPrice, $price, $ceil);
+    $economy = self::getEconomy($oldPrice, $price, $ceil);
 
-    return self::isNotEmpty($economy) ? self::percent($economy, $oldPrice, $ceil) : 0;
+    return self::isNotEmpty($economy) ? self::getPercent($economy, $oldPrice, $ceil) : 0;
   }
 
   /**
-   * Считает процент $value от $ofValue
+   * Возвращает процент числа $value от $ofValue
    *
    * @param $value
    * @param $ofValue
@@ -74,7 +93,7 @@ class PriceHelper
    *
    * @return float
    */
-  public static function percent($value, $ofValue, $ceil = true, $round = 1)
+  public static function getPercent($value, $ofValue, $ceil = true, $round = 1)
   {
     $percent = round(($value * 100) / $ofValue, $round);
 
@@ -82,22 +101,5 @@ class PriceHelper
       $percent = ceil($percent);
 
     return $percent;
-  }
-
-  /**
-   * @param $oldPrice
-   * @param $price
-   * @param bool $ceil округлять до целого
-   *
-   * @return float|int
-   */
-  public static function economy($oldPrice, $price, $ceil = true)
-  {
-    $economy = $oldPrice - $price;
-
-    if( $ceil )
-      $economy = ceil($economy);
-
-    return $economy > 0 ? $economy : 0;
   }
 }

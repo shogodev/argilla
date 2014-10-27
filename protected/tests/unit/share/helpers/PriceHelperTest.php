@@ -30,32 +30,32 @@ class PriceHelperTest extends CTestCase
 
   public function testEconomy()
   {
-    $this->assertEquals(PriceHelper::economy(1000, 900), 100);
+    $this->assertEquals(PriceHelper::getEconomy(1000, 900), 100);
 
-    $this->assertEquals(PriceHelper::economy(1000.3, 900), 101);
+    $this->assertEquals(PriceHelper::getEconomy(1000.3, 900), 101);
 
-    $this->assertEquals(PriceHelper::economy(1000.3, 900, false), 100.3);
+    $this->assertEquals(PriceHelper::getEconomy(1000.3, 900, false), 100.3);
 
   }
 
   public function testPercent()
   {
-    $this->assertEquals(PriceHelper::percent(100, 1000), 10);
+    $this->assertEquals(PriceHelper::getPercent(100, 1000), 10);
 
-    $this->assertEquals(PriceHelper::percent(100, 1500), 7);
+    $this->assertEquals(PriceHelper::getPercent(100, 1500), 7);
 
-    $this->assertEquals(PriceHelper::percent(100, 1500, false), 6.7);
+    $this->assertEquals(PriceHelper::getPercent(100, 1500, false), 6.7);
 
-    $this->assertEquals(PriceHelper::percent(100, 1500, false, 2), 6.67);
+    $this->assertEquals(PriceHelper::getPercent(100, 1500, false, 2), 6.67);
   }
 
   public function testPercentByPrice()
   {
-    $this->assertEquals(PriceHelper::percentByPrice(1000, 900), 10);
+    $this->assertEquals(PriceHelper::getEconomyPercent(1000, 900), 10);
 
-    $this->assertEquals(PriceHelper::percentByPrice(1000, 875), 13);
+    $this->assertEquals(PriceHelper::getEconomyPercent(1000, 875), 13);
 
-    $this->assertEquals(PriceHelper::percentByPrice(1000, 875, false), 12.5);
+    $this->assertEquals(PriceHelper::getEconomyPercent(1000, 875, false), 12.5);
   }
 
   public function testPrice()
