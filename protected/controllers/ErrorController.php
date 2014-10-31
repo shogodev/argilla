@@ -45,7 +45,7 @@ class ErrorController extends FController
       if( method_exists($this, $methodName) )
         $this->$methodName();
       else
-        $this->render('error');
+        $this->error404();
     }
   }
 
