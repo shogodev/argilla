@@ -4,23 +4,22 @@
  * @var FForm $form
  */
 ?>
-<div id="content" class="paddings">
-  <?php $this->renderPartial('/breadcrumbs');?>
+<div class="wrapper">
+  <?php $this->renderPartial('/_breadcrumbs');?>
 
-  <div class="nofloat m10">
-    <h1 class="left"><?php echo Yii::app()->meta->setHeader('Корзина')?></h1>
-    <div class="right">
-      <a href="<?php echo $this->basket->url?>" class="btn grey-btn basket-step">Шаг 1: Выбор товаров</a>
-      <span class="btn black-btn basket-step">Шаг 2: Выбор метода доставки и оплаты</span>
-    </div>
+  <div class="basket-steps">
+    <a href="<?php echo $this->createUrl('basket/index')?>" class="step">Шаг 1: Выбор товаров</a>
+    <span class="step active">Шаг 2: Выбор метода доставки и оплаты</span>
+  </div>
+
+  <div class="caption m30">
+    <h1>Корзина</h1>
   </div>
 
   <?php echo $form?>
 
-  <div class="nofloat m10">
-    <div class="right">
-      <a href="<?php echo $this->basket->url?>" class="btn grey-btn basket-step">Шаг 1: Выбор товаров</a>
-      <span class="btn black-btn basket-step">Шаг 2: Выбор метода доставки и оплаты</span>
-    </div>
+  <div class="basket-steps m50">
+    <a href="<?php echo $this->createUrl('basket/index')?>" class="step">Шаг 1: Выбор товаров</a>
+    <span class="step active">Шаг 2: Выбор метода доставки и оплаты</span>
   </div>
 </div>

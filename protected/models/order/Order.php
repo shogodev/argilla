@@ -91,11 +91,13 @@ class Order extends FActiveRecord
     if( !$this->isNewRecord )
       return parent::beforeSave();
 
-    $this->sum = $this->basket->getSumTotal();
+    $this->delivery_id = !empty($this->delivery_id) ? $this->delivery_id : null;
+    $this->delivery_sum = null;
+
+    $this->sum = $this->basket->getSumTotal() + $this->delivery_sum;
     $this->ip = ip2long(Yii::app()->request->userHostAddress);
     $this->type = $this->isFast() ? self::TYPE_FAST : self::TYPE_BASKET;
     $this->user_id = !Yii::app()->user->isGuest ? Yii::app()->user->getId() : null;
-    $this->delivery_id = !empty($this->delivery_id) ? $this->delivery_id : null;
     $this->date_create = date('Y-m-d H:i:s');
 
     return parent::beforeSave();
@@ -123,6 +125,11 @@ class Order extends FActiveRecord
   public function setFastOrderBasket(FBasket $fastOrderBasket)
   {
     $this->fastOrderBasket = $fastOrderBasket;
+  }
+
+  public function getDate($format = 'd.m.Y H:i')
+  {
+    return DateTime::createFromFormat('Y-m-d H:i:s', $this->date_create)->format($format);
   }
 
   protected function isFast()

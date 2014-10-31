@@ -603,6 +603,7 @@ CREATE TABLE `argilla_order` (
   `phone` varchar(255) NOT NULL,
   `address` varchar(255) NOT NULL,
   `delivery_id` int(10) unsigned DEFAULT NULL,
+  `delivery_sum` decimal(10,2) DEFAULT NULL,
   `payment_id` int(10) unsigned DEFAULT NULL,
   `comment` text NOT NULL,
   `type` varchar(255) NOT NULL DEFAULT 'basket',
@@ -941,6 +942,7 @@ CREATE TABLE `argilla_product_img` (
   `name` varchar(255) NOT NULL,
   `notice` varchar(255) NOT NULL,
   `position` varchar(10) NOT NULL,
+  `type` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `parent` (`parent`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

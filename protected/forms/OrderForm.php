@@ -1,10 +1,11 @@
 <?php
 return array(
 
-  'class' => 'form big-inputs m20',
+  'class' => 'form order-form m40',
 
-  'description' => 'Поля, отмеченные знаком <span class="required">*</span> , обязательны для заполнения.',
+  'description' => '<div class="form-hint m30">Поля, отмеченные знаком <span class="required">*</span> , обязательны для заполнения.</div>',
 
+  'elementsLayout' => '<div class="form-row m15">{label}<div class="form-field">{input}{error}</div></div>',
 
   'elements' => array(
 
@@ -17,6 +18,17 @@ return array(
     ),
 
     'email' => array(
+      'type' => 'text'
+    ),
+
+    'delivery_id' => array(
+      'template' => '<div class="m5">{input} {label}</div>',
+      'separator' => '',
+      'type' => 'radiolist',
+      'items' => CHtml::listData(OrderDeliveryType::model()->findAll(), 'id', 'name'),
+    ),
+
+    'address' => array(
       'type' => 'text'
     ),
 
@@ -37,10 +49,6 @@ return array(
       )
     ),
 
-    'address' => array(
-      'type' => 'textarea'
-    ),
-
     'comment' => array(
       'type' => 'textarea'
     ),
@@ -48,7 +56,7 @@ return array(
 
   'buttons' => array('submit' => array(
     'type' => 'button',
-    'value' => 'Отправить',
-    'class' => 'btn btn-red btn-submit',
+    'value' => 'Оформить заказ',
+    'class' => 'btn orange-btn h42btn s24 uppercase',
   ))
 );
