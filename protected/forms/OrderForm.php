@@ -33,6 +33,8 @@ return array(
     ),
 
     'payment_id' => array(
+      'template' => '<div class="m5">{input} {label}</div>',
+      'separator' => '',
       'type' => 'radiolist',
       'items' => CHtml::listData(OrderPaymentType::model()->findAll(), 'id', 'name'),
     ),

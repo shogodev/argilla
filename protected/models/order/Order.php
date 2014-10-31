@@ -111,7 +111,7 @@ class Order extends FActiveRecord
     $this->saveProducts();
   }
 
-  public function getAdminUrl()
+  public function getBackendUrl()
   {
     return Yii::app()->request->hostInfo.'/backend/order/bOrder/update/'.$this->id;
   }

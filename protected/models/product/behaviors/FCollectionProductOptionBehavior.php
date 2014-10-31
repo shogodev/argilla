@@ -5,15 +5,10 @@
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @package frontend.components.collection
  *
- * @property ProductParameter $owner
+ * @property ProductOption $owner
  */
-class FCollectionParameterBehavior extends FCollectionElementBehavior
+class FCollectionProductOptionBehavior extends FCollectionElementBehavior
 {
-  public function getOrderItemType()
-  {
-    return get_class($this->owner);
-  }
-
   public function getPrimaryKey()
   {
     return $this->owner->getPrimaryKey();
@@ -21,11 +16,21 @@ class FCollectionParameterBehavior extends FCollectionElementBehavior
 
   public function getOrderItemName()
   {
-    return $this->owner->parameterName->name;
+    return 'Опция';
   }
 
   public function getOrderItemValue()
   {
-    return $this->owner->variant->name;
+    return $this->owner->name;
+  }
+
+  public function getOrderItemPrice()
+  {
+    return $this->owner->price;
+  }
+
+  public function getOrderItemAmount()
+  {
+    return $this->owner->getCollectionAmount();
   }
 }

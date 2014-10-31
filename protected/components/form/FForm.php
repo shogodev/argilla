@@ -485,9 +485,15 @@ class FForm extends CForm
     return false;
   }
 
-  public function sendNotification($data = array(), $email = '')
+  public function sendNotification($email, $vars = array())
   {
-    Yii::app()->notification->send($this->getModel(), $data, $email);
+    Yii::app()->notification->send($this->model, $vars, $email);
+  }
+
+  public function sendNotificationBackend($vars = array())
+  {
+    $vars = CMap::mergeArray($vars, array('model' => $this->model));
+    Yii::app()->notification->send(get_class($this->model).'Backend', $vars, null, 'backend');
   }
 
   public function addLayoutViewParams($data)

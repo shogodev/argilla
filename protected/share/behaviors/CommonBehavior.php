@@ -9,9 +9,12 @@
  */
 class CommonBehavior extends CBehavior
 {
-  private $contacts;
-
   private $settings;
+
+  /**
+   * @var Contact
+   */
+  private $headerContacts;
 
   public function attach($owner)
   {
@@ -21,14 +24,17 @@ class CommonBehavior extends CBehavior
     Yii::import('frontend.models.Settings');
   }
 
-  public function getContacts()
+  /**
+   * @return FActiveRecord|Contact
+   */
+  public function getHeaderContacts()
   {
-    if( $this->contacts === null )
+    if( !isset($this->headerContacts) )
     {
-      $this->contacts = Contact::model()->findByAttributes(array('sysname' => 'system'));
+      $this->headerContacts = Contact::model()->findByAttributes(array('sysname' => 'header'));
     }
 
-    return $this->contacts;
+    return $this->headerContacts;
   }
 
   /**

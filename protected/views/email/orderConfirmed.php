@@ -16,13 +16,12 @@
  */
 ?>
 <div style="font-size: 24px; font-weight: bold; text-align: center; margin-bottom: 30px">
-  ВАШ ЗАКАЗ ОТМЕНЕН!
+  ВАШ ЗАКАЗ ПОДТВЕРЖДЕН!
 </div>
 
 <div style="margin-bottom: 20px">
   <div style="font-size: 24px">Здравствуйте<?php echo !empty($model->name) ? ', '.$model->name : ''; ?>!</div>
-  К сожалению, ваш заказ был отменен.</br>
-  <?php echo !empty($orderComment) ? "<br />Причина: ".$orderComment : ''; ?>
+  Благодарим вас за совершение покупок на <a href="<?php echo $host?>" target="_blank" style="color: #f88101"><?php echo $project?></a>! Ваш заказ был подтвержден и находится в обработке.
 </div>
 <div style="text-align: center; font-size: 30px; margin-bottom: 20px">
   Номер: <?php echo $model->id?><br />

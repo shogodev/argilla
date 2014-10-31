@@ -72,7 +72,8 @@ class UserController extends FController
           array(
             'model' => $registrationForm->model,
             'profile' => $registrationForm['profile']->model
-          )
+          ),
+          'backend'
         );
 
         echo CJSON::encode(array(

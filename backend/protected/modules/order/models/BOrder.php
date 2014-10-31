@@ -130,6 +130,11 @@ class BOrder extends BActiveRecord
     return str_pad($this->id, 10, 0, STR_PAD_LEFT);
   }
 
+  public function getDate($format = 'd.m.Y H:i')
+  {
+    return DateTime::createFromFormat('Y-m-d H:i:s', $this->date_create)->format($format);
+  }
+
   /**
    * @param CDbCriteria $criteria
    */

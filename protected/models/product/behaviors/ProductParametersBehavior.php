@@ -112,11 +112,19 @@ class ProductParametersBehavior extends CModelBehavior
 
       if( !empty($attributes) )
       {
+        $attributesSuccess = false;
         foreach($attributes as $attribute => $value)
         {
           if( isset($parameter->{$attribute}) && $parameter->{$attribute} == $value )
-            $parameters[] = $parameter;
+            $attributesSuccess = true;
+          else
+          {
+            $attributesSuccess = false;
+            break;
+          }
         }
+        if( $attributesSuccess )
+          $parameters[] = $parameter;
       }
       else
         $parameters[] = $parameter;

@@ -51,11 +51,6 @@ class FControllerBehavior extends CBehavior
   private $menuBuilder;
 
   /**
-   * @var Contact
-   */
-  private $headerContacts;
-
-  /**
    * @return FBasket|null
    */
   public function getBasket()
@@ -181,18 +176,5 @@ class FControllerBehavior extends CBehavior
     }
 
     return $this->fastOrderForm;
-  }
-
-  /**
-   * @return FActiveRecord|Contact
-   */
-  public function getHeaderContacts()
-  {
-    if( !isset($this->headerContacts) )
-    {
-      $this->headerContacts = Contact::model()->findByAttributes(array('sysname' => 'header'));
-    }
-
-    return $this->headerContacts;
   }
 }

@@ -5,10 +5,28 @@ class m010101_000008_init_notification extends CDbMigration
 	public function up()
 	{
     $this->execute("INSERT INTO `{{notification}}` (`id`, `index`, `name`, `email`, `subject`, `view`, `message`, `visible`)
+      VALUES (NULL , 'Order', 'Заказ', '', 'Вы сделали заказ на сайте {projectName}', 'order', '', 0)");
+
+    $this->execute("INSERT INTO `{{notification}}` (`id`, `index`, `name`, `email`, `subject`, `view`, `message`, `visible`)
+      VALUES (NULL , 'OrderBackend', 'Заказ (Backend)', '', 'Пользователь сделал заказ на сайте {projectName}', 'orderBackend', '', 0)");
+
+    $this->execute("INSERT INTO `{{notification}}` (`id`, `index`, `name`, `email`, `subject`, `view`, `message`, `visible`)
+      VALUES (NULL , 'FastOrderBackend', 'Быстрый заказ (Backend)', '', 'Пользователь сделал быстрый заказ на сайте {projectName}', 'fastOrderBackend', '', 0)");
+
+    $this->execute("INSERT INTO `{{notification}}` (`id`, `index`, `name`, `email`, `subject`, `view`, `message`, `visible`)
+      VALUES (NULL , 'CallbackBackend', 'Заказ обратного звонка (Backend)', '', 'Заказ обратного звонка на сайте {projectName}', 'defaultBackend', '', 0)");
+
+    $this->execute("INSERT INTO `{{notification}}` (`id`, `index`, `name`, `email`, `subject`, `view`, `message`, `visible`)
+      VALUES (NULL , 'OrderConfirmedBackend', 'Заказ подтвержден', '', 'Ваш заказ подтвержден на сайте {projectName}', 'orderConfirmed', '', 0)");
+
+    $this->execute("INSERT INTO `{{notification}}` (`id`, `index`, `name`, `email`, `subject`, `view`, `message`, `visible`)
+      VALUES (NULL , 'OrderCanceledBackend', 'Заказ отменен', '', 'Ваш заказ отменен на сайте {projectName}', 'orderCanceled', '', 0)");
+
+    $this->execute("INSERT INTO `{{notification}}` (`id`, `index`, `name`, `email`, `subject`, `view`, `message`, `visible`)
       VALUES (NULL , 'UserRegistration', 'Регистрация пользователя', '', 'Регистрация на сайте {projectName}', 'userRegistration', '', 0)");
 
     $this->execute("INSERT INTO `{{notification}}` (`id`, `index`, `name`, `email`, `subject`, `view`, `message`, `visible`)
-      VALUES (NULL , 'UserRegistrationBackend', 'Регистрация пользователя (для менеджера)', '', 'Регистрация пользователя на сайте {projectName}', 'userRegistrationBackend', '', 0)");
+      VALUES (NULL , 'UserRegistrationBackend', 'Регистрация пользователя (Backend)', '', 'Регистрация пользователя на сайте {projectName}', 'userRegistrationBackend', '', 0)");
 
     $this->execute("INSERT INTO `{{notification}}` (`id`, `index`, `name`, `email`, `subject`, `view`, `message`, `visible`)
       VALUES (NULL , 'UserRequestRestorePassword', 'Запрос на восстановление пароля пользователя', '', 'Восстановление пароля на сайте {projectName}', 'userRequestRestorePassword', '', 0)");
@@ -18,15 +36,6 @@ class m010101_000008_init_notification extends CDbMigration
 
     $this->execute("INSERT INTO `{{notification}}` (`id`, `index`, `name`, `email`, `subject`, `view`, `message`, `visible`)
       VALUES (NULL , 'UserChangePassword', 'Смена пароля пользователя', '', 'Смена пароля на сайте {projectName}', 'userChangePassword', '', 0)");
-
-    $this->execute("INSERT INTO `{{notification}}` (`id`, `index`, `name`, `email`, `subject`, `view`, `message`, `visible`)
-      VALUES (NULL , 'Order', 'Пользователь сделал заказ', '', 'Вы сделали заказ на сайте {projectName}', 'order', '', 0)");
-
-    $this->execute("INSERT INTO `{{notification}}` (`id`, `index`, `name`, `email`, `subject`, `view`, `message`, `visible`)
-      VALUES (NULL , 'OrderBackend', 'Пользователь сделал заказ (для менеджера)', '', 'Пользователь сделал заказ на сайте {projectName}', 'orderBackend', '', 0)");
-
-    $this->execute("INSERT INTO `{{notification}}` (`id`, `index`, `name`, `email`, `subject`, `view`, `message`, `visible`)
-      VALUES (NULL , 'Callback', 'Пользователь сделал заказ обратного звонка', '', 'Заказ обратного звонка на сайте {projectName}', 'callback', '', 0)");
 	}
 
 	public function down()

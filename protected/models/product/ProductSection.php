@@ -14,12 +14,16 @@
  * @property integer $visible
  *
  * @method static ProductSection model(string $class = __CLASS__)
+ *
+ * @property FActiveImage $image
  */
 class ProductSection extends FActiveRecord
 {
-  public function tableName()
+  public function behaviors()
   {
-    return '{{product_section}}';
+    return array(
+      'imageBehavior' => array('class' => 'SingleImageBehavior', 'path' => 'product'),
+    );
   }
 
   public function defaultScope()

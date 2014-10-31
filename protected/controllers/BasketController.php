@@ -49,8 +49,8 @@ class BasketController extends FController
 
     if( $orderForm->save() )
     {
-      Yii::app()->notification->send('OrderBackend', array('model' => $orderForm->model));
-      Yii::app()->notification->send($orderForm->model, array(), $orderForm->model->email);
+      $orderForm->sendNotificationBackend();
+      $orderForm->sendNotification($orderForm->model->email);
 
       $this->basket->clear();
 
@@ -102,7 +102,7 @@ class BasketController extends FController
 
     if( !$fastOrderBasket->isEmpty() && $form->save() )
     {
-      Yii::app()->notification->send('FastOrderBackend', array('model' => $form->model));
+      Yii::app()->notification->send('FastOrderBackend', array('model' => $form->model), null, 'backend');
       Yii::app()->notification->send('FastOrder', array('model' => $form->model), $form->model->email);
 
       echo CJSON::encode(array(

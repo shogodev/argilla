@@ -21,6 +21,13 @@
  */
 class ProductCategory extends FActiveRecord
 {
+  public function behaviors()
+  {
+    return array(
+      'imageBehavior' => array('class' => 'SingleImageBehavior', 'path' => 'product'),
+    );
+  }
+
   public function defaultScope()
   {
     $alias = $this->getTableAlias(false, false);
@@ -36,13 +43,6 @@ class ProductCategory extends FActiveRecord
     return array(
       'assignment' => array(self::HAS_MANY, 'ProductTreeAssignment', 'dst_id', 'condition' => 'dst = "category"'),
       'collections' => array(self::HAS_MANY, 'ProductCollection', array('src_id' => 'id'), 'through' => 'assignment', 'condition' => 'src = "collection"'),
-    );
-  }
-
-  public function behaviors()
-  {
-    return array(
-      'imageBehavior' => array('class' => 'SingleImageBehavior', 'path' => 'product'),
     );
   }
 }
