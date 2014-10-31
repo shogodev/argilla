@@ -9,7 +9,7 @@
  *  },
  *  {
  *    'action' : 'call',
- *    'callback' : function(element, value) {),
+ *    'callback' : function(element, value) {}),
  *    'src' : 'Model[attribute]',
  *  }
  *  если в srcValues написать undefined, при отсутстпин поля будет воспринято как true
