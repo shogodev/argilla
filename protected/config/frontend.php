@@ -119,7 +119,7 @@ return array_merge_recursive(array(
         array(
           'class'     => 'ext.yii-debug-toolbar.YiiDebugToolbarRoute',
           'ipFilters' => array('192.168.*'),
-          'enabled'   => YII_DEBUG,
+          'enabled'   => YII_DEBUG && isset($_COOKIE['YII_DEBUG']),
         ),
       ),
     ),
