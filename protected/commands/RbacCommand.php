@@ -158,7 +158,7 @@ class RbacCommand extends CConsoleCommand
     Yii::import('backend.modules.'.$module.'.*');
     $moduleName = ucfirst($module).'Module';
 
-    if( class_exists($moduleName, false) !== false )
+    if( class_exists($moduleName) !== false )
     {
       echo "Найден модуль: $module\n";
 
