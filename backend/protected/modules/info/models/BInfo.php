@@ -153,12 +153,4 @@ class BInfo extends BAbstractMenuEntry
   {
     return $this->url;
   }
-
-  /**
-   * @return string
-   */
-  public function getFrontendModelName()
-  {
-    return 'Info';
-  }
 }
