@@ -15,12 +15,12 @@ class BFacetedParameterBehavior extends SActiveRecordBehavior
    */
   private $selection;
 
-  public function beforeSave()
+  public function beforeSave($event)
   {
     $this->selection = $this->owner->selection;
   }
 
-  public function afterSave()
+  public function afterSave($event)
   {
     $this->isSelectionChanged() && $this->owner->selection ? $this->add() : $this->remove();
   }

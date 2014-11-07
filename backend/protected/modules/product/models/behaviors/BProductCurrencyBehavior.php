@@ -53,7 +53,7 @@ class BProductCurrencyBehavior extends SActiveRecordBehavior
     $this->attachValidators();
   }
 
-  public function beforeSave()
+  public function beforeSave($event)
   {
     $this->setPrice();
   }

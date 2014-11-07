@@ -17,7 +17,7 @@ class BParametersUpdaterBehavior extends SActiveRecordBehavior
    */
   public $typeDepended = false;
 
-  public function afterSave()
+  public function afterSave($event)
   {
     $this->refreshAll($this->owner);
   }

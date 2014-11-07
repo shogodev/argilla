@@ -117,7 +117,7 @@ class BTreeAssignmentBehavior extends SActiveRecordBehavior
     return $model->save();
   }
 
-  public function afterDelete()
+  public function afterDelete($event)
   {
     $this->getModel()->delete();
   }

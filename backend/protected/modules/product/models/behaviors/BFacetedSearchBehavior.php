@@ -10,7 +10,7 @@
  */
 class BFacetedSearchBehavior extends SActiveRecordBehavior
 {
-  public function afterSave()
+  public function afterSave($event)
   {
     $this->refreshAll($this->owner);
   }

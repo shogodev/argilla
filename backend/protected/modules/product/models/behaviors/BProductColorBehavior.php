@@ -10,7 +10,7 @@
  */
 class BProductColorBehavior extends SActiveRecordBehavior
 {
-  public function afterFind()
+  public function afterFind($event)
   {
     $this->addRelations();
   }
