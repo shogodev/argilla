@@ -11,16 +11,11 @@ class CommonBehavior extends SBehavior
 {
   private $settings;
 
-<<<<<<< HEAD
   /**
    * @var Contact
    */
   private $headerContacts;
-
-  public function attach($owner)
-=======
   public function init()
->>>>>>> Enh: Доработка поведений
   {
     Yii::import('frontend.models.contact.*');
     Yii::import('frontend.models.Settings');
