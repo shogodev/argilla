@@ -8,7 +8,7 @@
  *
  * @property BProduct $owner
  */
-class BParametersUpdaterBehavior extends CModelBehavior
+class BParametersUpdaterBehavior extends SActiveRecordBehavior
 {
   const PRICE_PARAMETER_KEY = 'price';
 
@@ -16,13 +16,6 @@ class BParametersUpdaterBehavior extends CModelBehavior
    * @var bool Параметр товара зависит от его типа
    */
   public $typeDepended = false;
-
-  public function events()
-  {
-    return CMap::mergeArray(parent::events(), array(
-      'onAfterSave' => 'afterSave',
-    ));
-  }
 
   public function afterSave()
   {

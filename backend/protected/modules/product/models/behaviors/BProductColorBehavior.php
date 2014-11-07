@@ -8,15 +8,8 @@
  *
  * @property BProduct $owner
  */
-class BProductColorBehavior extends CModelBehavior
+class BProductColorBehavior extends SActiveRecordBehavior
 {
-  public function events()
-  {
-    return CMap::mergeArray(parent::events(), array(
-      'onAfterFind' => 'afterFind',
-    ));
-  }
-
   public function afterFind()
   {
     $this->addRelations();

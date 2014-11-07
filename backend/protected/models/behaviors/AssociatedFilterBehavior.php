@@ -18,16 +18,15 @@
  * }
  * </pre>
  */
-class AssociatedFilterBehavior extends CActiveRecordBehavior
+class AssociatedFilterBehavior extends SActiveRecordBehavior
 {
   /**
    * @var integer
    */
   public $associated;
 
-  public function attach($owner)
+  public function init()
   {
-    parent::attach($owner);
     $this->attachValidators();
     $this->attachEvents();
   }

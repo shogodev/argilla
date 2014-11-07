@@ -25,16 +25,14 @@
  *
  * @property FActiveRecord $owner
  */
-class ActiveImageBehavior extends CModelBehavior
+class ActiveImageBehavior extends SBehavior
 {
   public $imageClass;
 
   private $images;
 
-  public function attach($owner)
+  public function init()
   {
-    parent::attach($owner);
-
     if( !isset($this->imageClass) )
     {
       throw new CException('Can not attach ActiveImageBehavior without imageClass property');

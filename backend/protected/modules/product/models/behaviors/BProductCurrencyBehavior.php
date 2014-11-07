@@ -36,14 +36,12 @@
  * @property BProduct $owner
  * @property string $price_raw
  */
-class BProductCurrencyBehavior extends CModelBehavior
+class BProductCurrencyBehavior extends SActiveRecordBehavior
 {
   /**
-   * @param CComponent $owner
-   *
    * @throws CHttpException
    */
-  public function attach($owner)
+  public function init()
   {
     /**
      * @var BActiveRecord $owner
@@ -52,16 +50,7 @@ class BProductCurrencyBehavior extends CModelBehavior
     {
       throw new CHttpException(500, 'В модели отсутствует обязательный атрибут "price_raw"!');
     }
-
-    parent::attach($owner);
     $this->attachValidators();
-  }
-
-  public function events()
-  {
-    return CMap::mergeArray(parent::events(), array(
-      'onBeforeSave' => 'beforeSave',
-    ));
   }
 
   public function beforeSave()

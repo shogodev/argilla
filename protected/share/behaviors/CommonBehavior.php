@@ -7,19 +7,21 @@
  * @license http://argilla.ru/LICENSE
  * @package frontend.share.behaviors
  */
-class CommonBehavior extends CBehavior
+class CommonBehavior extends SBehavior
 {
   private $settings;
 
+<<<<<<< HEAD
   /**
    * @var Contact
    */
   private $headerContacts;
 
   public function attach($owner)
+=======
+  public function init()
+>>>>>>> Enh: Доработка поведений
   {
-    parent::attach($owner);
-
     Yii::import('frontend.models.contact.*');
     Yii::import('frontend.models.Settings');
   }

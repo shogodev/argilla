@@ -6,17 +6,19 @@
  * @license http://argilla.ru/LICENSE
  * @package @package frontend.share.behaviors
  */
-class TextBlockBehavior extends CBehavior
+class TextBlockBehavior extends SBehavior
 {
   /**
    * @var TextBlock[] $textBlocks
    */
   protected $textBlocks;
 
-  public function attach($owner)
+  public function init()
   {
-    parent::attach($owner);
-    $this->import();
+    Yii::import('frontend.components.ar.FActiveRecord');
+    Yii::import('frontend.components.image.FSingleImage');
+    Yii::import('frontend.components.image.ImageInterface');
+    Yii::import('frontend.models.TextBlock');
   }
 
   /**
@@ -91,15 +93,6 @@ class TextBlockBehavior extends CBehavior
     }
 
     return $this->textBlock($location, $replace);
-  }
-
-  protected function import()
-  {
-    Yii::import('frontend.components.ar.FActiveRecord');
-    Yii::import('frontend.components.image.FSingleImage');
-    Yii::import('frontend.components.image.ImageInterface');
-
-    Yii::import('frontend.models.TextBlock');
   }
 
   protected function executeReplace($data, $replace)

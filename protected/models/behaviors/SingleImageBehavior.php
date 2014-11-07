@@ -21,7 +21,7 @@
  * @property FActiveRecord $owner
  */
 
-class SingleImageBehavior extends CActiveRecordBehavior
+class SingleImageBehavior extends SActiveRecordBehavior
 {
   /**
    * @var string
@@ -54,10 +54,8 @@ class SingleImageBehavior extends CActiveRecordBehavior
       parent::__set($name, $value);
   }
 
-  public function attach($owner)
+  public function init()
   {
-    parent::attach($owner);
-
     if( !isset($this->path) )
     {
       throw new CException('Необходимо задать свойство path');
