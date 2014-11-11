@@ -58,7 +58,7 @@
 <div class="container-fluid s-container" id="top">
   <?php if( !Yii::app()->user->isGuest && isset(Yii::app()->controller->module) ): ?>
   <div class="s-title">
-    <h1 class="<?php echo Yii::app()->controller->module->id;?>"><?php echo Yii::app()->controller->module->name;?></h1>
+    <h1 class="<?php echo Yii::app()->controller->module->getHeaderCssClass();?>"><?php echo Yii::app()->controller->module->name;?></h1>
   </div>
 
   <?php $this->widget('bootstrap.widgets.TbMenu', array('type'    => 'tabs',

@@ -12,6 +12,11 @@ class BModule extends CWebModule
 {
   public $group = 'content';
 
+  /**
+   * @var sting $parentModule null - родительский модуль (для формирования меню submodules в другом модуле)
+   */
+  public $parentModule = null;
+
   public $name = '[Не задано]';
 
   public $position = 0;
@@ -94,6 +99,11 @@ class BModule extends CWebModule
   public function getWatermarkSettings()
   {
     return array();
+  }
+
+  public function getHeaderCssClass()
+  {
+    return $this->id;
   }
 
   /**
