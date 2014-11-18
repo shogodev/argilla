@@ -53,7 +53,12 @@
   </target>
 
   <target name="applySchema" depends="getDbSettings" description="Apply DB schema">
-    <input propertyName="confirm" defaultValue="n" validArgs="y,n" message="All data will be deleted. Are you sure?"/>
+    <if>
+      <not><isset property="confirm"/></not>
+      <then>
+        <input propertyName="confirm" defaultValue="n" validArgs="y,n" message="All data will be deleted. Are you sure?"/>
+      </then>
+    </if>
     <if>
       <equals arg1="${confirm}" arg2="y"/>
       <then>
@@ -69,9 +74,15 @@
 
         <exec checkreturn="true" passthru="true" command="mysql -u${db.username} -p${db.password} -h${db.host} ${db.dbname} &lt; build/tmp/schemaApplying.sql"/>
 
-        <input propertyName="applyForTestBase" defaultValue="y" validArgs="y,n" message="Apply schema for tests' DB?"/>
         <if>
-          <equals arg1="${applyForTestBase}" arg2="y"/>
+          <not><isset property="confirmTest"/></not>
+          <then>
+            <input propertyName="confirmTest" defaultValue="y" validArgs="y,n" message="Apply schema for tests' DB?"/>
+          </then>
+        </if>
+
+        <if>
+          <equals arg1="${confirmTest}" arg2="y"/>
           <then>
             <phingcall target="createDbTest"/>
             <exec checkreturn="true" passthru="true" command="mysql -u${db.username} -p${db.password} -h${db.host} ${db.dbname}_test &lt; build/tmp/schemaApplying.sql"/>

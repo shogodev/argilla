@@ -1,0 +1,26 @@
+language: php
+php:
+  - "5.4"
+
+services:
+  - mysql
+
+before_install:
+  - pear channel-discover pear.phing.info
+  - pear install phing/phing
+  - phpenv rehash
+
+install:
+  - cd .. && git clone https://github.com/yiisoft/yii.git yii
+  - cd argilla
+#  - cd yii && git checkout f0fee98ee84f70f1f3652f65562c9670e919cb4e && cd ../argilla
+
+before_script:
+  - mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'prog'@'localhost' IDENTIFIED BY '123' WITH GRANT OPTION;" -uroot
+  - phing bootstrap -DdbName=argilla -DdbTablePrefix=argilla_ -DdbUser=prog -DdbPassword=123
+  - phing applySchema -Dconfirm=y -DconfirmTest=y
+  - php protected/yiic.php migrate --interactive=0
+
+script:
+  - phpunit -c backend/protected/tests/phpunit.xml backend/protected/tests/unit/
+  - phpunit -c protected/tests/phpunit.xml protected/tests/unit/
