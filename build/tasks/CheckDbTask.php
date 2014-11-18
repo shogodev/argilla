@@ -1,7 +1,6 @@
 <?php
 /**
  * Проверка БД с которой работает движок - доступы, настройки самой БД и т.д.
- *
  * @author Fedor A Borshev <fedor@shogo.ru>
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2014 Shogo
@@ -61,8 +60,6 @@ class CheckDbTask extends Task
    */
   private $_privilegeChecker;
 
-  private $accessRights;
-
   #region setters
   public function setTriggers($val)
   {
@@ -93,6 +90,7 @@ class CheckDbTask extends Task
   {
     $this->checkInnoDb = $val;
   }
+
   #endregion
 
   public function main()
@@ -120,29 +118,29 @@ class CheckDbTask extends Task
 
     if( $this->checkTriggers )
     {
-      $this->checkPrivilege(PrivilegeEnum::Trigger);
+      $this->checkPrivilege(PrivilegeEnum::TRIGGER);
     }
 
     if( $this->checkViews )
     {
-      $this->checkPrivilege(PrivilegeEnum::ShowView);
-      $this->checkPrivilege(PrivilegeEnum::CreateView);
+      $this->checkPrivilege(PrivilegeEnum::SHOW_VIEW);
+      $this->checkPrivilege(PrivilegeEnum::CREATE_VIEW);
     }
 
     if( $this->checkRoutines )
     {
-      $this->checkPrivilege(PrivilegeEnum::CreateRoutine);
-      $this->checkPrivilege(PrivilegeEnum::AlterRoutine);
+      $this->checkPrivilege(PrivilegeEnum::CREATE_ROUTINE);
+      $this->checkPrivilege(PrivilegeEnum::ALTER_ROUTINE);
     }
 
     if( $this->checkLockTables )
     {
-      $this->checkPrivilege(PrivilegeEnum::LockTables);
+      $this->checkPrivilege(PrivilegeEnum::LOCK_TABLES);
     }
 
     if( $this->checkTmpTable )
     {
-      $this->checkPrivilege(PrivilegeEnum::CreateTemporaryTables);
+      $this->checkPrivilege(PrivilegeEnum::CREATE_TEMPORARY_TABLES);
     }
 
     if( $this->checkInnoDb )
@@ -166,7 +164,7 @@ class CheckDbTask extends Task
     $q->execute();
     foreach($q as $row)
     {
-      if($row['Engine'] == $engine and ($row['Support'] == 'YES' or $row['Support'] =='DEFAULT'))
+      if( $row['Engine'] == $engine and ($row['Support'] == 'YES' or $row['Support'] == 'DEFAULT') )
         return true;
     }
     throw new BuildException("Required Engine '$engine' is not supported by current DB driver");
@@ -187,7 +185,7 @@ class CheckDbTask extends Task
         $this->project->getProperty('db.username'),
         $this->project->getProperty('db.password'));
     }
-    catch( PDOException $e )
+    catch(PDOException $e)
     {
       throw new BuildException("CheckDbPermissionsTask: Could not connect to PDO: $dsn");
     }
@@ -205,14 +203,15 @@ class CheckDbTask extends Task
  */
 class PrivilegeEnum
 {
-  const Trigger = 'trigger';
-  const ShowView = 'show view';
-  const CreateView = 'create view';
-  const CreateRoutine = 'create routine';
-  const AlterRoutine = 'alter routine';
-  const LockTables = 'lock tables';
-  const CreateTemporaryTables = 'create temporary tables';
+  const TRIGGER = 'trigger';
+  const SHOW_VIEW = 'show view';
+  const CREATE_VIEW = 'create view';
+  const CREATE_ROUTINE = 'create routine';
+  const ALTER_ROUTINE = 'alter routine';
+  const LOCK_TABLES = 'lock tables';
+  const CREATE_TEMPORARY_TABLES = 'create temporary tables';
 }
+
 
 /**
  * Инкапсулиреут правила проверки привилегий.
@@ -256,9 +255,9 @@ class PrivilegeChecker
    * Проверает наличие указанной привилегии для определенного пользователя и хоста.
    *
    * @param string $privilege Название привилегии (см. PrivilegeEnum)
-   * @param string $db        Имя базы данных.
-   * @param string $user      Имя пользователя.
-   * @param string $host      Имя хоста.
+   * @param string $db Имя базы данных.
+   * @param string $user Имя пользователя.
+   * @param string $host Имя хоста.
    *
    * @return bool true в случае наличия привилегии, иначе false.
    */
@@ -268,12 +267,12 @@ class PrivilegeChecker
     {
       $grantQuery = $this->findRow($this->_showGrantsOutput, $db, $user, $host);
     }
-    catch( UnexpectedValueException $e )
+    catch(UnexpectedValueException $e)
     {
       return false;
     }
 
-    return $this->hasPrivilegeHelper($grantQuery, $privilege);
+    return $this->checkPrivilege($grantQuery, $privilege);
   }
 
   /**
@@ -295,9 +294,9 @@ class PrivilegeChecker
    * Отыскивает строку, содержащую GRANT команду, для указанного пользователя и хоста.
    *
    * @param string[] $grantCommands Все GRANT команды.
-   * @param string   $db            Имя базы данных.
-   * @param string   $user          Имя пользователя.
-   * @param string   $host          Имя хоста.
+   * @param string $db Имя базы данных.
+   * @param string $user Имя пользователя.
+   * @param string $host Имя хоста.
    *
    * @throws UnexpectedValueException Бросается если GRANT команда для указанного пользователя и хоста не найдена.
    * @return string GRANT команда для указанного пользователя и хоста.
@@ -312,13 +311,7 @@ class PrivilegeChecker
         return false;
       }
 
-      $result = preg_match("~{$user}'@'{$host}~", $row);
-      if( $result === 0 || $result === false )
-      {
-        return false;
-      }
-
-      return true;
+      return preg_match("/('{$user}'@'{$host}')|('{$user}'@'%')/", $row);
     });
 
     if( count($candidates) === 0 )
@@ -329,27 +322,31 @@ class PrivilegeChecker
     return reset($candidates);
   }
 
+  private function parsePrivileges($string)
+  {
+    if( !preg_match('/GRANT\s+(?<privileges>.+)\s+ON/i', $string, $matches) )
+      return array();
+
+    $privilegeList = array_map(function ($privilege)
+    {
+      return strtolower(trim($privilege));
+    }, explode(',', $matches['privileges']));
+
+    return is_array($privilegeList) ? $privilegeList : array();
+  }
+
   /**
-   * Проверает наличие привилегии в SQL GRANT команде.
+   * Проверяет наличие привилегии в SQL GRANT команде.
    *
-   * @param string $query     Строка, содержащая SQL GRANT команду.
-   * @param string $privilege Название привилегии на которую делается проверка.
+   * @param string $string Строка, содержащая SQL GRANT команду.
+   * @param string $checkPrivilege Название привилегии на которую делается проверка.
    *
    * @return bool true в случае наличия привилегии, иначе false.
    */
-  private function hasPrivilegeHelper($query, $privilege)
+  private function checkPrivilege($string, $checkPrivilege)
   {
-    $result = preg_match('~GRANT(?<privileges>.+)ON~', $query, $privilegeList);
-    if( $result === 0 || $result === false )
-    {
-      return false;
-    }
+    $privileges = $this->parsePrivileges($string);
 
-    $privs = array_map(function ($priv)
-    {
-      return strtolower(trim($priv));
-    }, explode(',', $privilegeList['privileges']));
-
-    return in_array(strtolower($privilege), $privs) || in_array('all privileges', $privs);
+    return in_array(strtolower($checkPrivilege), $privileges) || in_array('all privileges', $privileges) || in_array('all', $privileges);
   }
 }
