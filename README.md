@@ -1,4 +1,5 @@
-# Что это?
+#Argilla https://travis-ci.org/shogodev/argilla.svg?branch=master
+##Что это?
 Argilla это CMF, реализованная на [Yii Framework](http://www.yiiframework.com/). Основное назначение - быстрое разворачивание сайтов высокой сложности. Написана в компании [Shogo](http://shogo.ru). Лучше всего подходит для нашей специализации - branding & retailing. То есть для крутых брендовых сайтов и сложных интернет-магазинов.
 ##Технические требования
 Обязательно:
