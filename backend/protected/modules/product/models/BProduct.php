@@ -114,6 +114,9 @@ class BProduct extends BActiveRecord
       'facetedSearchBehavior' => array(
         'class' => 'BFacetedSearchBehavior'
       ),
+      'associatedFilter' => array(
+        'class' => 'AssociatedFilterBehavior',
+      ),
     );
   }
 

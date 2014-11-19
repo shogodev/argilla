@@ -112,7 +112,7 @@ class Info extends FActiveRecord implements IMenuItem
     foreach($parents as $parent)
       $template = !empty($parent->template) ? $parent->template : $template;
 
-    return '/info/'.(!empty($this->template) ? $this->template : $template);
+    return (!empty($this->template) ? $this->template : $template);
   }
 
   public function buildMenuItem($node)

@@ -334,7 +334,7 @@ class FCollectionTest extends CDbTestCase
 
     $collection = new FCollection('basket');
     $collection->add($data);
-    $this->assertEquals(json_decode(json_encode($collection), true)[0], $data);
+    $this->assertEquals($collection->toArray()[0], $data);
   }
 
   public function testSave()
