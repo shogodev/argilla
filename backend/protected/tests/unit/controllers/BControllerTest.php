@@ -74,6 +74,7 @@ class BControllerTest extends CDbTestCase
 
   /**
    * @expectedException BTestRedirectException
+   * @expectedExceptionMessage Location: backend/secure/update/1
    */
   public function testSaveModel()
   {
@@ -84,12 +85,12 @@ class BControllerTest extends CDbTestCase
     $method = new ReflectionMethod('BController', 'saveModel');
     $method->setAccessible(true);
     $method->invoke($this->controller, $model);
-
-    $news = BNews::model()->findByAttributes(array('name' => $name));
-
-    $this->assertEquals($name, $news->name);
   }
 
+  /**
+   * @expectedException BTestRedirectException
+   * @expectedExceptionMessage Location: backend/secure/update/1
+   */
   public function testSaveModels()
   {
     $login = 'testLogin1';
@@ -105,14 +106,6 @@ class BControllerTest extends CDbTestCase
     $method = new ReflectionMethod('BController', 'saveModels');
     $method->setAccessible(true);
     $method->invoke($this->controller, array($userModel, $dataModel));
-
-    /**
-     * @var BFrontendUser $user
-     */
-    $user = BFrontendUser::model()->findByAttributes(array('login' => $login));
-
-    $this->assertEquals('testlogin1', $user->login);
-    $this->assertEquals($name, $user->profile->name);
   }
 
   public function testValidateModels()
@@ -229,5 +222,8 @@ class BControllerTest extends CDbTestCase
     ob_end_clean();
     Yii::app()->db->createCommand()->truncateTable('{{product}}');
     Yii::app()->db->createCommand()->truncateTable('{{product_assignment}}');
+    Yii::app()->db->createCommand()->truncateTable('{{user_profile}}');
+    Yii::app()->db->createCommand()->truncateTable('{{user}}');
+    Yii::app()->db->createCommand()->truncateTable('{{news}}');
   }
 }
