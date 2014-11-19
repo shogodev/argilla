@@ -57,18 +57,15 @@ class FForm extends CForm
   {
     if( is_string($config) )
     {
-      $pathToForm = self::$DEFAULT_FORMS_PATH.$config;
+      $config = strpos($config, '.') !== false ? $config : self::$DEFAULT_FORMS_PATH.$config;
       $this->formName = get_class($model);
     }
-    else
+    else if( is_array($config) )
     {
-      $pathToForm = $config;
-
-      if( isset($config['name']) )
-        $this->formName = $config['name'];
+      $this->formName = Arr::get($config, 'name');
     }
 
-    parent::__construct($pathToForm, $model, $parent);
+    parent::__construct($config, $model, $parent);
   }
 
   public function __toString()
