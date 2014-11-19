@@ -75,8 +75,8 @@ class BMenu extends CComponent
    */
   private function initGroups()
   {
-    $currentModule = $this->getCurrentModule();
-    $this->submodules = $this->getSubmodulesMenu($currentModule);
+    if( $currentModule = $this->getCurrentModule() )
+      $this->submodules = $this->getSubmodulesMenu($currentModule);
 
     foreach(Yii::app()->getModules() as $moduleId => $moduleConfig)
     {
@@ -95,9 +95,12 @@ class BMenu extends CComponent
         if( !$this->allowedModule($module) )
           continue;
 
-        if( $currentModule->parentModule == $moduleId || $module->parentModule == $currentModule->id )
+        if( $currentModule = $this->getCurrentModule() )
         {
-          $this->submodules = CMap::mergeArray($this->submodules, $this->getSubmodulesMenu($module));
+          if( $currentModule->parentModule == $moduleId || $module->parentModule == $currentModule->id )
+          {
+            $this->submodules = CMap::mergeArray($this->submodules, $this->getSubmodulesMenu($module));
+          }
         }
 
         if( !empty($module->parentModule) )
@@ -161,7 +164,9 @@ class BMenu extends CComponent
    */
   private function isModuleActive($id)
   {
-    $currentModule = $this->getCurrentModule();
+    if( !$currentModule = $this->getCurrentModule())
+      return false;
+
     $controllerId = ucfirst(Yii::app()->getController()->id);
     $keys = array_keys($this->submodules);
 
