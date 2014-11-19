@@ -55,7 +55,7 @@
     <delete file="build/tmp/compiled.js" quiet="yes" failonerror="false"/>
   </target>
 
-  <target name="symlinkYii" depends="checkYiiAvailability">
+  <target name="symlinkYii" depends="getYiiVersionArgilla">
     <if>
       <not><available property="checkSymlink"  file="${projectDirectory}/yii" followSymlinks="true"/></not>
       <then>
@@ -67,12 +67,14 @@
       </then>
       <else><echo message="Symlink with name yii already exists"/></else>
     </if>
+
+    <phingcall target="checkYiiAvailability"/>
   </target>
 
   <target name="checkYiiAvailability" depends="getYiiVersion, getYiiVersionArgilla">
     <if>
       <not>
-        <equals arg1="argilla.yiiVersion" arg2="getYiiVersion" trim="true" casesensitive="false"/>
+        <equals arg1="${argilla.yiiVersion}" arg2="${yiiVersion}" trim="true" casesensitive="false"/>
       </not>
       <then>
         <warn message="Requires Yii version '${argilla.yiiVersion}', used version is '${yiiVersion}'"/>
