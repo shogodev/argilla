@@ -12,6 +12,7 @@
  * @property integer $position
  * @property string $url
  * @property string $name
+ * @property string $img
  * @property string $notice
  * @property integer $visible
  *
@@ -19,6 +20,11 @@
  */
 class BProductSection extends BProductStructure
 {
+  public function behaviors()
+  {
+    return array('uploadBehavior' => array('class' => 'UploadBehavior', 'validAttributes' => 'img'));
+  }
+
   public function rules()
   {
     return array(

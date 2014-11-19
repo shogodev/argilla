@@ -1053,6 +1053,7 @@ CREATE TABLE `argilla_product_section` (
   `position` int(11) DEFAULT '0',
   `url` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
+  `img` varchar(255) NOT NULL,
   `notice` text,
   `visible` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`)

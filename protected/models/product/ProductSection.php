@@ -8,9 +8,10 @@
  *
  * @property integer $id
  * @property integer $position
- * @property string  $url
- * @property string  $name
- * @property string  $notice
+ * @property string $name
+ * @property string $url
+ * @property string $img
+ * @property string $notice
  * @property integer $visible
  *
  * @method static ProductSection model(string $class = __CLASS__)
