@@ -7,7 +7,8 @@
  * @package frontend.models.contact
  *
  * @property integer $id
- * @property string $title
+ * @property string $name
+ * @property string $sysname
  * @property string $url
  * @property string $address
  * @property string $notice
