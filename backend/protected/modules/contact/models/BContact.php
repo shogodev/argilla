@@ -9,7 +9,8 @@
  * @method static BContact model(string $class = __CLASS__)
  *
  * @property integer $id
- * @property string $title
+ * @property string $name
+ * @property string $sysname
  * @property string $url
  * @property string $address
  * @property string $notice
@@ -18,8 +19,7 @@
  * @property string $map
  * @property integer $visible
  *
- * @property ContactFgroup[] $contactFgroups
- * @property ContactField[] $contactFields
+ * @property BContactGroup[] $contactGroups
  */
 class BContact extends BActiveRecord
 {
@@ -40,9 +40,10 @@ class BContact extends BActiveRecord
       array('name', 'required'),
       array('visible', 'numerical', 'integerOnly' => true),
       array('url, name', 'length', 'max' => 255),
-      array('address', 'length', 'max' => 255),
-      array('notice, map', 'length', 'max' => 65535),
+      array('notice, map, address', 'length', 'max' => 65535),
       array('name, sysname, url, address, notice, map', 'safe'),
+
+      array('name, sysname, url, visible', 'safe', 'on' => 'search'),
     );
   }
 
@@ -71,5 +72,15 @@ class BContact extends BActiveRecord
     );
 
     return CMap::mergeArray(parent::attributeLabels(), $labels);
+  }
+
+  public function getSearchCriteria(CDbCriteria $criteria)
+  {
+    $criteria->compare('name', $this->name, true);
+    $criteria->compare('sysname', $this->sysname, true);
+    $criteria->compare('url', $this->url);
+    $criteria->compare('visible', $this->visible);
+
+    return $criteria;
   }
 }

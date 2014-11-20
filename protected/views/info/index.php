@@ -19,7 +19,7 @@
       <!--Sidebar content-->
     </div>
     <div class="span10">
-      <h1><?php echo $this->clip('h1', (empty($model->alternative_header) ? $model->name : $model->alternative_header))?></h1>
+      <h1><?php echo Yii::app()->meta->setHeader((empty($model->alternative_header) ? $model->name : $model->alternative_header))?></h1>
 
       <div class="text-container">
         <?php echo $model->content?>

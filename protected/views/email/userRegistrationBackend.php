@@ -1,8 +1,18 @@
 <?php
 /**
+ * @var CController $this
+ *
+ * @var Email $sender
+ * @var string $subject
+ * @var string $host
+ * @var string $project
+ * @var string $content
+ * @var ContactField[] $emails
+ * @var ContactField $email
+ * @var ContactField[] $phones
+ * @var ContactField $phone
+ *
  * @var User $model
- * @var UserProfile $userData
- * @var string $adminUrl
  */
 ?>
 <?php
@@ -11,17 +21,6 @@ $fields = array(
   'Логин' => $model->login,
   'E-mail' => $model->email
 );
-
-foreach($userData->attributeLabels() as $attribute => $label)
-  if( !empty($userData->$attribute) )
-    $fields[$label] = $userData->$attribute;
-
-$data = array(
- 'header' => "Регистрация ползвателя",
- 'top' => '',
- 'fields' => $fields,
- 'bottom' => '',
-);
 ?>
 
-<?php echo Yii::app()->controller->renderPartial('frontend.views.email._backendTemplate', CMap::mergeArray($_data_, $data)); ?>
+<?php $this->renderPartial('frontend.views.email.defaultBackend', CMap::mergeArray($_data_, array('fields' => $fields))); ?>

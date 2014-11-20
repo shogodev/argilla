@@ -10,11 +10,27 @@ class FBasket extends FCollectionUI
 {
   static $templateCounter = 0;
 
+  /**
+   * Пример:
+   * <pre>
+   *  $this->basket = new FBasket('basket');
+   *  $this->basket->collectionItemsForSum = array('options', 'parameters');
+   *  или
+   *  $this->basket->collectionItemsForSum = FBasket::COLLECTION_ITEMS_ROOT;
+   * </pre>
+   *
+   * Ключи collectionItems стоимость которых нужно считать, если елементы не сгруппированы по индексу, то нужно указать ключ FBasket::COLLECTION_ITEMS_ROOT
+   * @var mixed
+   */
+  public $collectionItemsForSum;
+
   public $classFastOrderButton = 'fast-order-{keyCollection}';
 
   public $classSubmitFastOrderButton = 'fast-order-submit-{keyCollection}';
 
   public $classRepeatOrderButton = 'repeat-order-{keyCollection}';
+
+  public $classTooltip = 'tooltip-{keyCollection}';
 
   public $fastOrderFormId = 'fast-order-form-{keyCollection}';
 
@@ -28,7 +44,7 @@ class FBasket extends FCollectionUI
 
   protected $templateId = 'template-{keyCollection}-';
 
-  public function serviceSum()
+  public function collectionItemSum($index = null)
   {
     $sum = 0;
 
@@ -37,22 +53,25 @@ class FBasket extends FCollectionUI
      */
     foreach($this as $element)
     {
-      if( $element->collectionItems['services'] )
-      {
-        foreach($element->collectionItems['services'] as $service)
-        {
-          $service->setProduct($element);
-          $sum += $service->sum * $element->getAmount();
-        }
-      }
+      $sum += $element->getCollectionItemSum($index);
     }
 
     return $sum;
   }
 
-  public function totalSum()
+  public function getSumTotal()
   {
-    return $this->sum() + $this->serviceSum();
+    $sum = 0;
+
+    /**
+     * @var FCollectionElementBehavior $element
+     */
+    foreach($this as $element)
+    {
+      $sum += $element->getSumTotal();
+    }
+
+    return $sum;
   }
 
   /**

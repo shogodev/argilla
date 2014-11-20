@@ -1,4 +1,6 @@
 <?php
+
+
 /**
  * @author Alexey Tatarivov <tatarinov@shogo.ru>
  * @link https://github.com/shogodev/argilla/
@@ -8,6 +10,8 @@
  */
 class FCollection extends FAbstractCollection
 {
+  const COLLECTION_ITEMS_ROOT = 'root';
+
   /**
    * @var string
    */
@@ -28,7 +32,6 @@ class FCollection extends FAbstractCollection
    * @param array $compareByItemKeys объединять элементы с указаными одинаковыми параметрами
    * @param bool $useSession использовать сессию для хранения данных
    * @param FCollection|null $rootCollection родительская коллукция
-
    * пример:
    * $collection = new FCollection('basket', array('id', 'size'), true)
    */
@@ -54,6 +57,15 @@ class FCollection extends FAbstractCollection
    */
   public function add($data, $restore = false)
   {
+    $addedIndex = $this->addInner($data);
+    $this->merge($this->collectionTree[$addedIndex], false);
+
+    if( !$restore )
+      $this->update(true);
+  }
+
+  public function addInner($data)
+  {
     if( empty($data) )
     {
       throw new CHttpException(500, 'Ошибка! Невозможно добавить пустой элемент в коллекцию.');
@@ -73,15 +85,10 @@ class FCollection extends FAbstractCollection
 
     $object = new FCollectionElement($data, $this->compareByItemKeys, $this->rootCollection);
 
-    if( !$restore && !$object->validate() )
-      return false;
+    if( !$object->validate() )
+      throw new CHttpException(500, 'Ошибка валидации элемента type='.$object->type.' '.'id='.$object->primaryKey);
 
-    $index = $this->merge($object, true);
-
-    if( !$restore )
-      $this->update();
-
-    return $index;
+    return $this->attach($object);
   }
 
   public function clear()
@@ -121,11 +128,13 @@ class FCollection extends FAbstractCollection
   {
     if( $element = $this->collectionList[$index] )
     {
-      $element->items->removeAll();
+      $element->items->collectionList = array();
+      $element->items->collectionTree = array();
+      $element->items->index = 0;
       $element->items = $element->buildItems($newItems, $this->root);
-      $element->collectionParent->merge($element);
       $element->invalidate();
 
+      $element->collectionParent->update(true);
       $this->update(true);
     }
   }
@@ -180,12 +189,16 @@ class FCollection extends FAbstractCollection
     return $this->getIndex($type, $id) !== null;
   }
 
+  public function toArray()
+  {
+    return json_decode(json_encode($this->jsonSerialize()), true);
+  }
+
   protected function update($reindexing = false)
   {
     if( $reindexing )
     {
-      $data = json_decode(json_encode($this), true);
-      $this->restore($data);
+      $this->restore($this->toArray());
     }
 
     if( $this->useSession )
@@ -215,18 +228,19 @@ class FCollection extends FAbstractCollection
   }
 
   /**
-   * @param $element
+   * @param FCollectionElement $element
    * @param bool $isNew
    *
    * @return int
    */
   protected function merge($element, $isNew = false)
   {
-    //foreach($this->collectionList as $collectionElement)
     foreach($this->collectionTree as $collectionElement)
     {
       if( $collectionElement->merge($element) )
       {
+        $this->remove($element->index);
+
         return $collectionElement->index;
       }
     }

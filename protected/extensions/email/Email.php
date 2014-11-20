@@ -114,17 +114,26 @@ class Email extends CApplicationComponent {
 				$vars = $this->viewVars;
 			else
 				$vars = $arg1;
-			
-			$view = Yii::app()->controller->renderPartial($this->viewsPath.$this->view, array_merge($vars, array('email'=>$this)), true);
-			if ($this->layout === null) {
+
+      $vars = array_merge($vars, array('sender' => $this));
+			$view = Yii::app()->controller->renderPartial($this->viewsPath.$this->view, $vars, true);
+			if ($this->layout === null)
+      {
 				$message = $view;
-			} else {
-				$message = Yii::app()->controller->renderPartial($this->viewsPath.'layouts.'.$this->layout, array('content'=>$view), true);
 			}
-		} else {
-			if ($arg1 === null) {
+      else
+      {
+        $vars = array_merge($vars, array('content' => $view));
+				$message = Yii::app()->controller->renderPartial($this->viewsPath.'layouts.'.$this->layout, $vars, true);
+			}
+		} else
+    {
+			if ($arg1 === null)
+      {
 				$message = $this->message;
-			} else {
+			}
+      else
+      {
 				$message = $arg1;
 			}
 		}

@@ -14,7 +14,7 @@ class CallbackController extends FController
 
     if( $this->callbackForm->save() )
     {
-      $this->callbackForm->sendNotification();
+      $this->callbackForm->sendNotificationBackend();
       $this->callbackForm->responseSuccess(
         $this->textBlockRegister('Обратный звонок', '<div class="m7">Ваша заявка принята.</div><div>Наш менеджер свяжется с вами в ближайшее время.</div>', null)
       );

@@ -188,9 +188,9 @@ class FCollectionTest extends CDbTestCase
       )
     ));
 
-    $this->assertEquals($collection[4]->primaryKey, 501);
-    $this->assertEquals($collection[4]->collectionItems['size'], 10);
-    $this->assertEquals($collection[4]->collectionItems['options'][1]->primaryKey, 503);
+    $this->assertEquals($collection[5]->primaryKey, 501);
+    $this->assertEquals($collection[5]->collectionItems['size'], 10);
+    $this->assertEquals($collection[5]->collectionItems['options'][1]->primaryKey, 503);
 
     $collection = new FCollection('basket', array(), false);
     $collection->add(array(
@@ -225,7 +225,7 @@ class FCollectionTest extends CDbTestCase
 
     $this->assertEquals($collection->countAmount(), 3);
 
-    $index = $collection->add(array(
+    $collection->add(array(
       'id' => 502,
       'amount' => 2,
       'type' => 'product',
@@ -250,7 +250,7 @@ class FCollectionTest extends CDbTestCase
 
     $this->assertEquals($collection->countAmount(), 5);
 
-    $element = $collection[$index];
+    $element = $collection[7];
 
     $this->assertEquals($element->collectionItems['options']->countAmount(), 3);
   }
@@ -264,7 +264,7 @@ class FCollectionTest extends CDbTestCase
       'type' => 'product'
     ));
 
-    $index = $collection->add(array(
+    $collection->add(array(
       'id' => 502,
       'amount' => 3,
       'type' => 'product'
@@ -301,11 +301,11 @@ class FCollectionTest extends CDbTestCase
     ));
 
     $this->assertEquals($collection->count(), 4);
-    $collection->remove($index);
+    $collection->remove(1);
     $this->assertEquals($collection->count(), 3);
+    $this->assertEquals($collection[8]->collectionItems['options']->count(), 3);
+    $collection->remove(6);
     $this->assertEquals($collection[7]->collectionItems['options']->count(), 2);
-    $collection->remove(4);
-    $this->assertEquals($collection[6]->collectionItems['options']->count(), 1);
     $this->assertEquals($collection->count(), 3);
   }
 
@@ -334,7 +334,7 @@ class FCollectionTest extends CDbTestCase
 
     $collection = new FCollection('basket');
     $collection->add($data);
-    $this->assertEquals(json_decode(json_encode($collection), true)[0], $data);
+    $this->assertEquals($collection->toArray()[0], $data);
   }
 
   public function testSave()
@@ -391,10 +391,15 @@ class FCollectionTest extends CDbTestCase
           array(
             'id' => 503,
             'type' => 'product',
-            'amount' => 2,
+            'amount' => 1,
           ),
           array(
             'id' => 501,
+            'type' => 'product',
+            'amount' => 1,
+          ),
+          array(
+            'id' => 503,
             'type' => 'product',
             'amount' => 1,
           ),
@@ -455,10 +460,15 @@ class FCollectionTest extends CDbTestCase
           array(
             'id' => 503,
             'type' => 'product',
-            'amount' => 2,
+            'amount' => 1,
           ),
           array(
             'id' => 501,
+            'type' => 'product',
+            'amount' => 1,
+          ),
+          array(
+            'id' => 503,
             'type' => 'product',
             'amount' => 1,
           ),
@@ -508,8 +518,8 @@ class FCollectionTest extends CDbTestCase
 
     $this->assertEquals($productCollection->count(), 2);
 
-    $this->assertEquals($productCollection[6]->collectionItems['size'], '10');
-    $this->assertEquals($productCollection[6]->collectionItems['color']->primaryKey, 504);
+    $this->assertEquals($productCollection[7]->collectionItems['size'], '10');
+    $this->assertEquals($productCollection[7]->collectionItems['color']->primaryKey, 504);
 
     $_SESSION['basket'] = json_encode(array(
       array(
@@ -612,8 +622,8 @@ class FCollectionTest extends CDbTestCase
     $this->assertEquals($collection->countAmount(), 5);
     $this->assertEquals($collection->count(), 4);
 
-    $collection->changeAmount(11, 3);
-    $this->assertEquals($collection[13]->collectionItems['options']->countAmount(), 5);
+    $collection->changeAmount(10, 3);
+    $this->assertEquals($collection[12]->collectionItems['options']->countAmount(), 5);
   }
 
   public function testChangeItems()
@@ -647,6 +657,52 @@ class FCollectionTest extends CDbTestCase
 
     $this->assertEquals($collection[3]->collectionItems['size'], 40);
     $this->assertEquals($collection[3]->collectionItems['options'][1]->primaryKey, 502);
+
+    $collection = new FCollection('basket', array('options'), false);
+
+    $collection->add(array(
+      'id' => 501,
+      'amount' => 2,
+      'type' => 'product',
+      'items' => array(
+        'options' => array(
+          array(
+            'id' => 502,
+            'type' => 'product',
+            'amount' => 3,
+          )
+        )
+      )
+    ));
+
+    $collection->add(array(
+      'id' => 501,
+      'amount' => 1,
+      'type' => 'product',
+      'items' => array(
+        'options' => array(
+          array(
+            'id' => 503,
+            'type' => 'product',
+            'amount' => 3,
+          )
+        )
+      )
+    ));
+
+    $this->assertEquals($collection->count(), 2);
+
+    $collection->changeItems(5, array(
+      'options' => array(
+        array(
+          'id' => 502,
+          'type' => 'product',
+          'amount' => 3,
+        )
+      )
+    ));
+
+    $this->assertEquals($collection->count(), 1);
   }
 
   public function testClear()
@@ -742,5 +798,170 @@ class FCollectionTest extends CDbTestCase
     $this->assertTrue($collection->isInCollection(Product::model()->findByPk(501)));
 
     $this->assertFalse($collection->isInCollection('product', 505));
+  }
+
+  public function testMerge()
+  {
+    $collection = new FCollection('basket', array('options'), false);
+
+    $collection->add(array(
+      'id' => 504,
+      'amount' => 2,
+      'type' => 'product',
+      'items' => array(
+        'options' => array(
+          'id' => 502,
+          'type' => 'product'
+        )
+      )
+    ));
+
+    $this->assertEquals($collection->count(), 1);
+
+    $collection->add(array(
+      'id' => 504,
+      'amount' => 1,
+      'type' => 'product',
+      'items' => array(
+        'options' => array(
+          'id' => 502,
+          'type' => 'product'
+        )
+      )
+    ));
+
+    $this->assertEquals($collection->count(), 1);
+    $this->assertEquals($collection->countAmount(), 3);
+
+    $collection = new FCollection('basket', array('options'), false);
+
+    $collection->add(array(
+      'id' => 504,
+      'amount' => 2,
+      'type' => 'product',
+      'items' => array(
+        'options' => array(
+          array(
+            'id' => 502,
+            'type' => 'product'
+          ),
+          array(
+            'id' => 503,
+            'type' => 'product'
+          )
+        )
+      )
+    ));
+
+    $this->assertEquals($collection->count(), 1);
+
+    $collection->add(array(
+      'id' => 504,
+      'amount' => 1,
+      'type' => 'product',
+      'items' => array(
+        'options' => array(
+          'id' => 502,
+          'type' => 'product'
+        )
+      )
+    ));
+
+    $this->assertEquals($collection->count(), 2);
+    $this->assertEquals($collection->countAmount(), 3);
+
+    $collection = new FCollection('basket', array('options'), false);
+
+    $collection->add(array(
+      'id' => 504,
+      'amount' => 2,
+      'type' => 'product',
+      'items' => array(
+        'options' => array(
+          array(
+            'id' => 502,
+            'type' => 'product'
+          ),
+          array(
+            'id' => 503,
+            'type' => 'product'
+          )
+        )
+      )
+    ));
+
+    $this->assertEquals($collection->count(), 1);
+
+    $collection->add(array(
+      'id' => 504,
+      'amount' => 1,
+      'type' => 'product',
+      'items' => array(
+        'options' => array(
+          array(
+            'id' => 502,
+            'type' => 'product'
+          ),
+          array(
+            'id' => 503,
+            'type' => 'product'
+          )
+        )
+      )
+    ));
+
+    $this->assertEquals($collection->count(), 1);
+    $this->assertEquals($collection->countAmount(), 3);
+
+    $collection = new FCollection('basket', array('options'), false);
+
+    $collection->add(array(
+      'id' => 504,
+      'amount' => 2,
+      'type' => 'product',
+      'items' => array(
+        'options' => array(
+          array(
+            'id' => 502,
+            'type' => 'product'
+          ),
+          array(
+            'id' => 503,
+            'type' => 'product'
+          )
+        ),
+        'ingredients' => array(
+          'id' => 501,
+          'type' => 'product'
+        ),
+      )
+    ));
+
+    $this->assertEquals($collection->count(), 1);
+
+    $collection->add(array(
+      'id' => 504,
+      'amount' => 1,
+      'type' => 'product',
+      'items' => array(
+        'options' => array(
+          array(
+            'id' => 502,
+            'type' => 'product'
+          ),
+          array(
+            'id' => 503,
+            'type' => 'product'
+          )
+        ),
+        'ingredients' => array(
+          'id' => 501,
+          'type' => 'product'
+        ),
+      )
+    ));
+
+    $this->assertEquals($collection->count(), 1);
+    $this->assertEquals($collection->countAmount(), 3);
   }
 }

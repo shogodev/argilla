@@ -6,7 +6,7 @@
  * @license http://argilla.ru/LICENSE
  * @package backend.components.db
  */
-abstract class BActiveRecord extends CActiveRecord
+abstract class BActiveRecord extends CActiveRecord implements IHasFrontendModel
 {
   protected $_hints;
 
@@ -301,6 +301,14 @@ abstract class BActiveRecord extends CActiveRecord
     $hints = $this->hints;
 
     return isset($hints[$attribute]) ? $hints[$attribute] : null;
+  }
+
+  /**
+   * @return string
+   */
+  public function getFrontendModelName()
+  {
+    return preg_replace('/^(B)/', '', get_class($this));
   }
 
   /**

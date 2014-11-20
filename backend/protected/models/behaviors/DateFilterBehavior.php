@@ -40,9 +40,9 @@ class DateFilterBehavior extends DateFormatBehavior
    */
   public $date_to;
 
-  public function attach($owner)
+  public function init()
   {
-    parent::attach($owner);
+    parent::init();
 
     $validator = new CSafeValidator();
     $validator->attributes = array('date_from', 'date_to');

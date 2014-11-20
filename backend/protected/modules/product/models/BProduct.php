@@ -40,7 +40,7 @@ Yii::import('backend.modules.product.models.behaviors.*');
  * @property BProductAssignment $assignment
  * @property BAssociation[] $associations
  */
-class BProduct extends BActiveRecord implements IHasFrontendModel
+class BProduct extends BActiveRecord
 {
   public function __get($name)
   {
@@ -114,6 +114,9 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
       'facetedSearchBehavior' => array(
         'class' => 'BFacetedSearchBehavior'
       ),
+      'associatedFilter' => array(
+        'class' => 'AssociatedFilterBehavior',
+      ),
     );
   }
 
@@ -169,14 +172,6 @@ class BProduct extends BActiveRecord implements IHasFrontendModel
       'BProduct' => 'Продукты',
       'spec' => 'Лидер продаж',
     ));
-  }
-
-  /**
-   * @return string
-   */
-  public function getFrontendModelName()
-  {
-    return 'Product';
   }
 
   /**

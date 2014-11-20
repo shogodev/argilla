@@ -73,7 +73,7 @@ class ProductParameterName extends FActiveRecord
     $alias = $this->getTableAlias(false, false);
 
     return array(
-      'condition' => $alias.'.visible=1',
+     'condition' => "{$alias}.parent = 1 OR ({$alias}.parent != 1 AND {$alias}.visible = 1)",
       'order' => $alias.'.position'
     );
   }

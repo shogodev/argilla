@@ -9,7 +9,7 @@
 
   <?php $this->renderPartial('/breadcrumbs');?>
 
-  <h1><?php echo $this->clip('h1', $model->name)?></h1>
+  <h1><?php echo Yii::app()->meta->setHeader($model->name)?></h1>
 
   <?php $this->widget('FListView', array(
     'dataProvider' => $dataProvider,

@@ -75,55 +75,39 @@ class BMenu extends CComponent
    */
   private function initGroups()
   {
-    $modules       = Yii::app()->getModules();
-    $currentModule = $this->getCurrentModule();
+    if( $currentModule = $this->getCurrentModule() )
+      $this->submodules = $this->getSubmodulesMenu($currentModule);
 
-    if( isset($currentModule->id) )
-      $this->submodules = $this->getControllers($currentModule->id);
-
-    foreach($modules as $id => $module)
+    foreach(Yii::app()->getModules() as $moduleId => $moduleConfig)
     {
-      if( !AccessHelper::checkAssessToModule($id) )
+      if( !AccessHelper::checkAssessToModule($moduleId) )
         continue;
 
-      if( !empty($module['autoloaded']) )
+      if( !empty($moduleConfig['autoloaded']) )
       {
-        Yii::import($module['class']);
+        Yii::import($moduleConfig['class']);
+        $moduleClassName = ucfirst($moduleId).'Module';
+        /**
+         * @var BModule $module
+         */
+        $module = new $moduleClassName($moduleId, null);
 
-        $className = ucfirst($id).'Module';
-        $class     = new $className($id, null);
+        if( !$this->allowedModule($module) )
+          continue;
 
-        if( $class instanceof BModule && !empty($class->group) && $class->enabled )
+        if( $currentModule = $this->getCurrentModule() )
         {
-          if( !isset($this->groups[$class->group])  )
+          if( $currentModule->parentModule == $moduleId || $module->parentModule == $currentModule->id )
           {
-            $this->groups[$class->group] = array('label'       => Arr::get($this->groupNames, $class->group, $class->group),
-                                                 'url'         => $this->buildUrl($id),
-                                                 'active'      => $this->getCurrentGroup() == $class->group,
-                                                 'itemOptions' => array('class' => $class->group)
-                                                );
-          }
-
-          $this->modules[$class->group][] = array('label'       => $class->name,
-                                                  'url'         => $this->buildUrl($id),
-                                                  'active'      => $this->isModuleActive($currentModule, $id),
-                                                  'itemOptions' => array('class' => $id),
-                                                  'position'    => $class->position
-                                                 );
-
-          // Добавляем в меню виртуальные контроллеры модуля
-          if( method_exists($class, 'getMenuControllers') )
-          {
-            $fakeControllers = $class->getMenuControllers();
-            if( !empty($fakeControllers) )
-            {
-              $this->modules[$class->group] = $fakeControllers;
-
-              if( isset(Yii::app()->controller->moduleMenu) )
-                $this->modules[$class->group][Yii::app()->controller->moduleMenu]['active'] = true;
-            }
+            $this->submodules = CMap::mergeArray($this->submodules, $this->getSubmodulesMenu($module));
           }
         }
+
+        if( !empty($module->parentModule) )
+          continue;
+
+        $this->createGroupsMenu($module);
+        $this->createModulesMenu($module);
       }
     }
 
@@ -131,21 +115,66 @@ class BMenu extends CComponent
   }
 
   /**
-   * @param $currentModule
+   * @param BModule $module
+   */
+  private function createGroupsMenu($module)
+  {
+    if( !isset($this->groups[$module->group])  )
+    {
+      $this->groups[$module->group] = array(
+        'label' => Arr::get($this->groupNames, $module->group, $module->group),
+        'url' => $this->buildUrl($module->id),
+        'active' => $this->getCurrentGroup() == $module->group,
+        'itemOptions' => array('class' => $module->group)
+      );
+    }
+  }
+
+  /**
+   * @param BModule $module
+   */
+  private function createModulesMenu($module)
+  {
+    $this->modules[$module->group][] = array(
+      'label' => $module->name,
+      'url' => $this->buildUrl($module->id),
+      'active' => $this->isModuleActive($module->id),
+      'itemOptions' => array('class' => $module->id),
+      'position' => $module->position
+    );
+
+    // Добавляем в меню виртуальные контроллеры модуля
+    if( method_exists($module, 'getMenuControllers') )
+    {
+      $fakeControllers = $module->getMenuControllers();
+      if( !empty($fakeControllers) )
+      {
+        $this->modules[$module->group] = $fakeControllers;
+
+        if( isset(Yii::app()->controller->moduleMenu) )
+          $this->modules[$module->group][Yii::app()->controller->moduleMenu]['active'] = true;
+      }
+    }
+  }
+
+  /**
    * @param $id
    *
    * @return bool
    */
-  private function isModuleActive($currentModule, $id)
+  private function isModuleActive($id)
   {
+    if( !$currentModule = $this->getCurrentModule())
+      return false;
+
     $controllerId = ucfirst(Yii::app()->getController()->id);
     $keys = array_keys($this->submodules);
 
-    return isset($currentModule->id) && $currentModule->id == $id && in_array(lcfirst(BApplication::cutClassPrefix($controllerId)), $keys);
+    return in_array($id, array($currentModule->id, $currentModule->parentModule)) && in_array(lcfirst(BApplication::cutClassPrefix($controllerId)), $keys);
   }
 
   /**
-   * @return CWebModule
+   * @return BModule
    */
   private function getCurrentModule()
   {
@@ -168,28 +197,21 @@ class BMenu extends CComponent
   }
 
   /**
-   * Получаем все контроллеры модуля для формирования submenu
-   *
-   * @param $module
+   * @param BModule $module
    *
    * @return array
    */
-  private function getControllers($module)
+  private function getSubmodulesMenu($module)
   {
     $controllers = array();
 
-    foreach(glob(dirname(__FILE__).'/../modules/'.$module.'/controllers/*') as $controllerClass)
+    foreach($this->getModuleControllers($module->id) as $controllerClass)
     {
       $controller = Yii::app()->getController();
-      /**
-       * @var BModule $module
-       */
-      $module = $this->getCurrentModule();
 
       $class    = basename($controllerClass, '.php');
       $mappedId = array_search($class, $module->controllerMap);
       $id       = $mappedId ? : BApplication::cutClassPrefix($class);
-
       if( !AccessHelper::init($module->id, $id)->checkAccess() )
         continue;
 
@@ -215,6 +237,17 @@ class BMenu extends CComponent
     return $controllers;
   }
 
+  /**
+   * Получаем все контроллеры модуля для формирования submenu
+   * @param $moduleName
+   *
+   * @return array
+   */
+  private function getModuleControllers($moduleName)
+  {
+    return glob(dirname(__FILE__).'/../modules/'.$moduleName.'/controllers/*');
+  }
+
   private function sort()
   {
     $this->sortGroups();
@@ -233,5 +266,15 @@ class BMenu extends CComponent
   private function sortSubmodiles()
   {
     uasort($this->submodules, function($a, $b){return $a['position'] > $b['position'];});
+  }
+
+  /**
+   * @param BModule $module
+   *
+   * @return bool
+   */
+  private function allowedModule($module)
+  {
+    return $module instanceof BModule && !empty($module->group) && $module->enabled;
   }
 }

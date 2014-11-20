@@ -66,6 +66,17 @@ class FAbstractCollection extends CComponent implements IteratorAggregate, Array
     }
   }
 
+  /**
+   * Проверяет существование элемента с индексом $index во всех дочерних коллекциях
+   * @param $index
+   *
+   * @return bool
+   */
+  public function exists($index)
+  {
+    return isset($this->collectionList[$index]);
+  }
+
   public function offsetUnset($offset)
   {
     $element = $this->rootCollection->collectionList[$offset];
@@ -114,7 +125,7 @@ class FAbstractCollection extends CComponent implements IteratorAggregate, Array
   {
     foreach($this->collectionTree as $element)
     {
-      if( $element->key == $key )
+      if( $element->key === $key )
       {
         return $element->index;
       }

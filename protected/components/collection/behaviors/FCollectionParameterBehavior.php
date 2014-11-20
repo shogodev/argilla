@@ -11,7 +11,7 @@ class FCollectionParameterBehavior extends FCollectionElementBehavior
 {
   public function getOrderItemType()
   {
-    return 'parameter-'.$this->owner->parameterName->id;
+    return get_class($this->owner);
   }
 
   public function getPrimaryKey()

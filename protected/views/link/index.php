@@ -11,7 +11,7 @@
 
   <?php $this->renderPartial('/breadcrumbs');?>
 
-  <h1><?php echo $this->clip('h1', 'Ресурсы по теме')?></h1>
+  <h1><?php echo Yii::app()->meta->setHeader('Ресурсы по теме')?></h1>
 
   <?php if( $this->textBlock('resources_page_text') ) { ?>
   <div class="text-container">

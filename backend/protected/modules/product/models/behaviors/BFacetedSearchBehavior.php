@@ -8,16 +8,9 @@
  *
  * @property BProduct $owner
  */
-class BFacetedSearchBehavior extends CModelBehavior
+class BFacetedSearchBehavior extends SActiveRecordBehavior
 {
-  public function events()
-  {
-    return CMap::mergeArray(parent::events(), array(
-      'onAfterSave' => 'afterSave',
-    ));
-  }
-
-  public function afterSave()
+  public function afterSave($event)
   {
     $this->refreshAll($this->owner);
   }

@@ -157,6 +157,14 @@ class FilterState extends CComponent
     }
   }
 
+  /**
+   * @return array
+   */
+  public function toArray()
+  {
+    return $this->state;
+  }
+
   private function formatState()
   {
     foreach($this->state as $parameterId => $values)

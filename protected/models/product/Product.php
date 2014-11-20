@@ -36,8 +36,7 @@
  * @property ProductCollection $collection
  * @property ProductParameterName[] $parameters
  *
- * collectionElement behavior
- * @mixin FCollectionElement
+ * @mixin FCollectionElementBehavior
  * @property integer $collectionIndex
  * @property integer $collectionAmount
  * @property integer $collectionItems

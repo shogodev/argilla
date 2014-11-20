@@ -45,7 +45,7 @@ class FacetedDataProcessor
     $itemId = $this->processor->prepare($elementId, $itemId, $productId);
     $this->increaseAmount($elementId, $itemId);
 
-    $this->totalIds[] = $productId;
+    $this->totalIds[$productId] = $productId;
     $this->facetedData[$elementId][$itemId][] = $productId;
   }
 

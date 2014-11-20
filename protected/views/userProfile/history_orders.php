@@ -10,7 +10,7 @@
   <?php $this->renderPartial('/_breadcrumbs');?>
 
   <div class="nofloat profile">
-    <h1><?php echo $this->clip('h1', 'Личный кабинет')?></h1>
+    <h1><?php echo Yii::app()->meta->setHeader('Личный кабинет')?></h1>
     <?php $this->renderPartial('_menu', $_data_) ?>
     <div class="profile-content">
       <h2>История заказов</h2>

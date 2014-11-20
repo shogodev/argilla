@@ -1,4 +1,4 @@
 <?php
 return array(
-  '1' => array('id' => '1', 'name' => 'Название фирмы')
+  '1' => array('id' => '1', 'name' => 'Название фирмы', 'sysname' => 'header')
 );

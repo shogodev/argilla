@@ -261,14 +261,6 @@ class Utils
     return mb_strlen($string) > 1 ? mb_strtoupper(mb_substr($string, 0, 1)).mb_substr($string, 1) : mb_strtoupper(mb_substr($string, 0, 1));
   }
 
-  public static function isDecimalEmpty($value)
-  {
-    if( empty($value) || preg_replace('/(\.0+)$/', '', $value == 0) )
-      return true;
-
-    return false;
-  }
-
   /**
    * Возвращает домен
    * @param integer $level если узан уровень, то домен обрезается до указанного уровня

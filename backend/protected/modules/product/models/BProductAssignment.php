@@ -201,7 +201,7 @@ class BProductAssignment extends BActiveRecord
       'dst_id' => $this->{$dstAttribute}
     );
 
-    $assignments = self::model()->findAllByAttributes($attributes);
+    $assignments = BProductTreeAssignment::model()->findAllByAttributes($attributes);
     $ids = array_map(function($model){return $model->src_id;}, $assignments);
 
     $criteria = new CDbCriteria();

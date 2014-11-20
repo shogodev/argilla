@@ -14,6 +14,8 @@
  */
 class FCollectionElementBehavior extends CBehavior
 {
+
+
   /**
    * @var FCollectionElement
    */
@@ -36,7 +38,56 @@ class FCollectionElementBehavior extends CBehavior
 
   public function getSum()
   {
-    return $this->owner->price * $this->collectionAmount;
+    $price = method_exists($this->owner, 'getPrice') ? $this->owner->getPrice() : $this->owner->price;
+
+    return $price * $this->collectionAmount;
+  }
+
+  public function getSumTotal()
+  {
+    $price = 0;
+
+    $collectionItemsForSum = $this->collectionElement->collectionParent->root->collectionItemsForSum;
+
+    if( $collectionItemsForSum == FCollection::COLLECTION_ITEMS_ROOT )
+    {
+      $price += $this->getCollectionItemSum();
+    }
+    else if( is_array($collectionItemsForSum) )
+    {
+      foreach($collectionItemsForSum as $key)
+      {
+        $price += $this->getCollectionItemSum($key);
+      }
+    }
+
+    return $this->getSum() + $price * $this->collectionAmount;
+  }
+
+  public function getCollectionItemSum($index = null)
+  {
+    $sum = 0;
+
+    if( $items = $this->getCollectionItems($index) )
+    {
+      if( !($items instanceof FCollection) )
+        $items = array($items);
+
+      foreach($items as $item)
+      {
+        if( $item instanceof FCollection )
+        {
+          foreach($item as $innerItem)
+            $sum += $innerItem->getSum();
+        }
+        else if( !empty($item) )
+        {
+          $sum += $item->getSum();
+        }
+      }
+    }
+
+    return $sum;
   }
 
   /**
@@ -91,6 +142,14 @@ class FCollectionElementBehavior extends CBehavior
   public function innerCollectionItems()
   {
     return array();
+  }
+
+  public function toArray()
+  {
+    return array(
+      'id' => $this->owner->primaryKey,
+      'type' => Utils::toSnakeCase(get_class($this->owner))
+    );
   }
 
   public function getOrderItemType()

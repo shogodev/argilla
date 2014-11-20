@@ -20,6 +20,15 @@ class OrderHistory extends Order
     return '{{order}}';
   }
 
+  public function defaultScope()
+  {
+    return array(
+      'order' => 'id DESC',
+      'condition' => 'user_id = :userId',
+      'params' => array('userId' => Yii::app()->user->id)
+    );
+  }
+
   public function afterFind()
   {
     parent::afterFind();

@@ -7,28 +7,31 @@
  * @license http://argilla.ru/LICENSE
  * @package frontend.share.behaviors
  */
-class CommonBehavior extends CBehavior
+class CommonBehavior extends SBehavior
 {
-  private $contacts;
-
   private $settings;
 
-  public function attach($owner)
+  /**
+   * @var Contact
+   */
+  private $headerContacts;
+  public function init()
   {
-    parent::attach($owner);
-
     Yii::import('frontend.models.contact.*');
     Yii::import('frontend.models.Settings');
   }
 
-  public function getContacts()
+  /**
+   * @return FActiveRecord|Contact
+   */
+  public function getHeaderContacts()
   {
-    if( $this->contacts === null )
+    if( !isset($this->headerContacts) )
     {
-      $this->contacts = Contact::model()->findByAttributes(array('sysname' => 'system'));
+      $this->headerContacts = Contact::model()->findByAttributes(array('sysname' => 'header'));
     }
 
-    return $this->contacts;
+    return $this->headerContacts;
   }
 
   /**

@@ -72,7 +72,7 @@ class BProductCurrency extends BActiveRecord
 
   public function getRate()
   {
-    return $this->rate * (Utils::isDecimalEmpty($this->multiplier) ? 1 : $this->multiplier);
+    return $this->rate * (PriceHelper::isNotEmpty($this->multiplier) ? $this->multiplier : 1);
   }
 
   public function getPath()

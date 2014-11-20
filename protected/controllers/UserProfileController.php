@@ -43,7 +43,7 @@ class UserProfileController extends FController
       'Личные данные',
     );
 
-    $this->activeUrl = array('user/data');
+    $this->activeUrl = array('userProfile/data');
 
     $userForm = new FForm('UserData', UserProfile::model()->findByPk(Yii::app()->user->getId()));
     $userForm->ajaxValidation();
@@ -66,7 +66,7 @@ class UserProfileController extends FController
       'Сменить пароль',
     );
 
-    $this->activeUrl = array('user/changePassword');
+    $this->activeUrl = array('userProfile/changePassword');
 
     $model = User::model()->findByPk(Yii::app()->user->getId());
     $model->scenario = User::SCENARIO_CHANGE_PASSWORD;

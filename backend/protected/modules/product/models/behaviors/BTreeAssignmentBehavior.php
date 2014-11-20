@@ -47,7 +47,7 @@
  * @property BProductStructure $owner
  * @property BProductStructure $parent
  */
-class BTreeAssignmentBehavior extends CModelBehavior
+class BTreeAssignmentBehavior extends SActiveRecordBehavior
 {
   /**
    * @var integer
@@ -80,14 +80,10 @@ class BTreeAssignmentBehavior extends CModelBehavior
   private $ownerName;
 
   /**
-   * @param CComponent $owner
-   *
    * @throws CHttpException
    */
-  public function attach($owner)
+  public function init()
   {
-    parent::attach($owner);
-
     if( !isset($this->parentModel) )
     {
       throw new CHttpException(500, 'Не задан атрибут parentModel');
@@ -121,7 +117,7 @@ class BTreeAssignmentBehavior extends CModelBehavior
     return $model->save();
   }
 
-  public function afterDelete()
+  public function afterDelete($event)
   {
     $this->getModel()->delete();
   }
@@ -171,8 +167,6 @@ class BTreeAssignmentBehavior extends CModelBehavior
   private function attachEvents()
   {
     $this->owner->attachEventHandler('onBeforeSearch', array($this, 'beforeSearch'));
-    $this->owner->attachEventHandler('onAfterDelete', array($this, 'afterDelete'));
-    $this->owner->attachEventHandler('onAfterSave', array($this, 'afterSave'));
   }
 
   /**

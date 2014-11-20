@@ -14,7 +14,7 @@ class m010101_000009_dir_data extends CDbMigration
       (2, 'Доставка', 1, NULL, 1)");
 
     $this->execute("INSERT INTO `{{order_status}}` (`id`, `name`, `sysname`) VALUES
-      (null, 'Оформлен', 'new'),
+      (null, 'Новый', 'new'),
       (null, 'Обработан менеджером', 'confirmed'),
       (null, 'Ожидает оплаты', 'wait_payment'),
       (null, 'Оплачен', 'paid'),

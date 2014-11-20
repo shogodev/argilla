@@ -13,17 +13,21 @@ class PrivilegeCheckerTest extends CTestCase
   {
     $checker = new PrivilegeChecker($this->getShowGrantsRawOutput());
 
-    $this->assertTrue($checker->hasPrivilege(PrivilegeEnum::Trigger, 'cuberussia2013', 'cuberussia2013', 'localhost'));
-    $this->assertTrue($checker->hasPrivilege(PrivilegeEnum::ShowView, 'cuberussia2013', 'cuberussia2013', 'localhost'));
-    $this->assertTrue($checker->hasPrivilege(PrivilegeEnum::CreateView, 'cuberussia2013', 'cuberussia2013', 'localhost'));
-    $this->assertTrue($checker->hasPrivilege(PrivilegeEnum::CreateRoutine, 'cuberussia2013', 'cuberussia2013', 'localhost'));
-    $this->assertTrue($checker->hasPrivilege(PrivilegeEnum::AlterRoutine, 'cuberussia2013', 'cuberussia2013', 'localhost'));
-    $this->assertTrue($checker->hasPrivilege(PrivilegeEnum::LockTables, 'cuberussia2013', 'cuberussia2013', 'localhost'));
-    $this->assertTrue($checker->hasPrivilege(PrivilegeEnum::CreateTemporaryTables, 'cuberussia2013', 'cuberussia2013', 'localhost'));
+    $this->assertTrue($checker->hasPrivilege(PrivilegeEnum::TRIGGER, 'cuberussia2013', 'cuberussia2013', 'localhost'));
+    $this->assertTrue($checker->hasPrivilege(PrivilegeEnum::SHOW_VIEW, 'cuberussia2013', 'cuberussia2013', 'localhost'));
+    $this->assertTrue($checker->hasPrivilege(PrivilegeEnum::CREATE_VIEW, 'cuberussia2013', 'cuberussia2013', 'localhost'));
+    $this->assertTrue($checker->hasPrivilege(PrivilegeEnum::CREATE_ROUTINE, 'cuberussia2013', 'cuberussia2013', 'localhost'));
+    $this->assertTrue($checker->hasPrivilege(PrivilegeEnum::ALTER_ROUTINE, 'cuberussia2013', 'cuberussia2013', 'localhost'));
+    $this->assertTrue($checker->hasPrivilege(PrivilegeEnum::LOCK_TABLES, 'cuberussia2013', 'cuberussia2013', 'localhost'));
+    $this->assertTrue($checker->hasPrivilege(PrivilegeEnum::CREATE_TEMPORARY_TABLES, 'cuberussia2013', 'cuberussia2013', 'localhost'));
 
-    $this->assertTrue($checker->hasPrivilege(PrivilegeEnum::CreateTemporaryTables, '*', 'prog', 'localhost'));
+    $this->assertTrue($checker->hasPrivilege(PrivilegeEnum::CREATE_TEMPORARY_TABLES, '*', 'prog', 'localhost'));
 
-    $this->assertFalse($checker->hasPrivilege(PrivilegeEnum::Trigger, 'kalenji', 'kalenji', 'localhost'));
+    $this->assertFalse($checker->hasPrivilege(PrivilegeEnum::TRIGGER, 'kalenji', 'kalenji', 'localhost'));
+
+    $this->assertTrue($checker->hasPrivilege(PrivilegeEnum::TRIGGER, 'new_project', 'root', 'localhost'));
+    $this->assertTrue($checker->hasPrivilege(PrivilegeEnum::TRIGGER, 'new_project', 'root', '123.123.123.123'));
+    $this->assertFalse($checker->hasPrivilege(PrivilegeEnum::TRIGGER, 'cuberussia2013', 'cuberussia2013', '123.123.123.123'));
   }
 
   /**
@@ -51,6 +55,19 @@ class PrivilegeCheckerTest extends CTestCase
       array(
         'Grants for prog@localhost' => "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX, ALTER, SHOW DATABASES, SUPER, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, EVENT, TRIGGER ON *.* TO 'prog'@'localhost' IDENTIFIED BY PASSWORD '*23AE809DDACAF96AF0FD78ED04B6A265E05AA257'",
         "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX, ALTER, SHOW DATABASES, SUPER, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, EVENT, TRIGGER ON *.* TO 'prog'@'localhost' IDENTIFIED BY PASSWORD '*23AE809DDACAF96AF0FD78ED04B6A265E05AA257'"
+      ),
+      array(
+        'Grants for prog@localhost' => "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX, ALTER, SHOW DATABASES, SUPER, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, EVENT, TRIGGER ON *.* TO 'prog'@'localhost' IDENTIFIED BY PASSWORD '*23AE809DDACAF96AF0FD78ED04B6A265E05AA257'",
+        "GRANT SELECT, INSERT, UPDATE, DELETE, CREATE, DROP, FILE, INDEX, ALTER, SHOW DATABASES, SUPER, CREATE TEMPORARY TABLES, LOCK TABLES, EXECUTE, CREATE VIEW, SHOW VIEW, CREATE ROUTINE, ALTER ROUTINE, EVENT, TRIGGER ON *.* TO 'prog'@'localhost' IDENTIFIED BY PASSWORD '*23AE809DDACAF96AF0FD78ED04B6A265E05AA257'"
+      ),
+      array(
+        'All privilegies' => "GRANT ALL PRIVILEGES ON *.* TO 'root'@'localhost' WITH GRANT OPTION"
+      ),
+      array(
+        'All privilegies 2' => "GRANT ALL ON *.* TO 'root'@'localhost' WITH GRANT OPTION"
+      ),
+      array(
+        'All privilegies and all hosts' => "GRANT ALL ON *.* TO 'root'@'%' WITH GRANT OPTION"
       ),
     );
   }

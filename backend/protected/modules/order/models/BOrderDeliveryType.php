@@ -16,7 +16,5 @@
  */
 class BOrderDeliveryType extends BActiveRecord
 {
-  const SELF_DELIVERY = 1;
 
-  const DELIVERY = 2;
 }

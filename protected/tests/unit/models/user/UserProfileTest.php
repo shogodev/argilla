@@ -22,6 +22,7 @@ class UserProfileTest extends CTestCase
   {
     $user = new User();
     $user->id = 1000;
+    $user->email = 'unique@email.ru';
     $user->save(false);
 
     $profile = new UserProfile();

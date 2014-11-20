@@ -19,15 +19,10 @@ Yii::import('frontend.models.order.paymentSystem.platron.*');
  * @property Order $owner
  * @property OrderPayment $payment
  */
-class PlatronPaymentBehavior extends CModelBehavior
+class PlatronPaymentBehavior extends SBehavior
 {
-  /**
-   * @param CComponent $owner
-   */
-  public function attach($owner)
+  public function init()
   {
-    parent::attach($owner);
-
     $this->addRelations();
     $this->attachValidators();
   }

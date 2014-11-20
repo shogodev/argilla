@@ -24,7 +24,7 @@
  *
  * @property bool $defaultNow
  */
-class DateFormatBehavior extends CActiveRecordBehavior
+class DateFormatBehavior extends SActiveRecordBehavior
 {
   /**
    * @var string атрибут поля даты
@@ -36,10 +36,8 @@ class DateFormatBehavior extends CActiveRecordBehavior
    */
   public $defaultNow = false;
 
-  public function attach($owner)
+  public function init()
   {
-    parent::attach($owner);
-
     if( empty($this->attribute) )
       throw new CHttpException(500, "Ошибка. Не указано свойство attribute для поведения ".get_class($this));
 

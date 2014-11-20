@@ -30,7 +30,7 @@ class FFormInputElement extends CFormInputElement
 
   public $layout = null;
 
-  protected $defaultLayout = "<div class=\"text-container\">\n{label}\n<div class=\"pdb\"><span class=\"input-wrap\">{input}</span>\n{hint}\n{error}</div>\n</div>\n";
+  protected $defaultLayout = '<div class="form-row m7">{label}<div class="form-field">{input}{hint}{error}</div></div>';
 
   private $_label;
 
@@ -90,7 +90,7 @@ class FFormInputElement extends CFormInputElement
     }
   }
 
-  protected function getLayout()
+  public function getLayout()
   {
     return $this->layout ? $this->layout : $this->getElementsLayout($this->parent);
   }

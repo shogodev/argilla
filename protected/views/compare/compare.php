@@ -10,7 +10,7 @@
 <div class="red-skew-block page-subcaption">
   <div class="wrapper">
     <?php $this->renderPartial('/_breadcrumbs')?>
-    <h1 class="h2 white s40"><?php echo $this->clip('h1', 'Сравнение')?></h1>
+    <h1 class="h2 white s40"><?php echo Yii::app()->meta->setHeader('Сравнение')?></h1>
   </div>
 </div>
 

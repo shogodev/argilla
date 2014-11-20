@@ -8,35 +8,42 @@
  *
  * Поведение для работы с похожими и рекомендованными товарами
  *
+ * Пример:
+ *
+ *  public function behaviors()
+ *  {
+ *    return array(
+ *    ...
+ *    'relatedProductsBehavior' => array(
+ *       'class' => 'RelatedProductsBehavior',
+ *        'groupRelatedThrough' => 'type'
+ *    ),
+ *    ...
+ *    );
+ *  }
+ *
  * @property Product $owner
  */
 class RelatedProductsBehavior extends CModelBehavior
 {
+  public $groupRelatedThrough = null;
+
   /**
    * @param int $limit
    *
-   * @return Product[]
+   * @return FActiveDataProvider
    */
   public function getRelatedProducts($limit = 5)
   {
     if( !$relatedProducts = $this->owner->findAllThroughAssociation(new Product()) )
     {
-      $associationIds = $this->owner->findAllThroughAssociation(new ProductGroup());
-
-      if( empty($associationIds) )
-        $associationIds = $this->owner->section->findAllThroughAssociation(new ProductGroup());
-
-      /**
-       * @var ProductGroup $group
-       */
-      foreach(ProductGroup::model()->findAllByPk($associationIds) as $group)
-        $relatedProducts = CMap::mergeArray($relatedProducts, $group->findAllThroughAssociation(new Product()));
+      $relatedProducts = $this->getRelatedGroupProducts();
     }
 
     $criteria = new CDbCriteria();
     $criteria->addInCondition('t.id', array_slice($relatedProducts, 0, $limit));
 
-    return $this->getProductList($criteria)->getDataProvider()->getData();
+    return $this->getProductList($criteria)->getDataProvider();
   }
 
   /**
@@ -44,7 +51,7 @@ class RelatedProductsBehavior extends CModelBehavior
    *
    * @param int $limit
    *
-   * @return Product[]
+   * @return FActiveDataProvider
    */
   public function getSimilarProducts($limit = 5)
   {
@@ -59,7 +66,7 @@ class RelatedProductsBehavior extends CModelBehavior
     if( isset($this->owner->section) )
       $criteria->compare('a.section_id', $this->owner->section->id);
 
-    return $this->getProductList($criteria)->getDataProvider()->getData();
+    return $this->getProductList($criteria)->getDataProvider();
   }
 
   /**
@@ -74,5 +81,30 @@ class RelatedProductsBehavior extends CModelBehavior
     $criteria->compare('t.id', '<>'.$this->owner->id);
 
     return new ProductList($criteria, null, false);
+  }
+
+  private function getRelatedGroupProducts()
+  {
+    $relatedProducts = array();
+
+    try
+    {
+      Yii::import('backend.modules.productGroup.frontendModels.ProductGroup', true);
+      $associationIds = $this->owner->findAllThroughAssociation(new ProductGroup());
+
+      if( empty($associationIds) && !is_null($this->groupRelatedThrough) )
+        $associationIds = $this->owner->{$this->groupRelatedThrough}->findAllThroughAssociation(new ProductGroup());
+
+      /**
+       * @var ProductGroup $group
+       */
+      foreach(ProductGroup::model()->findAllByPk($associationIds) as $group)
+        $relatedProducts = CMap::mergeArray($relatedProducts, $group->findAllThroughAssociation(new Product()));
+    }
+    catch(CException $exception)
+    {
+    }
+
+    return $relatedProducts;
   }
 }

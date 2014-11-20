@@ -57,18 +57,15 @@ class FForm extends CForm
   {
     if( is_string($config) )
     {
-      $pathToForm = self::$DEFAULT_FORMS_PATH.$config;
+      $config = strpos($config, '.') !== false ? $config : self::$DEFAULT_FORMS_PATH.$config;
       $this->formName = get_class($model);
     }
-    else
+    else if( is_array($config) )
     {
-      $pathToForm = $config;
-
-      if( isset($config['name']) )
-        $this->formName = $config['name'];
+      $this->formName = Arr::get($config, 'name');
     }
 
-    parent::__construct($pathToForm, $model, $parent);
+    parent::__construct($config, $model, $parent);
   }
 
   public function __toString()
@@ -231,7 +228,7 @@ class FForm extends CForm
    */
   public function addedElement($name, $element, $forButtons)
   {
-    if( isset($element->type) && in_array($element->type, array('text', 'password')) )
+    if( isset($element->type) && in_array($element->type, array('text', 'password', 'tel', 'textarea')) )
       if( empty($element->attributes['class']) )
         $element->attributes['class'] = 'inp';
   }
@@ -485,9 +482,15 @@ class FForm extends CForm
     return false;
   }
 
-  public function sendNotification($data = array(), $email = '')
+  public function sendNotification($email, $vars = array())
   {
-    Yii::app()->notification->send($this->getModel(), $data, $email);
+    Yii::app()->notification->send($this->model, $vars, $email);
+  }
+
+  public function sendNotificationBackend($vars = array())
+  {
+    $vars = CMap::mergeArray($vars, array('model' => $this->model));
+    Yii::app()->notification->send(get_class($this->model).'Backend', $vars, null, 'backend');
   }
 
   public function addLayoutViewParams($data)

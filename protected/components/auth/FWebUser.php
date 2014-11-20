@@ -5,6 +5,8 @@
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
  * @package frontend.components.auth
+ * @property User $data
+ * @property UserProfile $profile
  */
 class FWebUser extends CWebUser
 {
@@ -21,5 +23,13 @@ class FWebUser extends CWebUser
     }
 
     return $this->data;
+  }
+
+  /**
+   * @return null|UserProfile
+   */
+  public function getProfile()
+  {
+    return !$this->isGuest ? $this->getData()->profile : null;
   }
 }

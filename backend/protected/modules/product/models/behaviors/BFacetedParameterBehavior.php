@@ -8,27 +8,19 @@
  *
  * @property BProductParamName $owner
  */
-class BFacetedParameterBehavior extends CModelBehavior
+class BFacetedParameterBehavior extends SActiveRecordBehavior
 {
   /**
    * @var integer
    */
   private $selection;
 
-  public function events()
-  {
-    return CMap::mergeArray(parent::events(), array(
-      'onBeforeSave' => 'beforeSave',
-      'onAfterSave' => 'afterSave',
-    ));
-  }
-
-  public function beforeSave()
+  public function beforeSave($event)
   {
     $this->selection = $this->owner->selection;
   }
 
-  public function afterSave()
+  public function afterSave($event)
   {
     $this->isSelectionChanged() && $this->owner->selection ? $this->add() : $this->remove();
   }

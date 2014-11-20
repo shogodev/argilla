@@ -23,9 +23,9 @@ class CommonBehaviorTest extends CDbTestCase
     parent::setUp();
   }
 
-  public function testGetContacts()
+  public function testHeaderContacts()
   {
-    $contacts = Yii::app()->controller->contacts;
+    $contacts = Yii::app()->controller->getHeaderContacts();
 
     $contact = Arr::reduce($contacts);
 

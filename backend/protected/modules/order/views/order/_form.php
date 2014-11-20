@@ -25,13 +25,15 @@
 
     <?php echo $form->textFieldRow($model, 'address'); ?>
 
-    <?php echo $form->dropDownListRow($model, 'payment_id', BOrderPaymentType::model()->listData()); ?>
+    <?php if( $model->isNewRecord || !is_null($model->payment_id) ) echo $form->dropDownListRow($model, 'payment_id', BOrderPaymentType::model()->listData()); ?>
 
-    <?php echo $form->dropDownListRow($model, 'delivery_id', BOrderDeliveryType::model()->listData()); ?>
+    <?php if( $model->isNewRecord || !is_null($model->delivery_id) ) echo $form->dropDownListRow($model, 'delivery_id', BOrderDeliveryType::model()->listData()); ?>
 
-    <?php echo $form->textAreaRow($model, 'comment'); ?>
+    <?php if( $model->isNewRecord || !is_null($model->delivery_sum) ) echo $form->textFieldRow($model, 'delivery_sum'); ?>
 
     <?php echo $form->textFieldRow($model, 'sum'); ?>
+
+    <?php echo $form->textAreaRow($model, 'comment'); ?>
 
     <?php echo $form->dropDownListRow($model, 'status_id', BOrderStatus::model()->listData()); ?>
 

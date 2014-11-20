@@ -1,21 +1,34 @@
 <?php
 
 return array(
-  'class' => 'form auth-form',
+  'class' => 'form profile-form',
+
+  'elementsLayout' => '<div class="form-row m20">{label}<div class="form-field">{input}{error}</div></div>',
 
   'elements' => array(
     'name' => array('type' => 'text'),
 
     'address' => array('type' => 'text'),
 
-    'phone' => array('type' => 'tel', 'class' => 'inp tel-inp'),
+    'phone' => array('type' => 'tel'),
+
+    'birthday' => array(
+      'type' => 'DateIntervalWidget',
+      'form' => $this,
+      'template' => '<span class="select-container form-size-third date-select">{day}</span>
+                     <span class="select-container form-size-third date-select">{month}</span>
+                     <span class="select-container form-size-third date-select">{year}</span>',
+      'attribute' => 'birthday',
+      'rangeYears' => array(intval(date("Y")) - 100, intval(date("Y")) - 5),
+    ),
+
   ),
 
   'buttons' => array(
     'submit' => array(
       'type' => 'button',
       'value' => 'Сохранить',
-      'class' => 'btn'
+      'class' => 'btn green-btn h47btn s30 bb'
     ),
   ),
 );

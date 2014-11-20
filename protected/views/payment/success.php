@@ -11,7 +11,7 @@
 
   <div class="nofloat m20">
 
-    <h1><?php echo $this->clip('h1', 'Оплата успешно произведена')?></h1>
+    <h1><?php echo Yii::app()->meta->setHeader('Оплата успешно произведена')?></h1>
     <?php echo $this->textBlockRegister('Оплата успешно произведена', 'Оплата успешно произведена.', array('class' => 'success-message bb center'))?>
 
   </div>

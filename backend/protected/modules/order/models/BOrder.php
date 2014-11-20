@@ -10,13 +10,16 @@
  *
  * @property integer $id
  * @property integer $user_id
- * @property string  $name
- * @property string  $email
- * @property string  $address
- * @property string  $phone
- * @property string  $comment
- * @property string  $type
- * @property string  $sum
+ * @property string $name
+ * @property string $email
+ * @property string $phone
+ * @property string $address
+ * @property integer $delivery_id
+ * @property string $delivery_sum
+ * @property integer $payment_id
+ * @property string $comment
+ * @property string $type
+ * @property string $sum
  * @property integer $ip
  * @property string $date_create
  * @property integer $status_id
@@ -63,7 +66,7 @@ class BOrder extends BActiveRecord
       array('address, comment, phone', 'safe'),
       array('status_id', 'numerical', 'integerOnly' => true),
       array('sum', 'numerical'),
-      array('order_comment, delivery_id, payment_id', 'safe'),
+      array('order_comment, delivery_id, payment_id, delivery_sum', 'safe'),
 
       array('id, type, sum, date_create_from, date_create_to, user_id', 'safe', 'on' => 'search'),
     );
@@ -81,6 +84,7 @@ class BOrder extends BActiveRecord
       'order_comment' => 'Комментарий менеджера',
       'delivery_id' => 'Метод доставки',
       'payment_id' => 'Метод оплаты',
+      'delivery_sum' => 'Доставка'
     ));
   }
 
@@ -124,6 +128,11 @@ class BOrder extends BActiveRecord
   public function getPadId()
   {
     return str_pad($this->id, 10, 0, STR_PAD_LEFT);
+  }
+
+  public function getDate($format = 'd.m.Y H:i')
+  {
+    return DateTime::createFromFormat('Y-m-d H:i:s', $this->date_create)->format($format);
   }
 
   /**

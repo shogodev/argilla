@@ -54,7 +54,8 @@ class FCollectionElementBehaviorTest extends CDbTestCase
 
     $this->assertEquals($collection[$index]->collectionItemsListData('options', 'collectionIndex', 'id'), array(
       1 => 501,
-      2 => 502
+      2 => 502,
+      3 => 501
     ));
   }
 }

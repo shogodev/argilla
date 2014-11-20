@@ -5,7 +5,6 @@
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
  * @package frontend.models.product.filter
- *
  * @property mixed $step шаг число или строка вида 'число%'
  * @property integer $selectedMin;
  * @property integer $selectedMax;
@@ -28,7 +27,6 @@ class FilterElementSlider extends FilterElementRange implements JsonSerializable
 
   public function init($parent)
   {
-
   }
 
   public function render()
@@ -51,24 +49,24 @@ class FilterElementSlider extends FilterElementRange implements JsonSerializable
     $this->maxValue = max($this->maxValue, $value);
   }
 
-  public function getSelectedMin()
+  public function getSelectedMin($range = 0)
   {
     if( !empty($this->selected) )
       $selected = $this->normalizeValue(explode("-", Arr::reset($this->selected))[0]);
 
     if( !isset($selected) )
-      $selected = $this->minValue;
+      $selected = $this->getMinValue($range);
 
     return $selected;
   }
 
-  public function getSelectedMax()
+  public function getSelectedMax($range = 0)
   {
     if( !empty($this->selected) )
       $selected = $this->normalizeValue(explode("-", Arr::reset($this->selected))[1]);
 
     if( !isset($selected) )
-      $selected = $this->maxValue;
+      $selected = $this->getMaxValue($range);
 
     return $selected;
   }
@@ -84,7 +82,7 @@ class FilterElementSlider extends FilterElementRange implements JsonSerializable
   {
     $range = $range ? $range : $this->borderRange;
 
-    return $this->maxValue + ($range ? $range - $this->maxValue % $range : 0);
+    return $this->maxValue + (($range && $this->maxValue % $range) ? $range - $this->maxValue % $range : 0);
   }
 
   public function jsonSerialize()
@@ -96,6 +94,11 @@ class FilterElementSlider extends FilterElementRange implements JsonSerializable
       $this->getSelectedMax(),
       $this->getStep(),
     );
+  }
+
+  public function isEmpty()
+  {
+    return empty($this->maxValue) && empty($this->minValue) || ($this->maxValue == $this->minValue);
   }
 
   /**

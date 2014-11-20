@@ -8,7 +8,7 @@
 <div class="wrapper">
   <?php $this->renderPartial('/_breadcrumbs');?>
 
-  <h1><?php echo $this->clip('h1', 'Результаты поиска')?></h1>
+  <h1><?php echo Yii::app()->meta->setHeader('Результаты поиска')?></h1>
 
   <div class="text-container m20 s14">
     <!--noindex-->

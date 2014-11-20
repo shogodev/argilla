@@ -603,13 +603,14 @@ CREATE TABLE `argilla_order` (
   `phone` varchar(255) NOT NULL,
   `address` varchar(255) NOT NULL,
   `delivery_id` int(10) unsigned DEFAULT NULL,
+  `delivery_sum` decimal(10,2) DEFAULT NULL,
   `payment_id` int(10) unsigned DEFAULT NULL,
   `comment` text NOT NULL,
   `type` varchar(255) NOT NULL DEFAULT 'basket',
   `sum` decimal(10,2) NOT NULL,
   `ip` int(10) unsigned NOT NULL,
   `date_create` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `status_id` int(10) unsigned NOT NULL,
+  `status_id` int(10) unsigned NOT NULL DEFAULT '1',
   `order_comment` varchar(255) NOT NULL,
   `deleted` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
@@ -941,6 +942,7 @@ CREATE TABLE `argilla_product_img` (
   `name` varchar(255) NOT NULL,
   `notice` varchar(255) NOT NULL,
   `position` varchar(10) NOT NULL,
+  `type` varchar(255) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `parent` (`parent`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -1051,6 +1053,7 @@ CREATE TABLE `argilla_product_section` (
   `position` int(11) DEFAULT '0',
   `url` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL,
+  `img` varchar(255) NOT NULL,
   `notice` text,
   `visible` tinyint(1) DEFAULT '0',
   PRIMARY KEY (`id`)

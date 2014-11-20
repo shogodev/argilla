@@ -60,8 +60,8 @@ class FilterTest extends CDbTestCase
   public function testApply()
   {
     $criteria = $this->filter->apply(new CDbCriteria());
-    $this->assertContains(22, $criteria->params);
-    $this->assertContains(23, $criteria->params);
+    $this->assertRegExp($this->getPatternCheckInCondition(22), $criteria->condition);
+    $this->assertRegExp($this->getPatternCheckInCondition(23), $criteria->condition);
   }
 
   public function testEmptyStateFilter()
@@ -82,13 +82,13 @@ class FilterTest extends CDbTestCase
   {
     $this->filter->getState()->setState(array('category_id' => array(8)));
     $criteria = $this->filter->apply(new CDbCriteria());
-    $this->assertContains(22, $criteria->params);
-    $this->assertNotContains(23, $criteria->params);
+    $this->assertRegExp($this->getPatternCheckInCondition(22), $criteria->condition);
+    $this->assertNotRegExp($this->getPatternCheckInCondition(23), $criteria->condition);
 
     $this->filter->getState()->setState(array('category_id' => 8));
     $criteria = $this->filter->apply(new CDbCriteria());
-    $this->assertContains(22, $criteria->params);
-    $this->assertNotContains(23, $criteria->params);
+    $this->assertRegExp($this->getPatternCheckInCondition(22), $criteria->condition);
+    $this->assertNotRegExp($this->getPatternCheckInCondition(23), $criteria->condition);
   }
 
   public function testApplyWithTwoSelectedValues()
@@ -96,8 +96,8 @@ class FilterTest extends CDbTestCase
     $this->filter->getState()->setState(array('category_id' => array(8, 9)));
     $criteria = $this->filter->apply(new CDbCriteria());
 
-    $this->assertContains(22, $criteria->params);
-    $this->assertContains(23, $criteria->params);
+    $this->assertRegExp($this->getPatternCheckInCondition(22), $criteria->condition);
+    $this->assertRegExp($this->getPatternCheckInCondition(23), $criteria->condition);
   }
 
   public function testUnselectedItemsCount()
@@ -131,15 +131,15 @@ class FilterTest extends CDbTestCase
   {
     $this->filter->getState()->setState(array('price' => '0-5000'));
     $criteria = $this->filter->apply(new CDbCriteria());
-    $this->assertContains(25, $criteria->params);
-    $this->assertNotContains(26, $criteria->params);
+    $this->assertRegExp($this->getPatternCheckInCondition(25), $criteria->condition);
+    $this->assertNotRegExp($this->getPatternCheckInCondition(26), $criteria->condition);
     $this->assertEquals(1, $this->filter->elements['price']->items['0-5000']->amount);
     $this->assertEquals(2, $this->filter->elements['price']->items['5001-15000']->amount);
 
     $this->filter->getState()->setState(array('price' => '5001-15000'));
     $criteria = $this->filter->apply(new CDbCriteria());
-    $this->assertContains(26, $criteria->params);
-    $this->assertNotContains(25, $criteria->params);
+    $this->assertRegExp($this->getPatternCheckInCondition(26), $criteria->condition);
+    $this->assertNotRegExp($this->getPatternCheckInCondition(25), $criteria->condition);
     $this->assertEquals(1, $this->filter->elements['price']->items['0-5000']->amount);
     $this->assertEquals(2, $this->filter->elements['price']->items['5001-15000']->amount);
   }
@@ -148,8 +148,9 @@ class FilterTest extends CDbTestCase
   {
     $this->filter->getState()->setState(array('price_old' => '100-5000'));
     $criteria = $this->filter->apply(new CDbCriteria());
-    $this->assertContains(25, $criteria->params);
-    $this->assertNotContains(array(26, 27), $criteria->params);
+    $this->assertRegExp($this->getPatternCheckInCondition(25), $criteria->condition);
+    $this->assertNotRegExp($this->getPatternCheckInCondition(26), $criteria->condition);
+    $this->assertNotRegExp($this->getPatternCheckInCondition(27), $criteria->condition);
 
     $this->filter->getState()->setState(array('category_id' => array(11, 12)));
     $this->filter->apply(new CDbCriteria());
@@ -187,5 +188,10 @@ class FilterTest extends CDbTestCase
 
     $this->expectOutputString('{"amount":0}');
     $this->filter->apply(new CDbCriteria());
+  }
+
+  public function getPatternCheckInCondition($id)
+  {
+    return '/(\(|,| )('.$id.')(\)|,| )/';
   }
 }

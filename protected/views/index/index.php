@@ -12,7 +12,7 @@
   </div>
 
   <?php if($this->beginCache('index/showcase', array('duration' => 300))) { ?>
-    <?php $this->renderPartial('_showcase', array('showcase' => new Showcase(10))); ?>
+    <?php $this->renderPartial('_showcase', array('showcase' => $this->getShowCase())); ?>
   <?php $this->endCache(); } ?>
 
   <div class="hr1"></div>

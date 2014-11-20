@@ -55,7 +55,7 @@
     <delete file="build/tmp/compiled.js" quiet="yes" failonerror="false"/>
   </target>
 
-  <target name="symlinkYii" depends="checkYiiAvailability">
+  <target name="symlinkYii" depends="getYiiVersionArgilla">
     <if>
       <not><available property="checkSymlink"  file="${projectDirectory}/yii" followSymlinks="true"/></not>
       <then>
@@ -67,19 +67,28 @@
       </then>
       <else><echo message="Symlink with name yii already exists"/></else>
     </if>
+
+    <phingcall target="checkYiiAvailability"/>
   </target>
-  <target name="checkYiiAvailability" depends="getYiiVersion">
+
+  <target name="checkYiiAvailability" depends="getYiiVersion, getYiiVersionArgilla">
     <if>
       <not>
-        <available property="checkDir" file="${argilla.yiiStorage}/${argilla.yiiVersion}/framework" type="dir"/>
+        <equals arg1="${argilla.yiiVersion}" arg2="${yiiVersion}" trim="true" casesensitive="false"/>
       </not>
       <then>
-        <fail message="Yii version '${argilla.yiiVersion}' was not found in path '${argilla.yiiStorage}/${argilla.yiiVersion}'"/>
+        <warn message="Requires Yii version '${argilla.yiiVersion}', used version is '${yiiVersion}'"/>
       </then>
     </if>
   </target>
-  <target name="getYiiVersion">
+
+  <target name="getYiiVersionArgilla">
     <php expression="require('protected/config/version.php');" returnProperty="argilla.yiiVersion"/>
+  </target>
+
+  <target name="getYiiVersion">
+    <php expression="require('../yii/framework/yii.php');"/>
+    <php expression=" Yii::getVersion();" returnProperty="yiiVersion"/>
   </target>
 
   <target name="createDBConfig">
@@ -87,10 +96,31 @@
       <not><available property="checkFile" file="protected\config\db.php" type="file"/></not>
       <then>
         <php expression="preg_replace('/[^\w]/', '_',basename('${projectDirectory}'))" returnProperty="defaultDbName"/>
-        <input message="Enter database name" propertyName="dbName" defaultValue="${defaultDbName}"/>
-        <input message="Enter table prefix" propertyName="dbTablePrefix" defaultValue="${defaultDbName}_"/>
-        <input message="Enter username" propertyName="dbUser" defaultValue="prog"/>
-        <input message="Enter password" propertyName="dbPassword" defaultValue="123"/>
+        <if>
+          <not><isset property="dbName"/></not>
+          <then>
+            <input message="Enter database name" propertyName="dbName" defaultValue="${defaultDbName}"/>
+          </then>
+        </if>
+        <if>
+          <not><isset property="dbTablePrefix"/></not>
+          <then>
+            <input message="Enter table prefix" propertyName="dbTablePrefix" defaultValue="${defaultDbName}_"/>
+          </then>
+        </if>
+        <if>
+          <not><isset property="dbUser"/></not>
+          <then>
+            <input message="Enter username" propertyName="dbUser" defaultValue="prog"/>
+          </then>
+        </if>
+        <if>
+          <not><isset property="dbPassword"/></not>
+          <then>
+            <input message="Enter password" propertyName="dbPassword" defaultValue="123"/>
+          </then>
+        </if>
+
         <copy file="protected\config\db.php.sample" tofile="protected\config\db.php">
           <filterchain>
             <replaceregexp>

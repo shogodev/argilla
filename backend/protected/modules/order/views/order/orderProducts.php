@@ -13,9 +13,9 @@
   'rowCssClassExpression' => '$data instanceof BOrderProduct ? "group" : ($row % 2 ? "odd" : "even" )',
   'columns' => array(
     array('name' => 'name', 'header' => 'Название', 'type' => 'html'),
-    array('name' => 'price', 'header' => 'Цена', 'value' => '!Utils::isDecimalEmpty($data->price) ? Yii::app()->format->formatNumber($data->price) : ""'),
+    array('name' => 'price', 'header' => 'Цена', 'value' => 'PriceHelper::isNotEmpty($data->price) ? PriceHelper::price($data->price) : ""'),
     array('name' => 'count', 'header' => 'Количество', 'value' => '!empty($data->count) ? $data->count : ""'),
-    array('name' => 'discount', 'header' => 'Скидка', 'htmlOptions' => array('class' => 'center span1'), 'value' => '!Utils::isDecimalEmpty($data->discount) ? floatval($data->discount) : ""'),
-    array('name' => 'sum', 'header' => 'Сумма', 'value' => '!Utils::isDecimalEmpty($data->sum) ? Yii::app()->format->formatNumber($data->sum) : ""'),
+    array('name' => 'discount', 'header' => 'Скидка', 'htmlOptions' => array('class' => 'center span1'), 'value' => 'PriceHelper::isNotEmpty($data->discount) ? floatval($data->discount) : ""'),
+    array('name' => 'sum', 'header' => 'Сумма', 'value' => 'PriceHelper::isNotEmpty($data->sum) ? PriceHelper::price($data->sum) : ""'),
   ),
 )); ?>

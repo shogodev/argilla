@@ -138,12 +138,23 @@ class Filter extends CComponent
    */
   public function apply(CDbCriteria $actionCriteria)
   {
-    $dataProvider = new FilterDataProvider($this->state, $actionCriteria, $this->elements);
-    $criteria = $dataProvider->getFilteredCriteria();
+    $cacheId = sha1(serialize(array($this->state->toArray(), $actionCriteria->toArray(), $this->elements)));
 
-    $this->sendAmountResponse($criteria);
+    if( Yii::app()->cache->offsetExists($cacheId) )
+    {
+      list($criteria, $itemAmounts, $this->elements, $amountTotal) = Yii::app()->cache->get($cacheId);
+    }
+    else
+    {
+      $dataProvider = new FilterDataProvider($this->state, $actionCriteria, $this->elements);
+      $criteria = $dataProvider->getFilteredCriteria();
+      $itemAmounts = $dataProvider->getAmounts();
+      $amountTotal = $dataProvider->getAmountsTotal();
 
-    $itemAmounts = $dataProvider->getAmounts();
+      Yii::app()->cache->set($cacheId, array($criteria, $itemAmounts, $this->elements, $amountTotal));
+    }
+
+    $this->sendAmountResponse($amountTotal);
     $this->buildItems($itemAmounts);
 
     return $criteria;
@@ -255,14 +266,14 @@ class Filter extends CComponent
   }
 
   /**
-   * @param CDbCriteria $criteria
+   * @param integer $amountTotal
    */
-  private function sendAmountResponse(CDbCriteria $criteria)
+  private function sendAmountResponse($amountTotal)
   {
     if( $this->getState()->isAmountOnly() )
     {
       echo CJSON::encode(array(
-        'amount' => count($criteria->params),
+        'amount' => $amountTotal,
       ));
 
       Yii::app()->end();

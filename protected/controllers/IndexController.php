@@ -11,10 +11,10 @@ class IndexController extends FController
   public function actionIndex()
   {
     $news = News::model()->main()->findAll();
-    $banners = Banner::model()->getByLocation('index_banner');
+    $rotator = Banner::model()->getByLocation('rotator');
 
     $this->render('index', array(
-      'banners' => $banners,
+      'rotator' => $rotator,
       'news' => $news,
     ));
   }

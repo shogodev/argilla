@@ -17,8 +17,15 @@ class CronTasksCommand extends CConsoleCommand
    */
   private $commands = array();
 
+  /**
+   * @var string
+   */
+  private $commandPath;
+
   public function init()
   {
+    $this->commandPath = Yii::getPathOfAlias('frontend').DIRECTORY_SEPARATOR.'yiic ';
+
     $configPath = Yii::getPathOfAlias('frontend.config.cron').'.php';
     if( file_exists($configPath) )
     {
@@ -36,7 +43,7 @@ class CronTasksCommand extends CConsoleCommand
     foreach($this->commands as $command => $commandTime)
     {
       if( $this->checkTime($time, $commandTime) )
-        $currentCommands[] = $command;
+        $currentCommands[] = $this->commandPath.$command;
     }
 
     echo $currentCommands ? implode(PHP_EOL, $currentCommands).PHP_EOL : '';

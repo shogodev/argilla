@@ -5,6 +5,9 @@
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
  * @package frontend.components.collection
+ * @property string $key
+ * @property string $type
+ * @property string $primaryKey
  */
 class FCollectionElement extends CComponent implements JsonSerializable
 {
@@ -69,6 +72,9 @@ class FCollectionElement extends CComponent implements JsonSerializable
    */
   public function merge($element)
   {
+    if( $element->index === $this->index )
+      return false;
+
     if( $this->compare($element) && $this->compareItems($this->items, $element->items, $this->compareByItemKeys) )
     {
       $this->amount += $element->amount;
@@ -150,10 +156,15 @@ class FCollectionElement extends CComponent implements JsonSerializable
 
     foreach($preparedItems as $item)
     {
-      $collectionItems->add($item, false);
+      $collectionItems->addInner($item);
     }
 
     return $collectionItems;
+  }
+
+  public function toArray()
+  {
+    return json_decode(json_encode($this->jsonSerialize()), true);
   }
 
   protected function getType()
@@ -164,6 +175,11 @@ class FCollectionElement extends CComponent implements JsonSerializable
   protected function getKey()
   {
     return $this->key;
+  }
+
+  protected function getPrimaryKey()
+  {
+    return $this->primaryKey;
   }
 
   private function getPreparedItems($items, $rootCollection)
@@ -287,6 +303,12 @@ class FCollectionElement extends CComponent implements JsonSerializable
 
   private function preparationDataForCompare($data)
   {
+    if( $data instanceof FCollection  )
+      $data = $data;
+
+    if( is_object($data)  )
+      $data = $data->toArray();
+
     if( !is_array($data) )
       return $data;
 
