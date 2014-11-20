@@ -99,7 +99,7 @@ class TextBlockBehavior extends SBehavior
   {
     foreach($data as $key => $text)
     {
-      if( preg_match_all('/{{([^{}]*)}}|{([^{}]*)}/', $text, $matches) )
+      if( preg_match_all('/{{([^{}\s]*)}}|{([^{}\s]*)}/', $text, $matches) )
       {
         $autoReplace = array();
         foreach(Arr::reset($matches) as $matchIndex => $expression)
