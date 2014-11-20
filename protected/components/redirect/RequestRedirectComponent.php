@@ -9,6 +9,11 @@
 class RequestRedirectComponent extends FRedirectComponent
 {
   /**
+   * @var string
+   */
+  private $host;
+
+  /**
    * @var array
    */
   private $request;
@@ -32,6 +37,7 @@ class RequestRedirectComponent extends FRedirectComponent
   public function __construct($url = null, $attachHandlers = true)
   {
     $url = isset($url) ? $url : Arr::get($_SERVER, 'REQUEST_URI');
+    $this->host = Arr::get($_SERVER, 'HTTP_HOST');
     $this->attachHandlers = $attachHandlers;
     $this->setRequest($url);
   }
@@ -43,6 +49,7 @@ class RequestRedirectComponent extends FRedirectComponent
   {
     $this->request = parse_url($url);
     $this->request['path'] = Arr::get($this->request, 'path', '/');
+    $this->request['path'] = rtrim($this->request['path'], '/').'/';
   }
 
   /**
@@ -51,7 +58,11 @@ class RequestRedirectComponent extends FRedirectComponent
   public function getRequest()
   {
     $url = $this->request;
-    $url['path'] = $this->target;
+
+    if( RedirectHelper::isAbsolute($this->target) )
+      $url['host'] = trim($this->target, '/');
+    else
+      $url['path'] = $this->target;
 
     return Utils::buildUrl($url);
   }
@@ -62,6 +73,14 @@ class RequestRedirectComponent extends FRedirectComponent
   public function getPath()
   {
     return $this->request['path'];
+  }
+
+  /**
+   * @return string
+   */
+  public function getHost()
+  {
+    return 'http://'.trim($this->host, '/').'/';
   }
 
   /**
@@ -161,13 +180,16 @@ class RequestRedirectComponent extends FRedirectComponent
 
   private function find()
   {
-    if( ($data = $this->findByKey($this->getPath())) !== null )
-    {
-      $this->setTarget($data['target']);
-      $this->setUsedRedirect($data['id']);
-      $this->move($data['type_id']);
-    }
+    $redirect = false;
+
+    if( ($data = $this->findByKey($this->getHost())) !== null )
+      $redirect = true;
+    elseif( ($data = $this->findByKey($this->getPath())) !== null )
+      $redirect = true;
     elseif( $data = $this->findByPattern($this->getPath()) )
+      $redirect = true;
+
+    if( $redirect )
     {
       $this->setTarget($data['target']);
       $this->setUsedRedirect($data['id']);

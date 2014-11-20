@@ -38,6 +38,11 @@ class RedirectHelper
     return stripos($expression, self::REGEXP_START_CHAR) === 0;
   }
 
+  public static function isAbsolute($url)
+  {
+    return stripos($url, 'http://') === 0;
+  }
+
   /**
    * @param string $url
    *
