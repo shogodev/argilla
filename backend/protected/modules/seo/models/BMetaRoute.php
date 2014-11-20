@@ -12,6 +12,7 @@
  * @property string $clips
  * @property string $description
  * @property string $keywords
+ * @property string $custom
  * @property string $header
  * @property integer $noindex
  * @property integer $visible
@@ -31,6 +32,7 @@ class BMetaRoute extends BActiveRecord
       array('route', 'unique'),
       array('route, title, description, keywords, header', 'length', 'max' => 255),
       array('noindex, visible', 'numerical', 'integerOnly' => true),
+      array('custom', 'safe'),
     );
   }
 
