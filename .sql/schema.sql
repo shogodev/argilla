@@ -1003,7 +1003,7 @@ DROP TABLE IF EXISTS `argilla_product_param_name`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `argilla_product_param_name` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
-  `parent` int(10) unsigned NOT NULL DEFAULT '1',
+  `parent` int(10) unsigned DEFAULT NULL,
   `position` int(11) DEFAULT '0',
   `visible` tinyint(1) NOT NULL,
   `name` varchar(1024) NOT NULL,
@@ -1224,6 +1224,7 @@ CREATE TABLE `argilla_seo_meta_mask` (
   `title` varchar(255) NOT NULL,
   `description` varchar(255) NOT NULL,
   `keywords` varchar(255) NOT NULL,
+  `custom` text NOT NULL,
   `header` varchar(255) NOT NULL,
   `noindex` tinyint(1) NOT NULL DEFAULT '0',
   `visible` tinyint(1) NOT NULL,
@@ -1244,6 +1245,7 @@ CREATE TABLE `argilla_seo_meta_route` (
   `title` varchar(255) NOT NULL,
   `description` varchar(255) NOT NULL,
   `keywords` varchar(255) NOT NULL,
+  `custom` text NOT NULL,
   `header` varchar(255) NOT NULL,
   `models` text NOT NULL,
   `clips` varchar(512) NOT NULL,
