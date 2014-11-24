@@ -47,6 +47,8 @@ $form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId()));
 
   <?php echo $form->textAreaRow($model, 'keywords'); ?>
 
+  <?php echo $form->textAreaRow($model, 'custom'); ?>
+
   <?php echo $form->checkBoxRow($model, 'noindex'); ?>
 
   <?php echo $form->checkBoxRow($model, 'visible'); ?>

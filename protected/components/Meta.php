@@ -10,6 +10,7 @@
  * @property string $title
  * @property string $description
  * @property string $keywords
+ * @property string $custom
  */
 class Meta extends CApplicationComponent
 {
@@ -65,6 +66,8 @@ class Meta extends CApplicationComponent
 
   private $keywords;
 
+  private $custom;
+
   private $noindex;
 
   public function init()
@@ -93,7 +96,7 @@ class Meta extends CApplicationComponent
    */
   public function getTitle()
   {
-    return $this->clear($this->title);
+    return CHtml::encode($this->clear($this->title));
   }
 
   /**
@@ -101,7 +104,7 @@ class Meta extends CApplicationComponent
    */
   public function getDescription()
   {
-    return $this->clear($this->description);
+    return CHtml::encode($this->clear($this->description));
   }
 
   /**
@@ -109,7 +112,15 @@ class Meta extends CApplicationComponent
    */
   public function getKeywords()
   {
-    return $this->clear($this->keywords);
+    return CHtml::encode($this->clear($this->keywords));
+  }
+
+  /**
+   * @return string
+   */
+  public function getCustom()
+  {
+    return $this->clear($this->custom);
   }
 
   /**
@@ -157,7 +168,7 @@ class Meta extends CApplicationComponent
     $metaMask = MetaMask::model()->findByUri($this->requestUri);
     $metaRoute = MetaRoute::model()->findByRoute($this->route);
 
-    foreach(array('header', 'title', 'keywords', 'description', 'noindex') as $property)
+    foreach(array('header', 'title', 'keywords', 'description', 'noindex', 'custom') as $property)
     {
       if( $metaRoute )
         $this->$property = Arr::get($metaRoute, $property);
@@ -252,7 +263,7 @@ class Meta extends CApplicationComponent
     $string = preg_replace(self::VARIABLE_PATTERN, '', $string);
     $string = preg_replace('/\s+/', ' ', $string);
 
-    return CHtml::encode(trim($string));
+    return trim($string);
   }
 
   /**

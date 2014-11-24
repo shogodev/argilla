@@ -85,7 +85,7 @@ class ProductList extends BaseList
   {
     $assignments = array('section', 'type', 'category', 'collection');
     $criteria = new CDbCriteria(array('select' => 'a.product_id'));
-    $criteria->addInCondition('product_id', $this->dataProvider->getKeys());
+    $criteria->addInCondition('product_id', $this->dataProvider->getKeys(true));
     $productAssignments = ProductAssignment::model()->getAssignments($criteria);
 
     foreach($assignments as $assignment)
