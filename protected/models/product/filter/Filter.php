@@ -28,6 +28,16 @@ class Filter extends CComponent
   public $urlPattern;
 
   /**
+   * @var string
+   */
+  public $modelClass = 'Product';
+
+  /**
+   * @var string
+   */
+  public $facetedModelClass = 'FacetedSearch';
+
+  /**
    * @var FilterElement[]
    */
   private $elements = array();
@@ -85,9 +95,7 @@ class Filter extends CComponent
       $items[key($this->emptyElementValue)] = Yii::createComponent($defaultItemOptions);
     }
 
-    if( !isset($filterElement['id']) && !empty($filterElement['key']) )
-      $filterElement['id'] = ProductParameterName::model()->findByAttributes(array('key' => $filterElement['key']))->id;
-    else if( empty($filterElement['key']) )
+    if( empty($filterElement['key']))
       $filterElement['key'] = $filterElement['id'];
 
     if( empty($filterElement['type']) )
@@ -146,7 +154,7 @@ class Filter extends CComponent
     }
     else
     {
-      $dataProvider = new FilterDataProvider($this->state, $actionCriteria, $this->elements);
+      $dataProvider = new FilterDataProvider($this->state, $actionCriteria, $this->elements, $this->modelClass, $this->facetedModelClass);
       $criteria = $dataProvider->getFilteredCriteria();
       $itemAmounts = $dataProvider->getAmounts();
       $amountTotal = $dataProvider->getAmountsTotal();
@@ -193,7 +201,7 @@ class Filter extends CComponent
       if( !($item instanceof FActiveRecord) )
         return null;
 
-      if( $element = $this->getElementByKey(strtolower(str_replace('Product', '', get_class($item)).'_id')) )
+      if( $element = $this->getElementByKey(strtolower(str_replace($this->modelClass, '', get_class($item)).'_id')) )
       {
         $element->disabled[$item->id] = $item->id;
       }
@@ -217,15 +225,15 @@ class Filter extends CComponent
   }
 
   /**
-   * @param array $exclude
+   * @param boolean $onlyMultiItems default true
+   * @param array $excludeIds
    *
    * @return FilterElement[]
    */
-  public function getElements(array $exclude = array())
+  public function getElements($onlyMultiItems = true, array $excludeIds = array())
   {
-    return array_filter($this->elements, function (FilterElement $element) use ($exclude)
-    {
-      return !in_array($element->id, $exclude) && count($element->getItems());
+    return array_filter($this->elements, function(FilterElement $element) use ($excludeIds, $onlyMultiItems) {
+      return !in_array($element->id, $excludeIds) && ($onlyMultiItems ? count($element->getItems()) > 1 : true);
     });
   }
 

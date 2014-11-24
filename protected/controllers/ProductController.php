@@ -166,7 +166,7 @@ class ProductController extends FController
   {
     if( !isset($this->filter) )
     {
-      $this->filter = new Filter(null, true, true);
+      $this->filter = new Filter(null, true);
     }
 
     $this->filter->addElement(array(

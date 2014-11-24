@@ -110,7 +110,7 @@ class FilterTest extends CDbTestCase
 
     $this->filter->getState()->setState(array('category_id' => 8, 1 => 1));
     $this->filter->apply(new CDbCriteria());
-    $this->assertEquals(0, $this->filter->elements['category_id']->items[9]->amount);
+    $this->assertEquals(0, $this->filter->getElements(false)['category_id']->items[9]->amount);
   }
 
   public function testSelectedItemsCount()
@@ -118,7 +118,7 @@ class FilterTest extends CDbTestCase
     $this->filter->getState()->setState(array('category_id' => 8, 1 => 1));
     $this->filter->apply(new CDbCriteria());
 
-    $this->assertEquals(1, $this->filter->elements['category_id']->items[8]->amount);
+    $this->assertEquals(1, $this->filter->getElements(false)['category_id']->items[8]->amount);
 
     $this->filter->getState()->setState(array('category_id' => array(9, 8)));
     $this->filter->apply(new CDbCriteria());

@@ -30,7 +30,7 @@
     <?php $this->renderPartial('filter/_filter_price', array('element' => $filter->elements[ProductController::FILTER_PRICE]))?>
   <?php } ?>
 
-  <?php foreach($filter->getElements(array(ProductController::FILTER_COLOR, ProductController::FILTER_PRICE)) as $element) { ?>
+  <?php foreach($filter->getElements(true, array(ProductController::FILTER_COLOR, ProductController::FILTER_PRICE)) as $element) { ?>
     <?php echo CHtml::openTag('div', $element->htmlOptions)?>
     <div class="filter-caption m20"><?php echo $element->label?></div>
     <div class="m20 filter-block-body">
