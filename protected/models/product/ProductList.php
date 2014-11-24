@@ -41,7 +41,7 @@ class ProductList extends BaseList
   protected function initCriteria()
   {
     $assignment = ProductAssignment::model()->tableName();
-    $this->criteria->join .= ' JOIN `'.$assignment.'` AS a ON a.product_id = t.id '.$this->criteria->join;
+    $this->criteria->join = 'JOIN `'.$assignment.'` AS a ON a.product_id = t.id '.$this->criteria->join;
     $this->criteria->distinct = true;
     $this->criteria->compare('t.visible', 1);
     $this->criteria->compare('a.visible', 1);
