@@ -8,12 +8,15 @@
  *
  * @method static BMetaRoute model(string $class = __CLASS__)
  *
+ * @property integer $id
  * @property string $route
- * @property string $clips
+ * @property string $title
  * @property string $description
  * @property string $keywords
  * @property string $custom
  * @property string $header
+ * @property string $models
+ * @property string $clip
  * @property integer $noindex
  * @property integer $visible
  */

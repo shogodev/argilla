@@ -8,7 +8,14 @@
  *
  * @method static BMetaMask model(string $class = __CLASS__)
  *
+ * @property integer $id
  * @property string $url_mask
+ * @property string $title
+ * @property string $description
+ * @property string $keywords
+ * @property string $custom
+ * @property string $header
+ * @property integer $noindex
  * @property string $visible
  */
 class BMetaMask extends BActiveRecord
@@ -25,6 +32,7 @@ class BMetaMask extends BActiveRecord
       array('url_mask', 'unique'),
       array('url_mask, title, description, keywords, header', 'length', 'max' => 255),
       array('noindex, visible', 'numerical', 'integerOnly' => true),
+      array('custom', 'safe'),
     );
   }
 

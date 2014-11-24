@@ -246,7 +246,7 @@ class BaseList extends CComponent
       $criteria = new CDbCriteria();
     }
 
-    $criteria->addInCondition($fk, isset($keys) ? $keys : $this->dataProvider->getKeys());
+    $criteria->addInCondition($fk, isset($keys) ? $keys : $this->dataProvider->getKeys(true));
 
     return $className::model()->findAll($criteria);
   }
