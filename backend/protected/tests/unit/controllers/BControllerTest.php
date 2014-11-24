@@ -12,7 +12,10 @@ class BControllerTest extends CDbTestCase
    */
   public $controller;
 
-  protected $fixtures = array('news_section' => 'BNewsSection', 'news' => 'BNews');
+  protected $fixtures = array(
+    'news_section' => 'BNewsSection',
+    'news' => 'BNews',
+  );
 
   public function setUp()
   {
@@ -219,11 +222,8 @@ class BControllerTest extends CDbTestCase
 
   public function tearDown()
   {
-    ob_end_clean();
-    Yii::app()->db->createCommand()->truncateTable('{{product}}');
-    Yii::app()->db->createCommand()->truncateTable('{{product_assignment}}');
     Yii::app()->db->createCommand()->truncateTable('{{user_profile}}');
     Yii::app()->db->createCommand()->truncateTable('{{user}}');
-    Yii::app()->db->createCommand()->truncateTable('{{news}}');
+    ob_end_clean();
   }
 }

@@ -942,7 +942,7 @@ CREATE TABLE `argilla_product_img` (
   `name` varchar(255) NOT NULL,
   `notice` varchar(255) NOT NULL,
   `position` varchar(10) NOT NULL,
-  `type` varchar(255) NOT NULL,
+  `type` varchar(255) NOT NULL DEFAULT 'main',
   PRIMARY KEY (`id`),
   KEY `parent` (`parent`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
