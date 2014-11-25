@@ -125,6 +125,11 @@ footer {
     right: 0; }
 }
 
+.movin-to-basket {
+  @include transition(all .75s ease);
+  z-index: 10000;
+}
+
 /*   -=========== Buttons ===========-   */
 .btn {
   display: inline-block;
