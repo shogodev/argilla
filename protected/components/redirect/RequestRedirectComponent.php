@@ -49,7 +49,6 @@ class RequestRedirectComponent extends FRedirectComponent
   {
     $this->request = parse_url($url);
     $this->request['path'] = Arr::get($this->request, 'path', '/');
-    $this->request['path'] = rtrim($this->request['path'], '/').'/';
   }
 
   /**
