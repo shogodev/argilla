@@ -37,15 +37,15 @@ class BLink extends BActiveRecord
   public function rules()
   {
     return array(
-      array('url, content, title, section_id', 'required'),
+      array('url, content, title, section_id, page', 'required'),
       array('url, email', 'unique'),
       array('email', 'email'),
-      array('section_id, position, visible', 'numerical', 'integerOnly' => true),
+      array('section_id, position, visible, page', 'numerical', 'integerOnly' => true),
       array('url', 'length', 'max' => 255),
       array('visible', 'length', 'max' => 1),
       array('date', 'date', 'format' => 'mm.dd.yyyy'),
-      array('page, title, notice, content, region', 'safe'),
-      array('section_id', 'safe', 'on' => 'search'),
+      array('title, notice, content, region', 'safe'),
+      array('section_id, page', 'safe', 'on' => 'search'),
     );
   }
 
@@ -93,6 +93,7 @@ class BLink extends BActiveRecord
     $criteria->compare('url', $this->url, true);
     $criteria->compare('visible', $this->visible);
     $criteria->compare('section_id', $this->section_id);
+    $criteria->compare('page', $this->page);
 
     return $criteria;
   }

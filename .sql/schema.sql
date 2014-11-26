@@ -1166,7 +1166,7 @@ CREATE TABLE `argilla_seo_link` (
   `region` varchar(255) NOT NULL,
   `url` varchar(255) NOT NULL,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `page` int(10) NOT NULL DEFAULT '0',
+  `page` int(10) NOT NULL,
   `visible` int(1) unsigned DEFAULT '0',
   `position` int(11) DEFAULT '20',
   PRIMARY KEY (`id`),

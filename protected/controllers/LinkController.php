@@ -12,6 +12,8 @@ class LinkController extends FController
   {
     $sections = LinkSection::model()->findAll();
 
+    $this->breadcrumbs = array('Ресурсы по теме');
+
     $form = new FForm('LinkForm', new Link());
     $form->loadFromSession = true;
     $form->clearAfterSubmit = true;
@@ -43,16 +45,12 @@ class LinkController extends FController
     $model = LinkSection::model()->whereUrl($section)->find();
 
     if( $model === null )
-    {
       throw new CHttpException(404);
-    }
 
-    $this->breadcrumbs = [
-      'Каталог ссылок' => $this->createUrl('link/index'),
+    $this->breadcrumbs = array(
+      'Ресурсы по теме' => $this->createUrl('link/index'),
       $model->name,
-    ];
-
-    $pages = new FFixedPageCountPagination($model->pageCount);
+    );
 
     /** @var $links Link[] */
     $links = $model->getLinksOnPage($page);
@@ -61,8 +59,8 @@ class LinkController extends FController
     $this->render('section', [
       'model' => $model,
       'sections' => $sections,
-      'dataProvider' => new FArrayDataProvider($links),
-      'pages' => $pages,
+      'dataProvider' => new FArrayDataProvider($links, array('pagination' => false)),
+      'pagination' => new FFixedPageCountPagination($model->pageCount),
     ]);
   }
 }

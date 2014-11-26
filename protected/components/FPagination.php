@@ -25,6 +25,7 @@ class FPagination extends CPagination
       if( isset($_GET[$this->pageVar]) )
       {
         $this->_currentPage = (int)$_GET[$this->pageVar] - 1;
+
         $this->checkDefaultPagination($this->_currentPage + 1);
 
         if( $this->validateCurrentPage )
@@ -60,6 +61,10 @@ class FPagination extends CPagination
    */
   public function checkDefaultPagination($currentPage)
   {
+    $defaultPage = Arr::get(Yii::app()->urlManager->rule->defaultParams, 'page');
+    if( Yii::app()->urlManager->rule->createWithDefault && isset($defaultPage) )
+      return;
+
     $params = Yii::app()->urlManager->defaultParams;
 
     if( $currentPage == $this->defaultPage && !isset($params[$this->pageVar]) )
