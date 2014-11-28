@@ -80,9 +80,7 @@ class UploadActionTest extends CDbTestCase
 
   public function tearDown()
   {
-    $table = Yii::app()->db->getSchema()->getTable('{{info_files}}');
-    $sql   = Yii::app()->db->getSchema()->truncateTable($table->name);
-    Yii::app()->db->createCommand($sql)->execute();
+    $this->getFixtureManager()->truncateTable('{{info_files}}');
 
     rmdir($this->path);
   }

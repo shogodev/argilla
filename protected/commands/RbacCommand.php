@@ -117,8 +117,8 @@ class RbacCommand extends CConsoleCommand
       BRbacTask::model()->deleteAll();
 
       $db = new CDbCommand(Yii::app()->db);
-      $db->truncateTable($this->getAuthManager()->itemChildTable);
-      $db->truncateTable($this->getAuthManager()->assignmentTable);
+      $db->delete($this->getAuthManager()->itemChildTable);
+      $db->delete($this->getAuthManager()->assignmentTable);
 
       echo "Выполнено".PHP_EOL;
     }

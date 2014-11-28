@@ -223,10 +223,10 @@ class BControllerTest extends CDbTestCase
   public function tearDown()
   {
     ob_end_clean();
-    Yii::app()->db->createCommand()->truncateTable('{{product_assignment}}');
-    Yii::app()->db->createCommand()->truncateTable('{{product_param}}');
-    Yii::app()->db->createCommand()->truncateTable('{{product}}');
-    Yii::app()->db->createCommand()->truncateTable('{{user_profile}}');
-    Yii::app()->db->createCommand()->truncateTable('{{user}}');
+    $this->getFixtureManager()->truncateTable('{{product_assignment}}');
+    $this->getFixtureManager()->truncateTable('{{product_param}}');
+    $this->getFixtureManager()->truncateTable('{{product}}');
+    $this->getFixtureManager()->truncateTable('{{user_profile}}');
+    $this->getFixtureManager()->truncateTable('{{user}}');
   }
 }
