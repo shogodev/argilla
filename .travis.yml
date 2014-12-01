@@ -21,7 +21,6 @@ install:
 before_script:
   - mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'prog'@'localhost' IDENTIFIED BY '123' WITH GRANT OPTION;" -uroot
   - phing bootstrap -DdbName=argilla -DdbTablePrefix=argilla_ -DdbUser=prog -DdbPassword=123
-  - chmod -R 776 f
   - phing applySchema -Dconfirm=y -DconfirmTest=y
   - php protected/yiic.php migrate --interactive=0
 
