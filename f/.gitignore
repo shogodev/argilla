@@ -1,4 +1,6 @@
 /*
+!/product/.htaccess
+!/upload/.gitignore
 !/flash/dummy.swf
 !/flash/expressInstall.swf
 !.gitignore
