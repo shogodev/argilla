@@ -10,6 +10,17 @@ Yii::import('backend.modules.rbac.models.User');
 
 class UserIdentityTest extends CTestCase
 {
+  public function setUp()
+  {
+    parent::setUp();
+
+    $user = new BUser();
+    $user->id = 10;
+    $user->username = 'admin';
+    $user->passwordNew = '12345';
+    $user->save(false);
+  }
+
   public function testCreatePassword()
   {
     $salt = 'test';
@@ -23,6 +34,7 @@ class UserIdentityTest extends CTestCase
   public function testUserPassword()
   {
     $user = new BUser();
+    $user->id = 11;
     $user->username = 'test';
     $user->passwordNew = 'test';
     $user->save(false);
@@ -32,8 +44,15 @@ class UserIdentityTest extends CTestCase
 
   public function testDevLogin()
   {
-    $identity = new BUserIdentity('admin', '123');
+    $identity = new BUserIdentity('admin', '12345');
     $this->assertEquals($identity->authenticate(), true);
-    $this->assertEquals($identity->id, 1);
+    $this->assertEquals($identity->id, 10);
   }
+
+  public function tearDown()
+  {
+    BUser::model()->deleteByPk(10);
+    BUser::model()->deleteByPk(11);
+  }
+
 }

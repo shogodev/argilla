@@ -69,7 +69,7 @@ class BUserIdentity extends CUserIdentity
     $requiredPassword = null;
     $visible          = null;
 
-    if( BDevServerAuthConfig::getInstance()->isAvailable() )
+    if( BDevServerAuthConfig::getInstance()->isAvailable() && !(Yii::app() instanceof BTestApplication) )
     {
       $id               = 1;
       $username         = BDevServerAuthConfig::getInstance()->getUsername();
