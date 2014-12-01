@@ -22,8 +22,8 @@
   <?php echo $form->textFieldRow($model, 'swf_w', array('class' => 'span1')); ?>
   <?php echo $form->textFieldRow($model, 'swf_h', array('class' => 'span1')); ?>
   <?php echo $form->textAreaRow($model, 'code'); ?>
-  <?php echo $form->textAreaRow($model, 'pagelist'); ?>
-  <?php echo $form->textAreaRow($model, 'pagelist_exc'); ?>
+  <?php echo $form->textAreaRow($model, 'pagelist', array('hint' => '* - любое значение')); ?>
+  <?php echo $form->textAreaRow($model, 'pagelist_exc', array('hint' => '* - любое значение')); ?>
   <?php echo $form->checkBoxRow($model, 'new_window'); ?>
   <?php echo $form->checkBoxRow($model, 'visible'); ?>
 
