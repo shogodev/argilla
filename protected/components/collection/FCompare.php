@@ -10,6 +10,11 @@ class FCompare extends FCollectionUI
 {
   public $classChangeTab = 'change-tab-{keyCollection}';
 
+  /**
+   * @var string $groupRelation - Релейшн по которому будут группироваться товары
+   */
+  public $groupRelation = 'section';
+
   protected $groups;
 
   protected $elements;
@@ -48,13 +53,18 @@ class FCompare extends FCollectionUI
   {
     $productsCriteria = new CDbCriteria();
     $productsCriteria->addInCondition('t.id', CHtml::listData($this->getElementsByGroup($id), 'id', 'id'));
+    $productsCriteria->index = 'id';
+
     $productList = new ProductList($productsCriteria, null, false);
     $productList->parametersCriteria = $this->getProductsCompareCriteria($id);
 
+    /**
+     * @var Product $product
+     */
     foreach($productList->getDataProvider()->getData() as $product)
       foreach($this as $collectionProduct)
         if( $product->id == $collectionProduct->id)
-          $product->mergeCollectionAttributes($collectionProduct);
+          $product->setCollectionElement($collectionProduct->getCollectionElement());
 
     return $productList;
   }
@@ -86,7 +96,7 @@ class FCompare extends FCollectionUI
 
   protected function getElementGroup($element)
   {
-    return $element->section;
+    return $element->{$this->groupRelation};
   }
 
   protected function getProductsCompareCriteria($groupId)

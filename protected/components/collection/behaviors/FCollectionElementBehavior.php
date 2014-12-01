@@ -114,19 +114,6 @@ class FCollectionElementBehavior extends CBehavior
   }
 
   /**
-   * Копирует арибуты поведения FCollectionElementBehavior из $object
-   * @param $object
-   * @return $this
-   */
-  public function mergeCollectionAttributes($object)
-  {
-    foreach(get_object_vars($this) as $attribute => $value)
-      $this->owner->{$attribute} = $object->{$attribute};
-
-    return $this->owner;
-  }
-
-  /**
    * @return array
    */
   public function defaultCollectionItems()

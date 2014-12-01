@@ -82,12 +82,15 @@ class CompareController extends FController
       switch($action)
       {
         case 'remove':
-          $id = Arr::get($data, 'id');
+          $index = Arr::get($data, 'index');
 
-          if (!$this->compare->getElementByIndex($id))
+          if( is_null($index) )
+            $index = $this->compare->getIndex($data);
+
+          if( is_null($index) || !$this->compare->exists($index) )
             throw new CHttpException(500, 'Данный продукт уже удален. Обновите страницу.');
 
-          $this->compare->remove($id);
+          $this->compare->remove($index);
         break;
       }
     }
