@@ -4,21 +4,21 @@
  * @var News $data
  */
 ?>
-<article class="news_short clearfix m20">
-
+<article class="news-announce m50">
   <?php if( $data->image ) { ?>
-  <img src="<?php echo $data->image?>" alt="" class="img-polaroid" style="float: left; width: 110px; margin: 0 10px 10px 0" />
+    <a href="<?php echo $data->url?>" class="news-pic">
+      <img src="<?php echo $data->image->pre?>" alt="" />
+    </a>
   <?php } ?>
-
-  <div class="m40">
-    <div class="lead"><?php echo $data->date?></div>
-    <div class="lead"><a href="<?php echo $data->url?>"><?php echo $data->name?></a></div>
-    <div class="m10"><?php echo $data->notice?></div>
-
-    <?php $this->widget('bootstrap.widgets.TbButton', array(
-      'size' => 'mini',
-      'url' => $data->url,
-      'label' => 'Подробнее',
-    )); ?>
+  <div class="no-overflow">
+    <div class="nofloat m20">
+      <a href="<?php echo $data->url?>" class="h2 fl"><?php echo $data->name?></a>
+      <?php if( $data->section_id == NewsSection::ID_NEWS ) {?>
+        <time datetime="<?php echo $data->getFormatDate('Y-m-d')?>" class="fr"><?php echo $data->getFormatDate()?></time>
+      <?php }?>
+    </div>
+    <div class="text-container">
+      <?php echo $data->notice?>
+    </div>
   </div>
 </article>

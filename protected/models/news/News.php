@@ -21,12 +21,16 @@
  * @property string  $img
  *
  * @property NewsSection $section
+ * @property FActiveImage $image
  */
 class News extends FActiveRecord
 {
-  public $image;
-
-  public $dateRaw;
+  public function behaviors()
+  {
+    return array(
+      'imageBehavior' => array('class' => 'SingleImageBehavior', 'path' => 'product'),
+    );
+  }
 
   public function defaultScope()
   {
@@ -56,12 +60,19 @@ class News extends FActiveRecord
     );
   }
 
+  /**
+   * @param string $format
+   *
+   * @return string
+   */
+  public function getFormatDate($format = 'd.m.Y')
+  {
+    return DateTime::createFromFormat('Y-m-d H:i:s', $this->date)->format($format);
+  }
+
   protected function afterFind()
   {
-    $this->dateRaw = $this->date;
-    $this->date = !empty($this->date) ? date('d.m.Y', strtotime($this->date)).', '.Yii::app()->locale->getWeekDayName(date('w', strtotime($this->date))) : '';
     $this->url = Yii::app()->controller->createUrl('news/one', array('section' => $this->section->url, 'url' => $this->url));
-    $this->image = $this->img ? new FSingleImage($this->img, 'news', array('pre')) : null;
 
     parent::afterFind();
   }

@@ -24,12 +24,7 @@
  * @property integer $sitemap
  *
  * @property integer leftAttribute
- *
- * @method Info descendants()
- * @method Info ancestors()
- * @method Info parent()
- * @method Info children()
- * @method array buildTree($rawTree, $buildItemFunc, $buildParams = array(), $childrenKey = 'children')
+ * @mixin NestedSetBehavior
  */
 class Info extends FActiveRecord implements IMenuItem
 {
@@ -54,18 +49,17 @@ class Info extends FActiveRecord implements IMenuItem
   public function getMenu(CDbCriteria $criteria = null)
   {
     if( !$criteria )
+    {
       $criteria = new CDbCriteria();
-
-    $root = $this->getRoot();
+      $criteria->compare('menu', '=1');
+    }
 
     $criteria->order = $this->leftAttribute;
-    $criteria->compare('menu', '=1');
     $criteria->compare('visible', '=1');
 
-    $rawTree = $root->descendants()->findAll($criteria);
-    $tree    = $this->buildTree($rawTree, array($this, 'buildMenuItem'), array(), 'items');
+    $rawTree = $this->getRoot()->descendants()->findAll($criteria);
 
-    return $tree;
+    return $this->buildTree($rawTree, array($this, 'buildMenuItem'), array(), 'items');
   }
 
   public function getRoot()

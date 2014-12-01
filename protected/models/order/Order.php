@@ -206,7 +206,7 @@ class Order extends FActiveRecord
    */
   protected function saveCollectionItem($item, $orderProduct)
   {
-    if( !($item->asa('collectionElement') instanceof FCollectionElementBehavior) )
+    if( empty($item) || !($item->asa('collectionElement') instanceof FCollectionElementBehavior) )
       return;
 
     $this->saveModel(new OrderProductItem(), array(

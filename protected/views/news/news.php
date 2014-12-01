@@ -4,20 +4,24 @@
  * @var $model News
  */
 ?>
-<section id="main">
+<div class="wrapper">
+  <?php $this->renderPartial('/_breadcrumbs');?>
 
-  <?php $this->renderPartial('/breadcrumbs');?>
-
-  <h1><?php echo $model->name?></h1>
+  <div class="caption m20">
+    <h1><?php echo Yii::app()->meta->setHeader($model->name)?></h1>
+  </div>
 
   <article>
     <?php if( $model->image ) { ?>
       <img src="<?php echo $model->image?>" alt="" width="110" class="img-polaroid text-left"/>
     <?php } ?>
 
-    <div class="lead"><?php echo $model->date?></div>
-    <?php echo $model->content?>
+    <?php if( $model->section_id == NewsSection::ID_NEWS ) {?>
+      <time datetime="<?php echo $model->getFormatDate('Y-m-d')?>"><?php echo $model->getFormatDate()?></time>
+    <?php }?>
 
+    <div class="text-container">
+      <?php echo $model->content?>
+    </div>
   </article>
-
-</section>
+</div>

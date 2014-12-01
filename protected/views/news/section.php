@@ -5,16 +5,26 @@
  * @var $dataProvider FActiveDataProvider
  */
 ?>
-<section id="main">
+<div class="wrapper">
+  <?php $this->renderPartial('/_breadcrumbs');?>
 
-  <?php $this->renderPartial('/breadcrumbs');?>
+  <div class="caption m20">
+    <h1><?php echo Yii::app()->meta->setHeader($model->name)?></h1>
+  </div>
 
-  <h1><?php echo Yii::app()->meta->setHeader($model->name)?></h1>
+  <?php
+  /**
+   * @var FListView $listView
+   */
+    $listView = $this->widget('FListView', array(
+      'dataProvider' => $dataProvider,
+      'itemView' => '_view',
+      'template' => '{items}',
+      'htmlOptions' => array('class' => 'news-list'),
+      'pagerCssClass' => 'pager fr',
+    )); ?>
 
-  <?php $this->widget('FListView', array(
-    'dataProvider' => $dataProvider,
-    'itemView' => '_view',
-    'pagerCssClass' => 'page_filter m20 clearfix',
-  )); ?>
-
-</section>
+  <div class="nofloat m20">
+    <?php $listView->renderPager()?>
+  </div>
+</div>
