@@ -9,7 +9,7 @@
  *      <span class="economy dynamic-economy">- 100</span>
  *    </div>
  *    <input type="text" value="1" class="inp amount-input">
- *    <span class="s34 bb dynamic-price" data-price="900">900</span>
+ *    <span class="s34 bb dynamic-price _price_element" data-price="900">900</span>
  *  </div>
  *  <script>
  *   $(function() {
@@ -29,12 +29,13 @@
  *  $('.product-block .dynamic-price').trigger('change');
  */
 ;$.widget('argilla.calcPrice', {
-
   options : {
     parentBlockSelector : null,
+    priceComponentClass : '_price_component',
     price : {
       elementSelector : null,
       dataKey : 'price',
+      newDataKey : null,
       suffix : ' руб.'
     },
     priceOld : {
@@ -58,6 +59,8 @@
 
     options.price['element'] = options.price.elementSelector === null ? this.element : parentElement.find(options.price.elementSelector);
     options.amount = parentElement.find(options.amountSelector);
+    if (options.amount.length == 0)
+      options.amount = $('<input value=1 style="display: none" type="hidden">');
     options.priceOld['element'] = parentElement.find( options.priceOld.elementSelector);
     options.economy['element'] = parentElement.find( options.economy.elementSelector);
 
@@ -69,28 +72,34 @@
     options.price.element.bind('change', function() {
       widget._calc(parentElement, options);
     });
-   },
-
-  _calc: function(parentElement, options) {
-    var price = this._calcPrice(parentElement, options.price, options.amount);
-    var priceOld = this._calcPriceOld(parentElement, options.priceOld, options.amount, price);
-    this._calcEconomy(price, priceOld, parentElement, options.economy);
   },
 
-  _calcPrice: function(parentElement, options, amountElement) {
-    var price = this._getComponentsPrice(parentElement, options.dataKey);
+  _calc: function(parentElement, options) {
+    var price = this._calcPrice(parentElement, options.price, options.amount, options.priceComponentClass);
+
+    if( options.priceOld['element'].length > 0 )
+      var priceOld = this._calcPriceOld(parentElement, options.priceOld, options.amount, price, options.priceComponentClass);
+
+    if( options.economy['element'].length > 0 )
+      this._calcEconomy(price, priceOld, parentElement, options.economy);
+  },
+
+  _calcPrice: function(parentElement, options, amountElement, priceComponentClass) {
+    var price = this._getComponentsPrice(parentElement, options.dataKey, priceComponentClass);
 
     if( price == 0 && options.element.data(options.dataKey) > 0 )
       price = options.element.data(options.dataKey);
 
     var sumTotal = price * amountElement.val();
     options.element.text(number_format(sumTotal) + options.suffix);
+    if( options.newDataKey )
+      this.element.data(options.newDataKey, sumTotal);
 
     return sumTotal;
   },
 
-  _calcPriceOld: function(parentElement, options, amountElement, newPrice) {
-    var price = this._getComponentsPrice(parentElement, options.dataKey);
+  _calcPriceOld: function(parentElement, options, amountElement, newPrice, priceComponentClass) {
+    var price = this._getComponentsPrice(parentElement, options.dataKey, priceComponentClass);
 
     if( price == 0 && options.element.data(options.dataKey) > 0 )
       price = options.element.data(options.dataKey);
@@ -127,10 +136,10 @@
     }
   },
 
-  _getComponentsPrice: function(parentElement, dataKey) {
+  _getComponentsPrice: function(parentElement, dataKey, priceComponentClass) {
     var sum = 0;
     var self = this;
-    parentElement.find('._price_element').each(function() {
+    parentElement.find('.' + priceComponentClass).each(function() {
       var price = 0;
       if( this.tagName == 'SELECT' )
       {
@@ -142,7 +151,20 @@
       {
         var element = $(this);
         self._checkDataKey(element, dataKey);
-        price = element.data(dataKey) * $(this).val();
+        if( element.attr('type') == 'checkbox' )
+        {
+          if( !element.prop('checked') )
+            return;
+          price = element.data(dataKey) * element.data('amount');
+        }
+        else
+        {
+          price = element.data(dataKey) * $(this).val();
+        }
+      }
+      else if( $(this).data(dataKey) )
+      {
+        price = $(this).data(dataKey);
       }
       sum += price;
     });

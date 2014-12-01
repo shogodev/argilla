@@ -3,6 +3,15 @@
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
+ *
+ * Пример использования:
+ * $this->basket->addAfterAjaxScript(new CJavaScriptExpression("
+ *   if( action == 'add' )
+ *   {
+ *     image = element.closest('.product, .product-main-block, .product-details-data').find('.animate-image');
+ *     $('.hd-basket').addInCollection(image);
+ *   }
+ * "));
  */
 
 ;(function($) {
