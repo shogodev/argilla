@@ -21,16 +21,20 @@
  * @property string $pagelist_exc
  * @property boolean $new_window
  * @property boolean $visible
+ *
+ * @property FSingleImage $image
  */
 class Banner extends FActiveRecord
 {
-  public $image;
+  protected $banners;
 
-  protected $banners = array();
+  protected $bannersUrl;
 
-  public function tableName()
+  public function behaviors()
   {
-    return '{{banner}}';
+    return array(
+      'imageBehavior' => array('class' => 'SingleImageBehavior', 'path' => 'images'),
+    );
   }
 
   public function defaultScope()
@@ -43,7 +47,12 @@ class Banner extends FActiveRecord
     );
   }
 
-  public function getByLocation($location)
+  /**
+   * @param string $location
+   *
+   * @return Banner[]
+   */
+  public function getByLocationAll($location)
   {
     if( !isset($this->banners[$location]) )
       $this->banners[$location] = $this->findAllByAttributes(array('location' => $location));
@@ -51,33 +60,88 @@ class Banner extends FActiveRecord
     return $this->banners[$location];
   }
 
-  public function findByPage($page, $location = null)
+  /**
+   * @param string $location
+   *
+   * @return Banner
+   */
+  public function getByLocation($location)
   {
-    $criteria = new CDbCriteria();
+    return Arr::reset($this->getByLocationAll($location));
+  }
 
-    if( isset($location) )
-      $criteria->compare('location', $location);
+  /**
+   * @param null|string $location
+   *
+   * @return mixed
+   */
+  public function getByCurrentUrlAll($location = null)
+  {
+    $url = $this->getPrepareUrl(Yii::app()->controller->getCurrentUrl());
 
-    $banners = $this->findAll($criteria);
-
-    foreach($banners as $banner)
+    if( !isset($this->bannersUrl[$url]) )
     {
-      if( !$banner->pagelist )
-        continue;
+      /**
+       * @var Banner[] $banners
+       */
+      if( isset($location) )
+        $banners = $this->getByLocationAll($location);
+      else
+        $banners = $this->findAll();
 
-      foreach(explode("\n", $banner->pagelist) as $searchPage)
+      $this->bannersUrl[$location][$url] = array();
+      foreach($banners as $banner)
       {
-        if( trim($searchPage) == $page )
-          return $banner;
+        if( $this->containUrl($banner->pagelist, $url) && !$this->containUrl($banner->pagelist_exc, $url) )
+          $this->bannersUrl[$location][$url][] = $banner;
       }
     }
 
-    return null;
+    return $this->bannersUrl[$location][$url];
   }
 
-  protected function afterFind()
+  /**
+   * @param null|string $location
+   *
+   * @return mixed
+   */
+  public function getByCurrentUrl($location = null)
   {
-    $this->image = $this->img ? new FSingleImage($this->img, 'images') : null;
-    parent::afterFind();
+    return Arr::reset($this->getByCurrentUrlAll($location));
+  }
+
+  /**
+   * @param array $imageOptions
+   * @param array $linkOptions
+   */
+  public function render($imageOptions = array(), $linkOptions = array())
+  {
+    $image = CHtml::image($this->image, '', $imageOptions);
+
+    if( $this->new_window )
+      $linkOptions['target'] = '_blank';
+
+    echo CHtml::link($image, $this->url, $linkOptions);
+  }
+
+  private function containUrl($urlList, $url)
+  {
+    if( empty($urlList) )
+      return false;
+
+    foreach(explode("\n", $urlList) as $searchPage)
+    {
+      $pattern = '#^'.str_replace('*', '.*', trim($searchPage)).'$#';
+
+      if( preg_match($pattern, $url, $matches) )
+        return true;
+    }
+
+    return false;
+  }
+
+  private function getPrepareUrl($url)
+  {
+    return preg_replace('/\?.*/', '', $url);
   }
 }

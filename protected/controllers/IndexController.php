@@ -11,7 +11,7 @@ class IndexController extends FController
   public function actionIndex()
   {
     $news = News::model()->main()->findAll();
-    $rotator = Banner::model()->getByLocation('rotator');
+    $rotator = Banner::model()->getByLocationAll('rotator');
 
     $this->render('index', array(
       'rotator' => $rotator,
