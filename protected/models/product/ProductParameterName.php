@@ -73,7 +73,7 @@ class ProductParameterName extends FActiveRecord
     $alias = $this->getTableAlias(false, false);
 
     return array(
-     'condition' => "{$alias}.parent = 1 OR ({$alias}.parent != 1 AND {$alias}.visible = 1)",
+      'condition' => "{$alias}.parent = 1 OR ({$alias}.parent != 1 AND {$alias}.visible = 1)",
       'order' => $alias.'.position'
     );
   }
@@ -247,13 +247,24 @@ class ProductParameterName extends FActiveRecord
    */
   public function setVariants(array $variants)
   {
-    foreach($this->parameters as $i => $value)
+    $sortedParameters = array();
+
+    foreach($variants as $variant)
     {
-      if( isset($variants[$i]) )
+      if( isset($this->parameters[$variant->id]) )
       {
-        $this->values[$i] = $variants[$i];
+        $sortedParameters[$variant->id] = $this->parameters[$variant->id];
+        $this->values[$variant->id] = $variant;
       }
     }
+
+    foreach($this->parameters as $variantId => $parameter)
+    {
+      if( !isset($sortedParameters[$variantId]) )
+        $sortedParameters[$variantId] = $parameter;
+    }
+
+    $this->parameters = $sortedParameters;
   }
 
   /**

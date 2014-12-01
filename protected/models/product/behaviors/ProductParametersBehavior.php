@@ -98,6 +98,22 @@ class ProductParametersBehavior extends CModelBehavior
     return $this->getParametersByAttributes(array('section' => 1), true);
   }
 
+  /**
+   * @param $key
+   *
+   * @return null|ProductParameterName
+   */
+  public function getParameterByKey($key)
+  {
+    foreach($this->getParameters() as $parameter)
+    {
+      if( $parameter->key == $key )
+        return $parameter;
+    }
+
+    return null;
+  }
+
   private function getParametersByAttributes(array $attributes, $notEmptyValue = true, $exceptionKeys = array())
   {
     $parameters = array();
@@ -107,7 +123,7 @@ class ProductParametersBehavior extends CModelBehavior
       if( $notEmptyValue && empty($parameter->value) )
         continue;
 
-      if( in_array($parameter->key, $exceptionKeys) )
+      if( in_array($parameter->key, $exceptionKeys) || in_array($parameter->getGroupKey(), $exceptionKeys)  )
         continue;
 
       if( !empty($attributes) )

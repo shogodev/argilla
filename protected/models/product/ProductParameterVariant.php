@@ -38,7 +38,7 @@ class ProductParameterVariant extends FActiveRecord
 
   public function getImage()
   {
-    return 'f/upload/images/'.$this->param_id.'_'.$this->id.'.png';
+    return 'f/upload/images/'.$this->id.'.png';
   }
 
   /**
@@ -55,28 +55,6 @@ class ProductParameterVariant extends FActiveRecord
     foreach($parameterNames as $parameterName)
     {
       $parameterName->setVariants($variants);
-      $this->sortParameters($parameterName);
     }
-  }
-
-  protected function sortParameters(ProductParameterName $parameterName)
-  {
-    $sortedParameters = array();
-
-    $sortedIndexes = array();
-    foreach($parameterName->values as $index => $variant)
-    {
-      if( isset($parameterName->parameters[$index]) )
-      {
-        $sortedParameters[$index] = $parameterName->parameters[$index];
-        $sortedIndexes[] = $index;
-      }
-    }
-
-    foreach($parameterName->parameters as $index => $parameter)
-      if( !in_array($index, $sortedIndexes) )
-        $sortedParameters[$index] = $parameterName->parameters[$index];
-
-    $parameterName->parameters = $sortedParameters;
   }
 }
