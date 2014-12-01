@@ -16,6 +16,9 @@ return array(
   // contacts
   'contact' => array('contact/index', 'pattern' => 'contact'),
 
+  // sitemap
+  'sitemap' => array('sitemap/index'),
+
   // compare
   'compare'           => array('compare/index',      'pattern' => 'compare'),
   'compareAdd'        => array('compare/add',        'pattern' => 'compare/add'),
