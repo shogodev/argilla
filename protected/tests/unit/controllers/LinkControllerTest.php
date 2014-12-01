@@ -30,7 +30,7 @@ class LinkControllerTest extends CDbTestCase
           $this->assertInstanceOf('LinkSection', $params['model']);
           $this->assertArrayHasKey('sections', $params);
           $this->assertInstanceOf('FArrayDataProvider', $params['dataProvider']);
-          $this->assertInstanceOf('FFixedPageCountPagination', $params['pages']);
+          $this->assertInstanceOf('FFixedPageCountPagination', $params['pagination']);
 
           return true;
         })
