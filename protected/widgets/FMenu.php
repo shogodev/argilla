@@ -19,10 +19,26 @@ class FMenu extends CMenu
   {
     $this->htmlOptions['id'] = $this->getId();
 
-    $this->activeSelected();
+    $routes = !empty($this->controller->activeUrl) ? $this->controller->activeUrl : $this->controller->route;
+
+    if( !is_array($routes) || !is_array(Arr::reset($routes)) )
+      $routes = array($routes);
+
+    $this->items = $this->normalizeItems($this->items, $routes, $hasActiveChild);
   }
 
-  protected function isItemActive($item, $route)
+  protected function isItemActive($item, $routes)
+  {
+    foreach($routes as $route)
+    {
+      if( $this->isItemActiveOne($item, $route) )
+        return true;
+    }
+
+    return false;
+  }
+
+  protected function isItemActiveOne($item, $route)
   {
     if( is_array($route) )
     {
@@ -62,35 +78,5 @@ class FMenu extends CMenu
     }
 
     parent::renderMenuRecursive($items);
-  }
-
-  protected function clearNoActiveItems(&$items)
-  {
-    foreach($items as $i => $item)
-    {
-      if( isset($item['items']) )
-      {
-        $this->clearNoActiveItems($items[$i]['items']);
-      }
-
-      if( isset($item['active']) && $item['active'] == false )
-      {
-        unset($items[$i]['active']);
-      }
-    }
-  }
-
-  protected function activeSelected()
-  {
-    $routes = !empty($this->controller->activeUrl) ? $this->controller->activeUrl : $this->controller->route;
-
-  if( !is_array($routes) || !is_array(Arr::reset($routes)) )
-      $routes = array($routes);
-
-    foreach($routes as $route)
-    {
-      $this->clearNoActiveItems($this->items);
-      $this->items = $this->normalizeItems($this->items, $route, $hasActiveChild);
-    }
   }
 }
