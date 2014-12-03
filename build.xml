@@ -2,7 +2,7 @@
 <project name="argilla" basedir="." default="build">
   <property name="coverage.database" value="build/logs/cover.db"/>
 
-  <target name="build" description="Build project" depends="clearCache, clean, phpunit, phpcs, phpmd, phpcpd, phploc"/>
+  <target name="build" description="Build project" depends="clearCache, clearLogs, phpunit, phpcs, phpmd, phpcpd, phploc"/>
 
   <target name="createSchema" description="Create DB schema">
     <phing phingfile="build/db.xml" target="createSchema"/>
@@ -29,6 +29,21 @@
   </target>
 
   <target name="clearCache" description="Clean assets and runtime cache directories">
+    <if>
+      <available property="production" file="protected/config/production.php" type="file"/>
+      <then>
+        <php expression="touch('protected/config/production.php');" returnProperty="success"/>
+        <if>
+          <equals arg1="${success}" arg2="true"/>
+          <then>
+            <echo message="Update file production last modify success"/>
+          </then>
+          <else>
+            <warn message="Update file production last modify failed" />
+          </else>
+        </if>
+      </then>
+    </if>
     <echo message="Cleaning assets and runtime cache directories"/>
     <delete includeemptydirs="true">
       <fileset dir="assets/">
@@ -43,7 +58,7 @@
     </delete>
   </target>
 
-  <target name="clean" description="Clean Jenkins' logs and runtime directory">
+  <target name="clearLogs" description="Clean Jenkins' logs and runtime directory">
     <!--Удаляем логи Jenkins-->
     <if>
       <available property="checkDirectory" file="build/logs/" type="dir"></available>
@@ -156,26 +171,32 @@
     <phing phingFile="build/deploy.xml"/>
   </target>
 
-  <target name="production" description="Turns on/off production mode">
+  <target name="productionOn" description="Turns on production mode">
     <if>
-      <available property="production" file="protected/config/production.php" type="file"></available>
+      <available property="production" file="protected/config/production.php" type="file"/>
+      <then>
+        <echo message="Production mode already turns on"/>
+      </then>
+      <else>
+         <copy file="protected/config/production.php.sample" tofile="protected/config/production.php" haltonerror="true"/>
+      </else>
+    </if>
+  </target>
+
+  <target name="productionOff" description="Turns off production mode">
+    <if>
+      <available property="production" file="protected/config/production.php" type="file"/>
       <then>
         <input message="Do you want to turn off production mode [y/n]?" propertyName="answer" defaultValue="n"></input>
         <if>
           <equals arg1="${answer}" arg2="y"></equals>
           <then>
-            <delete file="protected/config/production.php"></delete>
+            <delete file="protected/config/production.php" failonerror="true"/>
           </then>
         </if>
       </then>
       <else>
-        <input message="Do you want to turn on production mode [y/n]?" propertyName="answer" defaultValue="n"></input>
-        <if>
-          <equals arg1="${answer}" arg2="y"></equals>
-          <then>
-            <copy file="protected/config/production.php.sample" tofile="protected/config/production.php"></copy>
-          </then>
-        </if>
+        <echo message="Production mode already turns off"/>
       </else>
     </if>
   </target>
