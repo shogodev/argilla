@@ -33,7 +33,7 @@ class ProductSection extends FActiveRecord
 
     return array(
       'condition' => $alias.'.visible=1',
-      'order' => $alias.'.position',
+      'order' => "IF($alias.position=0, 99999, $alias.position), name",
     );
   }
 

@@ -107,10 +107,18 @@ class MenuBuilder
     uasort($menu, function($a, $b) {
       if( isset($a['position']) )
       {
+        if( $a['position'] == 0 )
+          $a['position'] = 999999;
+
+        if( $b['position'] == 0 )
+          $b['position'] = 999999;
+
         if( $a['position'] > $b['position'] )
           return 1;
         else if( $a['position'] < $b['position'] )
           return -1;
+        else
+          return strcmp($a['label'], $b['label']);
       }
 
       return strcmp($a['label'], $b['label']);

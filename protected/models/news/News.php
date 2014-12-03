@@ -28,7 +28,7 @@ class News extends FActiveRecord
   public function behaviors()
   {
     return array(
-      'imageBehavior' => array('class' => 'SingleImageBehavior', 'path' => 'product'),
+      'imageBehavior' => array('class' => 'SingleImageBehavior', 'path' => 'news', 'types' => array('pre')),
     );
   }
 
@@ -48,7 +48,8 @@ class News extends FActiveRecord
 
     return array(
       'main' => array(
-        'condition' => $alias.'.main=1'
+        'condition' => $alias.'.main=1',
+        'limit' => 1
       )
     );
   }
