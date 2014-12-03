@@ -14,6 +14,7 @@ return array_replace_recursive(
       ),
       'cache' => array(
         'class'=>'system.caching.CXCache',
+        'keyPrefix' => crc32(__FILE__).filemtime(__FILE__),
       )
     )
   )
