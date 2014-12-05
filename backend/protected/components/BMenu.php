@@ -27,9 +27,32 @@ class BMenu extends CComponent
 
   private $submodules = array();
 
+  /**
+   * @var BController
+   */
+  private $controller;
+
+  /**
+   * @var BModule
+   */
+  private $currentModule;
+
+  /**
+   * @var string
+   */
+  private $currentGroup;
+
+
   public function init()
   {
-    $this->initGroups();
+    $this->controller = Yii::app()->controller;
+    $this->currentModule = $this->controller->module;
+    if( $this->currentModule && !empty($this->currentModule->group) )
+      $this->currentGroup = $this->currentModule->group;
+
+    $this->buildStructure(Yii::app()->getModules());
+
+    $this->sort();
   }
 
   public function getGroups()
@@ -39,7 +62,7 @@ class BMenu extends CComponent
 
   public function getModules($hideOneModule = true)
   {
-    $modules = Arr::get($this->modules, $this->getCurrentGroup(), array());
+    $modules = Arr::get($this->modules, $this->currentGroup, array());
     return count($modules) < 2 && $hideOneModule ? array() : $modules;
   }
 
@@ -53,65 +76,101 @@ class BMenu extends CComponent
     return count($this->submodules) < 2 && $hideOneController ? array() : $this->submodules;
   }
 
-  /**
-   * Получаем группу по текущему модулю
-   *
-   * @return mixed
-   */
-  public function getCurrentGroup()
+  public function getDefaultRout($default = '')
   {
-    $currentModule = $this->getCurrentModule();
-
-    if( $currentModule && isset($currentModule->group) )
-      return $currentModule->group;
-
-    return '';
-  }
-
-  /**
-   * Формируем список доступных групп и модулей в бэкенде
-   *
-   * @static
-   */
-  private function initGroups()
-  {
-    if( $currentModule = $this->getCurrentModule() )
-      $this->submodules = $this->getSubmodulesMenu($currentModule);
-
-    foreach(Yii::app()->getModules() as $moduleId => $moduleConfig)
+    if( $group = Arr::reset($this->modules) )
     {
-      if( !AccessHelper::checkAssessToModule($moduleId) )
-        continue;
-
-      if( !empty($moduleConfig['autoloaded']) )
+      if( $module = Arr::reset($group) )
       {
-        Yii::import($moduleConfig['class']);
-        $moduleClassName = ucfirst($moduleId).'Module';
-        /**
-         * @var BModule $module
-         */
-        $module = new $moduleClassName($moduleId, null);
-
-        if( !$this->allowedModule($module) )
-          continue;
-
-        if( $currentModule = $this->getCurrentModule() )
-        {
-          if( $currentModule->parentModule == $moduleId || $module->parentModule == $currentModule->id )
-          {
-            $this->submodules = CMap::mergeArray($this->submodules, $this->getSubmodulesMenu($module));
-          }
-        }
-
-        if( !empty($module->parentModule) )
-          continue;
-
-        $this->createGroupsMenu($module);
-        $this->createModulesMenu($module);
+        return $module['module']->id.'/'.key($module['module']->controllerMap);
       }
     }
 
-    $this->sort();
+    return $default;
+  }
+
+  /**
+   * @param array $modules
+   * @param BModule $parent|null
+   * @throws CException
+   */
+  private function buildStructure(array $modules, $parent = null)
+  {
+    foreach($modules as $moduleId => $moduleConfig)
+    {
+      if( !AccessHelper::checkAssessToModule($moduleId)  )
+        continue;
+
+      if( empty($moduleConfig['autoloaded']) || $moduleConfig['autoloaded'] == false )
+        continue;
+
+      Yii::import($moduleConfig['class']);
+      $moduleClassName = ucfirst($moduleId).'Module';
+      /**
+       * @var BModule $module
+       */
+      $module = new $moduleClassName($moduleId, $parent);
+      if( !$this->allowedModule($module) )
+        continue;
+
+      if( $this->isModuleActive($module) )
+      {
+        $this->createSubmodulesMenu($module);
+      }
+
+      if( $this->needCreateModulesMenu($module) )
+      {
+        $this->createGroupsMenu($module);
+        $this->createModulesMenu($module);
+      }
+
+      if( !empty($moduleConfig['modules']) )
+      {
+        $module->setModules($moduleConfig['modules']);
+        $this->buildStructure($module->getModules(), $module);
+      }
+    }
+  }
+
+  /**
+   * @param BModule $module
+   *
+   * @return bool
+   */
+  private function isModuleActive(BModule $module)
+  {
+    if( !$this->currentModule )
+      return false;
+
+    if( $this->currentModule->getName() == $module->getName() )
+      return true;
+
+    if( $currentModuleParents = $this->currentModule->getParents() )
+    {
+      if( isset($currentModuleParents[$module->getName()]) )
+        return true;
+    }
+
+    if( $parents = $module->getParents() )
+    {
+      if( isset($parents[$this->currentModule->getName()]) )
+        return true;
+    }
+
+    if( array_intersect(array_keys($currentModuleParents), array_keys($parents)))
+      return true;
+
+    return false;
+  }
+
+  /**
+   * @param BModule $module
+   *
+   * @return bool
+   */
+  private function needCreateModulesMenu(BModule $module)
+  {
+    return !$module->getParentModule();
   }
 
   /**
@@ -119,12 +178,12 @@ class BMenu extends CComponent
    */
   private function createGroupsMenu($module)
   {
-    if( !isset($this->groups[$module->group])  )
+    if( !isset($this->groups[$module->group]) )
     {
       $this->groups[$module->group] = array(
         'label' => Arr::get($this->groupNames, $module->group, $module->group),
-        'url' => $this->buildUrl($module->id),
-        'active' => $this->getCurrentGroup() == $module->group,
+        'url' => $module->createUrl('/'),
+        'active' => $this->currentGroup == $module->group,
         'itemOptions' => array('class' => $module->group)
       );
     }
@@ -137,10 +196,11 @@ class BMenu extends CComponent
   {
     $this->modules[$module->group][] = array(
       'label' => $module->name,
-      'url' => $this->buildUrl($module->id),
-      'active' => $this->isModuleActive($module->id),
+      'url' => $module->createUrl('/'),
+      'active' => $this->isModuleActive($module),
       'itemOptions' => array('class' => $module->id),
-      'position' => $module->position
+      'position' => $module->position,
+      'module' => $module
     );
 
     // Добавляем в меню виртуальные контроллеры модуля
@@ -151,49 +211,10 @@ class BMenu extends CComponent
       {
         $this->modules[$module->group] = $fakeControllers;
 
-        if( isset(Yii::app()->controller->moduleMenu) )
-          $this->modules[$module->group][Yii::app()->controller->moduleMenu]['active'] = true;
+        if( isset($this->controller->moduleMenu) )
+          $this->modules[$module->group][$this->controller->moduleMenu]['active'] = true;
       }
     }
-  }
-
-  /**
-   * @param $id
-   *
-   * @return bool
-   */
-  private function isModuleActive($id)
-  {
-    if( !$currentModule = $this->getCurrentModule())
-      return false;
-
-    $controllerId = ucfirst(Yii::app()->getController()->id);
-    $keys = array_keys($this->submodules);
-
-    return in_array($id, array($currentModule->id, $currentModule->parentModule)) && in_array(lcfirst(BApplication::cutClassPrefix($controllerId)), $keys);
-  }
-
-  /**
-   * @return BModule
-   */
-  private function getCurrentModule()
-  {
-    $currentModule = Yii::app()->getController()->getModule();
-
-    return $currentModule;
-  }
-
-  /**
-   * Строим ссылку на необходимый модуль
-   *
-   * @param $module
-   * @param null $controller
-   *
-   * @return string
-   */
-  private function buildUrl($module, $controller = null)
-  {
-    return Yii::app()->createUrl(implode("/", array($module, $controller)));
   }
 
   /**
@@ -201,51 +222,38 @@ class BMenu extends CComponent
    *
    * @return array
    */
-  private function getSubmodulesMenu($module)
+  private function createSubmodulesMenu($module)
   {
-    $controllers = array();
-
-    foreach($this->getModuleControllers($module->id) as $controllerClass)
+    foreach($module->controllerMap as $mappedId => $controllerClass)
     {
-      $controller = Yii::app()->getController();
+      $id = $mappedId ? : BApplication::cutClassPrefix($controllerClass);
 
-      $class    = basename($controllerClass, '.php');
-      $mappedId = array_search($class, $module->controllerMap);
-      $id       = $mappedId ? : BApplication::cutClassPrefix($class);
       if( !AccessHelper::init($module->id, $id)->checkAccess() )
         continue;
 
-      $class = new $class($id);
+      // todo: Использовать рефлекшен если он быстей
+      /**
+       * @var BController $controller
+       */
+      $controller = new $controllerClass($id, null);
 
       // Убираем ненужные виртуальные контроллеры, которые уже отобразились в меню
       $fakeControllers = $module->getMenuControllers();
       if( !empty($fakeControllers) )
-        if( !(isset($class->moduleMenu, $controller->moduleMenu) && in_array(BApplication::CLASS_PREFIX.ucfirst($class->id), $fakeControllers[$controller->moduleMenu]['menu'])) )
+        if( !(isset($controller->moduleMenu, $this->controller->moduleMenu) && in_array(BApplication::CLASS_PREFIX.ucfirst($controller->id), $fakeControllers[$this->controller->moduleMenu]['menu'])) )
           continue;
 
-      if( !isset($class->enabled) || $class->enabled === true )
+      if( !isset($controller->enabled) || $controller->enabled === true )
       {
-        $controllers[$id] = array('label'       => $class->name,
-                                  'url'         => $this->buildUrl($module->id, ($id)),
-                                  'active'      => $controller->id === $id || ucfirst($controller->id) === BApplication::CLASS_PREFIX.ucfirst($id),
-                                  'position'    => $class->position,
-                                  'itemOptions' => array('class' => $id),
+        $this->submodules[$id] = array(
+          'label' => $controller->name,
+          'url' => $module->createUrl($controller->id),
+          'active' => $this->controller->id === $id || ucfirst($this->controller->id) === BApplication::CLASS_PREFIX.ucfirst($id),
+          'position' => $controller->position,
+          'itemOptions' => array('class' => $id),
         );
       }
     }
-
-    return $controllers;
-  }
-
-  /**
-   * Получаем все контроллеры модуля для формирования submenu
-   * @param $moduleName
-   *
-   * @return array
-   */
-  private function getModuleControllers($moduleName)
-  {
-    return glob(dirname(__FILE__).'/../modules/'.$moduleName.'/controllers/*');
   }
 
   private function sort()
@@ -261,11 +269,21 @@ class BMenu extends CComponent
 
   private function sortModules()
   {
+    if( empty($this->modules) )
+      return;
+    foreach($this->modules as $key => $data)
+    {
+      uasort($this->modules[$key], function($a, $b) {
+        return $a['label'] > $b['label'];
+      });
+    }
   }
 
   private function sortSubmodiles()
   {
-    uasort($this->submodules, function($a, $b){return $a['position'] > $b['position'];});
+    uasort($this->submodules, function($a, $b) {
+      return $a['position'] > $b['position'];
+    });
   }
 
   /**

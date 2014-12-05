@@ -5,6 +5,8 @@
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
  * @package backend.components
+ *
+ * @property BMenu $menu
  */
 class BApplication extends CWebApplication
 {
@@ -75,12 +77,7 @@ class BApplication extends CWebApplication
 
   protected function init()
   {
-    /**
-     * Подгружаем модули в приложение
-     */
-    foreach(glob(dirname(__FILE__).'/../modules/*', GLOB_ONLYDIR) as $moduleDirectory)
-      if( preg_match("/\w+/", basename($moduleDirectory)) )
-        $this->setModules(array(basename($moduleDirectory) => array('autoloaded' => true)));
+    $this->setModules($this->findModules(Yii::getPathOfAlias('backend')));
 
     $this->params->project = preg_replace("/^www./", '', Yii::app()->request->serverName);
     $this->setMbEncoding();
@@ -92,5 +89,32 @@ class BApplication extends CWebApplication
   {
     mb_internal_encoding("UTF-8");
     mb_http_output("UTF-8");
+  }
+
+  /**
+   * @param string $basePath
+   *
+   * @return array
+   */
+  protected function findModules($basePath)
+  {
+    $modulesPath = $basePath.DIRECTORY_SEPARATOR.'modules';
+    $modules = array();
+
+    foreach(glob($modulesPath.DIRECTORY_SEPARATOR.'*', GLOB_ONLYDIR) as $moduleDirectory)
+    {
+      if( preg_match("/\w+/", basename($moduleDirectory)) )
+      {
+        $moduleName = basename($moduleDirectory);
+        $subModulesPath = $modulesPath.DIRECTORY_SEPARATOR.$moduleName;
+
+        $modules[$moduleName] = array('autoloaded' => true);
+
+        if( $submodules = $this->findModules($subModulesPath) )
+          $modules[$moduleName]['modules'] = $submodules;
+      }
+    }
+
+    return $modules;
   }
 }

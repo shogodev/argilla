@@ -46,16 +46,12 @@ class BModule extends CWebModule
     'models',
     'components',
     'exceptions',
+    'modules',
+    'behaviors',
   );
 
-  /**
-   * @param string  $id
-   * @param CModule $parent
-   * @param null    $config
-   */
-  public function __construct($id, $parent, $config = null)
+  protected function preinit()
   {
-    parent::__construct($id, $parent, $config);
     $this->loadControllerMap();
   }
 
@@ -103,7 +99,29 @@ class BModule extends CWebModule
 
   public function getHeaderCssClass()
   {
-    return $this->id;
+    return preg_replace('/(\/.*)/', '', $this->getId());
+  }
+
+  /**
+   * @return array
+   */
+  public function getParents()
+  {
+    $parents = array();
+    if( $parent = $this->getParentModule() )
+    {
+      $parents = CMap::mergeArray(array($parent->getName() => $parent), $parent->getParents($parent));
+    }
+
+    return array_reverse($parents);
+  }
+
+  public function createUrl($route, $params=array(), $ampersand='&')
+  {
+    $parents = CMap::mergeArray(array_keys($this->getParents()), array($this->id));
+    $route = implode('/', CMap::mergeArray($parents, array($route)));
+
+    return Yii::app()->createUrl($route, $params, $ampersand);
   }
 
   /**
@@ -124,11 +142,9 @@ class BModule extends CWebModule
     if( $this->controllerMap !== [] )
       return;
 
-    $directory = Yii::getPathOfAlias('backend.modules.'.$this->getId().'/controllers');
-
-    if( file_exists($directory) )
+    if( file_exists($this->getControllerPath()) )
     {
-      foreach( CFileHelper::findFiles($directory, array('fileTypes' => array('php'))) as $controllerFilePath )
+      foreach( CFileHelper::findFiles($this->getControllerPath(), array('fileTypes' => array('php'))) as $controllerFilePath )
       {
         $controllerFilePathParts = explode(DIRECTORY_SEPARATOR, $controllerFilePath);
         $controllerName = str_replace('.php', '', end($controllerFilePathParts));
@@ -139,7 +155,7 @@ class BModule extends CWebModule
       }
     }
     else
-      Yii::log('Невозможно загрузить директорию контроллеров '.get_class($this).' по пути '.$directory);
+      Yii::log('Невозможно загрузить директорию контроллеров '.get_class($this).' по пути '.$this->getControllerPath());
   }
 
   /**
@@ -163,9 +179,9 @@ class BModule extends CWebModule
   {
     $import = array();
 
-    foreach( $this->defaultDirectoriesToImport as $directory )
+    foreach($this->defaultDirectoriesToImport as $directory)
     {
-      $import[] = 'backend.modules.'.$this->getId().'.'.$directory.'.*';
+      $import[] = "{$this->id}.{$directory}.*";
     }
 
     return $import;

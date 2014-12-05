@@ -42,9 +42,11 @@ abstract class BController extends CController
       $module = Yii::app();
 
     $mappedId = array_search(get_class($this), $module->controllerMap);
-    $id       = $mappedId ? $mappedId : $this->getId();
+    $id = $mappedId ? $mappedId : $this->getId();
 
-    return $module->getViewPath().DIRECTORY_SEPARATOR.$id;
+    $submoduleViewPath = $module->getViewPath().DIRECTORY_SEPARATOR.$id;
+
+    return file_exists($submoduleViewPath) ? $submoduleViewPath : $module->getViewPath();
   }
 
   public function filters()
@@ -98,15 +100,16 @@ abstract class BController extends CController
 
   public function actions()
   {
-    return array('delete'        => 'BDefaultActionDelete',
-                 'deleteRelated' => 'BRelatedActionDelete',
-                 'association'   => 'BSaveAssociationAction',
-                 'switch'        => 'ext.jtogglecolumn.SwitchAction',
-                 'toggle'        => 'ext.jtogglecolumn.ToggleAction',
-                 'onflyedit'     => 'ext.onflyedit.OnFlyEditAction',
-                 'upload'        => 'upload.actions.UploadAction',
-                 'directory'     => 'backend.modules.directory.actions.DirectoryAction',
-                );
+    return array(
+      'delete' => 'BDefaultActionDelete',
+      'deleteRelated' => 'BRelatedActionDelete',
+      'association' => 'BSaveAssociationAction',
+      'switch' => 'ext.jtogglecolumn.SwitchAction',
+      'toggle' => 'ext.jtogglecolumn.ToggleAction',
+      'onflyedit' => 'ext.onflyedit.OnFlyEditAction',
+      'upload' => 'upload.actions.UploadAction',
+      'directory' => 'backend.modules.directory.actions.DirectoryAction',
+    );
   }
 
   /**

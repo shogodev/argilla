@@ -12,7 +12,7 @@ class BaseController extends BController
   {
     if( !Yii::app()->user->isGuest )
     {
-      $this->forward('help/help/index');
+      $this->forward(Yii::app()->menu->getDefaultRout('help/help/index'));
     }
     else
     {
