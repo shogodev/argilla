@@ -17,7 +17,7 @@ class BRbacOperation extends BAuthItem
    */
   public static function operationExists($operation)
   {
-    return self::model()->findByPk($operation) !== null;
+    return self::model()->findByAttributes(array('name' => $operation)) !== null;
   }
 
   /**
@@ -34,7 +34,7 @@ class BRbacOperation extends BAuthItem
 
     foreach( $operations as $operation )
     {
-      $item = self::model()->findByPk($operation->name);
+      $item = self::model()->findByAttributes(array('name' => $operation->name));
       $data[$item->name] = $item->title;
     }
 

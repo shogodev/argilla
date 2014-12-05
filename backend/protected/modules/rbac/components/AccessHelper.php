@@ -332,20 +332,24 @@ class AccessHelper
     {
       if( !empty(Yii::app()->controller->module->id) )
       {
-        $module           = Yii::app()->controller->module;
-        $this->module     = $module->id;
+        $module = Yii::app()->controller->module;
+        $this->moduleClass = Yii::app()->controller->module;
+        $this->module = $module->getName();
         $this->controller = array_search(get_class(Yii::app()->controller), $module->controllerMap);
       }
       else
+      {
         $this->controller = Yii::app()->controller->id;
+        $this->controllerClass = Yii::app()->controller;
+      }
 
       $this->action = Yii::app()->controller->action->id;
     }
     else
     {
-      $this->module     = $module;
+      $this->module = $module;
       $this->controller = $controller;
-      $this->action     = $action;
+      $this->action = $action;
     }
 
     $this->auth = Yii::app()->authManager;

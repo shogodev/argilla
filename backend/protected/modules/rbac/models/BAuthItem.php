@@ -6,6 +6,7 @@
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.rbac.models
  *
+ * @property integer $id
  * @property string $name
  * @property string $title
  * @property integer $type

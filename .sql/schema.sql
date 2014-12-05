@@ -41,11 +41,13 @@ DROP TABLE IF EXISTS `argilla_auth_assignment`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `argilla_auth_assignment` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `itemname` varchar(64) NOT NULL,
   `userid` varchar(64) NOT NULL,
   `bizrule` text,
   `data` text,
-  PRIMARY KEY (`itemname`,`userid`),
+  PRIMARY KEY (`id`),
+  KEY (`itemname`,`userid`),
   CONSTRAINT `AuthAssignment_ibfk_1` FOREIGN KEY (`itemname`) REFERENCES `argilla_auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -58,13 +60,15 @@ DROP TABLE IF EXISTS `argilla_auth_item`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `argilla_auth_item` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `name` varchar(64) NOT NULL,
   `title` varchar(255) NOT NULL,
   `type` int(11) NOT NULL,
   `description` text,
   `bizrule` text,
   `data` text,
-  PRIMARY KEY (`name`)
+  PRIMARY KEY (`id`),
+  KEY (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

@@ -32,6 +32,9 @@ class BUserController extends BController
         $this->redirectAfterSave($model);
     }
 
-    $this->render('_form', array('model' => $model, 'roles' => BRbacRole::getRoles()));
+    $this->render('_form', array(
+      'model' => $model,
+      'roles' => BRbacRole::getRoles())
+    );
   }
 }

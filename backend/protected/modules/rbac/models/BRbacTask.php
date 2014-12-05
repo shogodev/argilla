@@ -17,7 +17,7 @@ class BRbacTask extends BAuthItem
    */
   public static function taskExists($task)
   {
-    return self::model()->findByPk($task) !== null;
+    return self::model()->findByAttributes(array('name' => $task)) !== null;
   }
 
   /**
@@ -60,7 +60,7 @@ class BRbacTask extends BAuthItem
     $data = array();
     foreach( $children as $child )
     {
-      $operation = BRbacOperation::model()->findByPk($child->name);
+      $operation = BRbacOperation::model()->findByAttributes(array('name' => $child->name));
 
       $data[$operation->name] = $operation->name;
     }

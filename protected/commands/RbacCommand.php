@@ -12,7 +12,6 @@ Yii::import('backend.components.interfaces.*');
 Yii::import('backend.components.auth.*');
 Yii::import('backend.components.db.*');
 Yii::import('backend.controllers.*');
-Yii::import('frontend.share.behaviors.*');
 
 class RbacCommand extends CConsoleCommand
 {
@@ -29,20 +28,6 @@ class RbacCommand extends CConsoleCommand
    * @var string
    */
   protected $password;
-
-  /**
-   * Путь к корню приложения
-   *
-   * @var string
-   */
-  protected $path;
-
-  /**
-   * Путь к директории модулей, относительно корня приложения
-   *
-   * @var string
-   */
-  protected $modulePath = '/backend/protected/modules';
 
   /**
    * Массив названий модулей
@@ -88,12 +73,11 @@ class RbacCommand extends CConsoleCommand
    */
   public function actionBuild($username = 'admin', $password = '123')
   {
-    $this->path = dirname(dirname(dirname(__FILE__)));
     $this->username = $username;
     $this->password = $password;
 
     echo "-------------------------------------------------------------".PHP_EOL;
-    $this->getFiles();
+    $this->findModules(Yii::getPathOfAlias('backend'));
     echo "-------------------------------------------------------------".PHP_EOL;
     $this->getNames();
 
@@ -128,42 +112,39 @@ class RbacCommand extends CConsoleCommand
     }
   }
 
-  /**
-   * Получение всех модулей и контроллеров
-   */
-  protected function getFiles()
+  protected function findModules($basePath)
   {
-    if( file_exists($this->path . $this->modulePath) )
-    {
-      $handle = opendir($this->path . $this->modulePath);
+    $modulesPath = $basePath.DIRECTORY_SEPARATOR.'modules';
 
-      while( false !== ($entry = readdir($handle)) )
+    foreach(glob($modulesPath.DIRECTORY_SEPARATOR.'*', GLOB_ONLYDIR) as $moduleDirectory)
+    {
+      if( preg_match("/\w+/", basename($moduleDirectory)) )
       {
-        if( $entry !== '.' && $entry !== '..' )
-          $this->loadModule($entry);
+        $this->loadModule($moduleDirectory);
+        $this->findModules($moduleDirectory);
       }
     }
   }
 
-  /**
-   * Загрузка контроллеров модуля
-   *
-   * @param string $module
-   */
-  protected function loadModule($module)
+  protected function loadModule($moduleDirectory)
   {
-    if( !file_exists($this->path . $this->modulePath . '/' . $module . '/controllers') )
-      return;
+    $moduleName = basename($moduleDirectory);
 
-    Yii::import('backend.modules.'.$module.'.*');
-    $moduleName = ucfirst($module).'Module';
+    Yii::setPathOfAlias($moduleName, $moduleDirectory);
+    $moduleClass = ucfirst($moduleName).'Module';
+    Yii::import($moduleName.'.'.$moduleClass);
 
-    if( class_exists($moduleName) !== false )
+    if( class_exists($moduleClass) !== false )
     {
-      echo "Найден модуль: $module\n";
+      /**
+       * @var BModule $module
+       */
+      $module = new $moduleClass($moduleName, null);
+      if( empty($module->controllerMap) )
+        return;
 
-      $moduleClass = new $moduleName($module, null);
-      $this->modules[$module] = $moduleClass;
+      echo "Найден модуль: $moduleName\n";
+      $this->modules[$moduleName] = $module;
     }
   }
 
@@ -198,15 +179,15 @@ class RbacCommand extends CConsoleCommand
 
     foreach( $this->names as $name )
     {
-      $task        = new BRbacTask();
+      $task = new BRbacTask();
       $task->name  = $name['name'];
       $task->title = $name['title'];
-      $task->type  = CAuthItem::TYPE_TASK;
+      $task->type = CAuthItem::TYPE_TASK;
 
       try
       {
         $task->save();
-        $this->getAuthManager()->addItemChild($this->root->name, $task->id);
+        $this->getAuthManager()->addItemChild($this->root->name, $task->name);
         echo "$task->title ($task->name) успешно создано".PHP_EOL;
       }
       catch( Exception $e )
@@ -232,9 +213,9 @@ class RbacCommand extends CConsoleCommand
    */
   protected function initAuthManager()
   {
-    $this->authManager                  = new CDbAuthManager();
-    $this->authManager->itemTable       = '{{auth_item}}';
-    $this->authManager->itemChildTable  = '{{auth_item_child}}';
+    $this->authManager = new CDbAuthManager();
+    $this->authManager->itemTable = '{{auth_item}}';
+    $this->authManager->itemChildTable = '{{auth_item_child}}';
     $this->authManager->assignmentTable = '{{auth_assignment}}';
     $this->authManager->init();
   }

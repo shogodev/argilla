@@ -106,11 +106,9 @@ class BApplication extends CWebApplication
       if( preg_match("/\w+/", basename($moduleDirectory)) )
       {
         $moduleName = basename($moduleDirectory);
-        $subModulesPath = $modulesPath.DIRECTORY_SEPARATOR.$moduleName;
-
         $modules[$moduleName] = array('autoloaded' => true);
 
-        if( $submodules = $this->findModules($subModulesPath) )
+        if( $submodules = $this->findModules($moduleDirectory) )
           $modules[$moduleName]['modules'] = $submodules;
       }
     }
