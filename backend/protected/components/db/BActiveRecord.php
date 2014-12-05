@@ -33,9 +33,18 @@ abstract class BActiveRecord extends CActiveRecord implements IHasFrontendModel
    */
   public static function listData($key = 'id', $value = 'name', CDbCriteria $criteria = null)
   {
-    $data = array();
+    if( is_null($criteria) )
+      $criteria = new CDbCriteria();
+    /**
+     * @var BActiveRecord
+     */
+    $model = static::model();
 
-    foreach(static::model()->findAll($criteria) as $entry)
+    if( empty($criteria->order) && Arr::get($model->tableSchema->columns, 'name') )
+      $criteria->order = $model->getTableAlias(false, false).'.name';
+
+    $data = array();
+    foreach($model->findAll($criteria) as $entry)
     {
       $data[$entry->{$key}] = is_callable($value) ? $value($entry) : $entry->{$value};
     }
