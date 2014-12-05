@@ -46,7 +46,7 @@ class AccessHelper
    * @var array
    */
   public $baseActionNames = array(
-    'index'  => 'Главная',
+    'index'  => 'Разводная',
     'update' => 'Обновление',
     'create' => 'Создание',
     'delete' => 'Удаление',
@@ -112,6 +112,10 @@ class AccessHelper
    * @var string
    */
   private $loginOperation = 'base:login';
+
+  private $taskHumanityName = '';
+
+  private $operationHumanityName = '';
 
   /**
    * @param null $module
@@ -276,50 +280,6 @@ class AccessHelper
   }
 
   /**
-   * Создание человеко-понятного имени задачи
-   *
-   * @return string
-   */
-  protected function createTaskHumanityName()
-  {
-    $humanityName = $this->taskName;
-
-    if( !empty($this->module) )
-    {
-      if( (boolean)$controller = $this->loadController() )
-      {
-        $moduleName = ucfirst($this->module) . 'Module';
-        $module = new $moduleName($this->module, 'Module');
-        $humanityName = $module->name . '-' . $controller->name;
-      }
-
-    }
-
-    return $humanityName;
-  }
-
-  /**
-   * Создание человеко-понятного имени операции
-   *
-   * @return string
-   */
-  protected function createOperationHumanityName()
-  {
-    $humanityName = $this->operationName;
-
-    if( !empty($this->module) )
-    {
-      if( (boolean)$controller = $this->loadController() )
-      {
-        if( method_exists($controller, 'action' . ucfirst($this->action)) )
-          $humanityName = $this->createTaskHumanityName() . '-' . $this->baseActionNames[$this->action];
-      }
-    }
-
-    return $humanityName;
-  }
-
-  /**
    * Инициализация параметров для проверки доступа
    *
    * @param string $module
@@ -333,14 +293,15 @@ class AccessHelper
       if( !empty(Yii::app()->controller->module->id) )
       {
         $module = Yii::app()->controller->module;
-        $this->moduleClass = Yii::app()->controller->module;
         $this->module = $module->getName();
         $this->controller = array_search(get_class(Yii::app()->controller), $module->controllerMap);
+
+        $this->taskHumanityName = $module->name . '-' . Yii::app()->controller->name;
       }
       else
       {
         $this->controller = Yii::app()->controller->id;
-        $this->controllerClass = Yii::app()->controller;
+        $this->taskHumanityName = Yii::app()->controller->name;
       }
 
       $this->action = Yii::app()->controller->action->id;
@@ -352,9 +313,13 @@ class AccessHelper
       $this->action = $action;
     }
 
+    $this->operationHumanityName = $this->taskHumanityName;
+
+    if( $this->action )
+      $this->operationHumanityName .= '-'.(isset($this->baseActionNames[$this->action]) ? $this->baseActionNames[$this->action] : $this->action);
+
     $this->auth = Yii::app()->authManager;
   }
-
 
   /**
    * Создание новой записи задачи
@@ -362,7 +327,7 @@ class AccessHelper
   private function createTask()
   {
     $task = new BRbacTask();
-    $task->title = $this->createTaskHumanityName();
+    $task->title = $this->taskHumanityName;
     $task->name = $this->taskName;
     $task->save(false);
   }
@@ -373,37 +338,9 @@ class AccessHelper
   private function createOperation()
   {
     $operation = new BRbacOperation;
-    $operation->title = $this->createOperationHumanityName();
+    $operation->title = $this->operationHumanityName;
     $operation->name  = $this->operationName;
     $operation->save(false);
-  }
-
-  /**
-   * Загружает контроллер, если контроллер не найден, возращает false
-   *
-   * @return CController|boolean
-   */
-  private function loadController()
-  {
-    try
-    {
-      Yii::import('backend.modules.' . $this->module . '.*');
-      Yii::import('backend.modules.' . $this->module . '.controllers.*');
-
-      $controllerName = $this->controller . 'Controller';
-
-      if( @class_exists($controllerName) !== false )
-      {
-        $controller = new $controllerName($this->controller);
-        return $controller;
-      }
-    }
-    catch( Exception $e )
-    {
-      Yii::log($e->getMessage());
-    }
-
-    return false;
   }
 
   /**

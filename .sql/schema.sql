@@ -47,7 +47,7 @@ CREATE TABLE `argilla_auth_assignment` (
   `bizrule` text,
   `data` text,
   PRIMARY KEY (`id`),
-  KEY (`itemname`,`userid`),
+  UNIQUE KEY (`itemname`,`userid`),
   CONSTRAINT `AuthAssignment_ibfk_1` FOREIGN KEY (`itemname`) REFERENCES `argilla_auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -68,7 +68,7 @@ CREATE TABLE `argilla_auth_item` (
   `bizrule` text,
   `data` text,
   PRIMARY KEY (`id`),
-  KEY (`name`)
+  UNIQUE KEY (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
