@@ -23,6 +23,8 @@ Yii::import('frontend.extensions.upload.components.*');
  */
 class IndexerCommand extends CConsoleCommand
 {
+  const MAX_CHUNK_SIZE = 10000;
+
   /**
    * @var array
    */
@@ -112,8 +114,22 @@ class IndexerCommand extends CConsoleCommand
   {
     if( !empty($this->data) )
     {
-      $result = $this->builder->createMultipleInsertCommand($this->searchTable, $this->data)->query();
-      echo 'Inserted '.$result->count().' record(s)'.PHP_EOL;
+      $result = 0;
+
+      foreach(array_chunk($this->data, self::MAX_CHUNK_SIZE) as $chunk)
+      {
+        $command = $this->builder->createMultipleInsertCommand($this->searchTable, $chunk);
+        $count = $command->query()->count();
+        $result += $count;
+        echo 'Inserted '.$count.' record(s)'.PHP_EOL;
+      }
+
+      echo 'Total records: '.$result.'. Execution time: '.sprintf('%0.5f', Yii::getLogger()->getExecutionTime()).PHP_EOL;
+      echo 'Memory peak usage: '.Yii::app()->format->formatSize(memory_get_peak_usage()).PHP_EOL;
+    }
+    else
+    {
+      throw new CException('Inserted 0 records', 500);
     }
   }
 }
