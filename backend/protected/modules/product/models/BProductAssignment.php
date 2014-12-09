@@ -8,6 +8,7 @@
  *
  * @method static BProductAssignment model(string $class = __CLASS__)
  *
+ * @property integer $id
  * @property integer $product_id
  * @property integer $visible
  */
@@ -98,42 +99,17 @@ class BProductAssignment extends BActiveRecord
 
   public function saveAssignments($product, $assignments)
   {
-    $savedIds = array();
+    $saved = array();
+    $attributes = $this->calculateAttributes($assignments);
 
-    $arrays = array();
-
-    foreach($assignments as $key => $item)
-      if( is_array($item) )
-        $arrays[$key] = count($item) === 0 ? 1 : count($item);
-
-    if( !empty($arrays) )
+    foreach($attributes as $assignment)
     {
-      foreach($arrays as $paramKey => $count)
-      {
-        reset($assignments[$paramKey]);
-
-        for($i = 0; $i < $count; $i++)
-        {
-          $attributes = array();
-          foreach($assignments as $param => $value)
-          {
-            $value = is_array($value) ? current($assignments[$paramKey]) : $value;
-            $attributes[$param] = $value;
-          }
-          $model = $this->saveAssignment($product, $attributes);
-          $savedIds[] = $model->id;
-          next($assignments[$paramKey]);
-        }
-      }
-    }
-    else
-    {
-      $model = $this->saveAssignment($product, $assignments);
-      $savedIds[] = $model->id;
+      $model = $this->saveAssignment($product, $assignment);
+      $saved[] = $model->id;
     }
 
-    $this->deleteAssignments($product, $savedIds);
-   }
+    $this->deleteAssignments($product, $saved);
+  }
 
   public function toProductAttribute($attribute)
   {
@@ -153,6 +129,35 @@ class BProductAssignment extends BActiveRecord
   public function getTypes($criteria = null)
   {
     return BProductType::model()->findAll($criteria);
+  }
+
+  /**
+   * @param $assignments
+   *
+   * @return array
+   */
+  protected function calculateAttributes($assignments)
+  {
+    $arrays = $digits = array();
+    foreach($assignments as $key => $item)
+      is_array($item) ? $arrays[$key] = $item : $digits[$key] = $item;
+
+    $statistics = new Statistics($arrays);
+    $combinations = $statistics->getCombinations();
+
+    $attributes = array();
+    foreach($combinations as $i => $combination)
+    {
+      foreach($this->getFields() as $field)
+      {
+        if( in_array($field->name, array_keys($digits)) )
+          $attributes[$i][$field->name] = $digits[$field->name];
+        else
+          $attributes[$i][$field->name] = $combination[array_flip(array_keys($arrays))[$field->name]];
+      }
+    }
+
+    return $attributes;
   }
 
   /**
