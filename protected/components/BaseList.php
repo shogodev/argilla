@@ -299,4 +299,3 @@ class BaseList extends CComponent
     return $modelName::model();
   }
 }
-
