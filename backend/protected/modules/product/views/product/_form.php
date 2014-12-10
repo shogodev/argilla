@@ -1,8 +1,10 @@
 <?php
-/* @var BProductController $this */
-/* @var array $_data_ */
-/* @var BProduct $model */
-/* @var BProductAssignment $assignmentModel */
+/**
+ * @var BProductController $this
+ * @var array $_data_
+ * @var BProduct $model
+ * @var BProductAssignment $assignmentModel
+ */
 ?>
 
 <?php Yii::app()->breadcrumbs->show(); ?>
