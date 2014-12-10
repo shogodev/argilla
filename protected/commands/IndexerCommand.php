@@ -71,11 +71,20 @@ class IndexerCommand extends CConsoleCommand
     $this->save();
 
     Yii::app()->db->currentTransaction->commit();
+    $this->updateProduction();
   }
 
   public function actionDelete()
   {
     $this->builder->createSqlCommand("TRUNCATE TABLE ".$this->searchTable)->execute();
+    $this->updateProduction();
+  }
+
+  private function updateProduction()
+  {
+    $path = Yii::getPathOfAlias('frontend.config.production').'.php';
+    if( file_exists($path) )
+      touch($path);
   }
 
   private function buildProperties()
