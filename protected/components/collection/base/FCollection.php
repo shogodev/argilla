@@ -1,6 +1,4 @@
 <?php
-
-
 /**
  * @author Alexey Tatarivov <tatarinov@shogo.ru>
  * @link https://github.com/shogodev/argilla/
@@ -75,7 +73,7 @@ class FCollection extends FAbstractCollection
     {
       if( $data instanceof CModel && is_a($data->asa('collectionElement'), 'FCollectionElementBehavior') )
       {
-        $data = $data->getCollectionElement()->jsonSerialize();
+        $data = $data->toArray();
       }
       else
       {
@@ -192,6 +190,34 @@ class FCollection extends FAbstractCollection
   public function toArray()
   {
     return json_decode(json_encode($this->jsonSerialize()), true);
+  }
+
+  /**
+   * @param string $listClass
+   * @param CDbCriteria|null $criteria
+   *
+   * @return ProductList
+   * @throws CException
+   */
+  public function getList($listClass = 'ProductList', CDbCriteria $criteria = null)
+  {
+    $allowedClass = preg_replace('/List$/', '', $listClass);
+    $ids = array();
+
+    foreach($this->toArray() as $item)
+    {
+      if( Utils::toCamelCase($item['type']) == $allowedClass )
+        $ids[$item['id']] = $item['id'];
+    }
+
+    if( !$criteria )
+      $criteria = new CDbCriteria();
+    $criteria->addInCondition('t.id', $ids);
+
+    if( $ids )
+      $criteria->order = "FIND_IN_SET(t.id, '".implode(',', $ids)."')";
+
+    return Yii::createComponent($listClass, $criteria, null, false);
   }
 
   protected function update($reindexing = false)
