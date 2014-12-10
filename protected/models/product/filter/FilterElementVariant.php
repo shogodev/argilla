@@ -11,4 +11,13 @@
 class FilterElementVariant extends FilterElementItem
 {
   public $notice;
+
+  public function getImage()
+  {
+    $path = 'f/upload/images/'.$this->id.'.png';
+    if( !file_exists($path) )
+      $path = 'i/sp.gif';
+
+    return $path;
+  }
 }

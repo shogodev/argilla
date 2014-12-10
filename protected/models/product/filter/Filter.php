@@ -169,14 +169,20 @@ class Filter extends CComponent
   }
 
   /**
+   * @param bool $withDefault
+   *
    * @return FilterElementItem[]
    */
-  public function getSelectedItems()
+
+  public function getSelectedItems($withDefault = true)
   {
-    $selected = $this->defaultSelectedItems;
+    $selected = array();
 
     foreach($this->elements as $element)
       $selected = CMap::mergeArray($selected, $element->getSelectedItems());
+
+    if( $withDefault )
+      $selected = CMap::mergeArray($this->defaultSelectedItems, $selected);
 
     return $selected;
   }
