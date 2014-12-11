@@ -142,19 +142,26 @@ class BProductAssignment extends BActiveRecord
     foreach($assignments as $key => $item)
       is_array($item) ? $arrays[$key] = $item : $digits[$key] = $item;
 
-    $statistics = new Statistics($arrays);
-    $combinations = $statistics->getCombinations();
-
-    $attributes = array();
-    foreach($combinations as $i => $combination)
+    if( !empty($arrays) )
     {
-      foreach($this->getFields() as $field)
+      $statistics = new Statistics($arrays);
+      $combinations = $statistics->getCombinations();
+
+      $attributes = array();
+      foreach($combinations as $i => $combination)
       {
-        if( in_array($field->name, array_keys($digits)) )
-          $attributes[$i][$field->name] = $digits[$field->name];
-        else
-          $attributes[$i][$field->name] = $combination[array_flip(array_keys($arrays))[$field->name]];
+        foreach($this->getFields() as $field)
+        {
+          if( in_array($field->name, array_keys($digits)) )
+            $attributes[$i][$field->name] = $digits[$field->name];
+          else
+            $attributes[$i][$field->name] = $combination[array_flip(array_keys($arrays))[$field->name]];
+        }
       }
+    }
+    else
+    {
+      $attributes = array($digits);
     }
 
     return $attributes;
