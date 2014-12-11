@@ -24,7 +24,7 @@
  *
  * @property Product $owner
  */
-class RelatedProductsBehavior extends CModelBehavior
+class RelatedProductsBehavior extends AssociationBehavior
 {
   public $groupRelatedThrough = null;
 
@@ -35,13 +35,13 @@ class RelatedProductsBehavior extends CModelBehavior
    */
   public function getRelatedProducts($limit = 5)
   {
-    if( !$relatedProducts = $this->owner->findAllThroughAssociation(new Product()) )
+    if( !$relatedProductIds = $this->getAssociationForMe('Product')->getKeys() )
     {
-      $relatedProducts = $this->getRelatedGroupProducts();
+      $relatedProductIds = $this->getRelatedGroupProducts();
     }
 
     $criteria = new CDbCriteria();
-    $criteria->addInCondition('t.id', array_slice($relatedProducts, 0, $limit));
+    $criteria->addInCondition('t.id', array_slice($relatedProductIds, 0, $limit));
 
     return $this->getProductList($criteria)->getDataProvider();
   }
@@ -90,16 +90,16 @@ class RelatedProductsBehavior extends CModelBehavior
     try
     {
       Yii::import('backend.modules.productGroup.frontendModels.ProductGroup', true);
-      $associationIds = $this->owner->findAllThroughAssociation(new ProductGroup());
+      $associationIds = $this->getAssociationForMe('ProductGroup')->getKeys();
 
       if( empty($associationIds) && !is_null($this->groupRelatedThrough) )
-        $associationIds = $this->owner->{$this->groupRelatedThrough}->findAllThroughAssociation(new ProductGroup());
+        $associationIds = $this->owner->{$this->groupRelatedThrough}->getAssociationForMe('ProductGroup')->getKeys();
 
       /**
        * @var ProductGroup $group
        */
       foreach(ProductGroup::model()->findAllByPk($associationIds) as $group)
-        $relatedProducts = CMap::mergeArray($relatedProducts, $group->findAllThroughAssociation(new Product()));
+        $relatedProducts = CMap::mergeArray($relatedProducts, $group->getAssociationForMe('Product')->getKeys());
     }
     catch(CException $exception)
     {
