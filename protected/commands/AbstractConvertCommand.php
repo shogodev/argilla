@@ -11,11 +11,18 @@ Yii::import('backend.components.db.*');
 Yii::import('backend.components.interfaces.*');
 
 Yii::import('frontend.share.*');
+Yii::import('frontend.share.behaviors.*');
 Yii::import('frontend.share.validators.*');
 Yii::import('frontend.extensions.upload.components.*');
+Yii::import('frontend.components.cli.*');
 
 abstract class AbstractConvertCommand extends CConsoleCommand
 {
+  /**
+   * @var ILogger
+   */
+  public $logger;
+
   /**
    * @var string update|clear
    */
@@ -30,6 +37,16 @@ abstract class AbstractConvertCommand extends CConsoleCommand
    * @var array Таблицы, куда будут помещены новые данные
    */
   protected $dstTables = array();
+
+  public function init()
+  {
+    if( !isset($this->logger) )
+    {
+      $this->logger = new ConsoleLogger();
+    }
+
+    parent::init();
+  }
 
   public function actionIndex($mode = 'update')
   {
@@ -47,8 +64,17 @@ abstract class AbstractConvertCommand extends CConsoleCommand
     foreach($data as $item)
     {
       if( !$this->create($item) )
-        if( !$this->confirm('Желаете продолжить?', true) )
-          break;
+      {
+        if( PHP_SAPI !== 'cli' )
+        {
+          $this->logger->error('Не удалось сохранить запись с id='.Arr::get($item, 0, '[не задано]'));
+        }
+        else
+        {
+          if( !$this->confirm('Желаете продолжить?', true) )
+            break;
+        }
+      }
     }
   }
 
@@ -66,14 +92,14 @@ abstract class AbstractConvertCommand extends CConsoleCommand
     if( $model->save() )
     {
       if( $showSuccessMessages )
-        echo 'Обработка '.get_class($model).' c id='.$model->id.' завершена ('.memory_get_usage().')'.PHP_EOL;
+        $this->logger->log('Обработка '.get_class($model).' c id='.$model->id.' завершена ('.memory_get_usage().')');
 
       return true;
     }
     else
     {
-      echo 'Не удалось сохранить '.get_class($model).' c id='.$model->id.PHP_EOL;
-      echo strip_tags(CHtml::errorSummary($model)).PHP_EOL;
+      $this->logger->log('Не удалось сохранить '.get_class($model).' c id='.$model->id);
+      $this->logger->log(strip_tags(CHtml::errorSummary($model)));
 
       return false;
     }
