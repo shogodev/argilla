@@ -6,13 +6,10 @@
  */
 ?>
 
-<?php $this->renderPartial('/breadcrumbs');?>
+<?php $this->renderPartial('/_breadcrumbs');?>
 
 <div class="container-fluid">
   <div class="row-fluid">
-    <div class="span2">
-      <?php echo $this->renderPartial('_sections_menu', $_data_)?>
-    </div>
     <div class="span10">
       <h1><?php echo Yii::app()->meta->setHeader($model->name)?></h1>
 
@@ -22,7 +19,7 @@
 
       <div><?php echo $model->content?></div>
 
-      <?php echo $this->renderPartial('_parameters', $_data_)?>
+      <?php echo $this->renderPartial('one/_parameters', $_data_)?>
 
     </div>
   </div>

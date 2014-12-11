@@ -3,7 +3,7 @@
  * @var Product $model
  */
  ?>
-
+<?php if($parameters = $model->getProductOneParameters()) {?>
 <div class="grid_9 first m30" id="specification-anchor">
   <h3 class="left">Параметры <?php echo $model->name?></h3>
   <div class="equip-tabs">
@@ -11,7 +11,7 @@
     <div style="clear: both">
       <table class="zero eqSpecs">
 
-        <?php foreach($model->parameters as $parameter) { ?>
+        <?php foreach($parameters as $parameter) { ?>
         <?php if( empty($parameter->value) ) continue;?>
         <tr>
           <th>
@@ -32,3 +32,4 @@
     </div>
   </div>
 </div>
+<?php }?>
