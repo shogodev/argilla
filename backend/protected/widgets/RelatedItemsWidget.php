@@ -182,7 +182,7 @@ class RelatedItemsWidget extends CWidget
         });
 
         li.show().removeAttr('id').find('.delete').remove();
-        li.append('<a class=\"btn btn-alone delete\" rel='tooltip' href=\"#\" data-original-title=\"Удалить вариант\">');
+        li.append('<a class=\"btn btn-alone delete\" rel=\"tooltip\" href=\"#\" data-original-title=\"Удалить вариант\">');
         $(li).find('a').on('click', function(e){e.preventDefault();$(this).parents('li').remove()});
         $(ul).append(li);
       });

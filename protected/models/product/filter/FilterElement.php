@@ -106,6 +106,9 @@ abstract class FilterElement extends CComponent
     });
   }
 
+  /**
+   * @return FilterElementItem[]
+   */
   public function getSelectedItems()
   {
     return array_filter($this->items, function(FilterElementItem $item){

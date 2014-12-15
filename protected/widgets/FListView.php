@@ -111,6 +111,13 @@ class FListView extends CListView
       echo CHtml::closeTag($this->itemsTagName);
   }
 
+  public function renderKeys()
+  {
+    echo '<!--noindex-->';
+    parent::renderKeys();
+    echo '<!--/noindex-->';
+  }
+
   public function registerClientScript()
   {
     parent::registerClientScript();
