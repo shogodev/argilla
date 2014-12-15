@@ -18,7 +18,7 @@
  * @property string $birthday
  * @property string $avatar
  */
-class BUserProfile extends BActiveRecord implements IHasCoordinates
+class BUserProfile extends BActiveRecord
 {
   /**
    * @return string
@@ -63,14 +63,6 @@ class BUserProfile extends BActiveRecord implements IHasCoordinates
       'birthday'     => 'Дата рождения',
       'coordinates'  => 'Координаты',
     );
-  }
-
-  /**
-   * @return int
-   */
-  public function getId()
-  {
-    return $this->user_id;
   }
 
   /**

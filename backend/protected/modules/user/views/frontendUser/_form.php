@@ -16,14 +16,7 @@
 <table class="detail-view table table-striped table-bordered">
 <tbody>
 
-  <?php
-    if( $this->isUpdate() )
-     echo $form->dateTextRow($model, 'date_create');
-  ?>
-  <?php echo $form->textFieldRow($model, 'login'); ?>
-  <?php echo $form->passwordFieldRow($model, 'password', array('autocomplete' => 'off')); ?>
-  <?php echo $form->passwordFieldRow($model, 'confirmPassword', array('autocomplete' => 'off')); ?>
-  <?php echo $form->textFieldRow($model, 'email'); ?>
+  <?php $this->renderPartial('_form_user', array('model' => $model, 'form' => $form))?>
 
   <?php echo $form->textFieldRow($userProfile, 'name'); ?>
   <?php echo $form->textFieldRow($userProfile, 'last_name'); ?>

@@ -32,7 +32,7 @@ class BRbacTask extends BAuthItem
 
     foreach( $tasks as $task )
     {
-      $data[$task->name] = $task->title;
+      $data[$task->name] = !empty($task->title) ? $task->title : $task->name;
     }
 
     return $data;
