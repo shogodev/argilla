@@ -83,7 +83,7 @@ class BFrontendUser extends BActiveRecord
   {
     parent::afterValidate();
 
-    if( $this->isNewRecord )
+    if( $this->isNewRecord && empty($this->type) )
       $this->type = self::TYPE_USER;
   }
 

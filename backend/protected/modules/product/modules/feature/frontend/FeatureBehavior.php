@@ -16,15 +16,13 @@ Yii::import('backend.modules.product.modules.feature.frontend.*');
  *
  *  @property FActiveRecord $owner
  */
-class FeatureBehavior extends CModelBehavior
+class FeatureBehavior extends AssociationBehavior
 {
   /**
    * @return Feature[]
    */
   public function getFeatures()
   {
-    $featuresIds = $this->owner->findAllThroughAssociation(new Feature());
-
-    return Feature::model()->findAllByPk($featuresIds);
+    return $this->getAssociationForMe('Feature')->getModels();
   }
 } 

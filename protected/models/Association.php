@@ -17,46 +17,110 @@
  */
 class Association extends FActiveRecord
 {
+  private $modelName;
+
+  public function getKeys()
+  {
+    return CHtml::listData($this->getData(), 'pk', 'pk');
+  }
+
   /**
-   * @param FActiveRecord $source
+   * @param CDbCriteria|null $criteria
+   * @param string|null $sorting
+   * @param bool $pagination
+   * @param string|null $filters
+   *
+   * @return BaseList
+   * @throws CHttpException
+   */
+  public function getList(CDbCriteria $criteria = null, $sorting = null, $pagination = false, $filters = null)
+  {
+    $className = $this->modelName.'List';
+    if( !class_exists($className) )
+      throw new CHttpException(500, 'Не удалось найти класс '.$className);
+
+    $criteria = $this->getAssociationCriteria($criteria);
+
+    return Yii::createComponent($className, $criteria, $sorting, $pagination, $filters);
+  }
+
+  /**
+   * @param CDbCriteria|null $criteria
+   * @return array|FActiveRecord[]
+   */
+  public function getModels(CDbCriteria $criteria = null)
+  {
+    $criteria = $this->getAssociationCriteria($criteria);
+
+    /**
+     * @var FActiveRecord $model
+     */
+    $model = new $this->modelName;
+    return $model->findAll($criteria);
+  }
+
+  /**
+   * @param FActiveRecord $model
+   * @param string $targetModelName
    *
    * @return $this
    */
-  public function setSource(FActiveRecord $source)
+  public function setSource(FActiveRecord $model, $targetModelName)
   {
-    $this->getDbCriteria()->compare('src_frontend', get_class($source));
-    $this->getDbCriteria()->compare('src_id', $source->getPrimaryKey());
+    $this->modelName = $targetModelName;
+
+    $criteria = new CDbCriteria();
+    $criteria->select = 'dst_id AS pk';
+
+    $criteria->compare('src_frontend', get_class($model));
+    $criteria->compare('src_id', $model->primaryKey);
+    $criteria->compare('dst_frontend', $this->modelName);
+    $this->setDbCriteria($criteria);
+
     return $this;
   }
 
   /**
-   * @param FActiveRecord $dst
+   * @param FActiveRecord $model
+   * @param string $targetModelName
    *
    * @return $this
    */
-  public function setDestination(FActiveRecord $dst)
+  public function setDestination(FActiveRecord $model, $targetModelName)
   {
-    $this->getDbCriteria()->compare('dst_frontend', get_class($dst));
+    $this->modelName = $targetModelName;
+
+    $criteria = new CDbCriteria();
+    $criteria->select = 'src_id AS pk';
+
+    $criteria->compare('dst_frontend', get_class($model));
+    $criteria->compare('dst_id', $model->primaryKey);
+    $criteria->compare('src_frontend', $this->modelName);
+    $this->setDbCriteria($criteria);
+
     return $this;
   }
 
-  /**
-   * @return FActiveRecord[]
-   */
-  public function getAll()
+  private function getData()
   {
-    $data = array();
+    $command = $this->dbConnection->schema->commandBuilder->createFindCommand($this->tableName(), $this->getDbCriteria());
+    return $command->queryAll();
+  }
 
-    /**@var Association $entry*/
-    foreach( $this->findAll() as $entry )
-    {
-      $class = $entry->dst_frontend;
-      $model = $class::model()->findByPk($entry->dst_id);
+  /**
+   * @param CDbCriteria|null $criteria
+   *
+   * @return CDbCriteria
+   */
+  private function getAssociationCriteria(CDbCriteria $criteria = null)
+  {
+    if( !$criteria )
+      $associationCriteria = new CDbCriteria();
+    else
+      $associationCriteria = clone $criteria;
 
-      if( !empty($model) )
-        $data[] = $model;
-    }
+    $associationCriteria->addInCondition('t.id', $this->getKeys());
 
-    return $data;
+    return $associationCriteria;
   }
 }

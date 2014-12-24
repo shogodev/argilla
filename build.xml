@@ -44,7 +44,7 @@
         </if>
       </then>
     </if>
-    <echo message="Cleaning assets and runtime cache directories"/>
+    <echo message="Cleaning assets directories"/>
     <delete includeemptydirs="true">
       <fileset dir="assets/">
         <include name="**"/>
@@ -52,6 +52,9 @@
       <fileset dir="backend/assets/">
         <include name="**"/>
       </fileset>
+    </delete>
+    <echo message="Cleaning runtime cache directories"/>
+    <delete includeemptydirs="false">
       <fileset dir="protected/runtime/cache/">
         <include name="**"/>
       </fileset>

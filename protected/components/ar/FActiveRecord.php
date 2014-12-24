@@ -42,38 +42,4 @@ class FActiveRecord extends CActiveRecord
       'content' => 'Сообщение',
     );
   }
-
-  /**
-   * @param FActiveRecord $object
-   *
-   * @return FActiveRecord
-   */
-  public function findThroughAssociation(FActiveRecord $object)
-  {
-    /**@var Association $association*/
-    $association = Association::model()->setSource($this)->setDestination($object)->find();
-
-    return !empty($association) ? $object->findByPk($association->dst_id) : null;
-  }
-
-  /**
-   * @param FActiveRecord $object
-   * @param $reverseMode
-   *
-   * @return FActiveRecord[]
-   */
-  public function findAllThroughAssociation(FActiveRecord $object, $reverseMode = false)
-  {
-    $ids = array();
-
-    $source      = $reverseMode ? $object : $this;
-    $destination = $reverseMode ? $this : $object;
-    $key         = $reverseMode ? 'src_id' : 'dst_id';
-    $id          = $reverseMode ? $this->id : null;
-
-    foreach(Association::model()->setSource($source)->setDestination($destination)->findAll() as $association)
-      $ids[] = $association->{$key};
-
-    return $ids;
-  }
 }

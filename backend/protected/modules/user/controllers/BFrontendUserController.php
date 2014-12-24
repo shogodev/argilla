@@ -6,7 +6,7 @@
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.user.controllers
  */
-class BFrontendUserController extends BController implements ICoordinateSetter
+class BFrontendUserController extends BController
 {
   public $name = 'Пользователи';
 
@@ -21,18 +21,6 @@ class BFrontendUserController extends BController implements ICoordinateSetter
     $this->saveModels(array($model, $userProfile));
 
     $this->render('_form', array('model' => $model, 'userProfile' => $userProfile));
-  }
-
-  public function actionSetCoordinates($id, $attribute)
-  {
-    $model = BUserProfile::model()->findByPk($id);
-    $attribute = get_class($model).'_'.$attribute;
-
-    $this->render('coordinate_setter', array(
-      'model' => $model,
-      'id' => $id,
-      'attribute' => $attribute,
-    ));
   }
 
   public function actionSearch()
