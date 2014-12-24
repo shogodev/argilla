@@ -28,6 +28,21 @@ class MenuBuilder
   }
 
   /**
+   * @param $sysname
+   *
+   * @return array
+   */
+  public function getMenu($sysname)
+  {
+    $key = __METHOD__.$sysname;
+    if( $this->cacheExists($key) ) return $this->getCache($key);
+    $menu = Menu::model()->getMenu($sysname);
+    $this->setCache($key, $menu);
+
+    return $menu;
+  }
+
+  /**
    * @return array
    */
   public function getSectionMenu()
