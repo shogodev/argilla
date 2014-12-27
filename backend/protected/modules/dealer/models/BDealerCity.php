@@ -14,7 +14,7 @@ class BDealerCity extends BActiveRecord
   {
     return array(
       array('name', 'required'),
-      array('visible', 'safe'),
+      array('position, visible', 'safe'),
     );
   }
 
