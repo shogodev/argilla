@@ -19,31 +19,24 @@
  *
  * @property BActiveRecord $owner
  */
-class RadioToggleBehavior extends CModelBehavior
+class RadioToggleBehavior extends SActiveRecordBehavior
 {
   public $conditionAttribute;
 
   public $toggleAttribute;
 
-  public function events()
-  {
-    return array(
-      'onAfterConstruct' => 'afterConstruct',
-      'onBeforeSave' => 'beforeSave',
-    );
-  }
-
-  public function beforeSave()
+  public function beforeSave($event)
   {
     if( $this->owner->{$this->toggleAttribute} == 1 )
     {
       $criteria = new CDbCriteria();
-      $criteria->compare($this->conditionAttribute, $this->owner->{$this->toggleAttribute});
+      $criteria->compare($this->conditionAttribute, $this->owner->{$this->conditionAttribute});
+
       $this->owner->updateAll(array($this->toggleAttribute => 0), $criteria);
     }
   }
 
-  public function afterConstruct()
+  public function afterConstruct($event)
   {
     if( empty($this->conditionAttribute) )
      throw new CHttpException('500', "В классе ".get_class($this->owner)." неуказан параметр conditionAttribute для поведения RadioToggleBehavior");
