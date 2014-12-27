@@ -17,6 +17,8 @@ $form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId()));
 <table class="detail-view table table-striped table-bordered">
 <tbody>
 
+  <?php echo $form->textFieldRow($model, 'position'); ?>
+
   <?php echo $form->textFieldRow($model, 'name'); ?>
 
   <?php echo $form->checkBoxRow($model, 'visible');?>

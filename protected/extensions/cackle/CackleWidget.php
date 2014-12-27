@@ -178,7 +178,7 @@ class CackleWidget extends CWidget
     if( $data->date == '0000-00-00 00:00:00' )
       return '';
 
-    $normalDate = DateTime::createFromFormat('Y-m-d H:i:s', $data->date)->format('Y.m.d H:i:s');
+    $normalDate = DateTime::createFromFormat('Y-m-d H:i:s', $data->date)->format('d.m.Y');
 
     return strtr($this->getTemplate('date'), array('{normalDate}' => $normalDate, '{dateRaw}' => $data->date));
   }

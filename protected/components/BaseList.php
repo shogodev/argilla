@@ -58,7 +58,7 @@ class BaseList extends CComponent
   {
     $this->sorting = $sorting;
     $this->pagination = $pagination;
-    $this->criteria = $criteria;
+    $this->criteria = clone $criteria;
 
     if( !empty($filters) )
       $this->filters = is_array($filters) ? $filters : array($filters);

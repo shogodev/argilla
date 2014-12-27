@@ -43,6 +43,7 @@ class BModule extends CWebModule
     'exceptions',
     'modules',
     'behaviors',
+    '*'
   );
 
   protected function preinit()

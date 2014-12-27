@@ -9,6 +9,7 @@ Yii::import('backend.components.db.*');
 Yii::import('backend.components.interfaces.*');
 Yii::import('frontend.extensions.upload.components.*');
 Yii::import('frontend.share.*');
+Yii::import('frontend.share.behaviors.*');
 Yii::import('frontend.share.formatters.*');
 Yii::import('frontend.share.validators.*');
 Yii::import('frontend.share.helpers.*');
