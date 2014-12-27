@@ -66,7 +66,7 @@ class BInfo extends BAbstractMenuEntry
   public function getImageTypes()
   {
     return array(
-      '' => 'Не задано',
+      'main' => 'Основное',
       'notice' => 'Анонс',
     );
   }

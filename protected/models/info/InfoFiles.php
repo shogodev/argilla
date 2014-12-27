@@ -18,7 +18,7 @@ class InfoFiles extends FActiveImage
 {
   protected $imageDir = 'f/info/';
 
-  protected $availableTypes = array();
+  protected $availableTypes = array('pre');
 
   public function tableName()
   {

@@ -433,7 +433,7 @@ CREATE TABLE `argilla_info_files` (
   `parent` int(10) unsigned NOT NULL,
   `name` varchar(255) NOT NULL,
   `size` varchar(50) NOT NULL,
-  `type` varchar(255) NOT NULL,
+  `type` varchar(255) NOT NULL DEFAULT 'main',
   `notice` varchar(255) NOT NULL,
   `position` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`),

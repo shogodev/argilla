@@ -25,6 +25,7 @@
  *
  * @property integer leftAttribute
  * @mixin NestedSetBehavior
+ * @mixin ActiveImageBehavior
  */
 class Info extends FActiveRecord implements IMenuItem
 {
@@ -34,7 +35,10 @@ class Info extends FActiveRecord implements IMenuItem
 
   public function behaviors()
   {
-    return array('nestedSetBehavior' => array('class' => 'nestedset.NestedSetBehavior'));
+    return array(
+      'nestedSetBehavior' => array('class' => 'nestedset.NestedSetBehavior'),
+      'imagesBehavior' => array('class' => 'ActiveImageBehavior', 'imageClass' => 'InfoFiles'),
+    );
   }
 
   public function defaultScope()
@@ -120,58 +124,6 @@ class Info extends FActiveRecord implements IMenuItem
       'items'       => array(),
       'htmlOptions' => array('class' => ''),
     );
-  }
-
-  /**
-   * @param string $type
-   *
-   * @return InfoFiles
-   */
-  public function getFile($type = 'main')
-  {
-    return InfoFiles::model()->findByAttributes(
-      array(
-        'type' => $type,
-        'parent' => $this->id,
-      ),
-      array(
-        'order' => 'IF(position, position, 999999999)'
-      ));
-  }
-
-  /**
-   * @param string $type
-   *
-   * @return InfoFiles[]
-   */
-  public function getFiles($type = 'main')
-  {
-    if( empty($this->files) )
-    {
-      $files = InfoFiles::model()->findAllByAttributes(
-        array('parent' => $this->id),
-        array('order' => 'IF(position, position, 999999999)')
-      );
-
-      $this->setFiles($files, $type);
-    }
-
-    return isset($this->files[$type]) ? $this->files[$type] : array();
-  }
-
-  /**
-   * @param array $files
-   * @param string $type
-   *
-   * @return void
-   */
-  public function setFiles($files, $type)
-  {
-    if( !isset($this->files[$type]) )
-      $this->files[$type] = array();
-
-    foreach($files as $file)
-      $this->files[$file['type']][] = $file;
   }
 
   public function getBreadcrumbs()
