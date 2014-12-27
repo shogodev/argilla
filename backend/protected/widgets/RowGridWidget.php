@@ -29,6 +29,8 @@ abstract class RowGridWidget extends CWidget
 
   public $urlDelete;
 
+  private $updateSelectors = array();
+
   /**
    * @return array
    */
@@ -68,11 +70,6 @@ abstract class RowGridWidget extends CWidget
     echo '</td></tr>';
   }
 
-  protected function getUpdateButtonClass()
-  {
-    return $this->getId().'_update_button';
-  }
-
   /**
    * @return BActiveRecord $model
    */
@@ -102,12 +99,7 @@ abstract class RowGridWidget extends CWidget
     ));
     echo CHtml::closeTag('div');
 
-    Yii::app()->clientScript->registerScript($buttonId.'_script', "
-      jQuery(document).on('click', '#{$buttonId}', function(e){
-        e.preventDefault();
-        assigner.open(this.href, {'closeOperation' : function(){ $.fn.yiiGridView.update('{$this->getId()}')}});
-      });
-    ");
+    $this->addUpdateSelector('#'.$buttonId);
   }
 
   private function renderGrid()
@@ -120,7 +112,7 @@ abstract class RowGridWidget extends CWidget
       'columns' => CMap::mergeArray($this->getColumns(), $this->getColumnButtons())
     ));
 
-    $this->registerUpdateButtonScript();
+    $this->registerUpdateScript();
   }
 
   /**
@@ -128,25 +120,36 @@ abstract class RowGridWidget extends CWidget
    */
   protected function getColumnButtons()
   {
+    $updateButtonClass = $this->getId().'_update_button';
+    $this->addUpdateSelector('.'.$updateButtonClass);
+
     return array(
       array(
         'class' => 'BButtonColumn',
         'template' => $this->templateButtonColumn,
         'updateButtonUrl' => $this->urlEdit,
-        'updateButtonOptions' => array('class' => 'update '.$this->getUpdateButtonClass()),
+        'updateButtonOptions' => array('class' => 'update '.$updateButtonClass),
         'deleteButtonUrl' => $this->urlDelete
       )
     );
   }
 
-  private function registerUpdateButtonScript()
+  private function registerUpdateScript()
   {
-    Yii::app()->clientScript->registerScript($this->getUpdateButtonClass().'_script', "
-      jQuery(document).on('click', '.{$this->getUpdateButtonClass()}', function(e){
+    Yii::app()->clientScript->registerScript($this->getId().'_grid_update_script', "
+      jQuery(document).on('click', '".implode(', ', $this->updateSelectors)."', function(e) {
         e.preventDefault();
-        assigner.open(this.href, {'closeOperation' : function(){ $.fn.yiiGridView.update('{$this->getId()}')}});
+        assigner.open(this.href, {'closeOperation' : function() {
+          $.fn.yiiGridView.update('{$this->getId()}');
+        }
+        });
       });
     ");
+  }
+
+  private function addUpdateSelector($selector)
+  {
+    $this->updateSelectors[$selector] = $selector;
   }
 
   private function isAvailable()

@@ -67,8 +67,7 @@ class BProductController extends BController
     $this->saveModels(array($model));
 
     $this->render('_form', array(
-      'model'           => $model,
-      'parameters'      => BProductParam::model()->getParameters($model),
+      'model' => $model,
       'assignmentModel' => $assignmentModel,
     ));
   }

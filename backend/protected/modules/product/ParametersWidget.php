@@ -1,0 +1,129 @@
+<?php
+/**
+ * @author Alexey Tatarivov <tatarinov@shogo.ru>
+ * @link https://github.com/shogodev/argilla/
+ * @copyright Copyright &copy; 2003-2014 Shogo
+ * @license http://argilla.ru/LICENSE
+ * @package 
+ */
+class ParametersWidget extends CWidget
+{
+  /**
+   * @var BProduct
+   */
+  public $model;
+
+  public $form;
+
+  public function init()
+  {
+    if( is_null($this->model) )
+      throw new CHttpException(500, 'Укажите свойство model для виджета '.__CLASS__);
+
+    if( is_null($this->form) )
+      throw new CHttpException(500, 'Укажите свойство form для виджета '.__CLASS__);
+  }
+
+  public function run()
+  {
+    if( !$this->isAvailable() )
+      return;
+
+    echo CHtml::openTag('div', array('class' => 'group-view', 'id' => 'product-parameters'));
+    $this->renderTable();
+    echo CHtml::closeTag('div');
+  }
+
+  private function renderTable()
+  {
+    echo '<table class="items table table-striped table-bordered param-table">';
+    echo '<thead><tr><th>Параметры</th><th>Значения</th></tr></thead>';
+    echo '<tbody>';
+    $this->renderBody();
+    echo '</tbody>';
+    echo '</table>';
+  }
+
+  private function renderBody()
+  {
+    foreach(BProductParam::model()->getParameters($this->model) as $parameter)
+    {
+      if( $parameter->isGroup() )
+      {
+        echo '<tr class="group"><td colspan="2">'.$parameter->name.'</td></tr>';
+      }
+      else
+      {
+        echo '<tr>';
+        echo '<th>';
+        echo CHtml::label($parameter->name, null);
+        echo '</th>';
+        echo '<td>';
+        $this->renderParameter($parameter);
+        echo '</td></tr>';
+      }
+    }
+  }
+
+  /**
+   * @param BProductParam $param
+   */
+  private function renderParameter($param)
+  {
+    if( $this->model->asa('productColorBehavior') && $this->model->getColorParameterId() == $param->id )
+    {
+      $this->renderColorParameter($param);
+      return;
+    }
+
+    switch($param->type)
+    {
+      case 'text':
+      case 'slider':
+        echo CHtml::activeTextField($param, "[$param->id]value");
+      break;
+
+      case 'checkbox':
+        echo CHtml::tag('div', array('style' => 'float: left'), false, false);
+        echo $this->form->checkBoxList($param, "[$param->id]value", CHtml::listData($param->variants, 'id', 'name'));
+        echo CHtml::closeTag('div');
+      break;
+
+      case 'select':
+        echo $this->form->dropDownList($param, "[$param->id]value", array('' => 'Не задано') + CHtml::listData($param->variants, 'id', 'name'));
+      break;
+
+      case 'radio':
+        echo CHtml::tag('div', array('style' => 'float: left'), false, false);
+        echo $this->form->radioButtonList($param, "[$param->id]value", CHtml::listData($param->variants, 'id', 'name'));
+        echo CHtml::closeTag('div');
+      break;
+    }
+  }
+
+  /**
+   * @param BProductParam $param
+   */
+  private function renderColorParameter($param)
+  {
+    $variants = array();
+
+    foreach($param->variants as $i => $variant)
+    {
+      $variants[$variant->id] = CHtml::image($variant->getImage(), $variant->alt, array('style' => 'height: 25px; background: '.$variant->notice , 'title' => $variant->name, ));
+
+      if( is_array($param->value) && in_array($variant->id, $param->value) )
+      {
+        echo CHtml::label(
+          CHtml::label($variants[$variant->id], null).
+          CHtml::hiddenField("BProductParamName[$param->id][value][]", $variant->id), null, array('class' => 'checkbox')
+        );
+      }
+    }
+  }
+
+  private function isAvailable()
+  {
+    return !$this->controller->popup && $this->controller->isUpdate();
+  }
+}
