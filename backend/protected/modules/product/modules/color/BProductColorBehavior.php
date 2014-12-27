@@ -6,13 +6,24 @@
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.product.behaviors
  *
+ *  Подключение:
+ *  ...
+ *   'productColorBehavior' => array('class' => 'color.BProductColorBehavior')
+ *  ...
+ */
+
+
+/**
+ * Class BProductColorBehavior
  * @property BProduct $owner
  */
 class BProductColorBehavior extends SActiveRecordBehavior
 {
-  public function afterFind($event)
+  public function init()
   {
-    $this->addRelations();
+    $this->owner->getMetaData()->addRelation('colorProduct', array(
+        BActiveRecord::HAS_MANY, 'BProductColor', 'product_id', 'order' => 'IF(position, position, 999999999)')
+    );
   }
 
   public function updateColorParameters()
@@ -24,6 +35,14 @@ class BProductColorBehavior extends SActiveRecordBehavior
     {
       $this->saveColorParameter($id);
     }
+  }
+
+  /**
+   * @return integer
+   */
+  public function getColorParameterId()
+  {
+    return BColor::COLOR_PARAMETER_ID;
   }
 
   /**
@@ -56,21 +75,6 @@ class BProductColorBehavior extends SActiveRecordBehavior
       $parameter->setAttributes($attributes);
       $parameter->save();
     }
-  }
-
-  private function addRelations()
-  {
-    $this->owner->getMetaData()->addRelation('colorProduct', array(
-      BActiveRecord::HAS_MANY, 'BProductColor', 'product_id', 'order' => 'IF(position, position, 999999999), color_type_id')
-    );
-  }
-
-  /**
-   * @return integer
-   */
-  private function getColorParameterId()
-  {
-    return BProductParamName::COLOR_ID;
   }
 
   /**

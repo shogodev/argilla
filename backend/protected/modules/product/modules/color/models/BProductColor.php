@@ -11,20 +11,20 @@
  * @property integer $id
  * @property integer $position
  * @property integer $product_id
- * @property integer $color_type_id
  * @property integer $color_id
+ * @property integer $visible
  *
  * @property BProduct $product
  * @property BColor $color
- * @property BProductColorType $colorType
  */
 class BProductColor extends BActiveRecord
 {
   public function rules()
   {
     return array(
-      array('color_id, product_id, color_type_id', 'required'),
+      array('color_id, product_id', 'required'),
       array('position, visible', 'numerical', 'integerOnly' => true),
+      array('color_id, visible, position', 'safe', 'on' => 'search')
     );
   }
 
@@ -32,7 +32,6 @@ class BProductColor extends BActiveRecord
   {
     return array(
       'color' => array(self::BELONGS_TO, 'BColor', 'color_id'),
-      'colorType' => array(self::BELONGS_TO, 'BProductColorType', 'color_type_id'),
       'product' => array(self::BELONGS_TO, 'BProduct', 'product_id'),
     );
   }
@@ -41,7 +40,6 @@ class BProductColor extends BActiveRecord
   {
     return CMap::mergeArray(parent::attributeLabels(), array(
       'color_id' => 'Цвет',
-      'color_type_id' => 'Тип цвета'
     ));
   }
 
@@ -57,5 +55,15 @@ class BProductColor extends BActiveRecord
   {
     $this->product->updateColorParameters();
     parent::afterDelete();
+  }
+
+  protected function getSearchCriteria(CDbCriteria $criteria)
+  {
+    $criteria->compare('product_id', $this->product_id);
+    $criteria->compare('color_id', $this->color_id);
+    $criteria->compare('visible', $this->visible);
+    $criteria->compare('position', $this->position);
+
+    return $criteria;
   }
 }
