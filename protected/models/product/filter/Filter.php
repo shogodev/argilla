@@ -236,10 +236,10 @@ class Filter extends CComponent
    *
    * @return FilterElement[]
    */
-  public function getElements($onlyMultiItems = true, array $excludeIds = array())
+  public function getElements($onlyMultiItems = false, array $excludeIds = array())
   {
     return array_filter($this->elements, function(FilterElement $element) use ($excludeIds, $onlyMultiItems) {
-      return !in_array($element->id, $excludeIds) && ($onlyMultiItems ? count($element->getItems()) > 1 : true);
+      return !in_array($element->id, $excludeIds) && count($element->getItems()) > $onlyMultiItems ? 1 : 0;
     });
   }
 
