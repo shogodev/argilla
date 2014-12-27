@@ -22,6 +22,7 @@
   <?php foreach($showcase as $tab) { ?>
     <div id="<?php echo $tab->prefix?>">
       <?php $this->widget('FListView', array(
+        'id' => 'showcase-list-'.$tab->index,
         'dataProvider' => $tab->getRandomDataProvider(),
         'itemView' => '/product/_product_block',
         'itemsCssClass' => 'omega-four nofloat',

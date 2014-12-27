@@ -38,7 +38,7 @@ class ShowcaseTab extends CComponent
   /**
    * @var string
    */
-  private $url;
+  private $customData;
 
   /**
    * @param string $name
@@ -65,13 +65,10 @@ class ShowcaseTab extends CComponent
    */
   public function getUrl()
   {
-    if( !isset($this->url) )
-    {
-      $this->url = Utils::buildUrl(array(
-        'path' => Yii::app()->controller->getCurrentAbsoluteUrl(),
-        'fragment' => $this->getPrefix()
-      ));
-    }
+    $this->url = Utils::buildUrl(array(
+      'path' => Yii::app()->request->hostInfo.Yii::app()->request->requestUri, //используем сырой url потому что, getCurrentAbsoluteUrl работает некоррекно с get параметрами вида "?name"
+      'fragment' => $this->getPrefix()
+    ));
 
     return $this->url;
   }
@@ -111,5 +108,15 @@ class ShowcaseTab extends CComponent
   public function getRandomDataProvider()
   {
     return new FArrayDataProvider($this->getDataProvider()->getDataRandom(), array('pagination' => false));
+  }
+
+  public function setCustomData($customData)
+  {
+    $this->customData = $customData;
+  }
+
+  public function getCustomData()
+  {
+    return $this->customData;
   }
 }
