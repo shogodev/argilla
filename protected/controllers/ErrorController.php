@@ -64,9 +64,9 @@ class ErrorController extends FController
     $this->render('error404');
   }
 
-  protected function error402()
+  protected function error401()
   {
-    $this->render('error402', array(
+    $this->render('error401', array(
       'loginForm' => method_exists($this, 'getLoginForm') ? $this->getLoginForm() : null,
     ));
   }
