@@ -76,13 +76,8 @@ class <?php echo $modelClass; ?> extends <?php echo $this->baseClass."\n"; ?>
   }
 
 <?php endif; ?>
-  /**
-   * @return BActiveDataProvider
-   */
-  public function search()
+  public function search(CDbCriteria $criteria)
   {
-    $criteria = new CDbCriteria;
-
 <?php
 foreach($columns as $name=>$column)
 {
@@ -97,8 +92,6 @@ foreach($columns as $name=>$column)
 }
 ?>
 
-    return new BActiveDataProvider($this, array(
-      'criteria' => $criteria,
-    ));
+    return $criteria;
   }
 }
