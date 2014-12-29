@@ -104,22 +104,6 @@ class FControllerBehavior extends CBehavior
   }
 
   /**
-   * @return array
-   */
-  public function getTopMenu()
-  {
-    return Menu::model()->getMenu('top');
-  }
-
-  /**
-   * @return array
-   */
-  public function getBottomMenu()
-  {
-    return Menu::model()->getMenu('bottom');
-  }
-
-  /**
    * @return MenuBuilder
    */
   public function getMenuBuilder()

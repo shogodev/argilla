@@ -183,15 +183,13 @@ class PayableOrder implements IPayableOrder
   {
     if( $result )
     {
-      $this->setStatus('ok');
       $description = 'Оплата успешно принята';
-      return true;
+      return $this->setStatus('ok');
     }
     else
     {
-      $this->setStatus('failed');
       $description = 'Оплата заказа не принята';
-      return false;
+      return $this->setStatus('failed');
     }
   }
 

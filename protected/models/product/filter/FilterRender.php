@@ -119,4 +119,23 @@ class FilterRender extends CComponent
 
     Yii::app()->clientScript->registerScript('removeElementsScript_'.$this->parent->filterKey, $script, CClientScript::POS_READY);
   }
+
+  public function renderClearFilterButton($text, $htmlOptions = array())
+  {
+    $htmlOptions['id'] = 'clear_'.$this->parent->filterKey;
+
+    echo CHtml::link($text, '#', $htmlOptions);
+  }
+
+  public function registerClearFilterButtonScript()
+  {
+    $id = 'clear_'.$this->parent->filterKey;
+
+    $script = "$('body').on('click', '#{$id}', function(e) {
+      e.preventDefault();
+       submitForm_{$this->parent->filterKey}({});
+    });";
+
+    Yii::app()->clientScript->registerScript('clearFilterButtonScript_'.$this->parent->filterKey, $script, CClientScript::POS_LOAD);
+  }
 }

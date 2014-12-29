@@ -187,6 +187,16 @@ class Filter extends CComponent
     return $selected;
   }
 
+  public function showClearButton()
+  {
+    $selected = array();
+
+    foreach($this->elements as $element)
+      $selected = CMap::mergeArray($selected, $element->getSelectedItems());
+
+    return !empty($selected);
+  }
+
   /**
    * @param FilterElementItem[] $items
    */
