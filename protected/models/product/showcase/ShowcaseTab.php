@@ -65,12 +65,10 @@ class ShowcaseTab extends CComponent
    */
   public function getUrl()
   {
-    $this->url = Utils::buildUrl(array(
+    return Utils::buildUrl(array(
       'path' => Yii::app()->request->hostInfo.Yii::app()->request->requestUri, //используем сырой url потому что, getCurrentAbsoluteUrl работает некоррекно с get параметрами вида "?name"
       'fragment' => $this->getPrefix()
     ));
-
-    return $this->url;
   }
 
   /**

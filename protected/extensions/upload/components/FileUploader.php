@@ -46,10 +46,9 @@ abstract class FileUploader
 
     if( !array_key_exists($extension, $this->thumbs) )
     {
-      $settings  = Yii::app()->controller->module->getThumbsSettings();
-      $thumbs    = isset($settings[Yii::app()->controller->id]) ? $settings[Yii::app()->controller->id] : array();
-      $lastKey   = key(array_reverse($thumbs));
-      $path      = Yii::app()->controller->module->getUploadUrl().($lastKey ? $lastKey.'_' : '').$fileName;
+      $thumbs = Arr::get(Yii::app()->controller->module->getThumbsSettings(), Yii::app()->getMappedControllerId(), array());
+      $lastKey = key(array_reverse($thumbs));
+      $path = Yii::app()->controller->module->getUploadUrl().($lastKey ? $lastKey.'_' : '').$fileName;
     }
     else
     {

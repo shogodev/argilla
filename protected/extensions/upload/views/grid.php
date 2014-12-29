@@ -40,7 +40,7 @@ else
 
 <script type="text/javascript">
 //<![CDATA[
-  $('.image-column > img').click(function(e){
+  $('.image-column > img').click(function(e) {
     e.preventDefault();
 
     // Блок с картинкой для ресайза
@@ -49,8 +49,7 @@ else
     );
 
     // Вызов оверлея и попапа для ресайза картинки
-    $('body').append( $('<div/>').addClass('overlay-white') )
-    .append( popupBlock );
+    $('body').append( $('<div/>').addClass('overlay-white') ).append( popupBlock );
 
     $('#raw-image').Jcrop({
       onChange: showSize,
@@ -62,7 +61,7 @@ else
   });
 
   // Фиксирование соотношения сторон при выборе чекбокса "Квадратные превью"
-  $('#img-resize-squared-lock').live('change', function(){
+  $('body').on('change', '#img-resize-squared-lock', function(){
     jcrop_api.setOptions(
       this.checked ? { aspectRatio: 1/1 } : { aspectRatio: 0 }
     );
@@ -70,7 +69,7 @@ else
   });
 
   // Изменение выбранной области при изменении значения в поле ширина
-  $('#preview-width').live('input', function(){
+  $('body').on('input', '#preview-width', function(){
     var pos_x = jcrop_api.tellSelect().x,
         pos_y = jcrop_api.tellSelect().y,
         pos_x2 = jcrop_api.tellSelect().x2,
@@ -81,7 +80,7 @@ else
   });
 
   // Изменение выбранной области при изменении значения в поле высота
-  $('#preview-height').live('input', function(){
+  $('body').on('input', '#preview-height', function(){
     var pos_x = jcrop_api.tellSelect().x,
         pos_y = jcrop_api.tellSelect().y,
         pos_x2 = jcrop_api.tellSelect().x2,
@@ -104,7 +103,7 @@ else
   }
 
   // Собственно кроп картинки
-  $('#preview-submit').live('click', function(){
+  $('body').on('click', '#preview-submit', function(){
     var pos_x = jcrop_api.tellSelect().x,
         pos_y = jcrop_api.tellSelect().y,
         pos_x2 = jcrop_api.tellSelect().x2,
@@ -114,12 +113,12 @@ else
   });
 
   // Клик по кнопке закрыть
-  $('.img-resize-popup').live('click', function(e){
+  $('body').on('click','.img-resize-popup', function(e){
     e.preventDefault();
     closeResizePopup();
   });
 
-  $('.img-resize-popup .img-resize-inner').live('click', function(e){
+  $('body').on('click', '.img-resize-popup .img-resize-inner', function(e){
     e.stopPropagation();
     e.preventDefault();
   });

@@ -70,7 +70,11 @@ class UploadAction extends CAction
     {
       case 'delete':
         $this->deleteFile($fileId);
-        break;
+      break;
+
+      case 'crop':
+        $this->cropFile($fileId);
+      break;
 
       default:
         $this->uploadFile();
@@ -209,6 +213,42 @@ class UploadAction extends CAction
   }
 
   /**
+   * @param $id
+   *
+   * @throws CHttpException
+   */
+  private function cropFile($id)
+  {
+    if( !$id )
+      throw new CHttpException(500, 'File id can`t be null.');
+
+    if( !($cropSettings = Arr::get(Yii::app()->controller->module->getCropSettings(), Yii::app()->getMappedControllerId())) )
+      throw new CHttpException(500, 'Укажите настоки модуля в методе getCropSettings');
+
+    $originalName = $this->model->getFileName($id);
+    $x = Yii::app()->request->getParam('x');
+    $y = Yii::app()->request->getParam('y');
+
+    foreach($cropSettings as $prefix => $settings)
+    {
+      Yii::app()->phpThumb->options['jpegQuality'] = 100;
+      $cropImage = Yii::app()->phpThumb->create($this->path.$originalName);
+
+      $thumbsSettings = $this->getThumbsSettings();
+      $thumbSizes = end($thumbsSettings);
+      $cropImage->resize($thumbSizes[0], $thumbSizes[1]);
+
+      list($width, $height) = $settings;
+      $cropImage->crop($x, $y, $width, $height);
+      $cropImagePath = $this->path.$prefix.'_'.$originalName;
+      if( file_exists($cropImagePath) )
+        unlink($cropImagePath);
+      $cropImage->save($cropImagePath);
+      chmod($cropImagePath, $this->fileMode);
+    }
+  }
+
+  /**
    * Если файл существует с таким названием уже существует, то создаёт новое имя файла.
    *
    * @param $model
@@ -304,9 +344,9 @@ class UploadAction extends CAction
     {
       $settings = $settings[$preffix];
       $position = Arr::get($settings, 'position', 'center');
-      $opacity  = Arr::get($settings, 'opacity', 100);
-      $offsetX  = Arr::get($settings, 'offsetX', 0);
-      $offsetY  = Arr::get($settings, 'offsetY', 0);
+      $opacity = Arr::get($settings, 'opacity', 100);
+      $offsetX = Arr::get($settings, 'offsetX', 0);
+      $offsetY = Arr::get($settings, 'offsetY', 0);
 
       if( !file_exists($this->path.$settings['image']) )
         return;

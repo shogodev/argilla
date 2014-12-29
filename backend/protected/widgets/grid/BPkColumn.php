@@ -93,7 +93,7 @@ class BPkColumn extends BDataColumn
   protected function registerScript()
   {
     Yii::app()->clientScript->registerScript('pkColumnChange', "
-      $('.grid-view input.select').live('change', function(){
+      $('body').on('change', '.grid-view input.select', function(){
         var value = $(this).prop('checked') ? 1 : 0;
         var id    = $(this).attr('id').match(/pk_(\d+)/)[1];
 
