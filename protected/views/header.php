@@ -24,7 +24,7 @@
   </div>
 
   <div class="nofloat m10">
-    <?php $this->widget('FMenu', array('items' => $this->getTopMenu()))?>
+    <?php $this->widget('FMenu', array('items' => $this->getMenuBuilder()->getMenu('top')))?>
   </div>
 
 </header>
