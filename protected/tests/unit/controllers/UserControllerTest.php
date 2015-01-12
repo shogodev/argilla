@@ -75,9 +75,7 @@ class UserControllerTest extends CTestCase
   public function testLogin()
   {
     Yii::app()->request->setAjax(array('Login' => array('login' => 'restore', 'password' => '555')));
-    ob_start();
     $this->controller->run('login');
-    ob_end_clean();
   }
 
   /**

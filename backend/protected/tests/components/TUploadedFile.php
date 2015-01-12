@@ -15,7 +15,8 @@ class TUploadedFile
 
   public static function init()
   {
-    $mock = PHPUnit_Framework_MockObject_Generator::getMock(
+    $generator = new PHPUnit_Framework_MockObject_Generator();
+    $mock = $generator->getMock(
       'CUploadedFile',
       array('saveAs'),
       array(
