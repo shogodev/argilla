@@ -83,12 +83,12 @@ class UploadWidget extends CJuiInputWidget
   /**
    * @var string name of the upload view to be rendered
    */
-  public $uploadView = 'upload';
+  public $uploadView = '_upload';
 
   /**
    * @var string name of the download view to be rendered
    */
-  public $downloadView = 'download';
+  public $downloadView = '_download';
 
   public $previewMaxWidth = 20;
 
@@ -111,14 +111,13 @@ class UploadWidget extends CJuiInputWidget
     }
     else
     {
-      $this->model->attachBehavior('uploadBehavior', array('class'     => 'UploadBehavior',
-                                                           'attribute' => $this->attribute));
+      $this->model->attachBehavior('uploadBehavior', array(
+        'class' => 'UploadBehavior',
+        'attribute' => $this->attribute)
+      );
     }
   }
 
-  /**
-   * Generates the required HTML and Javascript
-   */
   public function run()
   {
     $this->attachBehaviorToModel();
@@ -172,93 +171,76 @@ class UploadWidget extends CJuiInputWidget
       $this->render($this->formView, compact('htmlOptions'));
   }
 
-  public function publishInitScript($options)
+  private function publishInitScript($options)
   {
-    Yii::app()->clientScript->registerScript(__CLASS__.'#'.$this->htmlOptions['id'], <<<EOD
+    Yii::app()->clientScript->registerScript(__CLASS__.'#'.$this->htmlOptions['id'], "
+      jQuery(function($)
+      {
+       'use strict';
 
-jQuery(function($)
-{
-  var formId   = '{$this->htmlOptions['id']}';
-  var gridId   = '{$this->htmlOptions['gridId']}'
-  var multiply = '{$this->multiple}';
-  var options  = {$options};
+        var formId = '{$this->htmlOptions['id']}';
+        var gridId = '{$this->htmlOptions['gridId']}'
+        var multiply = '{$this->multiple}';
+        var options = {$options};
 
-  var td       = $('#' + gridId).parents('td');
-  var files    = td.find('.fileupload-files');
-  var buttons  = td.find('.fileupload-buttonbar');
+        var td = $('#' + gridId).parents('td');
+        var files = td.find('.fileupload-files');
+        var buttons = td.find('.fileupload-buttonbar');
 
-  if( !multiply && td.find('.items a').length )
-    buttons.hide();
+        if( !multiply && td.find('.items a').length )
+          buttons.hide();
 
-  $('#' + formId).fileupload(options)
-    .bind('fileuploadstop', function(e, data)
-    {
-      $.fn.yiiGridView.update(gridId);
-      if( !multiply )
-        files.hide().find('tbody').empty();
-    })
-    .bind('fileuploaddestroy', function(e, data)
-    {
-      $.fn.yiiGridView.update(gridId);
-      if( !multiply )
-        buttons.show();
-    })
-    .bind('fileuploadadded', function(e, data){
-      if( !multiply ){
-        buttons.hide();
-        files.find('button.delete').click(function(){
-          if( !files.find('.items a').length ) buttons.show();
+        var fileUploader = $('#' + formId).fileupload(options);
+        fileUploader.bind('fileuploadstop', function(e, data)
+        {
+          $.fn.yiiGridView.update(gridId);
+          if( !multiply )
+            files.hide().find('tbody').empty();
         });
-      }
-    });
-});
-EOD
-    ,CClientScript::POS_END);
+        fileUploader.bind('fileuploaddestroy', function(e, data)
+        {
+          if( !multiply )
+            buttons.show();
+        });
+        fileUploader.bind('fileuploadadded', function(e, data){
+          if( !multiply ){
+            buttons.hide();
+            files.find('button.delete').click(function(){
+              if( !files.find('.items a').length ) buttons.show();
+            });
+          }
+        });
+     });", CClientScript::POS_END);
   }
 
-  /**
-   * Publises and registers the required CSS and Javascript
-   * @throws CHttpException if the assets folder was not found
-   */
-  public function publishAssets()
+  private function publishAssets()
   {
     $assets  = dirname(__FILE__).'/assets';
     $baseUrl = Yii::app()->assetManager->publish($assets);
 
     if( is_dir($assets) )
     {
-      Yii::app()->clientScript->registerCssFile($baseUrl.'/css/jquery.fileupload-ui.css');
-
-      // The Templates plugin is included to render the upload/download listings
-      Yii::app()->clientScript->registerScriptFile($baseUrl.'/js/tmpl.min.js', CClientScript::POS_END);
-
-      // The basic File Upload plugin
+      Yii::app()->clientScript->registerScriptFile($baseUrl.'js/vendor/jquery.ui.widget.js', CClientScript::POS_END);
+      Yii::app()->clientScript->registerScriptFile($baseUrl.'/js/vendor/tmpl.js', CClientScript::POS_END);
+      Yii::app()->clientScript->registerScriptFile($baseUrl.'/js/jquery.iframe-transport.js', CClientScript::POS_END);
       Yii::app()->clientScript->registerScriptFile($baseUrl.'/js/jquery.fileupload.js', CClientScript::POS_END);
 
       if( $this->previewImages || $this->imageProcessing )
       {
-        Yii::app()->clientScript->registerScriptFile($baseUrl.'/js/load-image.min.js', CClientScript::POS_END);
-        Yii::app()->clientScript->registerScriptFile($baseUrl.'/js/canvas-to-blob.min.js', CClientScript::POS_END);
+        Yii::app()->clientScript->registerScriptFile($baseUrl.'/js/vendor/load-image.all.min.js', CClientScript::POS_END);
+        Yii::app()->clientScript->registerScriptFile($baseUrl.'/js/vendor/canvas-to-blob.js', CClientScript::POS_END);
+        Yii::app()->clientScript->registerScriptFile($baseUrl.'/js/jquery.fileupload-process.js', CClientScript::POS_END);
+        Yii::app()->clientScript->registerScriptFile($baseUrl.'/js/jquery.fileupload-image.js', CClientScript::POS_END);
+        Yii::app()->clientScript->registerScriptFile($baseUrl.'/js/jquery.fileupload-audio.js', CClientScript::POS_END);
+        Yii::app()->clientScript->registerScriptFile($baseUrl.'/js/jquery.fileupload-video.js', CClientScript::POS_END);
+        Yii::app()->clientScript->registerScriptFile($baseUrl.'/js/jquery.fileupload-validate.js', CClientScript::POS_END);
       }
 
-      // The Iframe Transport is required for browsers without support for XHR file uploads
-      Yii::app()->clientScript->registerScriptFile($baseUrl.'/js/jquery.iframe-transport.js', CClientScript::POS_END);
-
-      // The File Upload image processing plugin
-      if( $this->imageProcessing )
-      {
-        Yii::app()->clientScript->registerScriptFile($baseUrl.'/js/jquery.fileupload-ip.js', CClientScript::POS_END);
-      }
-      // The File Upload user interface plugin
       Yii::app()->clientScript->registerScriptFile($baseUrl.'/js/jquery.fileupload-ui.js', CClientScript::POS_END);
-
-      // The localization script
       Yii::app()->clientScript->registerScriptFile($baseUrl.'/js/locale.js', CClientScript::POS_END);
 
-      /**
-      <!-- The XDomainRequest Transport is included for cross-domain file deletion for IE8+ -->
-      <!--[if gte IE 8]><script src="<?php echo Yii::app()->baseUrl; ?>/js/cors/jquery.xdr-transport.js"></script><![endif]-->
-      */
+      Yii::app()->clientScript->registerCssFile($baseUrl.'/css/jquery.fileupload.css');
+      Yii::app()->clientScript->registerCssFile($baseUrl.'/css/jquery.fileupload-ui.css');
     }
     else
     {

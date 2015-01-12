@@ -156,10 +156,8 @@ class UploadAction extends CAction
       {
         unlink($this->path.$name);
       }
-
       $this->deleteThumbs($name);
-
-      echo json_encode(true);
+      echo json_encode(array('files' => array($name => true)));
     }
   }
 
@@ -170,41 +168,49 @@ class UploadAction extends CAction
    */
   private function uploadFile(CUploadedFile $uploadedFile = null)
   {
-    $model       = new UploadForm('create');
+    $model = new UploadForm('create');
     $model->file = $uploadedFile? $uploadedFile : CUploadedFile::getInstance($this->model, $this->model->asa('uploadBehavior')->attribute);
 
     if( $model->file !== null )
     {
       $model->mime_type = $model->file->getType();
-      $model->size      = $model->file->getSize();
-      $model->name      = $model->file->getName();
+      $model->size = $model->file->getSize();
+      $model->name = $model->file->getName();
+
+
+      $file = array(
+        "name" => $model->name,
+        "size" => $model->size,
+      );
 
       if( $model->validate() )
       {
         $this->prepareName($model);
         $this->saveFile($model);
 
-        $file = array("name"          => $model->name,
-                      "mime_type"     => $model->mime_type,
-                      "size"          => $model->size,
-                      "url"           => $this->publicPath.$model->name,
-                      "thumbnail_url" => $this->createThumbs($model),
-                      );
+        $file = CMap::mergeArray($file, array(
+          "url" => $this->publicPath.$model->name,
+          "thumbnailUrl" => $this->createThumbs($model),
+          'deleteType' => "DELETE"
+        ));
 
-        $fileId             = $this->addFileToModel($file);
-        $file['delete_url'] = Yii::app()->controller->createUrl('upload', array('id'     => $this->model->id,
-                                                                                'model'  => get_class($this->model),
-                                                                                'fileId' => $fileId,
-                                                                                'attr'   => $this->model->asa('uploadBehavior')->attribute,
-                                                                                'method' => 'delete'));
+        $fileId = $this->addFileToModel($file);
+        $file['deleteUrl'] = Yii::app()->controller->createUrl('upload', array(
+          'id' => $this->model->id,
+          'model' => get_class($this->model),
+          'fileId' => $fileId,
+          'attr' => $this->model->asa('uploadBehavior')->attribute,
+          'method' => 'delete'
+          )
+        );
 
         $this->setHeader();
-        echo json_encode(array($file));
       }
       else
       {
-        echo json_encode(array(array("error" => $model->getErrors('file'))));
+        $file = CMap::mergeArray($file, array('error' => $model->getErrors('file')));
       }
+      echo json_encode(array('files' => array($file)));
     }
     else
     {
