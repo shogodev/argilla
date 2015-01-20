@@ -12,6 +12,8 @@ class CackleApi
 
   protected $reviewsUrl = 'http://cackle.me/api/2.0/review/list.json';
 
+  protected $importCommentsUrl = 'http://import.cackle.me/api/import-wordpress-comments';
+
   protected $siteId;
 
   protected $accountApiKey;
@@ -60,6 +62,52 @@ class CackleApi
     $data = $this->getData($this->commentsUrl, $this->getRequestParams($modified, $page, $size));
 
     return $data ? $data->comments : null;
+  }
+
+  /**
+   * @param string $data данные в формате xml
+   * @param bool $last последняя запись
+   */
+  public function sendComment($data, $last)
+  {
+    return $this->sendData($this->importCommentsUrl, $data, $last);
+  }
+
+  private function sendData($url, $dataXml, $last)
+  {
+    $params = array(
+      'siteId' => $this->siteId,
+      'siteApiKey' => $this->siteApiKey,
+      'accountApiKey' => $this->accountApiKey,
+      'wxr' => $dataXml,
+      'eof' => $last
+    );
+
+    if( !extension_loaded('curl') )
+      throw new Exception('Curl module are not installed!');
+
+    $ch = curl_init();
+    curl_setopt($ch, CURLOPT_URL, $url);
+    curl_setopt($ch, CURLOPT_POST, true);
+    curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+    curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);
+    curl_setopt($ch, CURLOPT_HTTPHEADER, array(
+      "Content-type" => "application/x-www-form-urlencoded; charset='utf-8'",
+      "Accept" =>	"text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8"
+    ));
+    curl_setopt($ch, CURLOPT_ENCODING, "gzip, deflate");
+    curl_setopt($ch, CURLOPT_USERAGENT, "Mozilla/5.0 (Windows; U; Windows NT 5.1; en-US; rv:1.8.1.6) Gecko/20070725 Firefox/2.0.0.6");
+    $query = http_build_query($params, '', '&');
+    curl_setopt($ch, CURLOPT_POSTFIELDS, $query);
+
+    $result = curl_exec($ch);
+    $error  = curl_error($ch);
+    curl_close($ch);
+
+    if( $error )
+      throw new CHttpException(500, $error);
+
+    return $result;
   }
 
   private function getData($url, $parameters = array())
