@@ -14,25 +14,25 @@ a {
 
 h1, h1 a, .h1, .h1 a {
   font-size: 16px;
-  line-height: 120%;
+  line-height: $line-height;
   color: $black;
   margin-bottom: 15px;
   text-decoration: none; }
 h2, h2 a, .h2, .h2 a {
   font-size: 15px;
-  line-height: 120%;
+  line-height: $line-height;
   color: $black;
   margin-bottom: 15px;
   text-decoration: none; }
 h3, h3 a, .h3, .h3 a {
   font-size: 14px;
-  line-height: 120%;
+  line-height: $line-height;
   color: $black;
   margin-bottom: 15px;
   text-decoration: none; }
 h4, h4 a, .h4, .h4 a {
   font-size: 13px;
-  line-height: 120%;
+  line-height: $line-height;
   color: $black;
   margin-bottom: 10px;
   text-decoration: none; }
@@ -223,6 +223,6 @@ h4, h4 a, .h4, .h4 a {
 @for $i from 8 through 24 {
   .s#{$i} {
     font-size: 1px * $i;
-    line-height: 120%;
+    line-height: $line-height;
   }
 }
