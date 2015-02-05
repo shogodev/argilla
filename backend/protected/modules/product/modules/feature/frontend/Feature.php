@@ -12,13 +12,27 @@
  * @property string $image
  * @property string $name
  * @property string $notice
+ *
+ * @property Association[] $associations
  */
 class Feature extends FActiveRecord
 {
+  public function tableName()
+  {
+    return '{{product_feature}}';
+  }
+
   public function behaviors()
   {
     return array(
-      'imageBehavior' => array('class' => 'SingleImageBehavior', 'path' => 'product'),
+      'imageBehavior' => array('class' => 'SingleImageBehavior', 'path' => 'product/feature'),
+    );
+  }
+
+  public function relations()
+  {
+    return array(
+      'associations' => array(self::HAS_MANY, 'Association', 'dst_id', 'on' => 'dst_frontend="Feature"')
     );
   }
 
@@ -27,5 +41,10 @@ class Feature extends FActiveRecord
     return array(
       'order' => "IF(position=0, 999999999, position), id",
     );
+  }
+
+  public function getValue()
+  {
+    return $this->name.(!empty($this->notice) ? ': '.$this->notice : '');
   }
 }
