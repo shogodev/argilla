@@ -13,6 +13,7 @@
  * </pre>
  */
 Yii::import('backend.modules.product.modules.text.frontend.ProductText');
+
 /**
  * Class ProductTextBehavior
  * @property FController $owner
@@ -23,14 +24,42 @@ class ProductTextBehavior extends SBehavior
 
   const MAIN = 'content';
 
+  /**
+   * @param string $location
+   *
+   * @return string
+   */
   public function getText($location = self::UPPER)
   {
-    $productText = ProductText::model()->whereUrl(Yii::app()->controller->getCurrentUrl())->find();
+    $productText = ProductText::model()->whereUrl($this->owner->getCurrentUrl())->find();
+    return $productText ? $productText->{$location} : '';
+  }
 
-    if( $productText )
-      return $productText->{$location};
+  /**
+   * @return string
+   */
+  public function getBottomText()
+  {
+    return $this->getText(self::MAIN);
+  }
 
-    return '';
+  /**
+   * @param FActiveRecord $model
+   * @param string $attribute
+   * @param string $location
+   *
+   * @return string
+   */
+  public function getModelText(FActiveRecord $model, $attribute = 'notice', $location = self::UPPER)
+  {
+    if( $text = $this->getText($location) )
+    {
+      return $text;
+    }
+    else
+    {
+      return $model->$attribute;
+    }
   }
 }
 
