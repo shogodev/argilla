@@ -15,7 +15,7 @@
 <tbody>
 
   <?php echo $form->textFieldRow($model, 'position', array('class' => 'span1')); ?>
-  <?php echo $form->autocompleteRow($model, 'location'); ?>
+  <?php echo $form->dropDownListRow($model, 'location', BannerModule::$bannerLocations); ?>
   <?php echo $form->textFieldRow($model, 'title'); ?>
   <?php echo $form->textFieldRow($model, 'url'); ?>
   <?php echo $form->uploadRow($model, 'img', false); ?>
