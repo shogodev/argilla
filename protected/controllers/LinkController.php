@@ -22,6 +22,7 @@ class LinkController extends FController
 
     if( Yii::app()->request->isAjaxRequest && $form->save() )
     {
+      $form->sendNotificationBackend();
       $form->responseSuccess(CHtml::tag('div', array('class' => 'center bb'), 'Ваша ссылка успешно отправлена.'));
     }
     else
