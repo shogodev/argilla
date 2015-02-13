@@ -1,0 +1,81 @@
+<?php
+Yii::import('system.gii.generators.model.ModelCode');
+
+class BModelCode extends ModelCode
+{
+  public $labelException = array('id');
+
+  public function generateLabels($table)
+  {
+    $labels = array();
+
+    foreach($table->columns as $column)
+    {
+      if( in_array($column->name, $this->labelException) )
+        continue;
+
+      if( $this->commentsAsLabels && $column->comment )
+        $labels[$column->name] = $column->comment;
+      else
+      {
+        $label = ucwords(trim(strtolower(str_replace(array('-', '_'), ' ', preg_replace('/(?<![A-Z])[A-Z]/', ' \0', $column->name)))));
+        $label = preg_replace('/\s+/', ' ', $label);
+        if( strcasecmp(substr($label, -3), ' id') === 0 )
+          $label = substr($label, 0, -3);
+        if( $label === 'Id' )
+          $label = 'ID';
+        $label = str_replace("'", "\\'", $label);
+        $labels[$column->name] = $label;
+      }
+    }
+
+    return $labels;
+  }
+
+  public function generateRules($table)
+  {
+    $rules = array();
+    $required = array();
+    $integers = array();
+    $numerical = array();
+    $length = array();
+    $safe = array();
+
+    /**
+     * @var CDbColumnSchema $column
+     */
+    foreach($table->columns as $column)
+    {
+
+      if( $column->autoIncrement )
+        continue;
+      $r = !$column->allowNull && $column->defaultValue === null && $column->dbType != 'text' && $column->dbType != 'timestamp';
+      if( $r )
+        $required[] = $column->name;
+      if( $column->type === 'integer' )
+        $integers[] = $column->name;
+      elseif( $column->type === 'double' )
+        $numerical[] = $column->name;
+      elseif( $column->type === 'string' && $column->size > 0 )
+        $length[$column->size][] = $column->name;
+      elseif( !$column->isPrimaryKey && !$r )
+        $safe[] = $column->name;
+    }
+
+    if( $required !== array() )
+      $rules[] = "array('".implode(', ', $required)."', 'required')";
+    if( $integers !== array() )
+      $rules[] = "array('".implode(', ', $integers)."', 'numerical', 'integerOnly' => true)";
+    if( $numerical !== array() )
+      $rules[] = "array('".implode(', ', $numerical)."', 'numerical')";
+    if( $length !== array() )
+    {
+      foreach($length as $len => $cols)
+        $rules[] = "array('".implode(', ', $cols)."', 'length', 'max' => $len)";
+    }
+    if( $safe !== array() )
+      $rules[] = "array('".implode(', ', $safe)."', 'safe')";
+
+    return $rules;
+  }
+}
