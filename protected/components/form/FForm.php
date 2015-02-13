@@ -34,6 +34,11 @@ class FForm extends CForm
 
   public $loadFromSession = false;
 
+  /**
+   * @var bool $setUserData флаг подстановки пользовательски данных в форму
+   */
+  public $setUserData = true;
+
   public $clearAfterSubmit = false;
 
   protected $layoutViewParams = array();
@@ -88,6 +93,11 @@ class FForm extends CForm
         $this->model->clearErrors();
         $this->model->addErrors($errors);
       }
+    }
+
+    if( $this->setUserData )
+    {
+      $this->setUserData($this->loadFromSession);
     }
 
     if( $this->loadFromSession )
@@ -505,6 +515,38 @@ class FForm extends CForm
 
     $this->getElements()->clear();
     $this->getElements()->copyFrom($elements);
+  }
+
+  /**
+   * Подставляет пользовательские данных в форму
+   * @param bool $once - один раз
+   */
+  public function setUserData($once = true)
+  {
+    if( Yii::app()->user->isGuest )
+      return;
+
+    /**
+     * @var FActiveRecord $model
+     */
+    foreach($this->getModels() as $model)
+    {
+      $sessionKey = 'setOnceFormData_'.get_class($model);
+
+      if( $once && Yii::app()->session[$sessionKey] )
+        continue;
+
+      $attributes = array('email' => Yii::app()->user->data->email);
+      $attributes = CMap::mergeArray($attributes, Yii::app()->user->profile->getAttributes());
+
+      foreach($model->getAttributes() as $attribute => $value)
+      {
+        if( empty($value) && !empty($attributes[$attribute]) )
+          $model->setAttribute($attribute, $attributes[$attribute]);
+      }
+
+      Yii::app()->session[$sessionKey] = true;
+    }
   }
 
   /**
