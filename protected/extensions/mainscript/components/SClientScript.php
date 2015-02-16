@@ -54,13 +54,12 @@ class SClientScript extends CClientScript
   private function prepareScripts()
   {
     //Clean total scripts
-    $totalScripts      = $this->scriptFiles;
+    $totalScripts = $this->scriptFiles;
     $this->scriptFiles = array();
 
     $this->prepareCoreScripts();
     $this->prepareMainScript();
     $this->restoreScripts($totalScripts);
-
   }
 
   private function prepareMainScript()
@@ -69,6 +68,9 @@ class SClientScript extends CClientScript
     $url  = Yii::app()->assetManager->publish($path, true);
 
     $this->registerScriptFile($url);
+
+    if( file_exists($sourceMap = $path.'.map') )
+      Yii::app()->assetManager->publish($sourceMap, true);
   }
 
   private function prepareCoreScripts()

@@ -5,9 +5,9 @@
 .settings/
 .project
 
+/build/node_modules
+
 /js/.version
-/js/packed.js
-/js/compiled.js
 
 /protected/tests/report/*
 

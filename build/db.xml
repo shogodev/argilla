@@ -13,7 +13,7 @@
   <!-- by now these two tasks are the same -->
   <taskdef name="changeTablePrefix" classname="build.tasks.ChangeTablePrefixTask"/>
 
-  <taskdef name="checkdb" className="build.tasks.CheckDbTask"/>
+  <taskdef name="checkdb" classname="build.tasks.CheckDbTask"/>
 
   <target name="getDbSettings">
     <parseDbConfig file="${dbConfigFilePath}"/>

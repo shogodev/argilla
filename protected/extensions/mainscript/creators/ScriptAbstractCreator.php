@@ -45,7 +45,7 @@ abstract class ScriptAbstractCreator
     if( empty($this->script) )
       throw new CException("Имя файла скрипта не может быть пустым");
 
-    if( !in_array($this->script, self::$scripts) )
+    if( !in_array($this->script, static::$scripts) )
       throw new CException("Неверное имя или путь скрипта.");
 
     if( $fullPath )
@@ -53,6 +53,7 @@ abstract class ScriptAbstractCreator
     else
       return $this->script;
   }
+
 
   /**
    * Обновление файла крипта

@@ -1,0 +1,151 @@
+/*
+Project:   Template
+CSS Type:  Semantic
+Version:   1.2.0 (17.04.2014)
+Authors:   Grigory Zarubin, Alexander Rubanov, Alexey Efimov (Shogo.RU)
+*/
+
+//@import "jquery.fancybox";
+//@import "alertify/alertify.core.css";
+@import "mixins";
+@import "const";
+@import "resets";
+@import "common_styles";
+@import "print";
+
+/*   -=========== HTML5 structure ===========-   */
+#structure {
+  position: relative;
+  min-height: 100%; }
+.wrapper {
+  width: $wrapper-width;
+  margin-left: auto;
+  margin-right: auto;
+  position: relative; }
+header {}
+#content {
+  padding-bottom: $footer-height + 40px; }
+aside#left {
+  float: left;
+  width: 230px; }
+section#main {
+  float: left;
+  width: 730px;
+  padding-left: 30px; }
+footer {
+  clear: both;
+  position: relative;
+  margin-top: -$footer-height;
+  height: $footer-height; }
+
+/*   -=========== Blocks ===========-   */
+.breadcrumbs {
+  * {
+    display: inline-block;
+    color: #000000;
+    padding-right: 5px; }
+  span {
+    color: #FFFFFF; }
+}
+.breadcrumbs-separator {}
+
+.pager {
+  ul {
+    overflow: hidden;
+    margin: 0;
+    padding: 0;
+    li {
+      display: inline-block;
+      margin: 0;
+      padding: 0;
+      list-style: none;
+      a {
+        color: $black;
+        text-decoration: none;
+        &:hover {
+          text-decoration: underline; }
+      }
+      &.page {
+        &.selected {
+          a {
+            color: $white; }
+        }
+      }
+      &.previous, &.next {
+        a {}
+      }
+      &.previous {
+        //background: url(backward.png) no-repeat 0 0;
+      }
+      &.next {
+        //background: url(forward.png) no-repeat 0 0;
+      }
+    }
+  }
+}
+.pager-header {}
+.pager-footer {}
+
+footer {
+  .counters {
+    float: left;
+    width: 200px;
+    padding: 0 85px 0 0;
+    img {
+      float: left;
+      margin-right: 10px; }
+  }
+  .copyright {
+    float: left;
+    font-size: 10px;
+    line-height: 120%;
+    color: #788A91; }
+}
+
+/*   -=========== Menu classes ===========-   */
+.menu {
+  ul {
+    li {
+      list-style: none;
+      a {
+        text-decoration: none; }
+    }
+  }
+}
+
+/*   -=========== Popup classes ===========-   */
+.popup {
+  display: none;
+  position: absolute;
+  z-index: 9999;
+  .close {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0; }
+}
+
+.movin-to-basket {
+  @include transition(all .75s ease);
+  z-index: 10000;
+}
+
+/*   -=========== Buttons ===========-   */
+.btn {
+  display: inline-block;
+  vertical-align: middle;
+  border: none;
+  text-decoration: none;
+  text-align: center; }
+
+/*   -=========== Specific mobile styles ===========-   */
+.mobile {
+  body {
+    min-width: $wrapper-width + 30px; }
+}
+.phone-number {
+  pointer-events: none;
+  cursor: default;
+  .mobile & {
+    pointer-events: auto; }
+}

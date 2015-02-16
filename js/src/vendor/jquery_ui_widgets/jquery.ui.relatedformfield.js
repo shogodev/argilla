@@ -1,18 +1,19 @@
 /**
  * Created by tatarinov on 09.10.14.
+ *
  * rules : {
  *  {
  *    'action' : 'show',
  *    'des' : 'Model[attribute]',
  *    'src' : 'Model[attribute]',
- *    'srcValues' : [1, 2, 5,undefined]
+ *    'srcValues' : [1, 2, 5,undefined] или 'srcValues' : 1
  *  },
  *  {
  *    'action' : 'call',
  *    'callback' : function(element, value) {}),
  *    'src' : 'Model[attribute]',
  *  }
- *  если в srcValues написать undefined, при отсутстпин поля будет воспринято как true
+ *  если в srcValues написать undefined, при отсутствии поля будет воспринято как true
  */
 ;$.widget('argilla.relatedFields', {
 
@@ -26,6 +27,12 @@
     var rules = this.options.rules;
     for(var i in rules)
     {
+      if( rules[i].action == 'show' && !$.isArray(rules[i].srcValues) ) {
+        var value = rules[i].srcValues;
+        rules[i].srcValues = [];
+        rules[i].srcValues.push(value);
+      }
+
       this._bind(rules[i].src);
       this._checkRule(rules[i]);
     }
@@ -104,16 +111,11 @@
         }
 
         var destElement = this._getElementByName(rule.dest);
-        if( equals )
-        {
+        if( equals ) {
           destElement.parent().parent().show();
         }
-        else
-        {
-          if( destElement.prop('tagName') == 'INPUT' )
-            destElement.val('');
-/*          else if( destElement.prop('tagName') == 'SELECT' )
-            destElement.prop('selectedIndex', 0);*/
+        else {
+          this._clearSelectedElements(destElement);
           destElement.parent().parent().hide();
         }
       break;
@@ -121,6 +123,32 @@
       case 'call':
         rule.callback(this._getElementByName(rule.src), this._getValue(rule.src));
       break;
+    }
+  },
+
+  _clearSelectedElements : function(elements) {
+    var self = this;
+    elements.each(function () {
+      self._clearSelectedElement($(this));
+    });
+  },
+
+  _clearSelectedElement : function(element) {
+    if( element.prop('tagName') == 'INPUT' ) {
+      switch (element.attr('type'))
+      {
+        case 'text':
+          element.val('').change();
+        break;
+
+        case 'checkbox':
+        case 'radio':
+          element.prop('checked', false).change();
+        break;
+      }
+    }
+    else if( element.prop('tagName') == 'SELECT' ) {
+      element.prop('selectedIndex', 0).change();
     }
   },
 
