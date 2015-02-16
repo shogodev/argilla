@@ -8,19 +8,20 @@ Yii::import('ext.mainscript.helpers.*');
  */
 class ScriptsFileFinderTest extends CTestCase
 {
+  public function setUp()
+  {
+    ScriptsFileFinder::$root = realpath(Yii::getPathOfAlias('backend').'/..');
+    ScriptsFileFinder::getInstance()->initFiles();
+  }
+
   public function testGetFiles()
   {
-    ScriptsFileFinder::$root = dirname(__FILE__);
-
     $instance = ScriptsFileFinder::getInstance();
-
     $this->assertNotEmpty($instance->getFiles());
   }
 
   public function testFileExistence()
   {
-    ScriptsFileFinder::$root = dirname(__FILE__);
-
     $instance = ScriptsFileFinder::getInstance();
 
     foreach( $instance->getFiles() as $file )

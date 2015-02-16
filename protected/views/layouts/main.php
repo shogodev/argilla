@@ -25,7 +25,7 @@
   <script src="js/html5msie/respond.js"></script>
   <![endif]-->
 
-  <?php echo CHtml::linkTag("stylesheet", null, Yii::app()->assetManager->publish(getcwd().'/i/style').'/css/st.css');?>
+  <?php echo CHtml::linkTag("stylesheet", null, Yii::app()->assetManager->publish(Yii::getPathOfAlias('frontend').'/../i/style').'/css/st.css');?>
 
   <script>
   //<![CDATA[
