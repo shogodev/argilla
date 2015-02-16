@@ -40,6 +40,8 @@ class DateFormatBehavior extends SActiveRecordBehavior
   {
     if( empty($this->attribute) )
       throw new CHttpException(500, "Ошибка. Не указано свойство attribute для поведения ".get_class($this));
+    if( is_array($this->attribute) )
+      throw new CHttpException(500, "Ошибка. Свойство attribute для поведения ".get_class($this)." не должно быть массивом");
 
     $validator = new CDateValidator();
     $validator->attributes = array($this->attribute);

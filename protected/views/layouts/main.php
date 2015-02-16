@@ -18,14 +18,14 @@
   <meta name="viewport" content="target-densitydpi=device-dpi" />
   <base href="<?php echo Yii::app()->homeUrl?>" />
 
-  <link rel="canonical" href="<?php echo $this->getCanonicalUrl();?>" />
+  <?php echo CHtml::linkTag("canonical", null, Yii::app()->controller->getCanonicalUrl());?>
 
   <!--[if lt IE 9]>
   <script src="js/html5msie/html5shiv-printshiv.js"></script>
   <script src="js/html5msie/respond.js"></script>
   <![endif]-->
 
-  <?php Yii::app()->clientScript->registerCssFile('/i/st.css') ?>
+  <?php echo CHtml::linkTag("stylesheet", null, Yii::app()->assetManager->publish(getcwd().'/i/style').'/css/st.css');?>
 
   <script>
   //<![CDATA[

@@ -33,7 +33,7 @@ class BSaveAssociationActionTest extends CDbTestCase
   public function testRunOne()
   {
     $this->getFixtureManager()->truncateTable('{{association}}');
-    $model = Bproduct::model()->findByPk(11);
+    $model = BProduct::model()->findByPk(11);
     $this->assertEmpty($model->associations);
 
     $action = new BSaveAssociationAction(Yii::app()->controller, 'saveAssociations');
@@ -54,7 +54,7 @@ class BSaveAssociationActionTest extends CDbTestCase
     $_POST['value'] = 1;
     $action->run('BProduct', 11, 'BProduct');
 
-    $model = Bproduct::model()->findByPk(11);
+    $model = BProduct::model()->findByPk(11);
     $this->assertEquals(12, Arr::reset($model->associations)->dst_id);
     $this->assertEquals(13, Arr::end($model->associations)->dst_id);
   }
@@ -68,7 +68,7 @@ class BSaveAssociationActionTest extends CDbTestCase
     $_POST['value'] = 1;
     $action->run('BProduct', 11, 'BProduct');
 
-    $model = Bproduct::model()->findByPk(11);
+    $model = BProduct::model()->findByPk(11);
     $this->assertEquals(12, Arr::reset($model->associations)->dst_id);
 
     $_POST['ids']   = 12;

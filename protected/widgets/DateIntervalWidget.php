@@ -159,14 +159,18 @@ class DateIntervalWidget extends CWidget
   private function registerCalendarScript()
   {
     Yii::app()->clientScript->registerScript(__CLASS__.__METHOD__, "
-    $('.calendar').datePicker({inline:true}).bind('dateSelected', function(e, selectedDate) {
-        var selector = '.".$this->getElementCssClass()."';
-        $(selector + '[name=day]').val(selectedDate.getDate()).trigger('change');
-        $(selector + '[name=month]').val(selectedDate.getMonth() + 1).trigger('change');
-        $(selector + '[name=year]').val(selectedDate.getFullYear()).trigger('change');
+    
+    if( $('.calendar').length )
+    {
+      $('.calendar').datePicker({inline:true}).bind('dateSelected', function(e, selectedDate) {
+          var selector = '.".$this->getElementCssClass()."';
+          $(selector + '[name=day]').val(selectedDate.getDate()).trigger('change');
+          $(selector + '[name=month]').val(selectedDate.getMonth() + 1).trigger('change');
+          $(selector + '[name=year]').val(selectedDate.getFullYear()).trigger('change');
 
-        $('#".$this->getAttributeId()."').val(selectedDate.asString('dd.mm.yyyy')).trigger('change');
-      });
+          $('#".$this->getAttributeId()."').val(selectedDate.asString('dd.mm.yyyy')).trigger('change');
+        });
+    }
     ");
   }
 

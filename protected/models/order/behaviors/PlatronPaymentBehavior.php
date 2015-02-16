@@ -51,7 +51,7 @@ class PlatronPaymentBehavior extends SBehavior
    */
   public function getPaymentSystemTypeId()
   {
-    return OrderPaymentType::NON_CASH;
+    return OrderPaymentType::E_PAY;
   }
 
   public function registerPaymentScripts()

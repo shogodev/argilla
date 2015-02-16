@@ -22,7 +22,7 @@
 
 <div style="margin-bottom: 20px">
   <div style="font-size: 24px">Здравствуйте<?php echo !empty($model->name) ? ', '.$model->name : ''; ?>!</div><br />
-  Для Вас был создан новый пароль. Вы можете его смнить на сайте <a href="<?php $this->createUrl('userProfile/data')?>" target="_blank"><?php echo strtoupper($project)?></a><br/>
+  Для Вас был создан новый пароль. Вы можете его смнить на сайте <a href="<?php echo Yii::app()->createAbsoluteUrl('userProfile/changePassword')?>" target="_blank"><?php echo strtoupper($project)?></a><br/>
   Ваш логин: <?php echo $model->user->login?><br/>
   Ваш новый пароль: <?php echo $password?><br/>
 </div>

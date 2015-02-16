@@ -38,14 +38,7 @@ class PredictiveSearchWidget extends CWidget
   {
     $this->registerPredictiveSearchScript();
 
-    // todo: Исправить на searchField после релиза Yii 1.1.15
-    echo CHtml::tag(
-      'input',
-      CMap::mergeArray($this->htmlOptions, array(
-        'type' => 'search',
-        'name' => $this->name,
-        'value' => $this->value
-    )));
+    echo CHtml::searchField($this->name, $this->value, $this->htmlOptions);
   }
 
   private function registerPredictiveSearchScript()

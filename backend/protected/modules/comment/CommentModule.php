@@ -9,7 +9,10 @@
 class CommentModule extends BModule
 {
   public $name = 'Комментарии';
+
   public $defaultController = 'BComment';
+
+  public $enabled = false;
 
   /**
    * @return array
