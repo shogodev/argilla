@@ -1,7 +1,7 @@
 /*
 Project:   Template
 CSS Type:  Semantic
-Version:   1.2.0 (17.04.2014)
+Version:   1.2.2 (07.10.2014)
 Authors:   Grigory Zarubin, Alexander Rubanov, Alexey Efimov (Shogo.RU)
 */
 
@@ -144,6 +144,7 @@ footer {
     min-width: $wrapper-width + 30px; }
 }
 .phone-number {
+  text-decoration: none;
   pointer-events: none;
   cursor: default;
   .mobile & {
