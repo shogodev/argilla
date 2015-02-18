@@ -12,7 +12,10 @@ Yii::import('ext.mainscript.helpers.*');
 class ScriptsFactory
 {
   public $mode  = 'frontend';
+
   public $debug = false;
+
+  public $useGulp = false;
 
   protected $model;
 
@@ -25,7 +28,10 @@ class ScriptsFactory
         break;
       case 'frontend':
       default:
-        if( $this->debug )
+
+        if( $this->useGulp )
+          $this->model = new DummyScriptCreator();
+        else if( $this->debug )
           $this->model = new PackedScriptCreator();
         else
         {

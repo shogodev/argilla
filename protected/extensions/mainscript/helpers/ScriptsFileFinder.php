@@ -24,17 +24,32 @@ class ScriptsFileFinder
    */
   public $availableScripts = array(
     'jquery' => array(
-      'dir_name' => '/js/jquery',
-      'pattern'  => '/^jquery-([\d\.]+)min\.js/',
-      ),
+      'dir_name' => '/js/src/vendor',
+      'pattern'  => '/^jquery[\-\d\.]*.js$/',
+    ),
 
-    'plugins' => array(
-      'dir_name' => '/js/jquery.plugins',
+    'jquery-ui' => array(
+      'dir_name' => '/js/src/vendor',
+      'pattern'  => '/^jquery-ui[\-\d\.]*.js$/',
+    ),
+
+    'jquery-plugins' => array(
+      'dir_name' => '/js/src/vendor/jquery_plugins',
       'pattern'  => '/^.+\.js$/'
     ),
 
-    'base' => array(
-      'dir_name' => '/js',
+    'jquery-ui-widgets' => array(
+      'dir_name' => '/js/src/vendor/jquery_ui_widgets',
+      'pattern'  => '/^.+\.js$/'
+    ),
+
+    'vendor' => array(
+      'dir_name' => '/js/src/vendor',
+      'pattern'  => '/^.+\.js$/'
+    ),
+
+    'other' => array(
+      'dir_name' => '/js/src',
       'pattern'  => '/^.+\.js$/'
     ),
   );

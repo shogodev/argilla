@@ -8,26 +8,6 @@
  */
 class FFormInputElement extends CFormInputElement
 {
-  public static $coreTypes = array(
-    'text' => 'activeTextField',
-    'hidden' => 'activeHiddenField',
-    'password' => 'activePasswordField',
-    'textarea' => 'activeTextArea',
-    'file' => 'activeFileField',
-    'radio' => 'activeRadioButton',
-    'checkbox' => 'activeCheckBox',
-    'listbox' => 'activeListBox',
-    'dropdownlist' => 'activeDropDownList',
-    'checkboxlist' => 'activeCheckBoxList',
-    'radiolist' => 'activeRadioButtonList',
-    'url' => 'activeUrlField',
-    'email' => 'activeEmailField',
-    'number' => 'activeNumberField',
-    'range' => 'activeRangeField',
-    'date' => 'activeDateField',
-    'tel' => 'activeTelField'
-  );
-
   public $layout = null;
 
   protected $defaultLayout = '<div class="form-row m7">{label}<div class="form-field">{input}{hint}{error}</div></div>';
@@ -66,28 +46,6 @@ class FFormInputElement extends CFormInputElement
   public function setLabel($value)
   {
     $this->_label = $value;
-  }
-
-  public function renderInput()
-  {
-    if( isset(self::$coreTypes[$this->type]) )
-    {
-      $method = self::$coreTypes[$this->type];
-      if( strpos($method, 'List') !== false )
-        return CHtml::$method($this->getParent()->getModel(), $this->name, $this->items, $this->attributes);
-      else
-        return CHtml::$method($this->getParent()->getModel(), $this->name, $this->attributes);
-    }
-    else
-    {
-      $attributes = $this->attributes;
-      $attributes['model'] = $this->getParent()->getModel();
-      $attributes['attribute'] = $this->name;
-      ob_start();
-      $this->getParent()->getOwner()->widget($this->type, $attributes);
-
-      return ob_get_clean();
-    }
   }
 
   public function getLayout()

@@ -24,11 +24,14 @@
  *
  * @property FSingleImage $image
  */
+
 class Banner extends FActiveRecord
 {
   protected $banners;
 
   protected $bannersUrl;
+
+  private static $bannerLocations;
 
   public function behaviors()
   {
@@ -54,6 +57,8 @@ class Banner extends FActiveRecord
    */
   public function getByLocationAll($location)
   {
+    $this->checkLocation($location);
+
     if( !isset($this->banners[$location]) )
       $this->banners[$location] = $this->findAllByAttributes(array('location' => $location));
 
@@ -143,5 +148,17 @@ class Banner extends FActiveRecord
   private function getPrepareUrl($url)
   {
     return preg_replace('/\?.*/', '', $url);
+  }
+
+  private function checkLocation($location)
+  {
+    if( !self::$bannerLocations )
+    {
+      Yii::import('backend.modules.banner.BannerModule');
+      self::$bannerLocations = BannerModule::$bannerLocations;
+    }
+
+    if( !isset(self::$bannerLocations[$location]) )
+      throw new CHttpException(500, 'Location '.$location.' не указан в свойстве $bannerLocations класса BannerModule');
   }
 }

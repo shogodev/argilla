@@ -34,7 +34,7 @@ class BannerTest extends CDbTestCase
 
   public function testGetByLocationAll()
   {
-    $banners = $this->banner->getByLocationAll('left');
+    $banners = $this->banner->getByLocationAll('catalog_left');
 
     $this->assertEquals($banners[0]->id, 1);
     $this->assertEquals($banners[1]->id, 3);
@@ -42,7 +42,7 @@ class BannerTest extends CDbTestCase
 
   public function testGetByLocation()
   {
-    $banner = $this->banner->getByLocation('left');
+    $banner = $this->banner->getByLocation('catalog_left');
 
     $this->assertEquals($banner->id, 1);
   }
@@ -56,7 +56,7 @@ class BannerTest extends CDbTestCase
     $this->assertEquals($banners[2]->id, 6);
     $this->assertCount(3, $banners);
 
-    $banners = $this->banner->getByCurrentUrlAll('right');
+    $banners = $this->banner->getByCurrentUrlAll('catalog');
     $this->assertEquals($banners[0]->id, 5);
   }
 

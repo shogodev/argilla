@@ -1,0 +1,228 @@
+body {
+  font-family: $fonts;
+  font-size: $text-size;
+  line-height: $line-height;
+  color: $text-color;
+  background: $body-background; }
+
+a {
+  color: $link-color;
+  &:hover {
+    color: $hovered-link-color;
+  }
+}
+
+h1, h1 a, .h1, .h1 a {
+  font-size: 16px;
+  line-height: 120%;
+  color: $black;
+  margin-bottom: 15px;
+  text-decoration: none; }
+h2, h2 a, .h2, .h2 a {
+  font-size: 15px;
+  line-height: 120%;
+  color: $black;
+  margin-bottom: 15px;
+  text-decoration: none; }
+h3, h3 a, .h3, .h3 a {
+  font-size: 14px;
+  line-height: 120%;
+  color: $black;
+  margin-bottom: 15px;
+  text-decoration: none; }
+h4, h4 a, .h4, .h4 a {
+  font-size: 13px;
+  line-height: 120%;
+  color: $black;
+  margin-bottom: 10px;
+  text-decoration: none; }
+
+.inp, textarea, select {
+  -webkit-box-sizing: border-box;
+     -moz-box-sizing: border-box;
+          box-sizing: border-box;
+  font-size: 11px;
+  color: $black;
+  padding: 3px 5px;
+  background: $white;
+  border: 0; }
+
+/*   -=========== Forms ===========-   */
+.form {
+  * {
+    font-family: $fonts; }
+  .form-row:before, .form-row:after {
+    content: " ";
+    display: table; }
+  .form-row:after {
+    clear: both; }
+  label {
+    float: left;
+    width: 160px;
+    padding: 3px 15px 0 0; }
+  .form-field {
+    float: left;
+    width: 350px;
+    label {
+      float: none;
+      width: 100%;
+      padding-right: 0; }
+    .inp, select, textarea {
+      width: 100%; }
+    .form-size-half {
+      width: 48%; }
+    .form-size-third {
+      width: 32%; }
+    .form-size-quarter {
+      width: 24%; }
+    .form-size-auto {
+      width: auto; }
+  }
+  .form-separator {
+    display: inline-block;
+    text-align: center;
+    width: 4%; }
+  .form-hint {
+    margin: 20px 0 30px 0; }
+  .form-submit {
+    text-align: center; }
+  span.required,
+  .required span {
+    color: $red; }
+  .error {
+    input, select, textarea {
+      border: 1px solid $red; }
+  }
+  .errorMessage {
+    font-size: 12px;
+    color: #8A004B;
+    padding: 5px 20px;
+    background: #F5DCEA;
+    -webkit-border-bottom-right-radius: 3px;
+    -webkit-border-bottom-left-radius: 3px;
+    -moz-border-radius-bottomright: 3px;
+    -moz-border-radius-bottomleft: 3px;
+    border-bottom-right-radius: 3px;
+    border-bottom-left-radius: 3px; }
+  .success-message {
+    padding: 10px;
+    font-weight: bold;
+    text-align: center; }
+}
+
+/*   -=========== Useful classes ===========-   */
+.hova a {
+  text-decoration: none;
+  &:hover {
+    text-decoration: underline;
+  }
+}
+.unhova a {
+  text-decoration: underline;
+  &:hover {
+    text-decoration: none;
+  }
+}
+.nova a {
+  text-decoration: none;
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.left {
+  float: left;
+  margin: 0 15px 0 0; }
+.right {
+  float: right;
+  margin: 0 0 0 15px; }
+.fl {
+  float: left; }
+.fr {
+  float: right; }
+.auto {
+  width: 100%;
+  height: auto; }
+
+.mrk1 {
+  //background: url(mrk1.gif) no-repeat 0 4px;
+  padding-left: 12px; }
+
+.hr1 {
+  background: #000000;
+  font-size: 1px;
+  line-height: 1px;
+  height: 1px;
+  margin: 10px 0 15px 0; }
+
+.l-main {
+  float: left;
+  width: 49%;
+  margin-right: 2%; }
+.r-main {
+  float: right;
+  width: 49%; }
+
+.block-center {
+  overflow: hidden;
+  position: relative;
+  width: 100%; }
+.block-center-div {
+  position: relative;
+  float: left;
+  left: 50%; }
+.block-center-div-div {
+  position: relative;
+  float: left;
+  right: 50%; }
+
+.text-container:before, .text-container:after, .nofloat:before, .nofloat:after {
+  content: " ";
+  display: table; }
+.text-container:after, .nofloat:after {
+  clear: both; }
+.text-container {
+  margin-bottom: 10px; }
+.no-overflow {
+  overflow: hidden; }
+.text-container {
+  p {
+    padding-top: 20px;
+    &:first-child {
+      padding-top: 0; }
+  }
+  ul {
+    padding-top: 20px;
+    li {
+      list-style: disc outside;
+      margin-bottom: 5px; }
+  }
+}
+
+.center {
+  text-align: center; }
+.nowrap {
+  white-space: nowrap; }
+
+/*   -=========== Classes for chainable applying ===========-   */
+.nn {
+  font-weight: normal; }
+.bb {
+  font-weight: bold; }
+.italic {
+  font-style: italic; }
+.uppercase {
+  text-transform: uppercase; }
+@for $i from 0 through 10 {
+  .m#{$i * 5} { margin-bottom: 5px * $i; }
+}
+.m3 {
+  margin-bottom: 3px; }
+.m7 {
+  margin-bottom: 7px; }
+@for $i from 8 through 24 {
+  .s#{$i} {
+    font-size: 1px * $i;
+    line-height: 120%;
+  }
+}

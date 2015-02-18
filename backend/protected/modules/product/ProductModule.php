@@ -17,7 +17,7 @@ class ProductModule extends BModule
     return array(
       'product' => array(
         'origin' => array(4500, 4500),
-        'pre' => array(130, 70),
+        'pre' => array(300, 300),
       )
     );
   }
@@ -49,6 +49,7 @@ class ProductModule extends BModule
   {
     return array(
       'backend.modules.product.models.behaviors.*',
+      'backend.modules.product.modules.group.models.BProductGroup',
     );
   }
 }

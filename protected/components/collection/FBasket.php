@@ -24,7 +24,9 @@ class FBasket extends FCollectionUI
    */
   public $collectionItemsForSum;
 
-  public $classFastOrderButton = 'fast-order-{keyCollection}';
+  public $classFastOrderShowButton = 'fast-order-show-{keyCollection}';
+
+  public $classFastOrderCloseButton = 'fast-order-close-{keyCollection}';
 
   public $classSubmitFastOrderButton = 'fast-order-submit-{keyCollection}';
 
@@ -98,12 +100,26 @@ class FBasket extends FCollectionUI
    */
   public function buttonFastOrder($model, $text = '', $htmlOptions = array(), $formData = array())
   {
-    $this->appendHtmlOption($htmlOptions, $this->classFastOrderButton);
+    $this->appendHtmlOption($htmlOptions, $this->classFastOrderShowButton);
 
     if( !empty($formData) )
       $this->appendHtmlOption($htmlOptions, CJSON::encode($formData), 'data-form-data');
 
     return CHtml::link($text, '#', CMap::mergeArray($this->prepareInputData($model), $htmlOptions));
+  }
+
+  /**
+   * Кнопка закрытия попапа быстрого заказа
+   * @param array $htmlOptions
+   * @param string $text
+   *
+   * @return string
+   */
+  public function buttonFastOrderClose($htmlOptions = array(), $text = '')
+  {
+    $this->appendHtmlOption($htmlOptions, $this->classFastOrderCloseButton);
+
+    return CHtml::link($text, '#', $htmlOptions);
   }
 
   public function buttonSubmitFastOrder($text = '', $htmlOptions = array())
@@ -156,13 +172,14 @@ class FBasket extends FCollectionUI
     parent::registerScripts();
 
     $this->registerScriptButtonFastOrder();
+    $this->registerScriptButtonFastOrderClose();
     $this->registerScriptButtonSubmitFastOrder();
     $this->registerScriptButtonRepeatOrder();
   }
 
   protected function registerScriptButtonFastOrder()
   {
-    $this->registerScript("$('body').on('click', '.{$this->classFastOrderButton}', function(e){
+    $this->registerScript("$('body').on('click', '.{$this->classFastOrderShowButton}', function(e){
       e.preventDefault();
       var templates = ".CJSON::encode($this->templates).";
       var element = $(this).clone();
@@ -202,14 +219,31 @@ class FBasket extends FCollectionUI
         delete data['formData'];
       }
 
-      var popupSelector = '#{$this->fastOrderFormPopupId}';
-      $.overlayLoader(true, $(popupSelector));
+      var target = $('#{$this->fastOrderFormPopupId}');
+      $.overlayLoader(true, {
+        node: target,
+        onShow: function()
+        {
+          setTimeout(function() {
+            target.find('.autofocus-inp').focus();
+          }, 300);
+        }
+       });
 
       $('#{$this->fastOrderFormId}').show();
       $('#{$this->fastOrderFormSuccessId}').hide();
 
       var classSubmitButton = '{$this->classSubmitFastOrderButton}';
       $('.' + classSubmitButton).data(data);
+    });");
+  }
+
+  protected function registerScriptButtonFastOrderClose()
+  {
+    $this->registerScript("$('body').on('click', '.{$this->classFastOrderCloseButton}', function(e){
+      e.preventDefault();
+      var target = $('#{$this->fastOrderFormPopupId}');
+      $.overlayLoader(false, target);
     });");
   }
 

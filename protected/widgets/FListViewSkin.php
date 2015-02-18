@@ -7,12 +7,29 @@
  * @package frontend.widgets
  *
  * @property ProductController $owner
+ *
+ * Подключение:
+ * <div class="short-filters-view-mode fl">
+ *   <span class="label">Отображение</span>
+ *   <?php $this->widget('FListViewSkin', array(
+ *     'itemClass' => 'icon-list-toggle',
+ *     'reverse' => true
+ *   ))?>
+ * </div>
+ *
+ *  Используется совместно с поведением TableListToggleBehavior
  */
 class FListViewSkin extends CWidget
 {
   public $itemClass = 'view-icon';
 
   public $listId = 'product_list';
+
+  public $tableClass = 'catalog-view-1-icon';
+
+  public $listClass = 'catalog-view-2-icon';
+
+  public $reverse = false;
 
   private $links;
 
@@ -21,26 +38,36 @@ class FListViewSkin extends CWidget
     $this->links = array(
       array(
         'id' => 'line',
-        'class' => $this->getSkinActiveClass('line').' view-1 '.$this->itemClass,
+        'class' => $this->getSkinActiveClass('line'),
       ),
       array(
         'id' => 'tablet',
-        'class' => $this->getSkinActiveClass('tablet').' view-2 '.$this->itemClass,
+        'class' => $this->getSkinActiveClass('tablet'),
       )
     );
+
+    if( $this->reverse )
+      $this->links = array_reverse($this->links);
 
     parent::init();
   }
 
   public function run()
   {
-    $options = array(
-      'data-list-id' => $this->listId,
-      'onClick' => 'return $.fn.yiiListView.skinHandler(this);'
-    );
+    $options = array('data-list-id' => $this->listId);
 
     foreach($this->links as $link)
       echo CHtml::link('', '#', CMap::mergeArray($options, $link));
+
+    Yii::app()->clientScript->registerScript('skinHandlerScript', "
+    $('body #content').on('click', '.{$this->itemClass}' ,function(e) {
+      e.preventDefault();
+      if( $(this).hasClass('active') )
+        return;
+
+      $.cookie('lineView', $(this).attr('id') === 'tablet' ? 0 : 1, {path: '/'});
+      $.fn.yiiListView.update('{$this->listId}');
+    });");
   }
 
   /**
@@ -50,9 +77,21 @@ class FListViewSkin extends CWidget
    */
   private function getSkinActiveClass($skinId)
   {
-    if ($skinId === 'tablet')
-      return $this->owner->isTabletView() ? 'active' : '';
+    $classes = array($this->itemClass);
+
+    if( $skinId === 'tablet' )
+    {
+      $classes[] = $this->tableClass;
+      if( $this->owner->isTable() )
+        $classes[] = 'active';
+    }
     else
-      return $this->owner->isTabletView() ? '' : 'active';
+    {
+      $classes[] = $this->listClass;
+      if( !$this->owner->isTable() )
+        $classes[] = 'active';
+    }
+
+    return implode(' ', $classes);
   }
 }

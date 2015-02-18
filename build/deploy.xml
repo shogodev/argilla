@@ -1,7 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="argilla_deploy" basedir="." default="deploy">
   <import file="build.xml"/>
-
   <target name="deploy" description="Deploy">
 
     <available property="production" file="protected/config/production.php" type="file"></available>

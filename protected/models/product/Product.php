@@ -94,14 +94,6 @@ class Product extends FActiveRecord
     );
   }
 
-  public function afterFind()
-  {
-    if( isset(Yii::app()->controller) )
-      $this->url = Yii::app()->controller->createUrl('product/one', array('url' => $this->url));
-
-    parent::afterFind();
-  }
-
   /**
    * @return string
    */
@@ -124,5 +116,13 @@ class Product extends FActiveRecord
   public function getPriceOld()
   {
     return $this->price_old;
+  }
+
+  /**
+   * @return string
+   */
+  public function getUrl()
+  {
+    return Yii::app()->controller->createUrl('product/one', array('url' => $this->url));
   }
 }

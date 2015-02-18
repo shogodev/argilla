@@ -81,8 +81,7 @@
         <include name="**"/>
       </fileset>
     </delete>
-    <!--todo: Ждем Yii 1.1.15, тогда failonerror="false" можно убрать -->
-    <delete failonerror="false">
+    <delete>
       <fileset dir="backend/protected/runtime/">
         <include name="**"/>
       </fileset>

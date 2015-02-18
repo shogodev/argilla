@@ -220,7 +220,7 @@ class UploadWidget extends CJuiInputWidget
 
     if( is_dir($assets) )
     {
-      Yii::app()->clientScript->registerScriptFile($baseUrl.'js/vendor/jquery.ui.widget.js', CClientScript::POS_END);
+      Yii::app()->clientScript->registerScriptFile($baseUrl.'/js/vendor/jquery.ui.widget.js', CClientScript::POS_END);
       Yii::app()->clientScript->registerScriptFile($baseUrl.'/js/vendor/tmpl.js', CClientScript::POS_END);
       Yii::app()->clientScript->registerScriptFile($baseUrl.'/js/jquery.iframe-transport.js', CClientScript::POS_END);
       Yii::app()->clientScript->registerScriptFile($baseUrl.'/js/jquery.fileupload.js', CClientScript::POS_END);
@@ -237,7 +237,7 @@ class UploadWidget extends CJuiInputWidget
       }
 
       Yii::app()->clientScript->registerScriptFile($baseUrl.'/js/jquery.fileupload-ui.js', CClientScript::POS_END);
-      Yii::app()->clientScript->registerScriptFile($baseUrl.'/js/locale.js', CClientScript::POS_END);
+      //Yii::app()->clientScript->registerScriptFile($baseUrl.'/js/locale.js', CClientScript::POS_END);
 
       Yii::app()->clientScript->registerCssFile($baseUrl.'/css/jquery.fileupload.css');
       Yii::app()->clientScript->registerCssFile($baseUrl.'/css/jquery.fileupload-ui.css');

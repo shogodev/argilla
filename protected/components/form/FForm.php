@@ -34,6 +34,11 @@ class FForm extends CForm
 
   public $loadFromSession = false;
 
+  /**
+   * @var bool $setUserData флаг подстановки пользовательски данных в форму
+   */
+  public $setUserData = true;
+
   public $clearAfterSubmit = false;
 
   protected $layoutViewParams = array();
@@ -93,6 +98,11 @@ class FForm extends CForm
     if( $this->loadFromSession )
     {
       $this->loadFromSession();
+    }
+
+    if( $this->setUserData )
+    {
+      $this->setUserData();
     }
 
     return parent::render();
@@ -407,14 +417,14 @@ class FForm extends CForm
     // todo: сделать проверку на password и не сохранять его
     if( $this->getModel() !== null && Yii::app()->request->isPostRequest )
     {
-      $class = get_class($this->getModel());
-      $sessionParams = Yii::app()->request->getPost($class, array());
+      $sessionParams = Yii::app()->request->getPost(get_class($this->getModel()), array());
+      $sessionKey = $this->getSessionKey($this->getModel());
 
-      if( !isset(Yii::app()->session['form_'.$class]) )
-        Yii::app()->session['form_'.$class] = array();
+      if( !isset(Yii::app()->session[$sessionKey]) )
+        Yii::app()->session[$sessionKey] = array();
 
-      $sessionParams = CMap::mergeArray(Yii::app()->session['form_'.$class], $sessionParams);
-      Yii::app()->session['form_'.$class] = $sessionParams;
+      $sessionParams = CMap::mergeArray(Yii::app()->session[$sessionKey], $sessionParams);
+      Yii::app()->session[$sessionKey] = $sessionParams;
     }
 
     foreach($this->getElements() as $element)
@@ -425,14 +435,15 @@ class FForm extends CForm
   public function clearSession()
   {
     foreach($this->getModels() as $model)
-      unset(Yii::app()->session['form_'.get_class($model)]);
+      unset(Yii::app()->session[$this->getSessionKey($model)]);
   }
 
   public function loadFromSession()
   {
     if( $this->getModel() !== null )
     {
-      $sessionParams = Yii::app()->session['form_'.get_class($this->getModel())];
+      $sessionKey = $this->getSessionKey($this->getModel());
+      $sessionParams = Yii::app()->session[$sessionKey];
 
       if( $sessionParams )
         $this->getModel()->setAttributes($sessionParams);
@@ -505,6 +516,33 @@ class FForm extends CForm
 
     $this->getElements()->clear();
     $this->getElements()->copyFrom($elements);
+  }
+
+  /**
+   * Подставляет пользовательские данных в форму
+   */
+  public function setUserData()
+  {
+    if( Yii::app()->user->isGuest )
+      return;
+
+    /**
+     * @var FActiveRecord $model
+     */
+    foreach($this->getModels() as $model)
+    {
+      if( $this->loadFromSession && Yii::app()->session[$this->getSessionKey($model)] )
+        continue;
+
+      $attributes = array('email' => Yii::app()->user->data->email);
+      $attributes = CMap::mergeArray($attributes, Yii::app()->user->profile->getAttributes());
+
+      foreach($model->getAttributes() as $attribute => $value)
+      {
+        if( empty($value) && !empty($attributes[$attribute]) )
+          $model->setAttribute($attribute, $attributes[$attribute]);
+      }
+    }
   }
 
   /**
@@ -602,5 +640,15 @@ class FForm extends CForm
     $button->attributes['id'] = $this->getActiveFormWidget()->id.'_'.$button->name;
 
     return $button;
+  }
+
+  /**
+   * @param FActiveRecord $model
+   *
+   * @return string
+   */
+  private function getSessionKey($model)
+  {
+    return 'form_'.$this->formName.get_class($model);
   }
 }

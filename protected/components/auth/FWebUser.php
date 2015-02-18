@@ -12,16 +12,26 @@ class FWebUser extends CWebUser
 {
   private $data = null;
 
+  public function init()
+  {
+    parent::init();
+
+    if( $this->isGuest )
+    {
+      $this->data = new User();
+      $this->data->profile = new UserProfile();
+    }
+    else
+    {
+      $this->data = User::model()->findByPk($this->getId());
+    }
+  }
+
   /**
    * @return User|null
    */
   public function getData()
   {
-    if( !$this->isGuest && is_null($this->data) )
-    {
-      $this->data = User::model()->findByPk($this->getId());
-    }
-
     return $this->data;
   }
 
@@ -30,6 +40,6 @@ class FWebUser extends CWebUser
    */
   public function getProfile()
   {
-    return !$this->isGuest ? $this->getData()->profile : null;
+    return $this->getData()->profile;
   }
 }

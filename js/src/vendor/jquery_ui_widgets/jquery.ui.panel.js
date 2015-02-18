@@ -22,7 +22,6 @@
     },
     activeClass : 'active',
     collapseClass : 'collapsed',
-    hiddenClass : 'hidden',
     panelItemElement : 'li'
   },
 
@@ -96,34 +95,34 @@
 
     if( bodyStateLeft )
     {
-      controls.headerLeft.removeClass(options.hiddenClass);
+      this._visible(controls.headerLeft);
       controls.footerLeft.show();
     }
     else
     {
-      controls.headerLeft.addClass(options.hiddenClass);
+      this._invisible(controls.headerLeft);
       controls.footerLeft.hide();
     }
 
     if( bodyStateRight )
     {
-      controls.headerRight.removeClass(options.hiddenClass);
+      this._visible(controls.headerRight);
       controls.footerRight.show();
     }
     else
     {
-      controls.headerRight.addClass(options.hiddenClass);
+      this._invisible(controls.headerRight);
       controls.footerRight.hide();
     }
 
     if( bodyStateLeft || bodyStateRight )
     {
-      this.element.removeClass(options.hiddenClass);
+      this._visible(this.element);
     }
     else
     {
       this._collapse();
-      this.element.addClass(options.hiddenClass);
+      this._invisible(this.element);
     }
   },
 
@@ -150,6 +149,14 @@
 
       carousel.panelCarousel('update');
     }
+  },
+
+  _invisible : function(element){
+    element.css({'opacity' : 0, 'visibility' : 'hidden'});
+  },
+
+  _visible : function(element){
+    element.css({'opacity' : 1, 'visibility' : 'visible'});
   },
 
   update : function(response)

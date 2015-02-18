@@ -179,23 +179,8 @@ class Order extends FActiveRecord
    */
   protected function saveCollectionItems(Product $product, $orderProduct)
   {
-    if( empty($product->collectionItems) )
-      return;
-
-    foreach($product->collectionItems as $item)
-    {
-      if( $item instanceof FCollection )
-      {
-        foreach($item as $oneItem)
-        {
-          $this->saveCollectionItem($oneItem, $orderProduct);
-        }
-      }
-      else
-      {
-        $this->saveCollectionItem($item, $orderProduct);
-      }
-    }
+    $this->saveItems($product->collectionItems, $orderProduct);
+    $this->saveItems($product->innerCollectionItems(), $orderProduct);
   }
 
   /**
@@ -235,5 +220,30 @@ class Order extends FActiveRecord
       throw new CHttpException(500, 'Can`t save '.get_class($model).' model');
 
     return $model;
+  }
+
+  /**
+   * @param array $items
+   * @param FActiveRecord $orderProduct
+   */
+  private function saveItems($items, $orderProduct)
+  {
+    if( empty($items) )
+      return;
+
+    foreach($items as $item)
+    {
+      if( $item instanceof FCollection )
+      {
+        foreach($item as $oneItem)
+        {
+          $this->saveCollectionItem($oneItem, $orderProduct);
+        }
+      }
+      else
+      {
+        $this->saveCollectionItem($item, $orderProduct);
+      }
+    }
   }
 }

@@ -15,8 +15,10 @@
  * @property integer $count
  * @property string $discount
  * @property string $sum
+ * @property string $fullName
  *
  * @property string $itemsData
+ * @property BOrderProductHistory $history
  */
 class BOrderProduct extends BActiveRecord
 {
@@ -31,5 +33,14 @@ class BOrderProduct extends BActiveRecord
   public function getItems()
   {
     return BOrderProductItem::model()->findAllByAttributes(array('order_product_id' => $this->id));
+  }
+
+  public function getFullName()
+  {
+    $name = array($this->name);
+    if( !empty($this->history->articul) )
+      array_push($name, "(Артикул: {$this->history->articul})");
+
+    return implode(' ', $name);
   }
 }

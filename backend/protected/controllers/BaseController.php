@@ -12,7 +12,8 @@ class BaseController extends BController
   {
     if( !Yii::app()->user->isGuest )
     {
-      $this->forward(Yii::app()->menu->getDefaultRout('help/help/index'));
+      $defaultRoute = Yii::app()->menu->getDefaultRout('help/help/index');
+      Yii::app()->request->redirect(Yii::app()->createUrl($defaultRoute));
     }
     else
     {

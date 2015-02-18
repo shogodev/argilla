@@ -71,6 +71,16 @@ class News extends FActiveRecord
     return DateTime::createFromFormat('Y-m-d H:i:s', $this->date)->format($format);
   }
 
+  /**
+   * @param string $format
+   *
+   * @return string
+   */
+  public function getFormatDateYii($format = 'dd.MM.y, eeee')
+  {
+    return Yii::app()->locale->dateFormatter->format($format, DateTime::createFromFormat('Y-m-d H:i:s', $this->date)->getTimestamp());
+  }
+
   protected function afterFind()
   {
     $this->url = Yii::app()->controller->createUrl('news/one', array('section' => $this->section->url, 'url' => $this->url));

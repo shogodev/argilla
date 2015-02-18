@@ -16,17 +16,10 @@
  * @property integer $amount
  * @property string $price
  * @property string $value
+ * @property string $fullName
  */
 class BOrderProductItem extends BActiveRecord
 {
-  public function __get($name)
-  {
-    if( $name === 'name' )
-      return parent::__get($name).': '.$this->getName();
-    else
-      return parent::__get($name);
-  }
-
   public function rules()
   {
     return array(
@@ -38,9 +31,9 @@ class BOrderProductItem extends BActiveRecord
     );
   }
 
-  public function getName()
+  public function getFullName()
   {
-    return $this->value;
+    return $this->name.' '.$this->value;
   }
 
   public function getCount()

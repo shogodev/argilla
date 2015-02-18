@@ -65,15 +65,6 @@ class BasketController extends FController
     }
     else
     {
-      if( !Yii::app()->user->isGuest )
-      {
-        $orderForm->model->setAttributes(array(
-          'name' => Yii::app()->user->profile->name,
-          'address' => Yii::app()->user->profile->address,
-          'email' => Yii::app()->user->data->email
-        ));
-      }
-
       $this->render('check_out', array('form' => $orderForm, 'model' => $orderForm->model));
     }
   }

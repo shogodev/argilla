@@ -197,7 +197,7 @@ var assigner =
         data[id] = $(this).prop('checked');
       });
 
-      $.post(ajaxUrl, {'elements' : data}, false, 'json');
+      $.post(ajaxUrl, {'elements' : data});
     };
 
     var options = {'callback' : callback};

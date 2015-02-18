@@ -3,56 +3,34 @@
   <property name="argilla.defaultJsCompiler" value="closure"/>
   <property name="argilla.yiiStorage" value="/usr/local/yii"/>
   <php expression="dirName(getcwd())" returnProperty="projectDirectory"/>
+  <taskdef name="useGulp" classname="build.tasks.CheckUseGulp"/>
 
   <target name="bootstrap" depends="symlinkYii, createDBConfig" />
   <target name="packJS" description="Pack JS">
-    <exec command="protected/yiic scripts pack" passthru="true"/>
+    <useGulp returnProperty="idUseGulp"/>
+    <if>
+      <equals arg1="${idUseGulp}" arg2="false"/>
+      <then>
+        <exec command="protected/yiic scripts pack" passthru="true"/>
+      </then>
+      <else>
+        <echo message="Use command 'gulp build' for js compile"></echo>
+      </else>
+    </if>
   </target>
-  <target name="compileJS" description="Compile JS" depends="packJS">
-    <if>
-      <not>
-        <isset property="jsCompiler"/>
-      </not>
-      <then>
-        <property name="jsCompiler" value="${argilla.defaultJsCompiler}"/>
-      </then>
-    </if>
-    <echo message="Compiling javascript with '${jsCompiler}' compiler..."/>
-    <if>
-      <equals arg1="${jsCompiler}" arg2="yui"/>
-      <then>
-        <exec command="java -jar build/compilers/yuicompressor.jar js/packed.js>build/tmp/compiled.js" logoutput="true" passthru="true" checkreturn="true"/>
-      </then>
-    </if>
-    <if>
-      <equals arg1="${jsCompiler}" arg2="closure"/>
-      <then>
-        <exec command="java -jar build/compilers/closure.jar --third_party --warning_level QUIET --js js/packed.js --js_output_file build/tmp/compiled.js" logoutput="true" passthru="true" checkreturn="true"/>
-      </then>
-    </if>
 
-    <!-- проверка результатов компиляции-->
+  <target name="compileJS" description="Compile JS">
+    <useGulp returnProperty="idUseGulp"/>
     <if>
-      <not>
-        <available file="build/tmp/compiled.js"/>
-      </not>
+      <equals arg1="${idUseGulp}" arg2="false"/>
       <then>
-        <fail message="Failed compiling javascript: can't create file"/>
+        <exec command="protected/yiic scripts pack" passthru="true"/>
+        <phingcall target="compile"/>
       </then>
+      <else>
+        <echo message="Use command 'gulp build' for js compile"></echo>
+      </else>
     </if>
-    <filesize file="build/tmp/compiled.js" propertyName="compiledJsFileSize"/>
-    <if>
-      <equals arg1="${compiledJsFileSize}" arg2="0"/>
-      <then>
-        <fail message="Failed compiling javascript: compiled filesize is null"/>
-      </then>
-    </if>
-
-    <php expression="floor(${compiledJsFileSize}/1024)" returnProperty="compiledJsFileSize"/>
-    <echo message="Compilation finished. File build/tmp/compiled.js filesize ${compiledJsFileSize}K. Copying to js/compiled.js..."/>
-
-    <copy file="build/tmp/compiled.js" tofile="js/compiled.js" overwrite="true"/>
-    <delete file="build/tmp/compiled.js" quiet="yes" failonerror="false"/>
   </target>
 
   <target name="symlinkYii" depends="getYiiVersionArgilla">
@@ -134,6 +112,53 @@
       </then>
       <else><echo message="File ${projectDirectory}/protected/config/db.php already exists"></echo></else>
     </if>
+  </target>
+
+  <target name="compile">
+    <if>
+      <not>
+        <isset property="jsCompiler"/>
+      </not>
+      <then>
+        <property name="jsCompiler" value="${argilla.defaultJsCompiler}"/>
+      </then>
+    </if>
+    <echo message="Compiling javascript with '${jsCompiler}' compiler..."/>
+    <if>
+      <equals arg1="${jsCompiler}" arg2="yui"/>
+      <then>
+        <exec command="java -jar build/compilers/yuicompressor.jar js/packed.js>build/tmp/compiled.js" logoutput="true" passthru="true" checkreturn="true"/>
+      </then>
+    </if>
+    <if>
+      <equals arg1="${jsCompiler}" arg2="closure"/>
+      <then>
+        <exec command="java -jar build/compilers/closure.jar --third_party --warning_level QUIET --js js/packed.js --js_output_file build/tmp/compiled.js" logoutput="true" passthru="true" checkreturn="true"/>
+      </then>
+    </if>
+
+    <!-- проверка результатов компиляции-->
+    <if>
+      <not>
+        <available file="build/tmp/compiled.js"/>
+      </not>
+      <then>
+        <fail message="Failed compiling javascript: can't create file"/>
+      </then>
+    </if>
+    <filesize file="build/tmp/compiled.js" propertyName="compiledJsFileSize"/>
+    <if>
+      <equals arg1="${compiledJsFileSize}" arg2="0"/>
+      <then>
+        <fail message="Failed compiling javascript: compiled filesize is null"/>
+      </then>
+    </if>
+
+    <php expression="floor(${compiledJsFileSize}/1024)" returnProperty="compiledJsFileSize"/>
+    <echo message="Compilation finished. File build/tmp/compiled.js filesize ${compiledJsFileSize}K. Copying to js/compiled.js..."/>
+
+    <copy file="build/tmp/compiled.js" tofile="js/compiled.js" overwrite="true"/>
+    <delete file="build/tmp/compiled.js" quiet="yes" failonerror="false"/>
   </target>
 
 </project>
