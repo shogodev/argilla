@@ -43,7 +43,7 @@ class DumpWorkerTask extends Task
   protected function isView($str)
   {
     if( preg_match('|^/\*\!50013 DEFINER|', $str) and preg_match('/SQL SECURITY/', $str) )
-      throw new BuildException('view!!11');
+      return true;
 
     return false;
   }

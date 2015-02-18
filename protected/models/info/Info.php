@@ -31,8 +31,6 @@ class Info extends FActiveRecord implements IMenuItem
 {
   const ROOT_ID = 1;
 
-  protected $files;
-
   public function behaviors()
   {
     return array(
