@@ -14,7 +14,7 @@
 <body>
   <?php $this->widget('bootstrap.widgets.TbNavbar', array(
     'type' => 'null',
-    'brand' => '<img title="Argilla" alt="Argilla" src="'.Yii::app()->homeUrl.'/i/sp.gif" />',
+    'brand' => '<img title="Argilla" alt="Argilla" src="'.Yii::app()->homeUrl.'i/sp.gif" />',
     'brandUrl' => Yii::app()->homeUrl,
     'collapse' => true,
     'fluid' => true,

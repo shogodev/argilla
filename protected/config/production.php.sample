@@ -12,6 +12,9 @@ return array_replace_recursive(
         'enableProfiling'    => YII_DEBUG,
         'enableParamLogging' => YII_DEBUG,
       ),
+      'errorHandler' => array(
+        'errorAction' => 'error/error',
+      ),
       'cache' => array(
         'class'=>'system.caching.CXCache',
         'keyPrefix' => crc32(__FILE__).filemtime(__FILE__),

@@ -46,6 +46,7 @@ class BFeature extends BActiveRecord implements IHasFrontendModel
   {
     return array(
       array('name', 'required'),
+      array('position', 'numerical', 'integerOnly' => true),
       array('notice', 'safe'),
     );
   }
@@ -55,5 +56,12 @@ class BFeature extends BActiveRecord implements IHasFrontendModel
     return array(
       'order' => "IF(position=0, 999999999, position), id",
     );
+  }
+
+  public function attributeLabels()
+  {
+    return CMap::mergeArray(parent::attributeLabels(), array(
+      'notice' => 'Значение',
+    ));
   }
 }

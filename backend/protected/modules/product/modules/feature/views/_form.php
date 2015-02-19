@@ -1,7 +1,7 @@
 <?php
 /**
- * @var $this BProductFeaturesController
- * @var $model BProductFeature
+ * @var BFeatureController $this
+ * @var BFeature $model
  */
 ?>
 <?php Yii::app()->breadcrumbs->show();?>

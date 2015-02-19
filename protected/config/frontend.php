@@ -105,10 +105,6 @@ return array_merge_recursive(array(
       'class' => 'frontend.components.Meta',
     ),
 
-    'errorHandler' => array(
-      'errorAction' => 'error/error',
-    ),
-
     'log' => array(
       'class' => 'CLogRouter',
       'enabled' => true,
