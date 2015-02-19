@@ -176,6 +176,8 @@ $.overlayLoader(bool, options); // необязательный хэш пара�
             'top'  : (y - h/2) < 0 ? 0 : (y - h/2) + 'px'
           });
 
+          $(document.body).trigger('overlayLoaderShow', [$node]);
+
           opts.onShow();
         }}).tween();
       }
