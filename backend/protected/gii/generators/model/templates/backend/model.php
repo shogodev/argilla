@@ -73,6 +73,15 @@ class <?php echo $modelClass; ?> extends <?php echo $this->baseClass."\n"; ?>
     );
   }
 <?php endif; ?>
+<?php if( isset($this->defaultSort) ) { ?>
+
+  public function defaultScope()
+  {
+    return array(
+      'order' => '<?php echo $this->defaultSort?> DESC'
+    );
+  }
+<?php }; ?>
 
 <?php if( $this->commentsAsLabels ): ?>
   public function attributeLabels()

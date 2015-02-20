@@ -5,6 +5,8 @@ class BModelCode extends ModelCode
 {
   public $labelException = array('id');
 
+  private $defaultSort;
+
   public function generateLabels($table)
   {
     $labels = array();
@@ -40,15 +42,16 @@ class BModelCode extends ModelCode
     $numerical = array();
     $length = array();
     $safe = array();
+    $emails = array();
 
     /**
      * @var CDbColumnSchema $column
      */
     foreach($table->columns as $column)
     {
-
       if( $column->autoIncrement )
         continue;
+
       $r = !$column->allowNull && $column->defaultValue === null && $column->dbType != 'text' && $column->dbType != 'timestamp';
       if( $r )
         $required[] = $column->name;
@@ -60,6 +63,9 @@ class BModelCode extends ModelCode
         $length[$column->size][] = $column->name;
       elseif( !$column->isPrimaryKey && !$r )
         $safe[] = $column->name;
+
+      if( $column->name == 'email')
+        $emails[] = $column->name;
     }
 
     if( $required !== array() )
@@ -73,9 +79,32 @@ class BModelCode extends ModelCode
       foreach($length as $len => $cols)
         $rules[] = "array('".implode(', ', $cols)."', 'length', 'max' => $len)";
     }
+    if( $emails !== array() )
+      $rules[] = "array('".implode(', ', $emails)."', 'email')";
     if( $safe !== array() )
       $rules[] = "array('".implode(', ', $safe)."', 'safe')";
 
     return $rules;
+  }
+
+  public function getDefaultSort()
+  {
+    if( is_null($this->defaultSort) )
+    {
+      $this->defaultSort = '';
+
+      $table = Yii::app()->db->getSchema()->getTable($this->tableName);
+
+      foreach($table->columns as $column)
+      {
+        if( $column->dbType == 'timestamp' )
+        {
+          $this->defaultSort = $column->name;
+          break;
+        }
+      }
+    }
+
+    return $this->defaultSort;
   }
 }
