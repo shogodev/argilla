@@ -6,7 +6,7 @@ Authors:   Grigory Zarubin, Alexander Rubanov, Alexey Efimov (Shogo.RU)
 */
 
 //@import "jquery.fancybox";
-//@import "alertify/alertify.core.css";
+@import "alertify";
 @import "mixins";
 @import "const";
 @import "resets";
@@ -75,10 +75,10 @@ footer {
         a {}
       }
       &.previous {
-        //background: url(backward.png) no-repeat 0 0;
+        //background: url(/i/backward.png) no-repeat 0 0;
       }
       &.next {
-        //background: url(forward.png) no-repeat 0 0;
+        //background: url(/i/forward.png) no-repeat 0 0;
       }
     }
   }
