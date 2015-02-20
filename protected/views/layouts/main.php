@@ -40,13 +40,15 @@
 
 <body>
 
-<?php $this->renderOverride('header');?>
+<div id="structure">
 
-<div class="container" style="padding-top: 60px;">
+  <?php $this->renderOverride('header');?>
 
   <?php $this->renderPartial('/alerts');?>
 
-  <?php echo $content; ?>
+  <div id="content">
+    <?php echo $content; ?>
+  </div>
 
 </div>
 

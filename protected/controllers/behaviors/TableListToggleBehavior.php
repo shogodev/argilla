@@ -19,4 +19,9 @@ class TableListToggleBehavior extends SBehavior
   {
     return !empty($_COOKIE['lineView']) ? false : true;
   }
+
+  public function getViewTemplate()
+  {
+    return $this->isTable() ? '_product_block' : '_product_line';
+  }
 }
