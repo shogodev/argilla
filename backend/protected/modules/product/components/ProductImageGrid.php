@@ -16,15 +16,18 @@ class ProductImageGrid extends ImageGrid
   protected function gridColumns()
   {
     parent::gridColumns();
-    unset($this->columns[count($this->columns) - 1]);
 
-    $this->columns[] = array(
-      'name' => 'notice',
-      'header' => 'Цвет',
-      'class' => 'OnFlyEditField',
-      'dropDown' => CMap::mergeArray(array('0' => 'Не задано'), CHtml::listData($this->model->getParameterVariants('color'), 'id', 'name')),
-      'gridId' => $this->gridId,
-      'htmlOptions' => array('class' => 'span2')
-    );
+    if( $colors = $this->model->getParameterVariants('color') )
+    {
+      unset($this->columns[count($this->columns) - 1]);
+      $this->columns[] = array(
+        'name' => 'notice',
+        'header' => 'Цвет',
+        'class' => 'OnFlyEditField',
+        'dropDown' => CMap::mergeArray(array('0' => 'Не задано'), CHtml::listData($colors, 'id', 'name')),
+        'gridId' => $this->gridId,
+        'htmlOptions' => array('class' => 'span2')
+      );
+    }
   }
 }
