@@ -177,10 +177,9 @@ class UploadAction extends CAction
       $model->size = $model->file->getSize();
       $model->name = $model->file->getName();
 
-
       $file = array(
-        "name" => $model->name,
-        "size" => $model->size,
+        'name' => $model->name,
+        'size' => $model->size,
       );
 
       if( $model->validate() )
@@ -189,8 +188,9 @@ class UploadAction extends CAction
         $this->saveFile($model);
 
         $file = CMap::mergeArray($file, array(
-          "url" => $this->publicPath.$model->name,
-          "thumbnailUrl" => $this->createThumbs($model),
+          'name' => $model->name,
+          'url' => $this->publicPath.$model->name,
+          'thumbnailUrl' => $this->createThumbs($model),
           'deleteType' => "DELETE"
         ));
 
@@ -229,7 +229,7 @@ class UploadAction extends CAction
       throw new CHttpException(500, 'File id can`t be null.');
 
     if( !($cropSettings = Arr::get(Yii::app()->controller->module->getCropSettings(), Yii::app()->getMappedControllerId())) )
-      throw new CHttpException(500, 'Укажите настоки модуля в методе getCropSettings');
+      throw new CHttpException(500, 'Укажите настройки модуля в методе getCropSettings');
 
     $originalName = $this->model->getFileName($id);
     $x = Yii::app()->request->getParam('x');
