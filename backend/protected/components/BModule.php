@@ -81,6 +81,19 @@ class BModule extends CWebModule
    * Если в массиве присутствует ключ origin, то оригинальное изображение пережимается до указанных
    * по этому ключу размеров.
    *
+   * Пример:
+   * array(
+   *   'info' => array(
+   *     'pre' => array(
+   *       164, // ширина
+   *       164, // высота
+   *       'crop' => true, // обрезать края
+   *       'jpegQuality' => 97 // качество
+   *     ),
+   *   )
+   * );
+   *
+   *
    * @return array
    */
   public function getThumbsSettings()

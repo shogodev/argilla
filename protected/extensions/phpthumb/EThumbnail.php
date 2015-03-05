@@ -1,10 +1,15 @@
 <?php
 class EThumbnail extends CComponent
 {
-  /**
-   * @var ThumbBase
-   */
-  private $_thumbnail;
+    /**
+     * @var ThumbBase
+     */
+    private $_thumbnail;
+
+    public function getDimensions()
+    {
+      return $this->_thumbnail->getCurrentDimensions();
+    }
 
     public function __construct($thumbnail) {
         $this->_thumbnail=$thumbnail;

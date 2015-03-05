@@ -312,10 +312,24 @@ class UploadAction extends CAction
   {
     if( $this->model->isResizeable($model->file->getExtensionName()) )
     {
-      foreach($this->getThumbsSettings() as $pref => $sizes)
+      foreach($this->getThumbsSettings() as $pref => $options)
       {
+        if( $jpegQuality = Arr::get($options, 'jpegQuality') )
+        {
+          Yii::app()->phpThumb->options['jpegQuality'] = $jpegQuality;
+          Yii::app()->phpThumb->init();
+        }
         $thumb = Yii::app()->phpThumb->create($this->path.$model->name);
-        $thumb->resize($sizes[0], $sizes[1]);
+
+        if( Arr::get($options, 'crop') == true )
+          $thumb->cropFromCenter(min($thumb->getDimensions()));
+
+        $width = Arr::cut($options, 0);
+        $height = Arr::cut($options, 1);
+        if( isset($width, $height) )
+          $thumb->resize($width, $height);
+        else
+          throw new CHttpException(500, 'Параметры ресайза заданы не верно');
 
         if( $pref === 'origin' )
           $newPath = $this->path.$model->name;
