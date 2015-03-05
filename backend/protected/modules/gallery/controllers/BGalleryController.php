@@ -8,7 +8,7 @@
  */
 class BGalleryController extends BController
 {
-  public $name = 'Галереи';
+  public $name = 'Фотогалерея';
 
   public $modelClass = 'BGallery';
 }

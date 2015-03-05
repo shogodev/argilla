@@ -12,6 +12,7 @@
  * @property string $name
  * @property string $url
  * @property string $type
+ * @property string $notice
  * @property integer $visible
  */
 class BGallery extends BActiveRecord
@@ -23,8 +24,9 @@ class BGallery extends BActiveRecord
   {
     return array(
       array('name, url', 'required'),
+      array('url', 'unique'),
       array('name, type', 'length', 'max' => 255),
-      array('name, url, type, visible', 'safe'),
+      array('name, url, type, notice, visible', 'safe'),
     );
   }
 
@@ -35,7 +37,7 @@ class BGallery extends BActiveRecord
   {
     return array(
       'uploadBehavior' => array(
-        'class' => 'UploadBehavior', 'validAttributes' => 'img'
+        'class' => 'UploadBehavior', 'validAttributes' => 'gallery_image'
       ),
     );
   }
