@@ -5,7 +5,7 @@
  * @var CMysqlColumnSchema[] $columns
  */
 ?>
-<?php echo "<?php\n"; ?>
+<?php echo "<?php\r\n"; ?>
 return array(
   'class' => '<?php echo $cssClass?>',
 <?php if( isset($layout) ) {?>

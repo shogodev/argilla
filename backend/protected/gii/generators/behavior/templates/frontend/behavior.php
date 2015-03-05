@@ -1,6 +1,6 @@
-<?php echo "<?php\n";?>
+<?php echo "<?php\r\n";?>
 /**
- * @author <?php echo isset(Yii::app()->params['author']) ? Yii::app()->params['author']."\n" : "... <...@...>\n"?>
+ * @author <?php echo isset(Yii::app()->params['author']) ? Yii::app()->params['author']."\r\n" : "... <...@...>\r\n"?>
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-<?php echo date('Y')?> Shogo
  * @license http://argilla.ru/LICENSE
@@ -13,7 +13,7 @@
  *   ));
  * }
 */
-class <?php echo $class?> extends <?php echo $baseClass."\n"; ?>
+class <?php echo $class?> extends <?php echo $baseClass."\r\n"; ?>
 {
   public function init()
   {

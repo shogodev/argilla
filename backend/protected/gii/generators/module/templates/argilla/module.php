@@ -1,4 +1,4 @@
-<?php echo "<?php\n"; ?>
+<?php echo "<?php\r\n"; ?>
 /**
  * @author ... <...@...>
  * @link https://github.com/shogodev/argilla/

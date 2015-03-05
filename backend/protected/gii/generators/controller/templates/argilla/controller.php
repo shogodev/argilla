@@ -5,7 +5,7 @@
  * - $this: the ControllerCode object
  */
 ?>
-<?php echo "<?php\n"; ?>
+<?php echo "<?php\r\n"; ?>
 /**
  * @author ... <...@...>
  * @link https://github.com/shogodev/argilla/
@@ -13,7 +13,7 @@
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.<?php echo $this->getModule()->getId(); ?>
  */
-class <?php echo $this->controllerClass; ?> extends <?php echo $this->baseClass."\n"; ?>
+class <?php echo $this->controllerClass; ?> extends <?php echo $this->baseClass."\r\n"; ?>
 {
   public $position = 10;
 

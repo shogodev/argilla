@@ -5,7 +5,7 @@
  * - $this: the ControllerCode object
  */
 ?>
-<?php echo "<?php\n"; ?>
+<?php echo "<?php\r\n"; ?>
 <?php if( isset($this->controller, $this->modelName ) ) {?>
   /**
   * @var <?php echo $this->controller ?> $this
@@ -24,21 +24,21 @@ if( $this->getModelClass() ) {
     switch($attribute)
     {
       case 'position':
-        echo "    array('name' => '".$attribute."', 'htmlOptions' => array('class' => 'span1'), 'class' => 'OnFlyEditField', 'filter' => false),\n";
+        echo "    array('name' => '".$attribute."', 'htmlOptions' => array('class' => 'span1'), 'class' => 'OnFlyEditField', 'filter' => false),\r\n";
         break;
       case 'id':
-        echo "    array('name' => '".$attribute."', 'class' => 'BPkColumn', 'htmlOptions' => array('class' => 'center span1'), 'filter' => false),\n";
+        echo "    array('name' => '".$attribute."', 'class' => 'BPkColumn', 'htmlOptions' => array('class' => 'center span1'), 'filter' => false),\r\n";
         break;
       case 'name':
       case 'notice':
-        echo "    array('name' => '".$attribute."'),\n";
+        echo "    array('name' => '".$attribute."'),\r\n";
         break;
       case 'visible':
-        echo "    array('name' => '".$attribute."', 'class' => 'JToggleColumn', 'filter' => CHtml::listData($model->yesNoList(), 'id', 'name')),\n";
+        echo "    array('name' => '".$attribute."', 'class' => 'JToggleColumn', 'filter' => CHtml::listData($model->yesNoList(), 'id', 'name')),\r\n";
         break;
       default:
         if( count($this->getModelAttributes()) < 7 )
-          echo "    array('name' => '".$attribute."'),\n";
+          echo "    array('name' => '".$attribute."'),\r\n";
         break;
     }
   }

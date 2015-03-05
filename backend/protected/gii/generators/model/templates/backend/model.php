@@ -10,9 +10,9 @@
  * - $relations: list of relations (name=>relation declaration)
  */
 ?>
-<?php echo "<?php\n"; ?>
+<?php echo "<?php\r\n"; ?>
 /**
- * @author <?php echo isset(Yii::app()->params['author']) ? Yii::app()->params['author']."\n" : "... <...@...>\n"?>
+ * @author <?php echo isset(Yii::app()->params['author']) ? Yii::app()->params['author']."\r\n" : "... <...@...>\r\n"?>
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-<?php echo date('Y')?> Shogo
  * @license http://argilla.ru/LICENSE
@@ -20,7 +20,7 @@
  * @method static <?php echo $modelClass; ?> model(string $class = __CLASS__)
  *
 <?php foreach($columns as $column): ?>
- * @property <?php echo $column->type.' $'.$column->name."\n"; ?>
+ * @property <?php echo $column->type.' $'.$column->name."\r\n"; ?>
 <?php endforeach; ?>
 <?php if(!empty($relations)): ?>
  *
@@ -33,32 +33,32 @@
 
       switch($relationType){
           case 'HAS_ONE':
-              echo $relationModel.' $'.$name."\n";
+              echo $relationModel.' $'.$name."\r\n";
           break;
           case 'BELONGS_TO':
-              echo $relationModel.' $'.$name."\n";
+              echo $relationModel.' $'.$name."\r\n";
           break;
           case 'HAS_MANY':
-              echo $relationModel.'[] $'.$name."\n";
+              echo $relationModel.'[] $'.$name."\r\n";
           break;
           case 'MANY_MANY':
-              echo $relationModel.'[] $'.$name."\n";
+              echo $relationModel.'[] $'.$name."\r\n";
           break;
           default:
-              echo 'mixed $'.$name."\n";
+              echo 'mixed $'.$name."\r\n";
       }
   }
     ?>
 <?php endforeach; ?>
 <?php endif; ?>
  */
-class <?php echo $modelClass; ?> extends <?php echo $this->baseClass."\n"; ?>
+class <?php echo $modelClass; ?> extends <?php echo $this->baseClass."\r\n"; ?>
 {
   public function rules()
   {
     return array(
 <?php foreach($rules as $rule): ?>
-      <?php echo $rule.",\n"; ?>
+      <?php echo $rule.",\r\n"; ?>
 <?php endforeach; ?>
       array('<?php echo implode(', ', array_keys($columns)); ?>', 'safe', 'on' => 'search'),
     );
@@ -68,7 +68,7 @@ class <?php echo $modelClass; ?> extends <?php echo $this->baseClass."\n"; ?>
   {
     return array(
 <?php foreach($relations as $name => $relation): ?>
-      <?php echo "'$name' => $relation,\n"; ?>
+      <?php echo "'$name' => $relation,\r\n"; ?>
 <?php endforeach; ?>
     );
   }
@@ -88,7 +88,7 @@ class <?php echo $modelClass; ?> extends <?php echo $this->baseClass."\n"; ?>
   {
     return CMap::mergeArray(parent::attributeLabels(), array(
   <?php foreach($labels as $name=>$label): ?>
-    <?php echo "'".$name."' => '".str_replace("'","\'",$label)."',\n"; ?>
+    <?php echo "'".$name."' => '".str_replace("'","\'",$label)."',\r\n"; ?>
   <?php endforeach; ?>
   ));
   }
@@ -106,11 +106,11 @@ foreach($columns as $name=>$column)
 {
   if( $column->type === 'string' )
   {
-    echo "    \$criteria->compare('$name', \$this->$name, true);\n";
+    echo "    \$criteria->compare('$name', \$this->$name, true);\r\n";
   }
   else
   {
-    echo "    \$criteria->compare('$name', \$this->$name);\n";
+    echo "    \$criteria->compare('$name', \$this->$name);\r\n";
   }
 }
 ?>

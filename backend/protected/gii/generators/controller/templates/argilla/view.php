@@ -6,7 +6,7 @@
  * - $action: the action ID
  */
 ?>
-<?php echo "<?php\n"; ?>
+<?php echo "<?php\r\n"; ?>
 /**
 * @var <?php echo $this->getControllerClass(); ?> $this
 * @var <?php echo str_replace("Controller", "", $this->getControllerClass()); ?> $model
@@ -26,14 +26,14 @@ $this->widget('BGridView', array(
     array('class' => 'BButtonColumn'),
   ),
 ));<?php } else {?>
-<?php echo "?>\n"; ?>
+<?php echo "?>\r\n"; ?>
 
-<?php echo "<?php ";?>Yii::app()->breadcrumbs->show(); <?php echo "?>\n"; ?>
+<?php echo "<?php ";?>Yii::app()->breadcrumbs->show(); <?php echo "?>\r\n"; ?>
 
-<?php echo "<?php\n"; ?>
+<?php echo "<?php\r\n"; ?>
 /* @var $form BActiveForm */
 $form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId()));
-<?php echo "?>\n"; ?>
+<?php echo "?>\r\n"; ?>
 
 <?php echo "<?php "; ?>$this->renderPartial('//_form_buttons', array('model' => $model)); ?>
 <?php echo "<?php "; ?>echo $form->errorSummary($model); ?>
