@@ -13,4 +13,6 @@ class BVacancyController extends BController
   public $modelClass = 'BVacancy';
 
   public $position = 30;
+
+  public $enabled = false;
 }

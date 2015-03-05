@@ -13,4 +13,6 @@ class BResponseController extends BController
   public $modelClass = 'BResponse';
 
   public $position = 20;
+
+  public $enabled = false;
 }
