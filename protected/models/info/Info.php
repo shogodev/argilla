@@ -80,7 +80,7 @@ class Info extends FActiveRecord implements IMenuItem
    *
    * @param int $depth
    *
-   * @return mixed
+   * @return Info[]
    */
   public function getDescendants($depth = 1)
   {
@@ -136,6 +136,24 @@ class Info extends FActiveRecord implements IMenuItem
     return $breadcrumbs;
   }
 
+  public function getSiblingsMenu()
+  {
+    $menu = array();
+
+    if( $this->level > 1 )
+    {
+      foreach($this->getSiblings(true) as $item)
+      {
+        $menu[] = array(
+          'label' => $item->name,
+          'url' => array('info/index', 'url' => $item->url),
+        );
+      }
+    }
+
+    return $menu;
+  }
+
   public function getName()
   {
     return $this->name;
@@ -154,5 +172,10 @@ class Info extends FActiveRecord implements IMenuItem
   public function setDepth($depth = null)
   {
 
+  }
+
+  public function getUrl()
+  {
+    return CHtml::normalizeUrl($this->getMenuUrl());
   }
 }

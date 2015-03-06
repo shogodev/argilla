@@ -1,47 +1,21 @@
 <?php
 /**
  * @var FController $this
- * @var Info               $model
- * @var FForm|null         $form
- * @var CommentForm|null   $commentForm
+ * @var Info $model
+ * @var array $_data_
  */
 ?>
+<div class="wrapper nofloat">
 
-<div class="wrap-info">
-  <?php $this->renderPartial('/breadcrumbs');?>
-</div>
+  <?php $this->renderPartial('_menu', array('menu' => $model->getSiblingsMenu()));?>
 
-<div class="container-fluid">
-  <div class="row-fluid">
-    <div class="span2">
-      Левое меню
+  <section id="main">
+    <?php $this->renderPartial('/_breadcrumbs');?>
 
-      <!--Sidebar content-->
+    <h1 class="uppercase m10"><?php echo Yii::app()->meta->setHeader($model->name)?></h1>
+
+    <div class="text-container m20">
+      <?php echo $model->content?>
     </div>
-    <div class="span10">
-      <h1><?php echo Yii::app()->meta->setHeader((empty($model->alternative_header) ? $model->name : $model->alternative_header))?></h1>
-
-      <div class="text-container">
-        <?php echo $model->content?>
-      </div>
-
-      <?php if( $model->children ) { ?>
-      <?php foreach($model->getDescendants() as $child) { ?>
-
-        <div class="grid_4">
-          <?php if( $child->img ) { ?>
-          <div class="m15">
-            <a href="<?php echo $this->createUrl('info/index', array('url' => $child->url))?>">
-              <img src="<?php echo $child->img?>" alt="" width="205" />
-            </a>
-          </div>
-          <?php } ?>
-          <h3><a href="<?php echo $this->createUrl('info/index', array('url' => $child->url))?>"><?php echo (empty($child->alternative_header) ? $child->name : $child->alternative_header)?></a></h3>
-          <div class="text-container"><?php echo $child->notice?></div>
-        </div>
-
-        <?php } ?>
-      <?php } ?>
-    </div>
-  </div>
+  </section>
 </div>
