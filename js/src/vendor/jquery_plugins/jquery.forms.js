@@ -73,6 +73,13 @@
                 el.next().addClass('check_'+el.type);
               }
             });
+            el.on('change', function() {
+              var element = $(this);
+              if (!element.prop('disabled')) {
+                if( !element.prop('checked') )
+                  element.next().removeClass('check_' + element.attr('type'));
+              }
+            });
             break;
           case 'file':
             el.id = el.attr('id');

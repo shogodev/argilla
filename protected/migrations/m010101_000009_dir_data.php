@@ -1,5 +1,4 @@
 <?php
-
 class m010101_000009_dir_data extends CDbMigration
 {
 	public function up()
@@ -10,8 +9,11 @@ class m010101_000009_dir_data extends CDbMigration
       (3, 'Электронные деньги', 0, NULL, 1)");
 
     $this->execute("INSERT INTO `{{order_delivery_type}}` (`id`, `name`, `position`, `notice`, `visible`) VALUES
-      (1, 'Самовывоз', 2, NULL, 1),
-      (2, 'Доставка', 1, NULL, 1)");
+      (1, 'Самовывоз со склада в москве', 10, NULL, 1),
+      (2, 'Доставка г. Москва', 20, NULL, 1),
+      (3, 'Доставка Московская область', 30, NULL, 1),
+      (4, 'Доставка в регионы РФ', 20, NULL, 1)
+     ");
 
     $this->execute("INSERT INTO `{{order_status}}` (`id`, `name`, `sysname`) VALUES
       (null, 'Новый', 'new'),

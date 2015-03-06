@@ -18,7 +18,14 @@ class OrderDeliveryType extends FActiveRecord
 {
   const SELF_DELIVERY = 1;
 
-  const DELIVERY = 2;
+  const DELIVERY_MOSCOW = 2;
+
+  const DELIVERY_MOSCOW_REGION = 3;
+
+  const DELIVERY_REGION = 4;
+
+  const FREE_DELIVERY_LIMIT = 0;
+
 
   public function defaultScope()
   {
@@ -31,5 +38,28 @@ class OrderDeliveryType extends FActiveRecord
         ':visible' => '1',
       ],
     ];
+  }
+
+  public function calcDelivery($orderSum)
+  {
+    if( is_null($this->id) )
+      return null;
+
+    if( $this->id == self::SELF_DELIVERY )
+      return 0;
+    else
+    {
+      if( $this->isFreeDelivery($orderSum) )
+        return 0;
+      else
+        return self::DELIVERY_PRICE;
+    }
+
+    return null;
+  }
+
+  public static function isFreeDelivery($orderSum)
+  {
+    return $orderSum > self::FREE_DELIVERY_LIMIT;
   }
 }

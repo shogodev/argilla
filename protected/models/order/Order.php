@@ -163,7 +163,7 @@ class Order extends FActiveRecord
       $this->saveModel(new OrderProductHistory(), array(
         'order_product_id' => $orderProduct->getPrimaryKey(),
         'product_id' => $product->id,
-        'url' => $product->url,
+        'url' => $product->getUrl(),
         'img' => $image ? $image->pre : '',
         'articul' => $product->articul
       ));
