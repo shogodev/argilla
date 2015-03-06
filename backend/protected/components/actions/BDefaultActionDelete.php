@@ -26,7 +26,7 @@ class BDefaultActionDelete extends CAction
   {
     if( Yii::app()->request->isPostRequest )
     {
-      if( in_array('nestedSetBehavior', array_keys($this->model->behaviors())) )
+      if( $this->model->asa('nestedSetBehavior') )
         $result = $this->model->deleteNode();
       else
         $result = $this->model->delete();
