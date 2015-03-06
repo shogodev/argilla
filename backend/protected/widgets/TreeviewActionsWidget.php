@@ -153,7 +153,7 @@ class TreeviewActionsWidget extends CWidget
               document.location.href = indexUrl;
             };
 
-            $.post(deleteUrl.replace('_id_', id), {}, callback, 'json');
+            $.post(deleteUrl.replace('_id_', id), {}, callback);
           }(id);
         }
 
@@ -174,7 +174,7 @@ class TreeviewActionsWidget extends CWidget
             $('#'+modelClass+'_'+action).attr('checked', treeActions[id][action].disabled ? false : true);
         };
 
-        $.post(ajaxUrl.replace('_attr_', action).replace('_id_', id), {}, callback, 'json');
+        $.post(ajaxUrl.replace('_attr_', action).replace('_id_', id), {}, callback);
       });
 
       $('#tree_'+modelClass+' a').each(function()

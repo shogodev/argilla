@@ -68,7 +68,7 @@ class BOrderButtonColumn extends BButtonColumn
             return;
 
           var finish = function(){jQuery.fn.yiiGridView.update('{$this->grid->id}');};
-          $.post(ajaxUrl, {'ids' : ids}, finish, 'json').fail(function(xhr){ajaxUpdateError(xhr)});
+          $.post(ajaxUrl, {'ids' : ids}, finish).fail(function(xhr){ajaxUpdateError(xhr)});
         };
 
         options.iframe_load = function()

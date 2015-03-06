@@ -97,7 +97,7 @@ class BPkColumn extends BDataColumn
         var value = $(this).prop('checked') ? 1 : 0;
         var id    = $(this).attr('id').match(/pk_(\d+)/)[1];
 
-        $.post('{$this->ajaxUrl}', {'value' : value, 'ids' : id}, null, 'json');
+        $.post('{$this->ajaxUrl}', {'value' : value, 'ids' : id});
       });
     ", CClientScript::POS_READY);
   }
