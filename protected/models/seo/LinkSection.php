@@ -105,6 +105,18 @@ class LinkSection extends FActiveRecord
     return Link::model()->visible()->inSection($this->id)->onPage($page)->findAll();
   }
 
+  /**
+   * Номер записи с какой начинается страница
+   *
+   * @param int $page Страница, для которой вернуть ссылки.
+   *
+   * @return Link[] Ссылки на странице.
+   */
+  public function getNumLink($page)
+  {
+    return Link::model()->visible()->inSection($this->id)->linksOnPagesBefore($page)->count();
+  }
+
   protected function afterFind()
   {
     $this->url = Yii::app()->controller->createUrl('link/section', array('section' => $this->url));

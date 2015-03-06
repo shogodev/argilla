@@ -62,6 +62,7 @@ class LinkController extends FController
       'sections' => $sections,
       'dataProvider' => new FArrayDataProvider($links, array('pagination' => false)),
       'pagination' => new FFixedPageCountPagination($model->pageCount),
+      'beginCount' => $model->getNumLink($page) + 1
     ]);
   }
 }

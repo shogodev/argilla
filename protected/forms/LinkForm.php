@@ -6,9 +6,9 @@
  * @license http://argilla.ru/LICENSE
  */
 return array(
-  'class' => 'form',
+  'class' => 'form standard-form',
 
-  'description' => 'Поля, отмеченные знаком <span class="required">*</span> , обязательны для заполнения.',
+  //'description' => 'Поля, отмеченные знаком <span class="required">*</span> , обязательны для заполнения.',
 
   'elements' => array(
 
@@ -37,7 +37,7 @@ return array(
   'buttons' => array(
     'submit' => array(
       'type' => 'submit',
-      'class' => 'btn',
+      'class' => 'btn sky-blue-btn h30btn p20btn s16 bb uppercase',
       'value' => 'Отправить'
     ),
   ),
