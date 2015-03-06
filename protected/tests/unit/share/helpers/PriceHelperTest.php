@@ -40,13 +40,13 @@ class PriceHelperTest extends CTestCase
 
   public function testPercent()
   {
-    $this->assertEquals(PriceHelper::getPercent(100, 1000), 10);
+    $this->assertEquals(PriceHelper::getCalcPercent(100, 1000), 10);
 
-    $this->assertEquals(PriceHelper::getPercent(100, 1500), 7);
+    $this->assertEquals(PriceHelper::getCalcPercent(100, 1500), 7);
 
-    $this->assertEquals(PriceHelper::getPercent(100, 1500, false), 6.7);
+    $this->assertEquals(PriceHelper::getCalcPercent(100, 1500, false), 6.7);
 
-    $this->assertEquals(PriceHelper::getPercent(100, 1500, false, 2), 6.67);
+    $this->assertEquals(PriceHelper::getCalcPercent(100, 1500, false, 2), 6.67);
   }
 
   public function testPercentByPrice()

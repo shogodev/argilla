@@ -80,26 +80,45 @@ class PriceHelper
   {
     $economy = self::getEconomy($oldPrice, $price, $ceil);
 
-    return self::isNotEmpty($economy) ? self::getPercent($economy, $oldPrice, $ceil) : 0;
+    return self::isNotEmpty($economy) ? self::getCalcPercent($economy, $oldPrice, $ceil) : 0;
   }
 
   /**
-   * Возвращает процент числа $value от $ofValue
+   * Возвращает процент числа $price от числа $ofPrice
    *
-   * @param $value
-   * @param $ofValue
+   * @param $price числа
+   * @param $ofPrice числа
    * @param bool $ceil округлять до целого
    * @param int $round
    *
-   * @return float
+   * @return float процент
    */
-  public static function getPercent($value, $ofValue, $ceil = true, $round = 1)
+  public static function getCalcPercent($price, $ofPrice, $ceil = true, $round = 1)
   {
-    $percent = round(($value * 100) / $ofValue, $round);
+    $percent = round(($price * 100) / $ofPrice, $round);
 
     if( $ceil )
       $percent = ceil($percent);
 
     return $percent;
+  }
+
+  /**
+   * Возвращает число процентного соотношения $percent от числа $price
+   *
+   * @param $price число
+   * @param $percent процент
+   * @param bool $ceil округлять до целого
+   *
+   * @return float число
+   */
+  public static function getPercent($price, $percent, $ceil = true)
+  {
+     $discount = $percent * $price / 100;
+
+    if( $ceil )
+      $discount = ceil($discount);
+
+    return $discount;
   }
 }
