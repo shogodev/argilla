@@ -30,6 +30,14 @@ class ErrorController extends FController
   {
     $this->initError();
 
+    if( $this->error['type'] == 'ErrorSessionException' && !YII_DEBUG )
+    {
+      $returnUrl = Yii::app()->user->returnUrl;
+      Yii::app()->session->clear();
+      Yii::app()->session->closeSession();
+      Yii::app()->request->redirect($returnUrl);
+    }
+
     if( Yii::app()->request->isAjaxRequest )
     {
       echo $this->errorMessage;

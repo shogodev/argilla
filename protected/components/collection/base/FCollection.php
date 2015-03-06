@@ -77,14 +77,14 @@ class FCollection extends FAbstractCollection
       }
       else
       {
-        throw new CHttpException(500, 'Ошибка! Невозможно добавить элемент '.get_class($data).' в коллекцию.');
+        throw new ErrorSessionException(500, 'Ошибка! Невозможно добавить элемент '.get_class($data).' в коллекцию.');
       }
     }
 
     $object = new FCollectionElement($data, $this->compareByItemKeys, $this->rootCollection);
 
     if( !$object->validate() )
-      throw new CHttpException(500, 'Ошибка валидации элемента type='.$object->type.' '.'id='.$object->primaryKey);
+      throw new ErrorSessionException(500, 'Ошибка валидации элемента type='.$object->type.' '.'id='.$object->primaryKey);
 
     return $this->attach($object);
   }
