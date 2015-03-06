@@ -1,5 +1,7 @@
 <?php
 return array(
+  // template
+  'template' => array('template/index', 'pattern' => 'templates/<url:\w+>'),
 
   // index
   'index' => array('index/index', 'pattern' => '/'),

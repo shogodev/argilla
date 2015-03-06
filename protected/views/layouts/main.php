@@ -27,5 +27,7 @@
 
 <?php $this->renderOverride('footer');?>
 
+<?php if( YII_DEBUG ) $this->renderPartial('//template/_templates_navigation'); ?>
+
 </body>
 </html>

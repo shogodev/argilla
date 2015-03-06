@@ -1,3 +1,8 @@
+<?php
+/**
+ * @var FController $this
+ */
+?>
 <!-- Templates navigation panel styles -->
 <style>
   #templates-navigation * {
@@ -123,12 +128,31 @@
   <div class="templates-navigation-header">Список шаблонов:</div>
   <div class="templates-map-container">
     <ul class="templates-map scroll-pane">
-      <li><a href="/templates/" data-description="">Главная</a>
+      <li><a href="<?php echo $this->createUrl('index/index');?>" data-description="">Главная</a><li>
+      <ul>
+        <li><a href="<?php echo $this->createUrl('contact/index');?>" data-description="">Контакты</a></li>
+        <li>
+          <a href="<?php echo $this->createUrl('news/section', array('section' => 'news'));?>" data-description="">Новости</a>
+          <ul>
+            <li><a href="<?php echo $this->createUrl('news/one', array('section' => 'news','url' => 'v_manezhe_otkrylis_vosem_fotovystavok'));?>" data-description="">Одна новость</a></li>
+          </ul>
+        </li>
+        <li><a href="<?php echo $this->createUrl('info/index', array('url' => 'garantia'));?>" data-description="">Инфостраница</a></li>
+        <li>
+          <a href="<?php echo $this->createUrl('link/index');?>" data-description="">Ресурсы по теме</a>
+          <ul>
+            <li><a href="<?php echo $this->createUrl('link/section', array('section' => 'doors'));?>" data-description="">Ресурсы по теме (категория)</a></li>
+          </ul>
+        </li>
+        <li><a href="<?php echo $this->createUrl('sitemap/index');?>" data-description="">Карта сайта</a></li>
+      </ul>
+
     </ul>
   </div>
   <div class="templates-navigation-header">Примечание:</div>
   <div class="scroll-pane template-description-block">
-    <div class="template-description"></div>
+    <div class="template-description">
+    </div>
   </div>
 </div>
 <!-- End of navigation-panel -->
