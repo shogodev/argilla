@@ -175,9 +175,7 @@
 
   var changeDescription = function() {
     // Выводит описание открытой страницы из дата-атрибутов
-    var path = '/templates/';
-    var currentPageAbsolute = window.location.href;
-    currentPage = path + currentPageAbsolute.split(path)[1];
+    var currentPage = window.location.pathname;
     $('.templates-map li a').each(function() {
       if ( $(this).attr('href') == currentPage ) {
         $('.template-description').html( $(this).data('description') );
