@@ -51,5 +51,5 @@ Argilla это CMF, реализованная на [Yii Framework](http://www.y
   Для заполнения базы демонстрационным контентом в директории с проектом (webroot) нужно выполнить команду:
     protected/yiic migrate up --migrationPath=frontend.migrations.demo
   Удаление демонстрационного контента(если миграций больше не применялись):
-    protected/yiic migrate down 4 --migrationPath=frontend.migrations.demo
+    protected/yiic migrate down 5 --migrationPath=frontend.migrations.demo
 
