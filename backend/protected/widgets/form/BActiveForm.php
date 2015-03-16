@@ -176,6 +176,52 @@ class BActiveForm extends TbActiveForm
   }
 
   /**
+   * Строит цепочку зависимых dropDown листов
+   *
+   * @param $model
+   * @param $chain array
+   * @param $htmlOptionsArray array
+   *
+   * @return string
+   * @throws CHttpException
+   *
+   * Примеры
+   * echo $form->dependedInputsChainRow($model, array('category_id', 'collection_id'));
+   * echo $form->dependedInputsChainRow($model, array('category_id', 'collection_id', 'type_id', 'section_id'));
+   */
+  public function dependedInputsChainRow($model, $chain, $htmlOptionsArray = array())
+  {
+    if( !is_array($chain) )
+      throw new CHttpException(500, 'Параметр $chain должен быть массивом');
+
+    if( count($chain) < 2 )
+      throw new CHttpException(500, 'Параметр $chain должен содержать минимум 2 связанных эламента');
+
+    $html = array();
+    $parentAttribute = null;
+
+    foreach($chain as $index => $tmp)
+    {
+      if( count($chain) == 1  )
+        break;
+
+      $attribute = $chain[$index];
+      unset($chain[$index]);
+
+      $html[] = $this->inputRow('dependedInput', $model, $attribute, array(
+        'listData' => $this->getListDataByAttribute($attribute, $parentAttribute, $model),
+        'inputs' => array(Arr::reset($chain))
+      ), Arr::get($htmlOptionsArray, $attribute, array()));
+
+      $parentAttribute = $attribute;
+    }
+
+    $html[] = $this->getDependedRows($model, $attribute, array(Arr::reset($chain)));
+
+    return implode('', $html);
+  }
+
+  /**
    * @param $model
    * @param $attribute
    * @param array $inputs
@@ -187,14 +233,14 @@ class BActiveForm extends TbActiveForm
    * Examples:
    *
    * two depended inputs [section] - [type]
-   * echo $form->dependedInputs($model, 'section_id', array('type_id'), CHtml::listData(BProductType::model()->findAll(), 'id', 'name'));
+   * echo $form->dependedInputs($model, 'section_id', array('type_id'), BProductType::model()->listData());
    *
    * several depended inputs [section] - [type,category]
-   * echo $form->dependedInputs($model, 'section_id', array('type_id', 'category_id'), CHtml::listData(BProductType::model()->findAll(), 'id', 'name'));
+   * echo $form->dependedInputs($model, 'section_id', array('type_id', 'category_id'), BProductType::model()->listData());
    *
    * three inputs depended each other [section] - [type] - [category]
    * echo $form->inputRow('dependedInput', $model, 'section_id', array('listData' => BProductSection::model()->listData(), 'inputs' => array('type_id')));
-   * echo $form->dependedInputs($model, 'type_id', array('category_id'), CHtml::listData(BProductType::model()->findAll(), 'id', 'name'));
+   * echo $form->dependedInputs($model, 'type_id', array('category_id'), BProductType::model()->listData());
    */
   public function dependedInputs($model, $attribute, array $inputs, $data = array(), $htmlOptions = array())
   {
@@ -204,22 +250,7 @@ class BActiveForm extends TbActiveForm
     );
 
     $mainRow = $this->inputRow('dependedInput', $model, $attribute, $data, $htmlOptions);
-    $dependedRows = '';
-
-    foreach($inputs as $key => $input)
-    {
-      $dependedAttribute = is_array($input) ? $key : $input;
-      $type              = Arr::get($input, 'type', 'dropdown');
-
-      switch($type)
-      {
-        case 'dropdown':
-          $dependedRows .= $this->dropDownDependedRows($model, $attribute, $dependedAttribute);
-          break;
-        case 'checkboxlist':
-          $dependedRows .= $this->checkBoxListDependedRows($model, $attribute, $dependedAttribute);
-      }
-    }
+    $dependedRows = $this->getDependedRows($model, $attribute, $inputs);
 
     return $mainRow.$dependedRows;
   }
@@ -286,6 +317,65 @@ class BActiveForm extends TbActiveForm
     $parameters['iframeAction'] = $iframeAction;
 
     return $this->inputRow('association', $model, null, $parameters);
+  }
+
+  /**
+   * @param $model
+   * @param $attribute
+   * @param $inputs
+   *
+   * @return string
+   */
+  private function getDependedRows($model, $attribute, $inputs)
+  {
+    $dependedRows = '';
+
+    foreach($inputs as $key => $input)
+    {
+      $dependedAttribute = is_array($input) ? $key : $input;
+      $type = Arr::get($input, 'type', 'dropdown');
+
+      switch($type)
+      {
+        case 'dropdown':
+          $dependedRows .= $this->dropDownDependedRows($model, $attribute, $dependedAttribute);
+          break;
+        case 'checkboxlist':
+          $dependedRows .= $this->checkBoxListDependedRows($model, $attribute, $dependedAttribute);
+      }
+    }
+
+    return $dependedRows;
+  }
+
+  /**
+   * @param $attribute
+   * @param null $parentAttribute
+   * @param null $model
+   *
+   * @throws CHttpException
+   * @return array
+   */
+  private function getListDataByAttribute($attribute, $parentAttribute = null, $model = null)
+  {
+    $modelName = BProductStructure::getModelName($attribute);
+    if( !class_exists($modelName) )
+      throw new CHttpException(500, 'Не удалось найти модель '.$modelName);
+
+    $criteria = null;
+    if( isset($parentAttribute, $model->{$parentAttribute}) )
+    {
+      $criteria = new CDbCriteria();
+      $criteria->join = ' JOIN '.BProductTreeAssignment::model()->tableName().' AS tree_assignment ON dst_id = :dst_id AND dst = :dst AND src = :src';
+      $criteria->params = array(
+        ':dst_id' => $model->{$parentAttribute},
+        ':dst' => BProductStructure::getRelationName(BProductStructure::getModelName($parentAttribute)),
+        ':src' => BProductStructure::getRelationName($modelName),
+      );
+      $criteria->condition = 'tree_assignment.src_id = t.id';
+    }
+
+    return $modelName::model()->listData('id', 'name', $criteria);
   }
 
   /**

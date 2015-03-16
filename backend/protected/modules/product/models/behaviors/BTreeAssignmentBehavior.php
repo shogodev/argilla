@@ -135,9 +135,9 @@ class BTreeAssignmentBehavior extends SActiveRecordBehavior
   {
     $parent = new $this->parentModel;
 
-    $this->ownerName = $this->owner->getRelationName(get_class($this->owner));
-    $this->relationName = $this->owner->getRelationName(get_class($parent));
-    $this->rowName = $this->owner->getRowName(get_class($parent));
+    $this->ownerName = BProductStructure::getRelationName(get_class($this->owner));
+    $this->relationName = BProductStructure::getRelationName(get_class($parent));
+    $this->rowName = BProductStructure::getRowName(get_class($parent));
     $this->parent_id = $this->getModel()->dst_id;
   }
 

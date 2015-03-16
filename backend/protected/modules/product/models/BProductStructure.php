@@ -24,7 +24,7 @@ class BProductStructure extends BActiveRecord
 
   protected $previousState;
 
-  protected $classPrefix = 'BProduct';
+  protected static $classPrefix = 'BProduct';
 
   public function init()
   {
@@ -44,9 +44,9 @@ class BProductStructure extends BActiveRecord
    *
    * @return string
    */
-  public function getRowName($class)
+  public static function getRowName($class)
   {
-    return lcfirst(str_replace($this->classPrefix, '', $class)).'_id';
+    return lcfirst(str_replace(static::$classPrefix, '', $class)).'_id';
   }
 
   /**
@@ -54,9 +54,9 @@ class BProductStructure extends BActiveRecord
    *
    * @return string
    */
-  public function getRelationName($class)
+  public static function getRelationName($class)
   {
-    return lcfirst(str_replace($this->classPrefix, '', $class));
+    return lcfirst(str_replace(static::$classPrefix, '', $class));
   }
 
   /**
@@ -64,9 +64,9 @@ class BProductStructure extends BActiveRecord
    *
    * @return string
    */
-  public function getModelName($row)
+  public static function getModelName($row)
   {
-    return $this->classPrefix.ucfirst(str_replace('_id', '', $row));
+    return static::$classPrefix.ucfirst(str_replace('_id', '', $row));
   }
 
   protected function beforeSave()
@@ -126,7 +126,7 @@ class BProductStructure extends BActiveRecord
   private function unsetVisible($pk)
   {
     $criteria = new CDbCriteria();
-    $criteria->compare($this->getRowName(get_called_class()), $pk);
+    $criteria->compare(static::getRowName(get_called_class()), $pk);
 
     $builder = new CDbCommandBuilder(Yii::app()->db->getSchema());
     $command = $builder->createUpdateCommand($this->assignmentTable, array('visible' => 0), $criteria);
@@ -143,7 +143,7 @@ class BProductStructure extends BActiveRecord
     $criteria = new CDbCriteria();
     $criteria->select = array('t.id');
     $criteria->distinct = true;
-    $criteria->compare($this->getRowName(get_called_class()), $pk);
+    $criteria->compare(static::getRowName(get_called_class()), $pk);
 
     foreach(array_keys($this->assignmentModel->getFields()) as $row)
     {
