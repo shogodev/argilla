@@ -65,8 +65,10 @@
     options.economy['element'] = parentElement.find( options.economy.elementSelector);
 
     var widget = this;
-    options.amount.bind('change', function() {
+    options.amount.bind('change', function(e, changeAmount) {
       widget._calc(parentElement, options);
+      if( changeAmount !== false )
+        parentElement.trigger('amountChange', $(this).val());
     });
 
     options.price.element.bind('change', function() {
@@ -81,7 +83,9 @@
       var priceOld = this._calcPriceOld(parentElement, options.priceOld, options.amount, price, options.priceComponentClass);
 
     if( options.economy['element'].length > 0 )
-      this._calcEconomy(price, priceOld, parentElement, options.economy);
+      var economy = this._calcEconomy(price, priceOld, parentElement, options.economy);
+
+    $(options.price['element']).trigger('endCalc', {'price' : price, 'priceOld' : priceOld, 'economy' : economy, 'amount' : options.amount.val()});
   },
 
   _calcPrice: function(parentElement, options, amountElement, priceComponentClass) {
@@ -134,6 +138,8 @@
     {
       economyParentElement.hide();
     }
+
+    return economy;
   },
 
   _getComponentsPrice: function(parentElement, dataKey, priceComponentClass) {
