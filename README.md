@@ -47,10 +47,13 @@ Argilla это CMF, реализованная на [Yii Framework](http://www.y
 	./protected/yiic migrate
 	./protected/yiic rbac build
 
-# Demo content
+##Demo content
 
-  Для заполнения базы демонстрационным контентом в директории с проектом (webroot) нужно выполнить команду:
+Для заполнения базы демонстрационным контентом в директории с проектом (webroot) нужно выполнить команду:
+
     protected/yiic migrate up --migrationPath=frontend.migrations.demo
-  Удаление демонстрационного контента(если миграций больше не применялись):
+
+Удаление демонстрационного контента(если миграций больше не применялись):
+
     protected/yiic migrate down 5 --migrationPath=frontend.migrations.demo
 
