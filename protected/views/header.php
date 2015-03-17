@@ -7,7 +7,7 @@
 
   <div class="nofloat m10">
 
-    <a class="hd-logo" href="<?php echo $this->createUrl('index/index')?>">
+    <a class="hd-logo " href="<?php echo $this->createUrl('index/index')?>">
       <img width="92" height="109" style="border: solid 1px #000000;" src="i/sp.gif" />
     </a>
 
@@ -21,6 +21,19 @@
       <?php } ?>
     </div>
 
+    <div class="fr">
+      <form action="/search/" method="get">
+        <?php
+        $this->widget('SearchWidget', array(
+          'htmlOptions' => array(
+            'class' => 'inp',
+            'placeholder' => 'Поиск...'
+          )
+        ));
+        ?>
+        <input type="submit" value="Найти" class="search-go" />
+      </form>
+    </div>
   </div>
 
   <div class="nofloat m10">

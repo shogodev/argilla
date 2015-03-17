@@ -8,6 +8,7 @@ return array(
 
   // search
   'search' => array('search/index', 'pattern' => 'search/<page:\d+>', 'defaultParams' => array('page' => 1)),
+  'searchPredictive' => array('search/predictive', 'pattern' => 'fast_search'),
 
   // xml
   'xmlExport' => array('xmlExport/index', 'pattern' => '<id:\w+>_xml'),

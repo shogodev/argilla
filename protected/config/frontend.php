@@ -129,6 +129,7 @@ return array_merge_recursive(array(
   'params' => array(
     'mode' => 'frontend',
     'salt' => 'random_salt',
+    'yandexSearchId' => '2193125'
   ),
 
   'sourceLanguage' => 'ru_ru',
