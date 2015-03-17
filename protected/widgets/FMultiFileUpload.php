@@ -12,8 +12,6 @@ class FMultiFileUpload extends CMultiFileUpload
 
   public function init()
   {
-    $modelName = get_class($this->model).rand(0, 1000);
-
     if( !isset($this->accept) )
       $this->accept = implode('|', $this->model->fileTypes);
 
@@ -23,10 +21,7 @@ class FMultiFileUpload extends CMultiFileUpload
     if( !isset($this->denied) )
       $this->denied = 'Вы не можете добавлять файлы данного типа';
 
-    $this->options = CMap::mergeArray(array(
-                                        'max'  => $this->model->maxFiles,
-                                        'list' => '#'.$modelName.'_file_wrap_list'
-                                      ), $this->options);
+    $this->options = CMap::mergeArray(array('max' => $this->model->maxFiles), $this->options);
 
     if( !isset($this->htmlOptions['size']) )
       $this->htmlOptions['size'] = 1;
