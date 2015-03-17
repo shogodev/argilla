@@ -37,7 +37,7 @@ if( $this->getModelClass() ) {
         echo "    array('name' => '".$attribute."', 'class' => 'JToggleColumn', 'filter' => CHtml::listData($model->yesNoList(), 'id', 'name')),\r\n";
         break;
       default:
-        if( count($this->getModelAttributes()) < 7 )
+        if( ($key + 1) < 7 )
           echo "    array('name' => '".$attribute."'),\r\n";
         break;
     }
