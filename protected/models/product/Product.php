@@ -14,9 +14,7 @@
  * @property string $url
  * @property string $name
  * @property string $articul
- * @property string $price
  * @property string $currency_id
- * @property string $price_old
  * @property string $notice
  * @property string $content
  * @property string $parentsName
@@ -43,17 +41,22 @@
  *
  * @mixin ProductParametersBehavior
  * @mixin ActiveImageBehavior
+ * @mixin ProductPriceBehavior
  */
 class Product extends FActiveRecord
 {
-  /**
-   * @var Product[]
-   */
-  protected $relatedProduct;
+  public function __get($name)
+  {
+    if( in_array($name, array('price', 'price_old')) )
+      throw new CHttpException(500, 'Ошибка! Прямой вызов свойства '.$name.' запрещен, используйте метод get'.Utils::toCamelCase($name));
+
+    return parent::__get($name);
+  }
 
   public function behaviors()
   {
     return array(
+      'price' => array('class' => 'ProductPriceBehavior'),
       'collectionElement' => array('class' => 'FCollectionElementBehavior'),
       'productParametersBehavior' => array('class' => 'ProductParametersBehavior'),
       'imagesBehavior' => array('class' => 'ActiveImageBehavior', 'imageClass' => 'ProductImage'),
@@ -105,24 +108,8 @@ class Product extends FActiveRecord
   /**
    * @return string
    */
-  public function getPrice()
-  {
-    return $this->price;
-  }
-
-  /**
-   * @return string
-   */
-  public function getPriceOld()
-  {
-    return $this->price_old;
-  }
-
-  /**
-   * @return string
-   */
   public function getUrl()
   {
-    return Yii::app()->controller->createUrl('product/one', array('url' => $this->url));
+    return Yii::app()->createUrl('product/one', array('url' => $this->url));
   }
 }
