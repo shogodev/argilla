@@ -107,12 +107,23 @@ class BaseList extends CComponent
   }
 
   /**
+   * @param bool $resetLimit
+   *
    * @return array
+   * @throws CDbException
    */
-  public function getModelIds()
+  public function getModelIds($resetLimit = true)
   {
+    $criteria = clone $this->getFilterCriteria();
+
+    if( $resetLimit )
+    {
+      $criteria->limit = -1;
+      $criteria->offset = -1;
+    }
+
     $builder = new CDbCommandBuilder(Yii::app()->db->getSchema());
-    $command = $builder->createFindCommand($this->getModel()->tableName(), $this->getFilterCriteria());
+    $command = $builder->createFindCommand($this->getModel()->tableName(), $criteria);
 
     return CHtml::listData($command->queryAll(), 'id', 'id');
   }
