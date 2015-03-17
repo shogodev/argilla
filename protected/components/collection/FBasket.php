@@ -219,16 +219,27 @@ class FBasket extends FCollectionUI
         delete data['formData'];
       }
 
-      var target = $('#{$this->fastOrderFormPopupId}');
-      $.overlayLoader(true, {
-        node: target,
-        onShow: function()
-        {
-          setTimeout(function() {
-            target.find('.autofocus-inp').focus();
-          }, 300);
-        }
-       });
+      var showFastOrderPopup = function()
+      {
+        var target = $('#{$this->fastOrderFormPopupId}');
+        $.overlayLoader(true, {
+          node: target,
+          onShow: function()
+          {
+            setTimeout(function() {
+              target.find('.autofocus-inp').focus();
+            }, 300);
+          }
+         });
+       }
+
+      if( parentPopup = $(this).closest('.popup') ) {
+        $.overlayLoader(false, {node : parentPopup});
+        setTimeout(function(){
+          showFastOrderPopup();
+        }, 300);
+      } else {
+        showFastOrderPopup();
 
       $('#{$this->fastOrderFormId}').show();
       $('#{$this->fastOrderFormSuccessId}').hide();
