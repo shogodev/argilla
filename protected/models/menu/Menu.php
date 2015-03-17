@@ -101,6 +101,9 @@ class Menu extends FActiveRecord implements IMenuItem
    */
   public function getMenuUrl()
   {
+    if( empty($this->url) )
+      return '';
+
     if( substr($this->url, 0, 1) === '/' && substr($this->url, -1, 1) === '/' )
       return $this->url;
     else

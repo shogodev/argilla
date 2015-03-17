@@ -6,6 +6,8 @@
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.product
  */
+Yii::import('backend.components.BModule');
+
 class ProductModule extends BModule
 {
   public $defaultController = 'BProduct';

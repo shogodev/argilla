@@ -24,7 +24,7 @@ class TemplateController extends FController
 
     $this->breadcrumbs = array('Шаблон '.$url);
 
-    if( file_exists(Yii::getPathOfAlias('frontend.views.layout').DIRECTORY_SEPARATOR.$url.'.php') )
+    if( file_exists(Yii::getPathOfAlias('frontend.views.layouts').DIRECTORY_SEPARATOR.$url.'.php') )
       $this->layout = $url;
 
     $this->render($url);
