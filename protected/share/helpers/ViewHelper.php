@@ -38,7 +38,9 @@ class ViewHelper
       }
 
       if( isset($menuOptions['itemTemplate']) )
+      {
         $item['template'] = self::replace($menuOptions['itemTemplate'], $element);
+      }
 
       $items[$key] = $item;
     }
@@ -72,6 +74,9 @@ class ViewHelper
           $replaceArray[$expression] = $data[$attribute];
         else if( is_object($data) && isset($data->{$attribute}) )
           $replaceArray[$expression] = $data->{$attribute};
+
+        if( $attribute == 'url' && is_array($replaceArray[$expression]) )
+          $replaceArray[$expression] = CHtml::normalizeUrl($replaceArray[$expression]);
       }
 
       if( $replaceArray )

@@ -35,7 +35,11 @@ class BInfo extends BAbstractMenuEntry
   {
     return array(
       'nestedSetBehavior' => array('class' => 'nestedset.NestedSetBehavior'),
-      'uploadBehavior'    => array('class' => 'UploadBehavior', 'validAttributes' => "info_files")
+      'uploadBehavior'    => array('class' => 'UploadBehavior', 'validAttributes' => "info_files"),
+      'dateFilterBehavior' => array(
+        'class' => 'DateFilterBehavior',
+        'attribute' => 'date',
+      )
     );
   }
 
@@ -48,8 +52,6 @@ class BInfo extends BAbstractMenuEntry
       array('position', 'numerical', 'integerOnly' => true),
       array('template, url', 'length', 'max' => 255),
       array('visible, siblings, children, menu, sitemap', 'length', 'max' => 1),
-
-      array('date', 'date', 'format' => 'dd.MM.yyyy'),
       array('notice, content, reference', 'safe'),
       array('parent', 'safe', 'on' => 'search'),
     );
@@ -120,23 +122,6 @@ class BInfo extends BAbstractMenuEntry
     }
 
     return $criteria;
-  }
-
-  protected function beforeSave()
-  {
-    if( parent::beforeSave() )
-    {
-      $this->date = $this->date ? date('Y-m-d', strtotime($this->date)) : null;
-      return true;
-    }
-
-    return false;
-  }
-
-  protected function afterFind()
-  {
-    $this->date = $this->date ? date('d.m.Y', strtotime($this->date)) : '';
-    parent::afterFind();
   }
 
   public function getId()

@@ -7,7 +7,7 @@ class CActiveDataProviderTest extends CTestCase
     Yii::import('backend.modules.news.controllers.*');
   }
 
-  public function testCounstuctor()
+  public function testConstructor()
   {
     $dataProvider = new BActiveDataProvider('BNews', array());
     $itemsPerPage = $dataProvider->getCurrentPageSize();
