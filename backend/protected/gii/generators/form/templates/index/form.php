@@ -20,26 +20,41 @@
   'columns' => array(
 <?php
 if( $this->getModelClass() ) {
-  foreach($this->getModelAttributes() as $attribute) {
+  foreach($this->getModelAttributes() as $key => $attribute) {
     switch($attribute)
     {
       case 'position':
-        echo "    array('name' => '".$attribute."', 'htmlOptions' => array('class' => 'span1'), 'class' => 'OnFlyEditField', 'filter' => false),\r\n";
+        echo "      array('name' => '".$attribute."', 'htmlOptions' => array('class' => 'span1'), 'class' => 'OnFlyEditField', 'filter' => false),\r\n";
         break;
       case 'id':
-        echo "    array('name' => '".$attribute."', 'class' => 'BPkColumn', 'htmlOptions' => array('class' => 'center span1'), 'filter' => false),\r\n";
+        echo "      array('name' => '".$attribute."', 'class' => 'BPkColumn', 'htmlOptions' => array('class' => 'center span1'), 'filter' => false),\r\n";
         break;
       case 'name':
       case 'notice':
-        echo "    array('name' => '".$attribute."'),\r\n";
+        echo "      array('name' => '".$attribute."'),\r\n";
         break;
       case 'visible':
-        echo "    array('name' => '".$attribute."', 'class' => 'JToggleColumn', 'filter' => CHtml::listData($model->yesNoList(), 'id', 'name')),\r\n";
+        echo "      array('name' => '".$attribute."', 'class' => 'JToggleColumn', 'filter' => CHtml::listData($model->yesNoList(), 'id', 'name')),\r\n";
         break;
       default:
         if( ($key + 1) < 7 )
-          echo "    array('name' => '".$attribute."'),\r\n";
-        break;
+        {
+          /**
+           * @var BActiveRecord $model
+           */
+          $modelName = $this->getModelClass();
+          $model = new $modelName;
+          $table = $model->dbConnection->getSchema()->getTable($model->tableName());
+          /**
+           * @var CMysqlColumnSchema $column
+           */
+          $column = $table->columns[$attribute];
+          if( $column->dbType == 'timestamp' )
+            echo "      array('name' => '".$attribute."', 'class' => 'BDatePickerColumn'),\r\n";
+          else
+            echo "      array('name' => '".$attribute."'),\r\n";
+          break;
+        }
     }
   }
 }?>

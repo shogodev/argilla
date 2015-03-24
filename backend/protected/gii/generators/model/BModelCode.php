@@ -93,18 +93,25 @@ class BModelCode extends ModelCode
     {
       $this->defaultSort = '';
 
-      $table = Yii::app()->db->getSchema()->getTable($this->tableName);
-
-      foreach($table->columns as $column)
-      {
-        if( $column->dbType == 'timestamp' )
-        {
-          $this->defaultSort = $column->name;
-          break;
-        }
-      }
+      if( $timestampAttribute = $this->getTimestampAttribute() )
+        $this->defaultSort = $timestampAttribute;
     }
 
     return $this->defaultSort;
+  }
+
+  public function getTimestampAttribute()
+  {
+    $table = Yii::app()->db->getSchema()->getTable($this->tableName);
+
+    foreach($table->columns as $column)
+    {
+      if( $column->dbType == 'timestamp' )
+      {
+        return $column->name;
+      }
+    }
+
+    return null;
   }
 }
