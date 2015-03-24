@@ -10,6 +10,8 @@
  *
  * @property integer $id
  * @property string $date
+ * @property string $date_time
+ * @property string $timestamp
  */
 class TDateFormatTestModel extends BActiveRecord
 {
@@ -26,6 +28,14 @@ class TDateFormatTestModel extends BActiveRecord
       'dateFormatBehavior' => array(
         'class' => 'DateFormatBehavior',
         'attribute' => 'date'
+      ),
+      'dateFormatBehavior2' => array(
+        'class' => 'DateFormatBehavior',
+        'attribute' => 'date_time'
+      ),
+      'dateFormatBehavior3' => array(
+        'class' => 'DateFormatBehavior',
+        'attribute' => 'timestamp'
       )
     );
   }

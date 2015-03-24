@@ -31,10 +31,18 @@ class DateFormatBehavior extends SActiveRecordBehavior
    */
   public $attribute;
 
+  public $validateFormat;
+
   /**
    * @var bool флаг может быть true или false, при пустом значении записывает в $attribute текущую дату. По умолчанию false
    */
   public $defaultNow = false;
+
+  private $sqlDateFormat;
+
+  private $inputFormat;
+
+  private $dbType;
 
   public function init()
   {
@@ -43,11 +51,30 @@ class DateFormatBehavior extends SActiveRecordBehavior
     if( is_array($this->attribute) )
       throw new CHttpException(500, "Ошибка. Свойство attribute для поведения ".get_class($this)." не должно быть массивом");
 
-    $validator = new CDateValidator();
-    $validator->attributes = array($this->attribute);
-    $validator->format = 'mm.dd.yyyy';
-    $this->owner->validatorList->add($validator);
-   }
+    $column = $this->owner->tableSchema->getColumn($this->attribute);
+    $this->dbType = $column->dbType;
+
+    if( in_array($this->dbType, array('datetime', 'timestamp')) )
+    {
+      $this->sqlDateFormat = 'Y-m-d H:i:s';
+      $this->inputFormat = 'd.m.Y H:i:s';
+
+      if( is_null($this->validateFormat) || $this->validateFormat != false )
+        $this->validateFormat = 'mm.dd.yyyy hh:mm:ss';
+    }
+    else if( $this->dbType == 'date' )
+    {
+      $this->sqlDateFormat = 'Y-m-d';
+      $this->inputFormat = 'd.m.Y';
+
+      if( is_null($this->validateFormat) || $this->validateFormat != false )
+        $this->validateFormat = 'mm.dd.yyyy';
+    }
+    else
+      throw new CHttpException(500, "Ошибка. Неизвестный формат даты ".$column->dbType);
+
+    $this->setValidator();
+  }
 
   /**
    * @param CEvent $event
@@ -58,7 +85,7 @@ class DateFormatBehavior extends SActiveRecordBehavior
     if( !$this->owner->hasAttribute($this->attribute) && property_exists($this->owner, $this->attribute) )
       throw new CHttpException(500, "Ошибка. Свойство $this->attribute не найдено в классе ".get_class($this->owner));
 
-    $this->attr = !$this->isEmptyDate($this->attr) ? $this->sqlDateToDate($this->attr) : '';
+    $this->attr = $this->formatDate($this->inputFormat, $this->attr);
   }
 
   /**
@@ -66,10 +93,9 @@ class DateFormatBehavior extends SActiveRecordBehavior
    */
   public function beforeSave($event)
   {
-    if( $this->defaultNow )
-      $this->attr = $this->isEmptyDate($this->attr) ? date('Y-m-d') : $this->dateToSqlDate($this->attr);
-    else
-      $this->attr = $this->dateToSqlDate($this->attr);
+    $this->attr = $this->formatDate($this->sqlDateFormat, $this->attr, $this->defaultNow);
+    if( empty($this->attr) && $this->dbType == 'timestamp' )
+      $this->attr = null;
   }
 
   protected function isEmptyDate($value)
@@ -78,6 +104,9 @@ class DateFormatBehavior extends SActiveRecordBehavior
       return true;
 
     if( $value == '0000-00-00')
+      return true;
+
+    if( $value == '0000-00-00 00:00:00')
       return true;
 
     return false;
@@ -92,14 +121,27 @@ class DateFormatBehavior extends SActiveRecordBehavior
   {
     $this->owner->{$this->attribute} = $value;
   }
-
-  protected function dateToSqlDate($value)
+  protected function formatDate($format, $value, $nowIsEmpty = false)
   {
-    return !empty($value) ? date('Y-m-d', strtotime($value)) : $value;
+    if( $this->isEmptyDate($value) )
+    {
+      if( $nowIsEmpty )
+        return date($format);
+      else
+        return '';
+    }
+
+    return date($format, strtotime($value));
   }
 
-  protected function sqlDateToDate($value)
+  protected function setValidator()
   {
-    return date('d.m.Y', strtotime($value));
+    if( !empty($this->validateFormat) )
+    {
+      $validator = new CDateValidator();
+      $validator->attributes = array($this->attribute);
+      $validator->format = $this->validateFormat;
+      $this->owner->validatorList->add($validator);
+    }
   }
 }
