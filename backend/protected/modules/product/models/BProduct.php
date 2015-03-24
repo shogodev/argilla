@@ -95,6 +95,13 @@ class BProduct extends BActiveRecord
       array('notice, content, video, rating', 'safe'),
       array('price, price_old', 'numerical'),
 
+      array('price_old', 'filter', 'filter' => function($value) {
+        if( PriceHelper::isEmpty($value) )
+          return null;
+        return $value;
+      }),
+      array('price_old', 'compare', 'allowEmpty' => true, 'compareAttribute' => 'price', 'operator' => '>'),
+
       array('url', 'SUriValidator'),
       array('name, url, articul', 'filter', 'filter' => array(Yii::app()->format, 'trim')),
       array('url', 'filter', 'filter' => array(Yii::app()->format, 'toLower')),
