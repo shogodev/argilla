@@ -27,7 +27,7 @@ $form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId()));
 
   <?php echo $form->dropDownListDefaultRow($model, 'type', $model->getTypes()); ?>
 
-  <?php echo $form->dropDownListDefaultRow($model, 'filter', BGridSettings::$labels); ?>
+  <?php echo $form->dropDownListRow($model, 'filter', BGridSettings::$labels); ?>
 
   <?php echo $form->checkBoxRow($model, 'visible'); ?>
 

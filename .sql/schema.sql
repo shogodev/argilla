@@ -100,7 +100,7 @@ CREATE TABLE `argilla_auth_user` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `username` varchar(128) NOT NULL,
   `password` varchar(32) NOT NULL,
-  `visible` tinyint(1) DEFAULT '1',
+  `visible` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -124,8 +124,8 @@ CREATE TABLE `argilla_banner` (
   `code` varchar(511) NOT NULL,
   `pagelist` text,
   `pagelist_exc` text,
-  `new_window` tinyint(1) DEFAULT '0',
-  `visible` tinyint(1) DEFAULT '1',
+  `new_window` tinyint(1) NOT NULL DEFAULT '0',
+  `visible` tinyint(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `location` (`location`),
   KEY `postition` (`position`)
@@ -188,7 +188,7 @@ CREATE TABLE `argilla_contact` (
   `img` varchar(512) NOT NULL,
   `img_big` varchar(512) NOT NULL,
   `map` text,
-  `visible` int(1) DEFAULT '1',
+  `visible` int(1) NOT NULL DEFAULT '1',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -363,7 +363,7 @@ CREATE TABLE `argilla_info` (
   `notice` text,
   `content` text,
   `reference` tinytext,
-  `visible` tinyint(1) DEFAULT '1',
+  `visible` tinyint(1) NOT NULL DEFAULT '1',
   `siblings` tinyint(1) NOT NULL,
   `children` tinyint(1) NOT NULL,
   `menu` tinyint(1) NOT NULL,
@@ -494,7 +494,7 @@ CREATE TABLE `argilla_news` (
   `position` int(11) DEFAULT '0',
   `url` varchar(255) NOT NULL,
   `visible` tinyint(1) NOT NULL,
-  `main` tinyint(1) DEFAULT '0',
+  `main` tinyint(1) NOT NULL DEFAULT '0',
   `date` date DEFAULT NULL,
   `notice` text,
   `name` text,
@@ -594,7 +594,7 @@ CREATE TABLE `argilla_order_delivery_type` (
   `name` varchar(128) NOT NULL,
   `position` int(11) DEFAULT '0',
   `notice` text,
-  `visible` tinyint(1) DEFAULT '0',
+  `visible` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -632,7 +632,7 @@ CREATE TABLE `argilla_order_payment_type` (
   `name` varchar(128) NOT NULL,
   `position` int(11) DEFAULT '0',
   `notice` text,
-  `visible` tinyint(1) DEFAULT '0',
+  `visible` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -746,7 +746,7 @@ CREATE TABLE `argilla_platron_payment_type` (
   `position` int(11) DEFAULT '0',
   `notice` text,
   `img` varchar(255) NOT NULL,
-  `visible` tinyint(1) DEFAULT '0',
+  `visible` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -828,7 +828,7 @@ CREATE TABLE `argilla_product_category` (
   `notice` text,
   `content` text,
   `group_id` int(10) unsigned DEFAULT NULL,
-  `visible` tinyint(1) DEFAULT '0',
+  `visible` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `argilla_product_category_ibfk_1` (`group_id`),
   CONSTRAINT `argilla_product_category_ibfk_1` FOREIGN KEY (`group_id`) REFERENCES `argilla_product_category` (`id`)
@@ -865,7 +865,7 @@ CREATE TABLE `argilla_product_collection` (
   `img` varchar(255) NOT NULL,
   `name` varchar(255) NOT NULL DEFAULT '',
   `notice` text,
-  `visible` tinyint(1) DEFAULT '0',
+  `visible` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1014,7 +1014,7 @@ CREATE TABLE `argilla_product_section` (
   `name` varchar(255) NOT NULL,
   `img` varchar(255) NOT NULL,
   `notice` text,
-  `visible` tinyint(1) DEFAULT '0',
+  `visible` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1065,7 +1065,7 @@ CREATE TABLE `argilla_product_type` (
   `name` varchar(255) NOT NULL,
   `img` varchar(255) NOT NULL DEFAULT '',
   `notice` text,
-  `visible` tinyint(1) DEFAULT '0',
+  `visible` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1084,7 +1084,7 @@ CREATE TABLE `argilla_response` (
   `name` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
   `content` text,
-  `visible` tinyint(1) DEFAULT '0',
+  `visible` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`),
   KEY `product_id` (`product_id`),
   CONSTRAINT `argilla_response_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `argilla_product` (`id`),
@@ -1126,7 +1126,7 @@ CREATE TABLE `argilla_seo_link` (
   `url` varchar(255) NOT NULL,
   `date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `page` int(10) NOT NULL,
-  `visible` int(1) unsigned DEFAULT '0',
+  `visible` int(1) unsigned NOT NULL DEFAULT '0',
   `position` int(11) DEFAULT '20',
   PRIMARY KEY (`id`),
   KEY `links_section_id_links_section_id_idx` (`section_id`),
@@ -1165,7 +1165,7 @@ CREATE TABLE `argilla_seo_link_section` (
   `name` varchar(255) NOT NULL,
   `url` varchar(255) NOT NULL,
   `position` int(11) DEFAULT '20',
-  `visible` int(1) DEFAULT '0',
+  `visible` int(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1303,8 +1303,8 @@ CREATE TABLE `argilla_settings_grid` (
   `header` varchar(255) NOT NULL,
   `class` varchar(255) NOT NULL,
   `type` varchar(255) NOT NULL,
-  `filter` tinyint(1) DEFAULT '0',
-  `visible` tinyint(1) DEFAULT '0',
+  `filter` tinyint(1) NOT NULL DEFAULT '0',
+  `visible` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -1337,7 +1337,7 @@ CREATE TABLE `argilla_text_block` (
   `name` varchar(255) NOT NULL,
   `position` int(11) DEFAULT '0',
   `url` varchar(255) NOT NULL,
-  `visible` tinyint(1) DEFAULT '0',
+  `visible` tinyint(1) NOT NULL DEFAULT '0',
   `content` text,
   `img` varchar(255) NOT NULL,
   `auto_created` tinyint(1) NOT NULL,
@@ -1402,7 +1402,7 @@ CREATE TABLE `argilla_vacancy` (
   `name` varchar(255) NOT NULL,
   `phone` varchar(255) NOT NULL,
   `content` text,
-  `visible` tinyint(1) DEFAULT '0',
+  `visible` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
