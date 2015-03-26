@@ -92,7 +92,7 @@ class BaseList extends CComponent
   {
     $criteria = clone $this->getFilterCriteria();
     $criteria->condition = '';
-    $criteria->params = array();
+    $criteria->params = $this->getConditionParams($criteria, 'order');
 
     $modelIds = $this->getModelIds();
 
@@ -101,8 +101,8 @@ class BaseList extends CComponent
       shuffle($modelIds);
       $modelIds = array_slice($modelIds, 0, $criteria->limit);
     }
-
     $criteria->addInCondition($this->getTablePrefix().'.id', $modelIds);
+
     return $this->buildDataProvider($criteria);
   }
 
@@ -308,5 +308,26 @@ class BaseList extends CComponent
   {
     $modelName = $this->getModelName();
     return $modelName::model();
+  }
+
+  /**
+   * @param CDbCriteria $criteria
+   * @param $attribute
+   *
+   * @return array
+   */
+  protected function getConditionParams(CDbCriteria $criteria, $attribute)
+  {
+    $params = array();
+
+    if( preg_match_all('/(:\w+)/', $criteria->{$attribute}, $matches) )
+    {
+      foreach($matches[0] as $param)
+      {
+        $params[$param] = Arr::get($criteria->params, $param);
+      }
+    }
+
+    return $params;
   }
 }
