@@ -118,8 +118,19 @@ class Order extends FActiveRecord
 
   public function getSuccessUrl()
   {
-    $behavior = $this->asa('paymentBehavior');
-    return $behavior ? $behavior->getSuccessUrl() : Yii::app()->createAbsoluteUrl('basket/success');
+    if( $behavior = $this->asa('paymentBehavior') )
+    {
+      try
+      {
+        return $behavior->getSuccessUrl();
+      }
+      catch(NoConfigException $e)
+      {
+        // Не выводим ошибку отсутствия конфига
+      }
+    }
+
+    return Yii::app()->createAbsoluteUrl('basket/success');
   }
 
   public function setFastOrderBasket(FBasket $fastOrderBasket)

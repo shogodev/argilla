@@ -8,12 +8,12 @@
 <tr class="product-row" data-index="<?php echo $data->collectionIndex?>">
   <td>
     <?php if( $image = Arr::reset($data->getImages()) ) { ?>
-      <a href="<?php echo $data->url?>" class="product-pic"><img src="<?php echo $image->pre?>" alt="" /></a>
+      <a href="<?php echo $data->getUrl()?>" class="product-pic"><img src="<?php echo $image->pre?>" alt="" /></a>
     <?php }?>
 
     <div class="product-info">
       <div class="m20 nova">
-        <a href="<?php echo $data->url?>" class="s24 uppercase"><?php echo $data->name?></a>
+        <a href="<?php echo $data->getUrl()?>" class="s24 uppercase"><?php echo $data->name?></a>
       </div>
       <?php if( $optionGroup = $data->getOptionGroup() ) {?>
         <table class="zero product-params-choice-table">
