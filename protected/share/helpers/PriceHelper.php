@@ -47,7 +47,18 @@ class PriceHelper
    */
   public static function price($price, $priceSuffix = '', $alternativeText = '<span class="call">Звоните</span>')
   {
-    return self::isNotEmpty($price) ? Yii::app()->format->formatNumber($price).$priceSuffix : $alternativeText;
+    return self::isNotEmpty($price) ? self::number($price).$priceSuffix : $alternativeText;
+  }
+
+  /**
+   * Возвращает форматированое по правлам SFormatter число
+   * @param string|integer $number
+   *
+   * @return string
+   */
+  public static function number($number)
+  {
+    return Yii::app()->format->formatNumber($number);
   }
 
   /**
