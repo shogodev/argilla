@@ -9,7 +9,7 @@ Yii::import('backend.modules.product.ProductModule');
 
 class AssignmentContentModule extends ProductModule
 {
-  public $enabled = true;
+  public $enabled = false;
 
   public $defaultController = 'BAssignmentContent';
 

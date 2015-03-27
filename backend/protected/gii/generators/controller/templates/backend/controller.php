@@ -14,7 +14,7 @@
  */
 class <?php echo $this->controllerClass; ?> extends <?php echo $this->baseClass."\r\n"; ?>
 {
-  public $position = 10;
+  public $position = <?php echo !empty($this->controllerPosition) ? $this->controllerPosition : 10?>;
 
   public $name = '<?php echo isset($name) ? $name : str_replace("Controller", "", $this->getControllerClass()); ?>';
 

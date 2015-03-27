@@ -50,7 +50,7 @@ return array_merge_recursive(array(
 
   'modules' => array(
     'gii' => array(
-      'generatorPaths' => array('bootstrap.gii', 'backend.gii.generators', 'backend.gii.generators.formModule'),
+      'generatorPaths' => array('bootstrap.gii', 'backend.gii.generators'),
       'class' => 'system.gii.GiiModule',
       'password' => '123',
       'ipFilters' => array('192.168.*', '127.0.0.1', '::1'),

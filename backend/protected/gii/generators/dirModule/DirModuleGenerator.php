@@ -6,9 +6,9 @@
  * @license http://argilla.ru/LICENSE
  */
 Yii::import('application.gii.components.*');
-Yii::import('application.gii.generators.formModule.*');
+Yii::import('application.gii.generators.dirModule.*');
 
-class FormModuleGenerator extends CCodeGenerator
+class DirModuleGenerator extends CCodeGenerator
 {
-  public $codeModel='backend.gii.generators.formModule.models.FormModule';
+  public $codeModel = 'backend.gii.generators.dirModule.models.DirModule';
 } 

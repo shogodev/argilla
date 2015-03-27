@@ -5,7 +5,11 @@
  * @copyright Copyright &copy; 2003-2015 Shogo
  * @license http://argilla.ru/LICENSE
  */
-class behavior 
+class GiiPropertyBehavior extends SBehavior
 {
+  public $controller;
 
+  public $modelName;
+
+  public $controllerPosition;
 } 

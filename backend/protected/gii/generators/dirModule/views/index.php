@@ -1,10 +1,10 @@
 <?php
 /**
  * @var CCodeForm $form
- * @var FormModule $model
+ * @var DirModule $model
  */
 ?>
-<h1>Генератор форм</h1>
+<h1>Генератор модулей справочников</h1>
 
 <?php $form=$this->beginWidget('CCodeForm', array('model'=>$model)); ?>
 
@@ -20,6 +20,17 @@
   <?php echo $form->error($model, 'author'); ?>
 </div>
 
+<div class="row">
+  <?php echo $form->labelEx($model, 'module'); ?>
+
+  <?php echo $form->dropDownList($model, 'module', $model->getModules()); ?>
+
+  <div class="tooltip">
+    Добавить в
+  </div>
+
+  <?php echo $form->error($model, 'module'); ?>
+</div>
 
 <div class="row">
   <?php echo $form->labelEx($model,'className'); ?>
@@ -46,18 +57,6 @@
   <?php echo $form->error($model,'label'); ?>
 </div>
 
-
-<div class="row">
-  <?php echo $form->labelEx($model,'formTemplate'); ?>
-
-  <?php echo $form->textArea($model, 'formTemplate'); ?>
-
-  <div class="tooltip">
-    Шаблон формы
-  </div>
-
-  <?php echo $form->error($model,'formTemplate'); ?>
-</div>
 
 <div class="row">
   <?php echo $form->labelEx($model,'tableName'); ?>

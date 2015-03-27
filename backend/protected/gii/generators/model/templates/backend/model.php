@@ -85,7 +85,7 @@ class <?php echo $modelClass; ?> extends <?php echo $this->baseClass."\r\n"; ?>
     );
   }
 <?php endif; ?>
-<?php if( isset($this->defaultSort) ) { ?>
+<?php if( !empty($this->defaultSort) ) { ?>
 
   public function defaultScope()
   {
