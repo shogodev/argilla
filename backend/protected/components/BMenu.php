@@ -78,7 +78,7 @@ class BMenu extends CComponent
 
   public function getDefaultRout($default = '')
   {
-    if( $group = Arr::reset($this->modules) )
+    if( isset($this->modules) && $group = Arr::reset($this->modules) )
     {
       if( $module = Arr::reset($group) )
       {
@@ -96,11 +96,10 @@ class BMenu extends CComponent
    */
   private function buildStructure(array $modules, $parent = null)
   {
-    foreach($modules as $moduleId => $moduleConfig)
-    {
-      if( !AccessHelper::checkAssessToModule($moduleId)  )
-        continue;
+    $filteredModules = AccessHelper::filterModulesByAccess($modules);
 
+    foreach($filteredModules as $moduleId => $moduleConfig)
+    {
       if( empty($moduleConfig['autoloaded']) || $moduleConfig['autoloaded'] == false )
         continue;
 

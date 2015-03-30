@@ -136,14 +136,24 @@ class RbacCommand extends CConsoleCommand
 
     if( class_exists($moduleClass) !== false )
     {
+      if( preg_match_all('/modules\/(\w+)/', $moduleDirectory, $matches) )
+        $moduleLabel = implode(':', $matches[1]);
+      else
+        $moduleLabel = $moduleName;
+
       /**
        * @var BModule $module
        */
       $module = new $moduleClass($moduleName, null);
+
+      if( !$module->enabled )
+        echo "Модуль $moduleLabel отключен\n";
+
       if( empty($module->controllerMap) )
         return;
 
-      echo "Найден модуль: $moduleName\n";
+      echo "Найден модуль: $moduleLabel\n";
+
       $this->modules[$moduleName] = $module;
     }
   }

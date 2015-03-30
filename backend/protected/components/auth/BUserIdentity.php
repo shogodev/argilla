@@ -11,8 +11,6 @@ Yii::import('backend.modules.rbac.models.BUser');
 
 class BUserIdentity extends CUserIdentity
 {
-  const ALLOW_FREE_AUTH = '/usr/www/.allowFreeAuth.shogo';
-
   /**
    * @var string
    */
@@ -37,10 +35,7 @@ class BUserIdentity extends CUserIdentity
   }
 
   /**
-   * Аунтефикациия пользователя на сайте,
-   * алгоритм которой зависит от наличии на сайте текстового файла,
-   * путь которого указан self::ALLOW_FREE_AUTH
-   *
+   * Аунтефикациия пользователя на сайте
    * @return int
    */
   public function authenticate()

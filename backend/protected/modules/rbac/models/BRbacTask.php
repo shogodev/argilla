@@ -10,6 +10,8 @@
  */
 class BRbacTask extends BAuthItem
 {
+  private static $tasks;
+
   /**
    * @param string $task
    *
@@ -17,7 +19,9 @@ class BRbacTask extends BAuthItem
    */
   public static function taskExists($task)
   {
-    return self::model()->findByAttributes(array('name' => $task)) !== null;
+    $tasks = self::getTasks();
+
+    return isset($tasks[$task]);
   }
 
   /**
@@ -27,15 +31,35 @@ class BRbacTask extends BAuthItem
    */
   public static function getTasks()
   {
-    $data = array();
-    $tasks = self::model()->findAll();
+    if( !is_null(self::$tasks) )
+      return self::$tasks;
 
-    foreach( $tasks as $task )
+    self::$tasks = array();
+
+    $tasks = self::model()->findAll();
+    foreach($tasks as $task)
     {
-      $data[$task->name] = !empty($task->title) ? $task->title : $task->name;
+      self::$tasks[$task->name] = !empty($task->title) ? $task->title : $task->name;
     }
 
-    return $data;
+    return self::$tasks;
+  }
+
+  public static function checkTask($task, $userId)
+  {
+    $assignments = AccessHelper::getAssignments($userId);
+    $childList = AccessHelper::getChildList();
+
+    foreach($assignments as $name => $assignment)
+    {
+      if( !isset($childList[$name]) )
+        continue;
+
+      if( isset($childList[$name][$task]) )
+        return true;
+
+    }
+    return false;
   }
 
   /**

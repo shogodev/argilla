@@ -117,6 +117,12 @@ class AccessHelper
 
   private $operationHumanityName = '';
 
+  private static $moduleList;
+
+  private static $childList;
+
+  private static $assignments;
+
   /**
    * @param null $module
    * @param null $controller
@@ -157,32 +163,32 @@ class AccessHelper
     return new AccessHelper($module, $controller, $action);
   }
 
-  /**
-   * Проверка на доступ к модулю
-   *
-   * @param string $moduleName
-   *
-   * @return boolean
-   */
-  public static function checkAssessToModule($moduleName)
+  public static function filterModulesByAccess($modules)
   {
-    if( self::isServerDev() && Yii::app()->user->id === 1 )
-      return true;
+    $allowedModules = array();
+    $assignments = self::getAssignments(Yii::app()->user->id);
+    $childList = self::getChildList();
 
-    $result = false;
-    $tasks = BRbacTask::model()->findAll('name LIKE "' . $moduleName . '%"');
-
-    foreach( $tasks as $task )
+    foreach($assignments as $name => $assignment)
     {
-      if( $result === true )
-        break;
+      if( !isset($childList[$name]) )
+        continue;
 
-      $result = Yii::app()->user->checkAccess($task->name, array('userId' => Yii::app()->user->id));
+      foreach($modules as $module => $moduleData )
+      {
+        if( isset($allowedModules[$module]) )
+          continue;
+
+        $tasks = self::moduleList($module);
+        if( array_intersect($tasks, Yii::app()->authManager->defaultRoles) || array_intersect($tasks, $childList[$name]) )
+        {
+          $allowedModules[$module] = $moduleData;
+        }
+      }
     }
 
-    return $result;
+    return $allowedModules;
   }
-
 
   /**
    * Проверка на доступ к текущему указанному контроллеру
@@ -219,6 +225,56 @@ class AccessHelper
     return BDevServerAuthConfig::getInstance()->isAvailable();
   }
 
+  public static function moduleList($module = null)
+  {
+    if( is_null(self::$moduleList) )
+    {
+      foreach(BRbacTask::getTasks() as $task => $title)
+      {
+        $delimiterPosition = strpos($task, ':');
+        if( $delimiterPosition !== false )
+          $moduleName = substr($task, 0, $delimiterPosition);
+        else
+          $moduleName = $task;
+
+        self::$moduleList[$moduleName][$task] = $task;
+      }
+    }
+
+    if( !$module )
+      return self::$moduleList;
+
+    if( isset(self::$moduleList[$module]) )
+      return self::$moduleList[$module];
+
+    return array();
+  }
+
+  public static function getChildList()
+  {
+    if( !is_null(self::$childList) )
+      return self::$childList;
+
+    $criteria = new CDbCriteria();
+    $command = Yii::app()->db->commandBuilder->createFindCommand(Yii::app()->authManager->itemChildTable, $criteria);
+
+    self::$childList = array();
+    foreach($command->queryAll() as $item)
+      self::$childList[$item['parent']][$item['child']] = $item['child'];
+
+    return self::$childList;
+  }
+
+  public static function getAssignments($userId)
+  {
+    if( isset(self::$assignments[$userId]) )
+      return self::$assignments[$userId];
+
+    self::$assignments[$userId] = Yii::app()->authManager->getAuthAssignments($userId);
+
+    return self::$assignments[$userId];
+  }
+
   /**
    * Проверка доступа по задаче (контроллеру)
    *
@@ -230,7 +286,7 @@ class AccessHelper
       return true;
 
     if( BRbacTask::taskExists($this->taskName) )
-      return Yii::app()->user->checkAccess($this->taskName, array('userId' => Yii::app()->user->id));
+      return BRbacTask::checkTask($this->taskName, Yii::app()->user->id);
     else
     {
       $this->createTask();
