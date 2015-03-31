@@ -45,23 +45,6 @@ class BRbacTask extends BAuthItem
     return self::$tasks;
   }
 
-  public static function checkTask($task, $userId)
-  {
-    $assignments = AccessHelper::getAssignments($userId);
-    $childList = AccessHelper::getChildList();
-
-    foreach($assignments as $name => $assignment)
-    {
-      if( !isset($childList[$name]) )
-        continue;
-
-      if( isset($childList[$name][$task]) )
-        return true;
-    }
-
-    return false;
-  }
-
   /**
    * @return array
    */

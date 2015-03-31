@@ -9,5 +9,5 @@ class TextModule extends ProductModule
 {
   public $defaultController = 'BProductText';
 
-  public $enabled = true;
+  public $enabled = false;
 }

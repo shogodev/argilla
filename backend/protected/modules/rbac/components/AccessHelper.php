@@ -10,8 +10,6 @@ class AccessHelper
   /**
    * Массив со стандартными названием действий в контроллерах
    * и их человеко-понятным названием
-   *
-   * @var array
    */
   public static $baseActionNames = array(
     'index'  => 'Разводная',
@@ -20,13 +18,6 @@ class AccessHelper
     'delete' => 'Удаление',
     'view'   => 'Просмотр',
   );
-
-  /**
-   * Массив с исключениями, по которым не проверяется доступ
-   *
-   * @var array
-   */
-  private static $excludes = array('help:help');
 
   private static $moduleList;
 
@@ -54,7 +45,7 @@ class AccessHelper
       return self::checkAccessByTask($task);
 
     if( !$module->enabled && !$controller->enabled )
-      self::createTask($task, implode('-', array($module->name, $controller->name)));
+      self::createTask($task, implode(' - ', array($module->name, $controller->name)));
 
     return false;
   }
@@ -84,31 +75,30 @@ class AccessHelper
     if( !$reflectionControllerProperties['enabled'] )
       return false;
 
-    self::createTask($task, implode('-', array($reflectionModuleProperties['name'], $reflectionControllerProperties['name'])));
+    self::createTask($task, implode(' - ', array($reflectionModuleProperties['name'], $reflectionControllerProperties['name'])));
 
     return false;
   }
 
+  /**
+   * @param array $modules
+   *
+   * @return array
+   */
   public static function filterModulesByAccess($modules)
   {
     $allowedModules = array();
-    $assignments = self::getAssignments(Yii::app()->user->id);
-    $childList = self::getChildList();
 
-    foreach($assignments as $name => $assignment)
+    foreach($modules as $module => $moduleData )
     {
-      if( !isset($childList[$name]) )
-        continue;
+      $tasks = self::getModuleList($module);
 
-      foreach($modules as $module => $moduleData )
+      foreach($tasks as $task)
       {
-        if( isset($allowedModules[$module]) )
-          continue;
-
-        $tasks = self::moduleList($module);
-        if( array_intersect($tasks, Yii::app()->authManager->defaultRoles) || array_intersect($tasks, $childList[$name]) )
+        if( self::checkAccessByTask($task) )
         {
           $allowedModules[$module] = $moduleData;
+          continue 2;
         }
       }
     }
@@ -116,7 +106,14 @@ class AccessHelper
     return $allowedModules;
   }
 
-  public static function moduleList($module = null)
+  public static function clearCache()
+  {
+    self::$moduleList = null;
+    self::$childList = null;
+    self::$assignments = null;
+  }
+
+  private static function getModuleList($module = null)
   {
     if( is_null(self::$moduleList) )
     {
@@ -141,7 +138,7 @@ class AccessHelper
     return array();
   }
 
-  public static function getChildList()
+  private static function getChildList()
   {
     if( !is_null(self::$childList) )
       return self::$childList;
@@ -156,7 +153,7 @@ class AccessHelper
     return self::$childList;
   }
 
-  public static function getAssignments($userId)
+  private static function getAssignments($userId)
   {
     if( isset(self::$assignments[$userId]) )
       return self::$assignments[$userId];
@@ -164,13 +161,6 @@ class AccessHelper
     self::$assignments[$userId] = Yii::app()->authManager->getAuthAssignments($userId);
 
     return self::$assignments[$userId];
-  }
-
-  public static function clearCache()
-  {
-    self::$moduleList = null;
-    self::$childList = null;
-    self::$assignments = null;
   }
 
   private static function getTaskName($moduleClass, $controllerClass)
@@ -183,10 +173,24 @@ class AccessHelper
 
   private static function checkAccessByTask($task)
   {
-    if( in_array($task, self::$excludes) )
+    if( in_array($task, Yii::app()->authManager->defaultRoles) )
       return true;
 
-    return BRbacTask::checkTask($task, Yii::app()->user->id);
+    $userId = Yii::app()->user->id;
+
+    $assignments = self::getAssignments($userId);
+    $childList = self::getChildList();
+
+    foreach($assignments as $name => $assignment)
+    {
+      if( !isset($childList[$name]) )
+        continue;
+
+      if( isset($childList[$name][$task]) )
+        return true;
+    }
+
+    return false;
   }
 
   private static function createTask($taskName, $title)

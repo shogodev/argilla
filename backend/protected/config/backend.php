@@ -65,12 +65,14 @@ return array_merge_recursive(array(
     ),
 
     'authManager' => array(
-      'class'           => 'CDbAuthManager',
-      'connectionID'    => 'db',
-      'itemTable'       => '{{auth_item}}',
-      'itemChildTable'  => '{{auth_item_child}}',
+      'class' => 'CDbAuthManager',
+      'connectionID' => 'db',
+      'itemTable' => '{{auth_item}}',
+      'itemChildTable' => '{{auth_item_child}}',
       'assignmentTable' => '{{auth_assignment}}',
-
+      'defaultRoles' => array(
+        'help:help'
+      )
     ),
 
     'clientScript' => array(

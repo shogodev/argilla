@@ -15,6 +15,10 @@ Yii::import('backend.controllers.*');
 
 class RbacCommand extends CConsoleCommand
 {
+  public $excludeTasks = array(
+    'help:help'
+  );
+
   /**
    * username администратора
    *
@@ -66,6 +70,7 @@ class RbacCommand extends CConsoleCommand
    * @var string
    */
   protected $roleSystemName = 'admin';
+
 
   /**
    * @param string $username
@@ -190,6 +195,9 @@ class RbacCommand extends CConsoleCommand
 
     foreach( $this->names as $name )
     {
+      if( in_array($name, $this->excludeTasks)  )
+        continue;
+
       $task = new BRbacTask();
       $task->name  = $name['name'];
       $task->title = $name['title'];
