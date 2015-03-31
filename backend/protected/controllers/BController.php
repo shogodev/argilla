@@ -6,6 +6,7 @@
  * @license http://argilla.ru/LICENSE
  * @package backend.controllers
  *
+ * @property BModule $module
  * @mixin TextBlockBehavior
  * @mixin CommonBehavior
  */
@@ -60,7 +61,7 @@ abstract class BController extends CController
 
   public function beforeAction($action)
   {
-    if( !AccessHelper::init()->checkAccess() )
+    if( !AccessHelper::checkAccessByClasses($this->module, $this) )
     {
       if( !Yii::app()->user->isGuest )
         throw new CHttpException(403, 'Доступ запрещен.');

@@ -9,13 +9,15 @@
 class RbacModule extends BModule
 {
   public $defaultController = 'BUser';
+
   public $name = 'Доступ';
+
   public $group = 'settings';
 
   public $controllerMap = [
-    'operation' => 'BRbacOperationController',
-    'role' => 'BRbacRoleController',
-    'task' => 'BRbacTaskController',
+    'rbacOperation' => 'BRbacOperationController',
+    'rbacRole' => 'BRbacRoleController',
+    'rbacTask' => 'BRbacTaskController',
     'user' => 'BUserController',
   ];
 }

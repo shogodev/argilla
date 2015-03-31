@@ -262,6 +262,16 @@ class Utils
   }
 
   /**
+   * Приводит первый символ строки к нижнему регистру
+   * @param $string
+   * @return string
+   */
+  public static function lcfirst($string)
+  {
+    return mb_strlen($string) > 1 ? mb_strtolower(mb_substr($string, 0, 1)).mb_substr($string, 1) : mb_strtolower(mb_substr($string, 0, 1));
+  }
+
+  /**
    * Возвращает домен
    * @param integer $level если узан уровень, то домен обрезается до указанного уровня
    * @return mixed|string

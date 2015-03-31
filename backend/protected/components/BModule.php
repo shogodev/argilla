@@ -134,13 +134,21 @@ class BModule extends CWebModule
   }
 
   /**
-   * Возвращаем массив контроллеров, которые нужно отображать в меню
+   * Возвращает массив контроллеров, которые нужно отображать в меню
    *
    * @return array
    */
   public function getMenuControllers()
   {
     return array();
+  }
+
+  public function getControllerId($class)
+  {
+    if( $id = array_search($class, $this->controllerMap) )
+      return $id;
+
+    throw new CHttpException(500, $class.' не найден в controllerMap модуля '.$this->getName() );
   }
 
   /**

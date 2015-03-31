@@ -180,13 +180,15 @@ class BMenu extends CComponent
   {
     if( !isset($this->groups[$module->group]) )
     {
-      if( !$mappedControllerId = $this->getAllowedControllerId($module) )
+      if( !$controllerClass = $this->getAllowedControllerClass($module) )
         return false;
+
+      $controllerId = $module->getControllerId($controllerClass);
 
       $this->groups[$module->group] = array(
         'label' => Arr::get($this->groupNames, $module->group, $module->group),
-        'url' => $module->createUrl($mappedControllerId),
-        'route' => implode('/', array($module->getName(),  $mappedControllerId)),
+        'url' => $module->createUrl($controllerId),
+        'route' => implode('/', array($module->getName(),  $controllerId)),
         'active' => $this->currentGroup == $module->group,
         'itemOptions' => array('class' => $module->group)
       );
@@ -200,9 +202,14 @@ class BMenu extends CComponent
    */
   private function createModulesMenu($module)
   {
+    if( !$controllerClass = $this->getAllowedControllerClass($module) )
+      return false;
+
+    $controllerId = $module->getControllerId($controllerClass);
+
     $this->modules[$module->group][$module->getName()] = array(
       'label' => $module->name,
-      'url' => $module->createUrl('/'),
+      'url' => $module->createUrl($controllerId),
       'active' => $this->isModuleActive($module),
       'itemOptions' => array('class' => $module->id),
       'position' => $module->position,
@@ -228,18 +235,19 @@ class BMenu extends CComponent
 
         foreach($subMenu as $controllerName)
         {
-          if( !$controllerMappedId = AccessHelper::getControllerTaskName($module, $controllerName.'Controller') )
-            throw new CHttpException(500, $controllerName.'Controller не найден в controllerMap модуля '.$module->getName() );
+          $controllerClass = $controllerName.'Controller';
 
-          if(  AccessHelper::init($module->getName(), $controllerMappedId)->checkAccess() )
+          if( AccessHelper::checkAccessByNameClasses(get_class($module), $controllerClass) )
           {
+            $controllerId = $module->getControllerId($controllerClass);
+
             if( !isset($this->modules[$module->group][$key]) )
             {
               $this->modules[$module->group][$key] = $menuItem;
-              $this->modules[$module->group][$key]['url'] = $module->createUrl($controllerMappedId);
+              $this->modules[$module->group][$key]['url'] = $module->createUrl($controllerId);
             }
 
-            $this->modules[$module->group][$key]['menu'][$controllerMappedId] = $controllerName;
+            $this->modules[$module->group][$key]['menu'][$controllerId] = $controllerName;
           }
         }
       }
@@ -258,11 +266,9 @@ class BMenu extends CComponent
    */
   private function createSubmodulesMenu($module)
   {
-    foreach($module->controllerMap as $mappedId => $controllerClass)
+    foreach($module->controllerMap as $id => $controllerClass)
     {
-      $id = $mappedId ? : BApplication::cutClassPrefix($controllerClass);
-
-      if( !AccessHelper::init($module->id, $id)->checkAccess() )
+      if( !AccessHelper::checkAccessByNameClasses(get_class($module), $controllerClass) )
         continue;
 
       /**
@@ -290,17 +296,15 @@ class BMenu extends CComponent
     }
   }
 
-  private function getAllowedControllerId(BModule $module)
+  private function getAllowedControllerClass(BModule $module)
   {
-    $controllerMappedId = AccessHelper::getControllerTaskName($module, $module->defaultController.'Controller');
+    if( AccessHelper::checkAccessByNameClasses(get_class($module), $module->defaultController.'Controller') )
+      return $module->defaultController.'Controller';
 
-    if( $controllerMappedId && AccessHelper::init($module->getName(), $controllerMappedId)->checkAccess() )
-      return $controllerMappedId;
-
-    foreach($module->controllerMap as $controllerMappedId => $controller)
+    foreach($module->controllerMap as $controller)
     {
-      if( AccessHelper::init($module->getName(), $controllerMappedId)->checkAccess() )
-        return $controllerMappedId;
+      if( AccessHelper::checkAccessByNameClasses(get_class($module), $controller) )
+        return $controller;
     }
 
     return null;

@@ -1,40 +1,9 @@
 <?php
 /**
- * @author Nikita Melnikov <melnikov@shogo.ru>
+ * @author Alexey Tatarinov <tatarinov@shogo.ru>
  * @link https://github.com/shogodev/argilla/
- * @copyright Copyright &copy; 2003-2014 Shogo
+ * @copyright Copyright &copy; 2003-2015 Shogo
  * @license http://argilla.ru/LICENSE
- * @package backend.modules.rbac.components
- *
- * @example
- * В контроллере, доступ на который необходимо проверить
- * <pre>
- *  $access = new AccessHelper();
- *  $access->checkAccess();
- * </pre>
- *
- * Будет происходить проверка по шаблону module:controller
- *
- * Для проверки на доступ к текущему экшену:
- * @example
- * <pre>
- *  $access = new AccessHelper();
- *  $access->checkAccess(true);
- * </pre>
- *
- *
- * Для того, чтобы проверить удаленный контроллер
- * @example
- * <pre>
- *  $access = new AccessHelper($module, $controller, $action)
- * </pre>
- *
- * Так же можно получить объект класса через статический метод init()
- *
- * @example
- * <pre>
- *  AccessHelper::init($module, $controller, $action)->checkAccess();
- * </pre>
  */
 class AccessHelper
 {
@@ -44,7 +13,7 @@ class AccessHelper
    *
    * @var array
    */
-  public $baseActionNames = array(
+  public static $baseActionNames = array(
     'index'  => 'Разводная',
     'update' => 'Обновление',
     'create' => 'Создание',
@@ -53,61 +22,11 @@ class AccessHelper
   );
 
   /**
-   * Модуль
-   *
-   * @var string
-   */
-  private $module;
-
-  /**
-   * Контроллер
-   *
-   * @var string
-   */
-  private $controller;
-
-  /**
-   * Экшен для контроллера
-   *
-   * @var string
-   */
-  private $action;
-
-  /**
-   * Название задачи
-   *
-   * module:controller
-   *
-   * @var string
-   */
-  private $taskName = '';
-
-  /**
-   * Название операции
-   *
-   * module:controller:action
-   *
-   * @var string
-   */
-  private $operationName = '';
-
-  /**
    * Массив с исключениями, по которым не проверяется доступ
    *
    * @var array
    */
-  private $excludes = array('base:error', 'base', 'help:help');
-
-  /**
-   * Задача входа пользователя в систему
-   *
-   * @var string
-   */
-  private $loginOperation = 'base:login';
-
-  private $taskHumanityName = '';
-
-  private $operationHumanityName = '';
+  private static $excludes = array('help:help');
 
   private static $moduleList;
 
@@ -116,45 +35,55 @@ class AccessHelper
   private static $assignments;
 
   /**
-   * @param null $module
-   * @param null $controller
-   * @param null $action
-   */
-  public function __construct($module = null, $controller = null, $action = null)
-  {
-    if( $this->initProperties($module, $controller, $action) )
-    {
-      $this->createTaskName();
-      $this->createOperationName();
-    }
-  }
-
-  /**
-   * @return string
-   */
-  public function getTaskName()
-  {
-    return $this->taskName;
-  }
-
-  /**
-   * @return string
-   */
-  public function getOperationName()
-  {
-    return $this->operationName;
-  }
-
-  /**
-   * @param string|null $module
-   * @param string|null $controller
-   * @param string|null $action
+   * @param BModule $module
+   * @param BController $controller
    *
-   * @return AccessHelper
+   * @return bool
    */
-  public static function init($module = null, $controller = null, $action = null)
+  public static function checkAccessByClasses(BModule $module = null, BController $controller)
   {
-    return new AccessHelper($module, $controller, $action);
+    if( get_class($controller) == 'BaseController' )
+      return true;
+
+    $task = self::getTaskName(get_class($module), get_class($controller));
+
+    if( BRbacTask::taskExists($task) )
+      return self::checkAccessByTask($task);
+
+    if( !$module->enabled && !$controller->enabled )
+      self::createTask($task, implode('-', array($module->name, $controller->name)));
+
+    return false;
+  }
+
+  /**
+   * @param string $moduleClass
+   * @param string $controllerClass
+   *
+   * @return bool
+   */
+  public static function checkAccessByNameClasses($moduleClass, $controllerClass)
+  {
+    $task = self::getTaskName($moduleClass, $controllerClass);
+
+    if( BRbacTask::taskExists($task) )
+      return self::checkAccessByTask($task);
+
+    $reflectionModule = new ReflectionClass($moduleClass);
+    $reflectionModuleProperties = $reflectionModule->getDefaultProperties();
+
+    if( !$reflectionModuleProperties['enabled'] )
+      return false;
+
+    $reflectionController = new ReflectionClass($controllerClass);
+    $reflectionControllerProperties = $reflectionController->getDefaultProperties();
+
+    if( !$reflectionControllerProperties['enabled'] )
+      return false;
+
+    self::createTask($task, implode('-', array($reflectionModuleProperties['name'], $reflectionControllerProperties['name'])));
+
+    return false;
   }
 
   public static function filterModulesByAccess($modules)
@@ -182,41 +111,6 @@ class AccessHelper
     }
 
     return $allowedModules;
-  }
-
-  /**
-   * Проверка на доступ к текущему указанному контроллеру
-   * Для проверки доступа по action необходимо установить флаг $useOperations в TRUE
-   *
-   * @param boolean $useOperation
-   *
-   * @return boolean
-   */
-  public function checkAccess($useOperation = false)
-  {
-    if( $this->loginOperation === $this->operationName )
-      return true;
-
-    if( self::isServerDev() && !Yii::app()->user->isGuest )
-      return true;
-
-    if( !$useOperation )
-      return $this->checkTaskAccess();
-    else
-    {
-      $this->checkTaskAccess(); // create task
-      return $this->checkOperationAccess();
-    }
-  }
-
-  /**
-   * Проверка на расположение сервера
-   *
-   * @return boolean
-   */
-  public static function isServerDev()
-  {
-    return BDevServerAuthConfig::getInstance()->isAvailable();
   }
 
   public static function moduleList($module = null)
@@ -269,17 +163,6 @@ class AccessHelper
     return self::$assignments[$userId];
   }
 
-  public static function getControllerTaskName(BModule $module, $controllerName)
-  {
-    foreach($module->controllerMap as $controllerMappedId => $controllerMappedName)
-    {
-      if( $controllerMappedName == $controllerName )
-        return $controllerMappedId;
-    }
-
-    return null;
-  }
-
   public static function clearCache()
   {
     self::$moduleList = null;
@@ -287,159 +170,29 @@ class AccessHelper
     self::$assignments = null;
   }
 
-  /**
-   * Проверка доступа по операции (контроллер->экшен)
-   *
-   * @return boolean
-   */
-  protected function checkOperationAccess()
+  private static function getTaskName($moduleClass, $controllerClass)
   {
-    if( in_array($this->operationName, $this->excludes) )
+    $moduleId = Utils::lcfirst(str_replace('Module', '', $moduleClass));
+    $controllerId = Utils::lcfirst(str_replace('Controller', '', BApplication::cutClassPrefix($controllerClass)));
+
+    return implode(':', array($moduleId, $controllerId));
+  }
+
+  private static function checkAccessByTask($task)
+  {
+    if( in_array($task, self::$excludes) )
       return true;
 
-    if( BRbacOperation::operationExists($this->operationName) )
-      return Yii::app()->user->checkAccess($this->operationName, array('userId' => Yii::app()->user->id));
-    else
-    {
-      $this->createOperation();
-      $this->fillAccessData();
-
-      return false;
-    }
+    return BRbacTask::checkTask($task, Yii::app()->user->id);
   }
 
-  /**
-   * Создание системного имени задачи
-   */
-  protected function createTaskName()
-  {
-    if( !empty($this->module) )
-      $this->taskName = $this->module . ':';
-
-    $this->taskName .= $this->controller;
-  }
-
-  /**
-   * Создание системного имени операции
-   */
-  protected function createOperationName()
-  {
-    if( $this->action )
-      $this->operationName = $this->taskName . ':' . $this->action;
-  }
-
-  /**
-   * Инициализация параметров для проверки доступа
-   *
-   * @param string $module
-   * @param string $controller
-   * @param string $action
-   *
-   * @return bool
-   */
-  private function initProperties($module, $controller, $action)
-  {
-    if( $module === null || $controller === null )
-    {
-      if( !empty(Yii::app()->controller->module->id) )
-      {
-        $module = Yii::app()->controller->module;
-        if( !$module->enabled || !Yii::app()->controller->enabled )
-          return false;
-
-        $this->module = $module->getName();
-        $this->controller = array_search(get_class(Yii::app()->controller), $module->controllerMap);
-
-        $this->taskHumanityName = $module->name . '-' . Yii::app()->controller->name;
-      }
-      else
-      {
-        if( !Yii::app()->controller->enabled )
-          return false;
-
-        $this->controller = Yii::app()->controller->id;
-        $this->taskHumanityName = Yii::app()->controller->name;
-      }
-
-      $this->action = Yii::app()->controller->action->id;
-    }
-    else
-    {
-      $this->module = $module;
-      $this->controller = $controller;
-      $this->action = $action;
-    }
-
-    $this->operationHumanityName = $this->taskHumanityName;
-
-    if( $this->action )
-      $this->operationHumanityName .= '-'.(isset($this->baseActionNames[$this->action]) ? $this->baseActionNames[$this->action] : $this->action);
-
-    return true;
-  }
-
-  /**
-   * Создание новой записи задачи
-   */
-  private function createTask()
+  private static function createTask($taskName, $title)
   {
     $task = new BRbacTask();
-    $task->title = $this->taskHumanityName;
-    $task->name = $this->taskName;
-    $task->save(false);
-  }
+    $task->title = $title;
+    $task->name = $taskName;
 
-  /**
-   * Создание новой записи операции
-   */
-  private function createOperation()
-  {
-    $operation = new BRbacOperation;
-    $operation->title = $this->operationHumanityName;
-    $operation->name  = $this->operationName;
-    $operation->save(false);
-  }
-
-  /**
-   * Добавление новых операции в существующую задачу
-   */
-  private function fillAccessData()
-  {
-    if( !empty($this->operationName) )
-    {
-      $parts  = explode(':', $this->operationName);
-      $parent = $parts[0] . ':' . $parts[1];
-
-      if( $parent == $this->taskName )
-      {
-        if( !BRbacTask::taskExists($this->taskName) )
-          $this->createTask();
-
-        if( !BRbacOperation::operationExists($this->operationName) )
-          $this->createOperation();
-
-        Yii::app()->authManager->addItemChild($this->taskName, $this->operationName);
-      }
-    }
-  }
-
-  /**
-   * Проверка доступа по задаче (контроллеру)
-   *
-   * @return boolean
-   */
-  private function checkTaskAccess()
-  {
-    if( in_array($this->taskName, $this->excludes) )
-      return true;
-
-    if( BRbacTask::taskExists($this->taskName) )
-      return BRbacTask::checkTask($this->taskName, Yii::app()->user->id);
-    else
-    {
-      $this->createTask();
-      $this->fillAccessData();
-      return false;
-    }
+    if( !$task->save() )
+      throw new CHttpException(500, 'Не удалось создать задачу '.$taskName);
   }
 }
