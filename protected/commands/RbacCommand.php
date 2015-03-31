@@ -173,6 +173,7 @@ class RbacCommand extends CConsoleCommand
         $this->names[] = [
           'name' => $moduleName.':'.$id,
           'title' => $module->name.' - '.$properties['name'],
+          'enabled' => $properties['enabled']
         ];
       }
     }
@@ -193,6 +194,12 @@ class RbacCommand extends CConsoleCommand
       $task->name  = $name['name'];
       $task->title = $name['title'];
       $task->type = CAuthItem::TYPE_TASK;
+
+      if( !$name['enabled'] )
+      {
+        echo "$task->name отключено ".PHP_EOL;
+        continue;
+      }
 
       try
       {

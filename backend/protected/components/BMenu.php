@@ -42,7 +42,6 @@ class BMenu extends CComponent
    */
   private $currentGroup;
 
-
   public function init()
   {
     $this->controller = Yii::app()->controller;
@@ -78,12 +77,9 @@ class BMenu extends CComponent
 
   public function getDefaultRout($default = '')
   {
-    if( isset($this->modules) && $group = Arr::reset($this->modules) )
+    if( $groups = $this->getGroups() )
     {
-      if( $module = Arr::reset($group) )
-      {
-        return $module['module']->id.'/'.key($module['module']->controllerMap);
-      }
+      return Arr::reset($groups)['route'];
     }
 
     return $default;
@@ -119,8 +115,11 @@ class BMenu extends CComponent
 
       if( $this->needCreateModulesMenu($module) )
       {
-        $this->createGroupsMenu($module);
-        $this->createModulesMenu($module);
+        if( $this->createGroupsMenu($module) )
+        {
+          if( !$this->createFakeModulesMenu($module) )
+            $this->createModulesMenu($module);
+        }
       }
 
       if( !empty($moduleConfig['modules']) )
@@ -174,18 +173,26 @@ class BMenu extends CComponent
 
   /**
    * @param BModule $module
+   *
+   * @return bool
    */
   private function createGroupsMenu($module)
   {
     if( !isset($this->groups[$module->group]) )
     {
+      if( !$mappedControllerId = $this->getAllowedControllerId($module) )
+        return false;
+
       $this->groups[$module->group] = array(
         'label' => Arr::get($this->groupNames, $module->group, $module->group),
-        'url' => $module->createUrl('/'),
+        'url' => $module->createUrl($mappedControllerId),
+        'route' => implode('/', array($module->getName(),  $mappedControllerId)),
         'active' => $this->currentGroup == $module->group,
         'itemOptions' => array('class' => $module->group)
       );
     }
+
+    return true;
   }
 
   /**
@@ -193,7 +200,7 @@ class BMenu extends CComponent
    */
   private function createModulesMenu($module)
   {
-    $this->modules[$module->group][] = array(
+    $this->modules[$module->group][$module->getName()] = array(
       'label' => $module->name,
       'url' => $module->createUrl('/'),
       'active' => $this->isModuleActive($module),
@@ -201,18 +208,46 @@ class BMenu extends CComponent
       'position' => $module->position,
       'module' => $module
     );
+  }
 
-    // Добавляем в меню виртуальные контроллеры модуля
-    if( method_exists($module, 'getMenuControllers') )
+  /**
+   * Добавляет в меню виртуальные контроллеры модуля
+   *
+   * @param BModule $module
+   *
+   * @return bool
+   * @throws CHttpException
+   */
+  private function createFakeModulesMenu($module)
+  {
+    if( $fakeMenu = $module->getMenuControllers() )
     {
-      $fakeControllers = $module->getMenuControllers();
-      if( !empty($fakeControllers) )
+      foreach($fakeMenu as $key => $menuItem)
       {
-        $this->modules[$module->group] = $fakeControllers;
+        $subMenu = Arr::cut($menuItem, 'menu', array());
 
-        if( isset($this->controller->moduleMenu) )
-          $this->modules[$module->group][$this->controller->moduleMenu]['active'] = true;
+        foreach($subMenu as $controllerName)
+        {
+          if( !$controllerMappedId = AccessHelper::getControllerTaskName($module, $controllerName.'Controller') )
+            throw new CHttpException(500, $controllerName.'Controller не найден в controllerMap модуля '.$module->getName() );
+
+          if(  AccessHelper::init($module->getName(), $controllerMappedId)->checkAccess() )
+          {
+            if( !isset($this->modules[$module->group][$key]) )
+            {
+              $this->modules[$module->group][$key] = $menuItem;
+              $this->modules[$module->group][$key]['url'] = $module->createUrl($controllerMappedId);
+            }
+
+            $this->modules[$module->group][$key]['menu'][$controllerMappedId] = $controllerName;
+          }
+        }
       }
+
+      if( isset($this->controller->moduleMenu) )
+        $this->modules[$module->group][$this->controller->moduleMenu]['active'] = true;
+
+      return true;
     }
   }
 
@@ -230,17 +265,17 @@ class BMenu extends CComponent
       if( !AccessHelper::init($module->id, $id)->checkAccess() )
         continue;
 
-      // todo: Использовать рефлекшен если он быстей
       /**
        * @var BController $controller
        */
       $controller = new $controllerClass($id, null);
 
       // Убираем ненужные виртуальные контроллеры, которые уже отобразились в меню
-      $fakeControllers = $module->getMenuControllers();
-      if( !empty($fakeControllers) )
+      if( $fakeControllers = $module->getMenuControllers() )
+      {
         if( !(isset($controller->moduleMenu, $this->controller->moduleMenu) && in_array(BApplication::CLASS_PREFIX.ucfirst($controller->id), $fakeControllers[$this->controller->moduleMenu]['menu'])) )
           continue;
+      }
 
       if( !isset($controller->enabled) || $controller->enabled === true )
       {
@@ -253,6 +288,22 @@ class BMenu extends CComponent
         );
       }
     }
+  }
+
+  private function getAllowedControllerId(BModule $module)
+  {
+    $controllerMappedId = AccessHelper::getControllerTaskName($module, $module->defaultController.'Controller');
+
+    if( $controllerMappedId && AccessHelper::init($module->getName(), $controllerMappedId)->checkAccess() )
+      return $controllerMappedId;
+
+    foreach($module->controllerMap as $controllerMappedId => $controller)
+    {
+      if( AccessHelper::init($module->getName(), $controllerMappedId)->checkAccess() )
+        return $controllerMappedId;
+    }
+
+    return null;
   }
 
   private function sort()

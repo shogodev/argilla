@@ -28,6 +28,8 @@ abstract class BController extends CController
 
   public $popup = false;
 
+  public $moduleMenu;
+
   public function behaviors()
   {
     return array(

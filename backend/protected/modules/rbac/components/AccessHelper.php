@@ -38,7 +38,6 @@
  */
 class AccessHelper
 {
-
   /**
    * Массив со стандартными названием действий в контроллерах
    * и их человеко-понятным названием
@@ -75,13 +74,6 @@ class AccessHelper
   private $action;
 
   /**
-   * объект менеджера авторизации
-   *
-   * @var CAuthManager
-   */
-  private $auth;
-
-  /**
    * Название задачи
    *
    * module:controller
@@ -100,7 +92,7 @@ class AccessHelper
   private $operationName = '';
 
   /**
-   * Массив с исплючениями, по которым не проверяется доступ
+   * Массив с исключениями, по которым не проверяется доступ
    *
    * @var array
    */
@@ -130,9 +122,11 @@ class AccessHelper
    */
   public function __construct($module = null, $controller = null, $action = null)
   {
-    $this->initProperties($module, $controller, $action);
-    $this->createTaskName();
-    $this->createOperationName();
+    if( $this->initProperties($module, $controller, $action) )
+    {
+      $this->createTaskName();
+      $this->createOperationName();
+    }
   }
 
   /**
@@ -275,24 +269,22 @@ class AccessHelper
     return self::$assignments[$userId];
   }
 
-  /**
-   * Проверка доступа по задаче (контроллеру)
-   *
-   * @return boolean
-   */
-  private function checkTaskAccess()
+  public static function getControllerTaskName(BModule $module, $controllerName)
   {
-    if( in_array($this->taskName, $this->excludes) )
-      return true;
-
-    if( BRbacTask::taskExists($this->taskName) )
-      return BRbacTask::checkTask($this->taskName, Yii::app()->user->id);
-    else
+    foreach($module->controllerMap as $controllerMappedId => $controllerMappedName)
     {
-      $this->createTask();
-      $this->fillAccessData();
-      return false;
+      if( $controllerMappedName == $controllerName )
+        return $controllerMappedId;
     }
+
+    return null;
+  }
+
+  public static function clearCache()
+  {
+    self::$moduleList = null;
+    self::$childList = null;
+    self::$assignments = null;
   }
 
   /**
@@ -332,7 +324,8 @@ class AccessHelper
    */
   protected function createOperationName()
   {
-    $this->operationName = $this->taskName . ':' . $this->action;
+    if( $this->action )
+      $this->operationName = $this->taskName . ':' . $this->action;
   }
 
   /**
@@ -341,6 +334,8 @@ class AccessHelper
    * @param string $module
    * @param string $controller
    * @param string $action
+   *
+   * @return bool
    */
   private function initProperties($module, $controller, $action)
   {
@@ -349,6 +344,9 @@ class AccessHelper
       if( !empty(Yii::app()->controller->module->id) )
       {
         $module = Yii::app()->controller->module;
+        if( !$module->enabled || !Yii::app()->controller->enabled )
+          return false;
+
         $this->module = $module->getName();
         $this->controller = array_search(get_class(Yii::app()->controller), $module->controllerMap);
 
@@ -356,6 +354,9 @@ class AccessHelper
       }
       else
       {
+        if( !Yii::app()->controller->enabled )
+          return false;
+
         $this->controller = Yii::app()->controller->id;
         $this->taskHumanityName = Yii::app()->controller->name;
       }
@@ -374,7 +375,7 @@ class AccessHelper
     if( $this->action )
       $this->operationHumanityName .= '-'.(isset($this->baseActionNames[$this->action]) ? $this->baseActionNames[$this->action] : $this->action);
 
-    $this->auth = Yii::app()->authManager;
+    return true;
   }
 
   /**
@@ -417,9 +418,28 @@ class AccessHelper
         if( !BRbacOperation::operationExists($this->operationName) )
           $this->createOperation();
 
-        $this->auth->addItemChild($this->taskName, $this->operationName);
+        Yii::app()->authManager->addItemChild($this->taskName, $this->operationName);
       }
+    }
+  }
 
+  /**
+   * Проверка доступа по задаче (контроллеру)
+   *
+   * @return boolean
+   */
+  private function checkTaskAccess()
+  {
+    if( in_array($this->taskName, $this->excludes) )
+      return true;
+
+    if( BRbacTask::taskExists($this->taskName) )
+      return BRbacTask::checkTask($this->taskName, Yii::app()->user->id);
+    else
+    {
+      $this->createTask();
+      $this->fillAccessData();
+      return false;
     }
   }
 }

@@ -57,8 +57,8 @@ class BRbacTask extends BAuthItem
 
       if( isset($childList[$name][$task]) )
         return true;
-
     }
+
     return false;
   }
 
@@ -136,6 +136,15 @@ class BRbacTask extends BAuthItem
   protected function beforeSave()
   {
     $this->type = CAuthItem::TYPE_TASK;
+
     return parent::beforeSave();
+  }
+
+  protected function afterSave()
+  {
+    self::$tasks = null;
+    AccessHelper::clearCache();
+
+    return parent::afterSave();
   }
 }
