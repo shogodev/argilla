@@ -6,8 +6,8 @@
  * @license http://argilla.ru/LICENSE
  * @package backend.components.auth
  */
-
 Yii::import('backend.modules.rbac.models.BUser');
+
 
 class BUserIdentity extends CUserIdentity
 {
@@ -31,7 +31,7 @@ class BUserIdentity extends CUserIdentity
    */
   public static function createPassword($username, $password)
   {
-    return md5($username . $password . self::getSalt());
+    return md5($username.$password.self::getSalt());
   }
 
   /**
@@ -45,7 +45,6 @@ class BUserIdentity extends CUserIdentity
 
   /**
    * Переопределение метода получения идентификатора пользователя с username на ID
-   *
    * @return int
    */
   public function getId()
@@ -58,31 +57,20 @@ class BUserIdentity extends CUserIdentity
    */
   private function auth()
   {
-    $id               = null;
-    $username         = null;
-    $password         = null;
+    $id = null;
+    $username = null;
+    $password = null;
     $requiredPassword = null;
-    $visible          = null;
+    $visible = null;
 
-    if( BDevServerAuthConfig::getInstance()->isAvailable() && !(Yii::app() instanceof BTestApplication) )
-    {
-      $id               = 1;
-      $username         = BDevServerAuthConfig::getInstance()->getUsername();
-      $password         = BDevServerAuthConfig::getInstance()->getPassword();
-      $visible          = 1;
-      $requiredPassword = $this->password;
-    }
-    else
-    {
-      /**@var BUser $record*/
-      $record = BUser::model()->findByAttributes(array('username' => $this->username));
+    /**@var BUser $record */
+    $record = BUser::model()->findByAttributes(array('username' => $this->username));
 
-      $id               = !empty($record) ? $record->id : null;
-      $username         = !empty($record) ? $record->username : null;
-      $password         = !empty($record) ? $record->password : null;
-      $visible          = !empty($record) ? $record->visible : null;
-      $requiredPassword = self::createPassword($this->username, $this->password);
-    }
+    $id = !empty($record) ? $record->id : null;
+    $username = !empty($record) ? $record->username : null;
+    $password = !empty($record) ? $record->password : null;
+    $visible = !empty($record) ? $record->visible : null;
+    $requiredPassword = self::createPassword($this->username, $this->password);
 
     if( $username === null )
       $this->errorCode = self::ERROR_USERNAME_INVALID;
@@ -105,16 +93,16 @@ class BUserIdentity extends CUserIdentity
    */
   private static function getSalt()
   {
-    if ( empty(self::$_salt) )
+    if( empty(self::$_salt) )
     {
-      switch( Yii::app()->params['mode'] )
+      switch(Yii::app()->params['mode'])
       {
         case 'backend':
           self::$_salt = Yii::app()->params['salt'];
           break;
 
         case 'console':
-          $config = require_once Yii::getPathOfAlias('backend.config') . '/backend.php';
+          $config = require_once Yii::getPathOfAlias('backend.config').'/backend.php';
           self::$_salt = $config['params']['salt'];
           break;
 

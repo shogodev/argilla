@@ -45,6 +45,9 @@ class AccessHelper
     if( get_class($controller) == 'BaseController' )
       return true;
 
+    if( is_null($module) )
+      return false;
+
     $task = self::getTaskName(get_class($module), get_class($controller));
 
     if( BRbacTask::taskExists($task) )
