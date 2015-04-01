@@ -40,7 +40,7 @@ class PlatronPaymentBehavior extends SBehavior
     }
     elseif( isset(Yii::app()->controller) )
     {
-      return Yii::app()->controller->createAbsoluteUrl('basket/success');
+      return Yii::app()->controller->createAbsoluteUrl('order/thirdStep');
     }
 
     return null;

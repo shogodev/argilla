@@ -10,7 +10,7 @@ class FFormInputElement extends CFormInputElement
 {
   public $layout = null;
 
-  protected $defaultLayout = '<div class="form-row m7">{label}<div class="form-field">{input}{hint}{error}</div></div>';
+  protected $defaultLayout = FormLayouts::ELEMENTS_LAYOUT;
 
   private $_label;
 

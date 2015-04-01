@@ -129,6 +129,7 @@
   <div class="templates-map-container">
     <ul class="templates-map scroll-pane">
       <li><a href="<?php echo $this->createUrl('index/index');?>" data-description="">Главная</a><li>
+      <li><a href="/templates/basket_step_3/" data-description="">Корзина (шаг 3)</a></li>
       <ul>
         <li><a href="<?php echo $this->createUrl('contact/index');?>" data-description="">Контакты</a></li>
         <li>

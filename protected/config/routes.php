@@ -1,6 +1,7 @@
 <?php
 return array(
   // template
+  'templateBasketThirdStep' => array('template/basketThirdStep', 'pattern' => 'templates/basket_step_3'),
   'template' => array('template/index', 'pattern' => 'templates/<url:\w+>'),
 
   // index
@@ -48,11 +49,13 @@ return array(
   'callback' => array('callback/index', 'pattern' => 'callback'),
   'response' => array('response/add', 'pattern' => 'add_response'),
 
+  // order
+  'orderFirstStep' => array('order/firstStep', 'pattern' => 'order_first_step'),
+  'orderSecondStep' => array('order/secondStep', 'pattern' => 'order_second_step'),
+  'orderThirdStep' => array('order/thirdStep', 'pattern' => 'order_third_step'),
+
   // basket
-  'basket'          => array('basket/index',     'pattern' => 'basket'),
-  'basketAdd'       => array('basket/add',       'pattern' => 'basket/add'),
-  'basketCheckOut'  => array('basket/checkout',  'pattern' => 'basket/check_out'),
-  'basketSuccess'   => array('basket/success',   'pattern' => 'basket/success'),
+  'basket'  => array('basket/ajax', 'pattern' => 'basket/ajax'),
   'basketFastOrder' => array('basket/fastOrder', 'pattern' => 'basket/fastorder'),
 
   // payment system

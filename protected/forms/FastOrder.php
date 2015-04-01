@@ -6,7 +6,6 @@ return array(
 
   'elementsLayout' => '<div class="form-row full-size-row m10"><div class="form-label s13">{label}</div><div class="form-field">{input}{error}</div>{hint}</div>',
 
-
   'elements' => array(
    'name' => array('type' => 'text'),
 

@@ -130,7 +130,7 @@ class Order extends FActiveRecord
       }
     }
 
-    return Yii::app()->createAbsoluteUrl('basket/success');
+    return Yii::app()->createAbsoluteUrl('order/thirdStep');
   }
 
   public function setFastOrderBasket(FBasket $fastOrderBasket)

@@ -15,7 +15,7 @@ class FavoriteController extends FController
 
   public function actionIndex()
   {
-    $this->forward('basket/add');
+    $this->forward('basket/ajax');
   }
 
   public function actionMergeWithBasket()
@@ -26,7 +26,7 @@ class FavoriteController extends FController
     }
     $this->favorite->clear();
 
-    $this->forward('basket/add');
+    $this->forward('basket/ajax');
   }
 
   protected function processFavoriteAction()

@@ -17,7 +17,7 @@
  */
 class PlatronPaymentType extends FActiveRecord
 {
-  public $path = '/f/upload/images/payments/';
+  public $path = '/i/platron/';
 
   public function defaultScope()
   {
@@ -34,6 +34,15 @@ class PlatronPaymentType extends FActiveRecord
 
   public function getLabel()
   {
-    return implode(" ", array($this->name, $this->notice, $this->img ? CHtml::image($this->path.$this->img) : ''));
+    return implode(" ", array($this->name, $this->notice));
+  }
+
+  public function getImageLabel()
+  {
+    $labelArray = $this->img ? array(CHtml::image($this->path.$this->img)) : array();
+    $labelArray[] = $this->name;
+    if( !empty($this->notice) )
+      $labelArray[] = $this->notice;
+    return implode(" ", $labelArray);
   }
 }

@@ -29,4 +29,13 @@ class TemplateController extends FController
 
     $this->render($url);
   }
-} 
+
+  public function actionBasketThirdStep()
+  {
+    //$this->basket->clear();
+    Yii::app()->session['orderSuccess'] = true;
+    Yii::app()->session['orderId'] = 1234;
+    $this->forward('order/thirdStep', false);
+  }
+
+}
