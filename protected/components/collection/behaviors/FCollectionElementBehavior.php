@@ -14,8 +14,6 @@
  */
 class FCollectionElementBehavior extends CBehavior
 {
-
-
   /**
    * @var FCollectionElement
    */
@@ -38,7 +36,14 @@ class FCollectionElementBehavior extends CBehavior
 
   public function getSum()
   {
-    $price = method_exists($this->owner, 'getPrice') ? $this->owner->getPrice() : $this->owner->price;
+    try
+    {
+      $price = $this->owner->getPrice();
+    }
+    catch(Exception $e)
+    {
+      $price = $this->owner->price;
+    }
 
     return $price * $this->collectionAmount;
   }
