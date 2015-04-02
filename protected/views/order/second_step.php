@@ -64,39 +64,6 @@
   </div>
 </div>
 
-<!--<script>
-  $(function() {
-    var deliverySelection = $('input[name="order-delivery"]:checked'),
-      deliveryOptions = deliverySelection.data('options'),
-      deliveryOptionsShow = deliverySelection.data('show-options');
-    if ( deliveryOptionsShow ) {
-      $(deliveryOptions).show();
-    }
-    $('input[name="order-delivery"]').change(function() {
-      var self = $('input[name="order-delivery"]:checked');
-      if ( self.data('show-options') ) {
-        $( self.data('options') ).stop(true, true).fadeIn();
-      } else {
-        $( self.data('options') ).stop(true, true).fadeOut();
-      }
-    });
-
-    var paymentOptions = $('input[name="order-payment-type"]:checked').data('options'),
-      paymentOptionsShow = $('input[name="order-payment-type"]:checked').data('show-options');
-    if ( paymentOptionsShow ) {
-      $(paymentOptions).show();
-    }
-    $('input[name="order-payment-type"]').change(function() {
-      var self = $('input[name="order-payment-type"]:checked');
-      if ( self.data('show-options') ) {
-        $( self.data('options') ).stop(true, true).fadeIn();
-      } else {
-        $( self.data('options') ).stop(true, true).fadeOut();
-      }
-    });
-  });
-</script>-->
-
 <script>
   $(function() {
     var form = $('#<?php echo $form->getActiveFormWidget()->id?>');
