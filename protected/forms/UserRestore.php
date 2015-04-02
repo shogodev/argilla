@@ -1,6 +1,6 @@
 <?php
 return array(
-  'class' => 'form',
+  'class' => 'form recovery-form m35',
 
   'elements' => array(
     'email'  => array('type' => 'text')
@@ -10,7 +10,7 @@ return array(
     'submit' => array(
       'type' => 'submit',
       'value' => 'Восстановить',
-      'class'  => 'center btn red-btn wide-paddings-btn'
+      'class'  => 'btn red-contour-btn rounded-btn h31btn p25btn opensans s15 bb uppercase'
     ),
   )
 );

@@ -3,25 +3,34 @@
  * @var FForm $form
  * @var UserController $this
  * @var array $_data_
- * @var Order[] $orders
+ * @var FActiveDataProvider $orderDataProvider
  */
 ?>
-<div id="content" class="wrapper">
+<div class="wrapper">
   <?php $this->renderPartial('/_breadcrumbs');?>
+</div>
+<div class="white-body pre-footer">
+  <div class="wrapper">
+    <h1 class="uppercase s33 m20"><?php echo Yii::app()->meta->setHeader('Личный кабинет')?></h1>
 
-  <div class="nofloat profile">
-    <h1><?php echo Yii::app()->meta->setHeader('Личный кабинет')?></h1>
-    <?php $this->renderPartial('_menu', $_data_) ?>
-    <div class="profile-content">
-      <h2>История заказов</h2>
-      <?php if( $orders ) {?>
+    <div class="nofloat">
+      <?php $this->renderPartial('_menu', $_data_) ?>
+
+      <section id="main" class="personal-page">
+
         <?php $this->widget('FListView', array(
-          'dataProvider' => new FArrayDataProvider($orders, array('pagination' => false)),
+          'template' => '{items}<div class="nofloat"><div class="pager fr">{pager}</div></div>',
+          'dataProvider' => $orderDataProvider,
           'itemView' => '_orders_block',
+          'emptyText' => 'Нет заказов.',
+          'pagerCssClass' => 'pager fr',
+          'pager' => array(
+            'class' => 'FLinkPager',
+            'maxButtonCount' => 6,
+          )
         ));?>
-      <?php } else {?>
-        Нет заказов.
-      <?php }?>
+
+      </section>
     </div>
   </div>
 </div>

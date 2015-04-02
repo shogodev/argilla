@@ -3,60 +3,37 @@
  * @var Order $data
  */
 ?>
-<div class="order">
-  <div class="nofloat m10">
-    <p class="s20 bb fl">Заказ <?php echo $data->id?> от <?php echo date("d.m.Y", strtotime($data->date_create))?>, сумма <?php echo Yii::app()->format->formatNumber($data->sum)?> руб.</p>
+<div class="m30">
+  <div class="nofloat order-header">
+    <div class="fl">Заказ № <span class="red"><?php echo $data->id?></span> от <?php echo date("d.m.Y", strtotime($data->date_create))?>, сумма <?php echo PriceHelper::price($data->sum, ' руб.');?>
+      <span class="red"></span>
+    </div>
+    <div class="fr">
+      Статус заказа: <span class="red"><?php echo $data->status?></span>
+    </div>
   </div>
-  <p>Статус:</p>
-  <table class="order-status m20">
+  <table class="zero history-table">
     <tr>
-      <?php foreach( OrderStatus::model()->findAll() as $status ) { ?>
-        <td>
-          <span class="step-<?php echo $status->id?> <?php echo( $status->id === $data->status_id ) ? 'active' : ''?>">
-            <?php echo $status->name?>
-          </span>
-        </td>
-      <?php } ?>
+      <th>Название</th>
+      <th>Артикул</th>
+      <th>Количество</th>
+      <th>Стоимость, руб.</th>
     </tr>
-  </table>
-  <table class="order-details m20">
-    <thead>
-    <th width="">Наименование</th>
-    <th width="">Артикул</th>
-    <th width="">Цена</th>
-    <th width="">Количество</th>
-    <th width="">Сумма</th>
-    </thead>
-    <tbody>
     <?php foreach($data->products as $product) {?>
-      <tr class="product-name-row">
-        <td class="bb"><?php echo $product->name?></td>
+      <tr>
+        <td><?php echo $product->name?></td>
         <td><?php if( isset($product->history) ) echo $product->history->articul?></td>
-        <td>
-          <?php echo Yii::app()->format->formatNumber($product->price)?>
-          <?php if( $areaItem = $product->getItem('customParameterArea') ) {?> руб. за уп.<?php }?>
-        </td>
-        <td>
-          <?php if( $areaItem ) {?>
-            <?php echo $product->count?> уп. = <?php echo $product->getItem('customParameterFullArea')->value ?> м&sup2;
-          <?php } else {?>
-           <?php echo $product->count?>
-          <?php }?>
-        </td>
-        <td class="bb"><?php echo Yii::app()->format->formatNumber($product->sum).' руб.'?></td>
+        <td><?php echo $product->count?></td>
+        <td><?php echo PriceHelper::price($product->sum, ' руб.')?></td>
       </tr>
-      <?php foreach($product->getItems() as $item) {?>
-        <tr class="s12">
-          <td colspan="5"><?php echo $item->name?>: <?php echo $item->value?></td>
-        </tr>
-      <?php }?>
     <?php }?>
-    </tbody>
-    <tfoot>
-    <tr class="order-result bb">
-      <td colspan="4">Итого:</td>
-      <td><?php echo Yii::app()->format->formatNumber($data->sum)?> руб.</td>
-    </tr>
-    </tfoot>
   </table>
+  <div class="nofloat">
+    <div class="fr s14">
+      <?php if( PriceHelper::isNotEmpty($data->delivery_sum) ) {?>
+        <div class="m3">Стоимость доставки: <span class="red"><?php echo PriceHelper::price($data->delivery_sum, ' руб.');?></span></div>
+      <?php }?>
+      Итог: <span class="red"><?php echo PriceHelper::price($data->sum, ' руб.');?></span>
+    </div>
+  </div>
 </div>

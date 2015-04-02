@@ -1,6 +1,6 @@
 <?php
 return array(
-  'class' => 'form auth-form',
+  'class' => 'form registration-form m35',
 
   'elements' => array(
     'login' => array('type' => 'text'),
@@ -24,7 +24,7 @@ return array(
     'submit' => array(
       'type' => 'button',
       'label' => 'Зарегистрироваться',
-      'class' => 'btn'
+      'class' => 'btn red-contour-btn rounded-btn h34btn opensans s15 bb uppercase'
     ),
   ),
 );

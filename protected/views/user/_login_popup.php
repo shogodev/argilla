@@ -3,28 +3,23 @@
  * @var FController $this
  */
 ?>
-<script>
-  //<![CDATA[
-  $(function(){
-    $('.authorization-link').click(function(e){
-      e.preventDefault();
-      var target = $('#authorization-popup');
-      $.overlayLoader(true, target);
-    })
-    $('#authorization-popup .new-user-btn').click(function(e){
-      e.preventDefault();
-      var target = $(this).closest('.popup');
-      $.overlayLoader(false, target);
-      target = $('#registration-popup');
-      setTimeout(function(){
-        $.overlayLoader(true, target);
-      }, 300);
-    })
-  })
-  //]]>
-</script>
-<div class="popup" id="authorization-popup">
+<div class="popup login-popup" id="login-popup">
   <a href="" class="close"></a>
-  <div class="jurabold s24 uppercase m20">Вход для зарегистрированных пользователей</div>
-  <?php echo $this->loginPopupForm?>
+  <div class="popup-header">
+    <div class="popup-header-inner">
+      <div class="h1 s24 white uppercase m0">Вход в личный кабинет</div>
+    </div>
+  </div>
+  <div class="popup-body">
+    <?php echo $this->loginPopupForm;?>
+  </div>
 </div>
+<script>
+  $(function() {
+    $('.auth-link').click(function(e) {
+      e.preventDefault();
+      var target = $('#login-popup');
+      $.overlayLoader(true, target);
+    });
+  });
+</script>

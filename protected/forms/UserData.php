@@ -1,9 +1,7 @@
 <?php
 
 return array(
-  'class' => 'form profile-form',
-
-  'elementsLayout' => '<div class="form-row m20">{label}<div class="form-field">{input}{error}</div></div>',
+  'class' => 'form registration-form m35',
 
   'elements' => array(
     'name' => array('type' => 'text'),
@@ -28,7 +26,7 @@ return array(
     'submit' => array(
       'type' => 'button',
       'value' => 'Сохранить',
-      'class' => 'btn green-btn h47btn s30 bb'
+      'class' => 'btn red-contour-btn rounded-btn h34btn opensans s15 bb uppercase'
     ),
   ),
 );

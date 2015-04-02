@@ -43,7 +43,6 @@ return array(
   'userProfileData' => array('userProfile/data', 'pattern' => 'user/data', 'shouldRemember' => false),
   'userProfileChangePassword' => array('userProfile/changePassword', 'pattern' => 'user/change_password', 'shouldRemember' => false),
   'userProfileHistoryOrders' => array('userProfile/historyOrders', 'pattern' => 'user/orders/history', 'shouldRemember' => false),
-  'userProfileCurrentOrders' => array('userProfile/currentOrders', 'pattern' => 'user/orders/current', 'shouldRemember' => false),
 
   // forms
   'callback' => array('callback/index', 'pattern' => 'callback'),

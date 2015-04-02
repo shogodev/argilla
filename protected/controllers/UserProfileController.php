@@ -8,6 +8,8 @@
  */
 class UserProfileController extends FController
 {
+  public $pageSize = 10;
+
   public function filters()
   {
     return array('accessControl');
@@ -26,6 +28,7 @@ class UserProfileController extends FController
   public function actionProfile()
   {
     $this->breadcrumbs = array(
+      'Личный кабинет',
       'Мой профиль',
     );
 
@@ -39,11 +42,9 @@ class UserProfileController extends FController
   public function actionData()
   {
     $this->breadcrumbs = array(
-      'Мой профиль',
+      'Личный кабинет',
       'Личные данные',
     );
-
-    $this->activeUrl = array('userProfile/data');
 
     $userForm = new FForm('UserData', UserProfile::model()->findByPk(Yii::app()->user->getId()));
     $userForm->ajaxValidation();
@@ -62,11 +63,9 @@ class UserProfileController extends FController
   public function actionChangePassword()
   {
     $this->breadcrumbs = array(
-      'Мой профиль',
+      'Личный кабинет',
       'Сменить пароль',
     );
-
-    $this->activeUrl = array('userProfile/changePassword');
 
     $model = User::model()->findByPk(Yii::app()->user->getId());
     $model->scenario = User::SCENARIO_CHANGE_PASSWORD;
@@ -86,62 +85,32 @@ class UserProfileController extends FController
     $this->render('change_password', array('form' => $form));
   }
 
-  public function actionCurrentOrders()
-  {
-    $this->breadcrumbs = array(
-      'Мои заказы',
-      'Текущие заказы',
-    );
-
-    $this->activeUrl = array('user/currentOrders');
-    $orders = OrderHistory::model()->findAll();
-
-    $this->render('current_orders', array('orders' => $orders));
-  }
-
   public function actionHistoryOrders()
   {
     $this->breadcrumbs = array(
-      'Мои заказы',
+      'Личный кабинет',
       'История заказов',
     );
 
-    $this->activeUrl = array('user/history');
-    $orders = OrderHistory::model()->findAll();
+    $orderDataProvider = new FActiveDataProvider('OrderHistory');
 
-    $this->render('history_orders', array('orders' => $orders));
+    $this->render('history_orders', array('orderDataProvider' => $orderDataProvider));
   }
 
   public function getMenu()
   {
     $menu = array(
       array(
-        'label' => '<span class="accordion-menu-heading icon-my-profile">Мой профиль</span>',
-        'url' => '',
-        'items' => array(
-          array(
-            'label' => 'Личные данные',
-            'url' => array('userProfile/data')
-          ),
-          array(
-            'label' => 'Сменить пароль',
-            'url' => array('userProfile/changePassword')
-          )
-        )
+        'label' => 'Личные данные',
+        'url' => array('userProfile/data')
       ),
       array(
-        'label' => '<span class="accordion-menu-heading icon-my-orders">Мои заказы</span>',
-        'url' => '',
-        'items' => array(
-          array(
-            'label' => 'Текущие заказы',
-            'url' => array('userProfile/currentOrders')
-          ),
-          array(
-            'label' => 'История заказов',
-            'url' => array('userProfile/historyOrders')
-          )
-        )
+        'label' => 'История заказов',
+        'url' => array('userProfile/historyOrders')
+      ),
+      array(
+        'label' => 'Сменить пароль',
+        'url' => array('userProfile/changePassword')
       ),
     );
 

@@ -4,4 +4,4 @@
  */
 ?>
 
-<?php $this->renderPartial('/callback')?>
+<?php $this->renderOverride('/popups/popups');?>
