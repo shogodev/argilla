@@ -63,4 +63,23 @@ class TemplateController extends FController
     Yii::app()->user->logout(false);
   }
 
+  public function actionEmail()
+  {
+    $data = array();
+    $data['host'] = Yii::app()->request->hostInfo;
+    $data['project'] = Yii::app()->params->project;
+    $data['subject'] = Yii::app()->params->project;
+
+    if( $contact = $this->getHeaderContacts() )
+    {
+      $data['emails'] = $contact->getFields('emails');
+      $data['email'] = Arr::get($data['emails'], 0, '');
+      $data['phones'] = $contact->getFields('phones');
+      $data['phone'] = Arr::get($data['phones'], 0, '');
+    }
+    $data['model'] = Order::model()->findByPk(2);
+
+    $content = $this->renderPartial('frontend.views.email.order', $data, true);
+    $this->renderPartial('frontend.views.email.layouts.main', CMap::mergeArray($data, array('content' => $content)), false, true);
+  }
 }

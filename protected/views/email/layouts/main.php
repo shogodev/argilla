@@ -1,4 +1,4 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<!doctype html>
 <?php
 /**
  * @var CController $this
@@ -14,13 +14,26 @@
  * @var ContactField $phone
  */
 ?>
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html lang="ru">
 <head>
-  <meta http-equiv="Content-Type" content="application/xhtml+xml; charset=windows-1251" />
-  <meta http-equiv="Content-Script-Type" content="text/javascript" />
+  <meta charset="UTF-8">
   <title><?php echo $subject?></title>
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+    }
+  </style>
 </head>
-<?php $this->renderPartial('frontend.views.email.layouts._header', $_data_)?>
-  <?php echo $content; ?>
-<?php $this->renderPartial('frontend.views.email.layouts._footer', $_data_)?>
+<body>
+
+  <div style="background:#fffff;color:#373731;font-family:sans-serif;font-size:16px;line-height:120%;">
+    <?php $this->renderPartial('frontend.views.email.layouts._header', $_data_)?>
+      <div style="width:1000px;margin:auto;padding:40px 0 30px;">
+        <?php echo $content; ?>
+      </div>
+    <?php $this->renderPartial('frontend.views.email.layouts._footer', $_data_)?>
+  </div>
+
+</body>
 </html>

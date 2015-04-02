@@ -160,7 +160,7 @@
         </li>
         <li><a href="<?php echo $this->createUrl('sitemap/index');?>" data-description="">Карта сайта</a></li>
       </ul>
-
+      <li><a href="/templates/email/" data-description="">Почтовое уведомление</a></li>
     </ul>
   </div>
   <div class="templates-navigation-header">Примечание:</div>
