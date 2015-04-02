@@ -1,6 +1,7 @@
 <?php
 return array(
   // template
+  'templateProfileData' => array('template/profileData', 'pattern' => 'templates/<url:(personal|personal_password|personal_history)>'),
   'templateBasketThirdStep' => array('template/basketThirdStep', 'pattern' => 'templates/basket_step_3'),
   'template' => array('template/index', 'pattern' => 'templates/<url:\w+>'),
 

@@ -38,4 +38,29 @@ class TemplateController extends FController
     $this->forward('order/thirdStep', false);
   }
 
+  public function actionProfileData($url)
+  {
+    $login = new Login();
+    $login->login = Yii::app()->request->getParam('empty', false) ? 'test2' : 'test';
+    $login->password = '123';
+    $login->authenticate(null, null);
+
+    switch( $url )
+    {
+      case 'personal':
+        $this->forward('userProfile/data', false);
+      break;
+
+      case 'personal_password':
+        $this->forward('userProfile/changePassword', false);
+        break;
+
+      case 'personal_history':
+        $this->forward('userProfile/historyOrders', false);
+      break;
+    }
+
+    Yii::app()->user->logout(false);
+  }
+
 }
