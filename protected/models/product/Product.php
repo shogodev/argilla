@@ -42,6 +42,7 @@
  * @mixin ProductParametersBehavior
  * @mixin ActiveImageBehavior
  * @mixin ProductPriceBehavior
+ * @mixin ProductDumpBehavior
  */
 class Product extends FActiveRecord
 {
@@ -60,6 +61,7 @@ class Product extends FActiveRecord
       'collectionElement' => array('class' => 'FCollectionElementBehavior'),
       'productParametersBehavior' => array('class' => 'ProductParametersBehavior'),
       'imagesBehavior' => array('class' => 'ActiveImageBehavior', 'imageClass' => 'ProductImage'),
+      'productDumpBehavior' => array('class' => 'ProductDumpBehavior'),
     );
   }
 

@@ -47,7 +47,7 @@ CREATE TABLE `argilla_auth_assignment` (
   `bizrule` text,
   `data` text,
   PRIMARY KEY (`id`),
-  UNIQUE KEY (`itemname`,`userid`),
+  UNIQUE KEY `itemname` (`itemname`,`userid`),
   CONSTRAINT `AuthAssignment_ibfk_1` FOREIGN KEY (`itemname`) REFERENCES `argilla_auth_item` (`name`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -68,7 +68,7 @@ CREATE TABLE `argilla_auth_item` (
   `bizrule` text,
   `data` text,
   PRIMARY KEY (`id`),
-  UNIQUE KEY (`name`)
+  UNIQUE KEY `name` (`name`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -367,7 +367,7 @@ CREATE TABLE `argilla_info` (
   `siblings` tinyint(1) NOT NULL,
   `children` tinyint(1) NOT NULL,
   `menu` tinyint(1) NOT NULL,
-  `date` DATE NOT NULL,
+  `date` date NOT NULL,
   `sitemap` tinyint(1) DEFAULT '1',
   PRIMARY KEY (`id`),
   KEY `lft` (`lft`),
@@ -576,9 +576,9 @@ CREATE TABLE `argilla_order` (
   KEY `user_id` (`user_id`),
   KEY `delivery_id` (`delivery_id`),
   KEY `payment_id` (`payment_id`),
-  CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `argilla_user` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `argilla_order_ibfk_1` FOREIGN KEY (`delivery_id`) REFERENCES `argilla_order_delivery_type` (`id`) ON UPDATE CASCADE,
-  CONSTRAINT `argilla_order_ibfk_2` FOREIGN KEY (`payment_id`) REFERENCES `argilla_order_payment_type` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `argilla_order_ibfk_2` FOREIGN KEY (`payment_id`) REFERENCES `argilla_order_payment_type` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `argilla_user` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -885,6 +885,21 @@ CREATE TABLE `argilla_product_currency` (
   `rate` decimal(10,2) NOT NULL,
   `autorate_id` varchar(255) NOT NULL,
   PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `argilla_product_dump`
+--
+
+DROP TABLE IF EXISTS `argilla_product_dump`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `argilla_product_dump` (
+  `id` int(10) unsigned NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `description` varchar(255) NOT NULL,
+  UNIQUE KEY `id` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

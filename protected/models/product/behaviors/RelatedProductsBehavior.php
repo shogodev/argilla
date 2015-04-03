@@ -77,7 +77,7 @@ class RelatedProductsBehavior extends AssociationBehavior
    */
   private function getProductList(CDbCriteria $criteria)
   {
-    $criteria->compare('t.dump', 1);
+    $criteria->compare('t.dump', '>'.ProductDump::NOT_AVAILABLE);
     $criteria->compare('t.id', '<>'.$this->owner->id);
 
     return new ProductList($criteria, null, false);
