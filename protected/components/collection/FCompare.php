@@ -94,6 +94,11 @@ class FCompare extends FCollectionUI
     return parent::buttonRemove($element, $text, $htmlOptions, $confirm);
   }
 
+  public function buttonAdd($data, $text = '', $htmlOptions = array(), $buttonType = self::BT_TOGGLE)
+  {
+    return parent::buttonAdd($data, $text, $htmlOptions, $buttonType);
+  }
+
   protected function getElementGroup($element)
   {
     return $element->{$this->groupRelation};

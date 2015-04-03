@@ -61,7 +61,7 @@ class RelatedProductsBehavior extends AssociationBehavior
     $criteria = new CDbCriteria();
     $criteria->order = 'ABS(price - :price)';
     $criteria->limit = $limit;
-    $criteria->params[':price'] = $this->owner->price;
+    $criteria->params[':price'] = $this->owner->getPrice();
 
     if( isset($this->owner->section) )
       $criteria->compare('a.section_id', $this->owner->section->id);
