@@ -31,6 +31,8 @@ abstract class BController extends CController
 
   public $moduleMenu;
 
+  public $showInMenu = true;
+
   public function behaviors()
   {
     return array(

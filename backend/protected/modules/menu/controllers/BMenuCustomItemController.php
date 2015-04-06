@@ -8,15 +8,12 @@
  */
 class BMenuCustomItemController extends BController
 {
-  /**
-   * @var bool
-   */
-  public $enabled = false;
+  public $showInMenu = false;
 
   /**
    * @var string
    */
-  public $name = 'BFrontendCustomMenuItem';
+  public $name = 'Попап пользовательского меню';
 
   /**
    * @var string
