@@ -33,18 +33,14 @@ class AccessHelper
    */
   public static function checkAccessByClasses(BModule $module = null, BController $controller)
   {
-    if( get_class($controller) == 'BaseController' )
-      return true;
-
     if( is_null($module) )
-      return false;
+      return self::checkAccessByController($controller);
 
     $task = self::getTaskName(get_class($module), get_class($controller));
 
     if( BRbacTask::taskExists($task) )
       return self::checkAccessByTask($task);
-
-    if( !$module->enabled && !$controller->enabled )
+    else if( $module->enabled && $controller->enabled )
       self::createTask($task, implode(' - ', array($module->name, $controller->name)));
 
     return false;
@@ -62,20 +58,22 @@ class AccessHelper
 
     if( BRbacTask::taskExists($task) )
       return self::checkAccessByTask($task);
+    else
+    {
+      $reflectionModule = new ReflectionClass($moduleClass);
+      $reflectionModuleProperties = $reflectionModule->getDefaultProperties();
 
-    $reflectionModule = new ReflectionClass($moduleClass);
-    $reflectionModuleProperties = $reflectionModule->getDefaultProperties();
+      if( !$reflectionModuleProperties['enabled'] )
+        return false;
 
-    if( !$reflectionModuleProperties['enabled'] )
-      return false;
+      $reflectionController = new ReflectionClass($controllerClass);
+      $reflectionControllerProperties = $reflectionController->getDefaultProperties();
 
-    $reflectionController = new ReflectionClass($controllerClass);
-    $reflectionControllerProperties = $reflectionController->getDefaultProperties();
+      if( !$reflectionControllerProperties['enabled'] )
+        return false;
 
-    if( !$reflectionControllerProperties['enabled'] )
-      return false;
-
-    self::createTask($task, implode(' - ', array($reflectionModuleProperties['name'], $reflectionControllerProperties['name'])));
+      self::createTask($task, implode(' - ', array($reflectionModuleProperties['name'], $reflectionControllerProperties['name'])));
+    }
 
     return false;
   }
@@ -111,6 +109,18 @@ class AccessHelper
     self::$moduleList = null;
     self::$childList = null;
     self::$assignments = null;
+  }
+
+  private static function checkAccessByController(BController $controller)
+  {
+    $task = self::getTaskName(null, get_class($controller));
+
+    if( BRbacTask::taskExists($task) )
+      return self::checkAccessByTask($task);
+    else if( $controller->enabled )
+      self::createTask($task, implode(' - ', array($controller->name)));
+
+    return false;
   }
 
   private static function getModuleList($module = null)
@@ -163,12 +173,16 @@ class AccessHelper
     return self::$assignments[$userId];
   }
 
-  private static function getTaskName($moduleClass, $controllerClass)
+  private static function getTaskName($moduleClass = null, $controllerClass)
   {
-    $moduleId = Utils::lcfirst(str_replace('Module', '', $moduleClass));
-    $controllerId = Utils::lcfirst(str_replace('Controller', '', BApplication::cutClassPrefix($controllerClass)));
+    $task = array();
 
-    return implode(':', array($moduleId, $controllerId));
+    if( isset($moduleClass) )
+      $task['moduleId'] = Utils::lcfirst(str_replace('Module', '', $moduleClass));
+
+    $task['controllerId'] = Utils::lcfirst(str_replace('Controller', '', BApplication::cutClassPrefix($controllerClass)));
+
+    return implode(':', $task);
   }
 
   private static function checkAccessByTask($task)

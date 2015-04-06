@@ -27,7 +27,7 @@
   <?php echo $form->textAreaRow($model, 'description'); ?>
 
   <?php if( !$model->isNewRecord ):?>
-  <?php echo $form->checkBoxListRow($model, 'tasks', BRbacTask::getTasks());?>
+  <?php echo $form->checkBoxListRow($model, 'tasks', array_diff(BRbacTask::getTasks(), Yii::app()->authManager->defaultRoles));?>
   <?php endif;?>
 
 </tbody>

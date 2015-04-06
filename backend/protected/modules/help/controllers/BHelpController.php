@@ -8,6 +8,8 @@
  */
 class BHelpController extends BController
 {
+  public $name = 'Помощь';
+
   public function actionIndex()
   {
     $this->render('index');
