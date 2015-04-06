@@ -1399,6 +1399,7 @@ CREATE TABLE `argilla_user_profile` (
   `address` varchar(255) NOT NULL,
   `phone` varchar(255) NOT NULL,
   `birthday` date DEFAULT NULL,
+  `discount` decimal(5,2) NOT NULL,
   PRIMARY KEY (`user_id`),
   CONSTRAINT `argilla_user_profile_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `argilla_user` (`id`) ON DELETE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

@@ -26,7 +26,7 @@
           <?php }?>
         </div>
       <?php } else {?>
-        <? echo $this->textBlockRegister('Нет товаров в сравнении', 'Нет товаров для сравнения', array('class' => 'center jurabold s22', 'style' => 'margin-top: 32px'));?>
+        <?php echo $this->textBlockRegister('Нет товаров в сравнении', 'Нет товаров для сравнения', null);?>
       <?php }?>
     </div>
     <?php if( isset($selectedSection) ) {?>

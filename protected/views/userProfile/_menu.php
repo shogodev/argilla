@@ -13,10 +13,10 @@
     ))?>
   </div>
 
-  <?php if( isset(Yii::app()->user->data->discount) && PriceHelper::isNotEmpty(Yii::app()->user->data->discount) ) {?>
+  <?php if( PriceHelper::isNotEmpty(Yii::app()->user->profile->discount) ) {?>
     <div class="personal-discount center">
       <div class="product-discount">
-        <span>-<?php echo PriceHelper::number(Yii::app()->user->data->discount)?></span>%
+        <span>-<?php echo PriceHelper::number(Yii::app()->user->profile->discount)?></span>%
       </div>
       <div class="s15 opensans bb uppercase">Ваша скидка</div>
     </div>
