@@ -25,7 +25,7 @@
         'class' => 'bootstrap.widgets.TbMenu',
         'htmlOptions' => array('class' => 's-topnav pull-right'),
         'items' => CMap::mergeArray(
-          Yii::app()->menu->getGroups(),
+          isset(Yii::app()->menu) ? Yii::app()->menu->getGroups() : array(),
           array(array('label' => 'Выход ('.Yii::app()->user->name.')',
             'url' => array('/base/logout'),
             'itemOptions' => array('class' => 'logout')
