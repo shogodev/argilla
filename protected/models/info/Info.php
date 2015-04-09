@@ -124,23 +124,26 @@ class Info extends FActiveRecord implements IMenuItem
     );
   }
 
-  public function getBreadcrumbs()
+  public function getBreadcrumbs($beginLevel = 2)
   {
     $breadcrumbs = array();
 
     foreach($this->getParents() as $parent)
-      $breadcrumbs[$parent->name] = array('info/index', 'url' => $parent->url);
+    {
+      if( $parent->level > $beginLevel )
+        $breadcrumbs[$parent->name] = array('info/index', 'url' => $parent->url);
+    }
 
     $breadcrumbs[] = $this->name;
 
     return $breadcrumbs;
   }
 
-  public function getSiblingsMenu()
+  public function getSiblingsMenu($level = 2)
   {
     $menu = array();
 
-    if( $this->level > 1 )
+    if( $this->level > $level )
     {
       foreach($this->getSiblings(true) as $item)
       {

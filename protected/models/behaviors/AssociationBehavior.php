@@ -4,6 +4,18 @@
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
+ * 
+ * public function behaviors()
+ * {
+ *   return array(
+ *     'associationBehavior' => array('class' => 'AssociationBehavior'),
+ *   );
+ * }
+ */
+
+/**
+ * Class AssociationBehavior
+ *
  * @property FActiveRecord $owner
  */
 class AssociationBehavior extends SActiveRecordBehavior
