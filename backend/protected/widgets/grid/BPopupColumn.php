@@ -25,14 +25,19 @@ class BPopupColumn extends BDataColumn
     if( $this->closeOperation === null )
       $this->closeOperation = '$.fn.yiiGridView.update("'.$this->grid->id.'");';
 
-    Yii::app()->controller->widget($this->widget, array(
+    $widgetOptions = array(
       'name' => $this->name,
-      'parameters' => $this->parameters,
-      'iframeAction' => $this->iframeAction,
       'model' => $data,
       'assignerOptions' => array(
         'closeOperation' => new CJavaScriptExpression('function(){'.$this->closeOperation.'}'),
       ),
-    ));
+    );
+
+    if( !empty($this->parameters) )
+      $widgetOptions['parameters'] = $this->parameters;
+    if( !empty($this->iframeAction) )
+      $widgetOptions['iframeAction'] = $this->iframeAction;
+
+    Yii::app()->controller->widget($this->widget, $widgetOptions);
   }
 }
