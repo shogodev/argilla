@@ -15,6 +15,7 @@
  * @property string $address
  * @property string $phone
  * @property string $birthday
+ * @property string $discount
  */
 class UserProfile extends FActiveRecord
 {
@@ -46,6 +47,7 @@ class UserProfile extends FActiveRecord
       'address' => 'Адрес',
       'bicycle' => 'Модель велосипеда',
       'birthday' => 'Дата рождения',
+      'discount' => 'Персональная скидка'
     ));
   }
 }

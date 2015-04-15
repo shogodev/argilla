@@ -1,6 +1,9 @@
 <?php
 return array(
   // template
+  'templateProfileData' => array('template/profileData', 'pattern' => 'templates/<url:(personal|personal_password|personal_history)>'),
+  'templateBasketThirdStep' => array('template/basketThirdStep', 'pattern' => 'templates/basket_step_3'),
+  'templateEmail' => array('template/email', 'pattern' => 'templates/email'),
   'template' => array('template/index', 'pattern' => 'templates/<url:\w+>'),
 
   // index
@@ -42,17 +45,18 @@ return array(
   'userProfileData' => array('userProfile/data', 'pattern' => 'user/data', 'shouldRemember' => false),
   'userProfileChangePassword' => array('userProfile/changePassword', 'pattern' => 'user/change_password', 'shouldRemember' => false),
   'userProfileHistoryOrders' => array('userProfile/historyOrders', 'pattern' => 'user/orders/history', 'shouldRemember' => false),
-  'userProfileCurrentOrders' => array('userProfile/currentOrders', 'pattern' => 'user/orders/current', 'shouldRemember' => false),
 
   // forms
   'callback' => array('callback/index', 'pattern' => 'callback'),
   'response' => array('response/add', 'pattern' => 'add_response'),
 
+  // order
+  'orderFirstStep' => array('order/firstStep', 'pattern' => 'order_first_step'),
+  'orderSecondStep' => array('order/secondStep', 'pattern' => 'order_second_step'),
+  'orderThirdStep' => array('order/thirdStep', 'pattern' => 'order_third_step'),
+
   // basket
-  'basket'          => array('basket/index',     'pattern' => 'basket'),
-  'basketAdd'       => array('basket/add',       'pattern' => 'basket/add'),
-  'basketCheckOut'  => array('basket/checkout',  'pattern' => 'basket/check_out'),
-  'basketSuccess'   => array('basket/success',   'pattern' => 'basket/success'),
+  'basket'  => array('basket/ajax', 'pattern' => 'basket/ajax'),
   'basketFastOrder' => array('basket/fastOrder', 'pattern' => 'basket/fastorder'),
 
   // payment system

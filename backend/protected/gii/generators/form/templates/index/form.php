@@ -54,6 +54,11 @@ if( $this->getModelClass() ) {
           $column = $table->columns[$attribute];
           if( $column->dbType == 'timestamp' )
             echo "      array('name' => '".$attribute."', 'class' => 'BDatePickerColumn'),\r\n";
+          else if( $column->isForeignKey && $relatedModel = $this->findRelatedModel($model, $attribute) )
+          {
+            $relationName = $this->findRelation($model, $attribute);
+            echo "      array('name' => '".$attribute."', 'value' => 'isset(\$data->".$relationName.") ? \$data->".$relationName."->name : \"\"', 'filter' => $relatedModel::listData()),\r\n";
+          }
           else
             echo "      array('name' => '".$attribute."'),\r\n";
           break;

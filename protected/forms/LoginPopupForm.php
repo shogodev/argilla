@@ -1,6 +1,6 @@
 <?php
 return array(
-  'class' => 'form authorization-form',
+  'class' => 'form auth-form',
 
   'elements' => array(
 
@@ -16,14 +16,19 @@ return array(
       'id' => 'popup_remember_me',
       'label' => 'Запомнить меня',
       'type' => 'checkbox',
-      'layout' => '<div class="nofloat form-hint"><div class="remember-me-box">{input}{label}</div><div class="right"><a href="'.Yii::app()->createUrl('user/restore').'">Забыли пароль?</a></div></div>'
+      'layout' => '<div class="form-row m20">
+          <div class="form-field">
+            <a href="'.Yii::app()->createUrl('user/restore').'" class="fr s14">Забыли пароль?</a>
+            <div class="remember-me-block">{input} {label}</div>
+          </div>
+        </div>'
     ),
   ),
 
   'buttons' => array(
     'submit' => array(
       'type'  => 'submit',
-      'class' => 'fl btn red-btn enter-btn',
+      'class' => 'btn red-contour-btn rounded-btn h34btn opensans s15 bb uppercase',
       'value' => 'Войти',
     ),
     "<a href=\"".Yii::app()->createUrl('user/registration')."\" class=\"fr btn red-btn new-user-btn\">Новый пользователь</a>"

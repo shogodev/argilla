@@ -5,6 +5,8 @@ class BModelCode extends ModelCode
 {
   public $labelException = array('id');
 
+  public $requiredException = array('position', 'img', 'visible');
+
   private $defaultSort;
 
   public function generateLabels($table)
@@ -53,7 +55,8 @@ class BModelCode extends ModelCode
         continue;
 
       $r = !$column->allowNull && $column->defaultValue === null && $column->dbType != 'text' && $column->dbType != 'timestamp';
-      if( $r )
+
+      if( $r && !in_array($column->name, $this->requiredException) )
         $required[] = $column->name;
       if( $column->type === 'integer' )
         $integers[] = $column->name;

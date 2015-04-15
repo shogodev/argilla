@@ -1,6 +1,6 @@
 <?php
 return array(
-  'class' => 'form personal-form centered-form',
+  'class' => 'form registration-form m35',
 
   'layout' => "{title}\n{errors}\n{elements}{description}\n<div class=\"form-submit\">{buttons}</div>\n",
 
@@ -27,7 +27,7 @@ return array(
   'buttons' => array(
     'submit' => array(
       'type'  => 'submit',
-      'class' => 'btn',
+      'class' => 'btn red-contour-btn rounded-btn h34btn opensans s15 bb uppercase',
       'value' => 'Войти'
     ),
   ),

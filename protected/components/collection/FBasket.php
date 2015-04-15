@@ -238,8 +238,10 @@ class FBasket extends FCollectionUI
         setTimeout(function(){
           showFastOrderPopup();
         }, 300);
-      } else {
+      }
+      else {
         showFastOrderPopup();
+      }
 
       $('#{$this->fastOrderFormId}').show();
       $('#{$this->fastOrderFormSuccessId}').hide();

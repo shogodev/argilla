@@ -307,7 +307,10 @@ class Arr
     }
     else
     {
-      return array_chunk($array, ceil(count($array) / $countOfParts));
+      $middleCountOfParts = round(count($array) / $countOfParts);
+      if( $middleCountOfParts < 1 )
+        $middleCountOfParts = 1;
+      return array_chunk($array, $middleCountOfParts);
     }
   }
 

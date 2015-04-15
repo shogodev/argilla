@@ -14,6 +14,8 @@ class FListView extends CListView
 
   public $pager = array('class' => 'FLinkPager');
 
+  public $separator = ' ';
+
   public $ajaxUpdate = false;
 
   public $emptyText = 'Ни одного элемента не найдено';

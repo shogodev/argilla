@@ -71,6 +71,7 @@ return array_merge_recursive(array(
       'itemChildTable' => '{{auth_item_child}}',
       'assignmentTable' => '{{auth_assignment}}',
       'defaultRoles' => array(
+        'base',
         'help:help'
       )
     ),

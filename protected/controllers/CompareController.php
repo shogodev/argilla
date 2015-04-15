@@ -17,10 +17,11 @@ class CompareController extends FController
 
   public function actionIndex()
   {
-    $selectedSection = $this->getSelectedSection();
+    $this->breadcrumbs = array('Сравнение');
 
     $data = array();
-    if( $selectedSection )
+
+    if( $selectedSection = $this->getSelectedSection() )
     {
       $productList = $this->compare->getProductListByGroup($selectedSection->id);
       $parametersCompare = $this->getParametersCompare($productList);
@@ -28,15 +29,13 @@ class CompareController extends FController
       $data = array(
         'selectedSection' => $selectedSection,
         'parametersCompare' => $parametersCompare,
-        'products' => $productList->getDataProvider()->getData(),
+        'productsDataProvider' => $productList->getDataProvider(),
       );
     }
 
-    $this->breadcrumbs = array('Сравнение');
-
     if( Yii::app()->request->isAjaxRequest )
     {
-      $this->renderPartial('/_compare_basket_header');
+      $this->renderPartial('_compare_header');
       $this->renderPartial('compare', $data);
     }
     else
@@ -59,10 +58,10 @@ class CompareController extends FController
     if( !$product )
       throw new CHttpException(500, 'Ошибка продукт не найден.');
 
-    if( !$this->compare->isInCollectionClass($product) )
+    if( !$this->compare->isInCollection($product) )
       $this->compare->add($data);
 
-    $this->renderPartial('/_compare_basket_header');
+    $this->renderPartial('_compare_header');
 
     Yii::app()->end();
   }

@@ -182,6 +182,12 @@ class RbacCommand extends CConsoleCommand
         ];
       }
     }
+
+    $this->names[] = [
+      'name' => 'fileUploader',
+      'title' => 'Загрузка файлов',
+      'enabled' => true
+    ];
   }
 
   /**
@@ -195,7 +201,7 @@ class RbacCommand extends CConsoleCommand
 
     foreach( $this->names as $name )
     {
-      if( in_array($name, $this->excludeTasks)  )
+      if( in_array($name['name'], $this->excludeTasks)  )
         continue;
 
       $task = new BRbacTask();

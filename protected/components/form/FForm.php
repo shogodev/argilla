@@ -15,7 +15,7 @@ class FForm extends CForm
 
   public $formName;
 
-  public $layout = "{title}\n{elements}\n{description}\n<div class=\"form-submit\">{buttons}</div>\n";
+  public $layout = FormLayouts::FORM_LAYOUT;
 
   public $elementsLayout;
 

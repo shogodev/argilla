@@ -9,6 +9,8 @@
 
 class FilterElementRadio extends FilterElement
 {
+  public $itemClass = 'FilterElementItemRadio';
+
   /**
    * @return string
    */

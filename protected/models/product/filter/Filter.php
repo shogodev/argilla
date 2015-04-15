@@ -159,7 +159,7 @@ class Filter extends CComponent
       $itemAmounts = $dataProvider->getAmounts();
       $amountTotal = $dataProvider->getAmountsTotal();
 
-      Yii::app()->cache->set($cacheId, array($criteria, $itemAmounts, $this->elements, $amountTotal));
+      Yii::app()->cache->set($cacheId, array($criteria, $itemAmounts, $this->elements, $amountTotal), 300);
     }
 
     $this->sendAmountResponse($amountTotal);

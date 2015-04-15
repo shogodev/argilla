@@ -54,7 +54,7 @@
  */
 class <?php echo $modelClass; ?> extends <?php echo $this->baseClass."\r\n"; ?>
 {
-<?php if( Utils::toSnakeCase($modelClass) != $tableName ) {?>
+<?php if( Utils::toSnakeCase($modelClass) != trim($tableName, '{}') ) {?>
   public function tableName()
   {
     return '<?php echo $tableName; ?>';

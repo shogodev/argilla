@@ -59,12 +59,14 @@ class RelatedProductsBehavior extends AssociationBehavior
       return false;
 
     $criteria = new CDbCriteria();
-    $criteria->order = 'ABS(price - :price)';
+    $criteria->order = 'ABS(price - '.$this->owner->getPrice().')';
     $criteria->limit = $limit;
-    $criteria->params[':price'] = $this->owner->price;
 
     if( isset($this->owner->section) )
       $criteria->compare('a.section_id', $this->owner->section->id);
+
+    if( isset($this->owner->type) )
+      $criteria->compare('a.type_id', $this->owner->type->id);
 
     return $this->getProductList($criteria)->getDataProvider();
   }
@@ -77,7 +79,7 @@ class RelatedProductsBehavior extends AssociationBehavior
    */
   private function getProductList(CDbCriteria $criteria)
   {
-    $criteria->compare('t.dump', 1);
+    $criteria->compare('t.dump', '>'.ProductDump::NOT_AVAILABLE);
     $criteria->compare('t.id', '<>'.$this->owner->id);
 
     return new ProductList($criteria, null, false);

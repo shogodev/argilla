@@ -37,11 +37,16 @@ class BAssociationButton extends CWidget
 
     $this->count = $this->getAssociationsCount($parameters);
 
-    foreach($this->parameters as $parameter => $value)
-      $parameters[ucfirst($this->name)."[".$parameter."]"] = $value;
+    foreach($this->parameters as $name => $value)
+    {
+      if( preg_match('/\w+\[\w+\]/', $name) )
+        $parameters[$name] = $value;
+      else
+        $parameters[ucfirst($this->name)."[".$name."]"] = $value;
+    }
 
     $this->iframeUrl = Yii::app()->controller->createUrl($this->iframeAction, $parameters);
-    $this->ajaxUrl   = Yii::app()->controller->createUrl($this->ajaxAction, $parameters);
+    $this->ajaxUrl = Yii::app()->controller->createUrl($this->ajaxAction, $parameters);
   }
 
   public function run()

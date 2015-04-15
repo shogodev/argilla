@@ -8,9 +8,12 @@
  */
 class BFileUploaderController extends BController
 {
+  public $name = 'Загрузка файлов';
+
   public function beforeAction($action)
   {
     Yii::app()->log->getRoutes()[1]->enabled = false;
+
     return parent::beforeAction($action);
   }
 

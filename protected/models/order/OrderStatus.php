@@ -23,4 +23,9 @@ class OrderStatus extends FActiveRecord
   const STATUS_DELIVERED = 4;
 
   const STATUS_CANCELED = 5;
+
+  public function __toString()
+  {
+    return $this->name;
+  }
 }

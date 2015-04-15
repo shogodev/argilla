@@ -56,6 +56,7 @@ return array_merge_recursive(array(
     'frontend.controllers.*',
     'frontend.controllers.behaviors.*',
     'frontend.widgets.*',
+    'frontend.forms.FormLayouts',
   ),
 
   'modules' => array(),

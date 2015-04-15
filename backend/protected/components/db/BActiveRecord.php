@@ -218,7 +218,7 @@ abstract class BActiveRecord extends CActiveRecord implements IHasFrontendModel
       'novelty'          => 'Новинка',
       'discount'         => 'Скидка',
       'delivery'         => 'Доставка',
-      'dump'             => 'Склад',
+      'dump'             => 'Наличие',
       'siblings'         => 'Соседи',
       'children'         => 'Потомки',
       'menu'             => 'В меню',

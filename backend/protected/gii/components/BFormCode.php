@@ -19,4 +19,26 @@ class BFormCode extends FormCode
 
     return $attributes;
   }
+
+  public function findRelatedModel(CActiveRecord $model, $foreignKey)
+  {
+    foreach($model->relations() as $data)
+    {
+      if( Arr::get($data, 2) == $foreignKey )
+        return Arr::get($data, 1);
+    }
+
+    return null;
+  }
+
+  public function findRelation(CActiveRecord $model, $foreignKey)
+  {
+    foreach($model->relations() as $name => $data)
+    {
+      if( Arr::get($data, 2) == $foreignKey )
+        return $name;
+    }
+
+    return null;
+  }
 }

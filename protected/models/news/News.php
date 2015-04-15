@@ -68,7 +68,7 @@ class News extends FActiveRecord
    */
   public function getFormatDate($format = 'd.m.Y')
   {
-    return DateTime::createFromFormat('Y-m-d H:i:s', $this->date)->format($format);
+    return DateTime::createFromFormat('Y-m-d', $this->date)->format($format);
   }
 
   /**
@@ -78,7 +78,7 @@ class News extends FActiveRecord
    */
   public function getFormatDateYii($format = 'dd.MM.y, eeee')
   {
-    return Yii::app()->locale->dateFormatter->format($format, DateTime::createFromFormat('Y-m-d H:i:s', $this->date)->getTimestamp());
+    return Yii::app()->locale->dateFormatter->format($format, DateTime::createFromFormat('Y-m-d', $this->date)->getTimestamp());
   }
 
   protected function afterFind()

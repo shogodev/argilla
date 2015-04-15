@@ -16,7 +16,7 @@
  * @property string $address
  * @property string $phone
  * @property string $birthday
- * @property string $avatar
+ * @property string $discount
  */
 class BUserProfile extends BActiveRecord
 {
@@ -35,7 +35,7 @@ class BUserProfile extends BActiveRecord
   {
     return array(
       array('name', 'required'),
-      array('last_name, patronymic, address, phone, birthday, coordinates', 'safe')
+      array('last_name, patronymic, address, phone, birthday, coordinates, discount', 'safe')
     );
   }
 
@@ -62,6 +62,7 @@ class BUserProfile extends BActiveRecord
       'address'      => 'Адрес',
       'birthday'     => 'Дата рождения',
       'coordinates'  => 'Координаты',
+      'discount' => 'Персональная скидка (%)'
     );
   }
 

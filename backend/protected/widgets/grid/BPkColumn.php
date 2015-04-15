@@ -79,13 +79,16 @@ class BPkColumn extends BDataColumn
       'id' => 'pk_'.$data->getPrimaryKey(),
     );
 
-    $object = new $this->associationClass;
+    $association = Yii::createComponent($this->associationClass);
 
-    if( !method_exists($object, 'getChecked') )
+    if( !method_exists($association, 'getChecked') )
       throw new CHttpException(500, 'Класс заданный свойством associationClass должен реализовывать метод getChecked().');
 
-    if( $object->getChecked($parameters) )
+    $status = $association->getChecked($parameters);
+    if( $status )
       $options['checked'] = 'checked';
+    else if( $status === null )
+      $options['disabled'] = 'disabled';
 
     echo CHtml::tag('input', $options);
   }
@@ -93,7 +96,7 @@ class BPkColumn extends BDataColumn
   protected function registerScript()
   {
     Yii::app()->clientScript->registerScript('pkColumnChange', "
-      $('body').on('change', '.grid-view input.select', function(){
+      $('body').on('change', '.grid-view input.select', function() {
         var value = $(this).prop('checked') ? 1 : 0;
         var id    = $(this).attr('id').match(/pk_(\d+)/)[1];
 

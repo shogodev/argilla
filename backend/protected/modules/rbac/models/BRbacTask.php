@@ -34,7 +34,7 @@ class BRbacTask extends BAuthItem
     if( !is_null(self::$tasks) )
       return self::$tasks;
 
-    self::$tasks = array();
+    self::$tasks = array_combine(Yii::app()->authManager->defaultRoles, Yii::app()->authManager->defaultRoles);
 
     $tasks = self::model()->findAll();
     foreach($tasks as $task)

@@ -69,6 +69,12 @@ class BProductStructure extends BActiveRecord
     return static::$classPrefix.ucfirst(str_replace('_id', '', $row));
   }
 
+  public function updateVisibility()
+  {
+    $pk = $this->getPrimaryKey();
+    !empty($this->visible) ? $this->setVisible($pk) : $this->unsetVisible($pk);
+  }
+
   protected function beforeSave()
   {
     $model = $this->findByPk($this->getPrimaryKey());
@@ -86,10 +92,16 @@ class BProductStructure extends BActiveRecord
     parent::afterSave();
   }
 
-  private function updateVisibility()
+  protected function afterDelete()
   {
-    $pk = $this->getPrimaryKey();
-    !empty($this->visible) ? $this->setVisible($pk) : $this->unsetVisible($pk);
+    $field = self::getRowName(get_class($this));
+    $criteria = new CDbCriteria();
+    $criteria->compare($field, '<>0');
+
+    $command = $this->dbConnection->schema->commandBuilder->createUpdateCommand($this->assignmentTable, array($field => 0), $criteria);
+    $command->execute();
+
+    parent::afterDelete();
   }
 
   /**

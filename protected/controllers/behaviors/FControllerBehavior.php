@@ -58,8 +58,8 @@ class FControllerBehavior extends CBehavior
     if( !isset($this->basket) )
     {
       $this->basket = new FBasket('basket', array('options', 'ingredients'));
-      $this->basket->ajaxUrl = Yii::app()->createUrl('basket/index');
-      $this->basket->addButtonAjaxUrl = Yii::app()->createUrl('basket/add');
+      $this->basket->ajaxUrl = Yii::app()->createUrl('basket/ajax');
+      $this->basket->addButtonAjaxUrl = Yii::app()->createUrl('basket/ajax');
       $this->basket->collectionItemsForSum = array('ingredients');
     }
 

@@ -56,15 +56,16 @@ if( $this->getModelClass() ) {
          * @var CMysqlColumnSchema $column
          */
         $column = $table->columns[$attribute];
+
+
         if( $column->dbType == 'text')
         {
           //echo "    <?php echo \$form->ckeditorRow(\$model, '".$attribute."'); ?//>\r\n\r\n";
           echo "    <?php echo \$form->textAreaRow(\$model, '".$attribute."'); ?>\r\n\r\n";
         }
-        else if( $column->dbType == 'int(10) unsigned')
+        else if( $column->isForeignKey && $relatedModel = $this->findRelatedModel($model, $attribute) )
         {
-         // '<?php echo \$form->dropDownListDefaultRow($model, '".$attribute."', RelatedModel::model()->listData('id', 'name')); ?//>'
-          echo "    <?php echo \$form->textFieldRow(\$model, '".$attribute."'); ?>\r\n\r\n";
+          echo "    <?php echo \$form->dropDownListDefaultRow(\$model, '".$attribute."', ".$relatedModel."::listData()); ?>\r\n\r\n";
         }
         else if( $column->dbType == 'tinyint(1)')
         {

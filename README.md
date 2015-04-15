@@ -55,5 +55,5 @@ Argilla это CMF, реализованная на [Yii Framework](http://www.y
 
 Удаление демонстрационного контента(если миграций больше не применялись):
 
-    protected/yiic migrate down 5 --migrationPath=frontend.migrations.demo
+    protected/yiic migrate down 6 --migrationPath=frontend.migrations.demo
 

@@ -276,6 +276,9 @@ class BMenu extends CComponent
        */
       $controller = new $controllerClass($id, null);
 
+      if( !$controller->showInMenu )
+        continue;
+
       // Убираем ненужные виртуальные контроллеры, которые уже отобразились в меню
       if( $fakeControllers = $module->getMenuControllers() )
       {
@@ -298,8 +301,13 @@ class BMenu extends CComponent
 
   private function getAllowedControllerClass(BModule $module)
   {
-    if( AccessHelper::checkAccessByNameClasses(get_class($module), $module->defaultController.'Controller') )
-      return $module->defaultController.'Controller';
+    $defaultController = $module->defaultController.'Controller';
+
+    if( !class_exists($defaultController) )
+      throw new CHttpException(500, 'Не удалось найти defaultController '.$defaultController);
+
+    if( AccessHelper::checkAccessByNameClasses(get_class($module), $defaultController) )
+      return $defaultController;
 
     foreach($module->controllerMap as $controller)
     {

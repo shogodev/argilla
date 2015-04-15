@@ -8,78 +8,17 @@
  */
 class BasketController extends FController
 {
-  public function init()
-  {
-    parent::init();
+  private $renderPanel = false;
 
+  public function filter()
+  {
+    return array('ajaxOnly + ajax, fastOrder, favoriteToBasket, repeatOrder');
+  }
+
+  public function actionAjax()
+  {
     $this->processBasketAction();
-  }
-
-  public function actionIndex()
-  {
-    $this->breadcrumbs = array('Корзина');
-
-    if( Yii::app()->request->isAjaxRequest )
-    {
-      $this->renderPartial('/_basket_header');
-      $this->renderPartial('/panel/panel');
-      $this->renderPartial('index');
-    }
-    else
-      $this->render('index');
-  }
-
-  public function actionAdd()
-  {
-    $this->renderPartial('/_basket_header');
-    $this->renderPartial('/panel/panel');
-  }
-
-  public function actionCheckOut()
-  {
-    if( $this->basket->isEmpty() )
-      Yii::app()->request->redirect($this->createUrl('basket/index'));
-
-    $this->breadcrumbs = array('Корзина');
-
-    $orderForm = new FForm('OrderForm', new Order());
-    $orderForm->loadFromSession = true;
-    $orderForm->autocomplete = true;
-    $orderForm->ajaxValidation();
-
-    if( $orderForm->save() )
-    {
-      $orderForm->sendNotificationBackend();
-      $orderForm->sendNotification($orderForm->model->email);
-
-      $this->basket->clear();
-
-      echo CJSON::encode(array(
-        'status' => 'ok',
-        'redirect'  => $orderForm->model->getSuccessUrl(),
-      ));
-
-      Yii::app()->session['orderSuccess'] = true;
-      Yii::app()->session['orderId'] = $orderForm->model->id;
-      Yii::app()->end();
-    }
-    else
-    {
-      $this->render('check_out', array('form' => $orderForm, 'model' => $orderForm->model));
-    }
-  }
-
-  public function actionSuccess()
-  {
-    if( $this->basket->isEmpty() && !Yii::app()->session->get('orderSuccess', false) )
-      Yii::app()->request->redirect($this->createUrl('basket/index'));
-
-    $orderId = Yii::app()->session['orderId'];
-    Yii::app()->session->remove('orderId');
-    Yii::app()->session->remove('orderSuccess');
-
-    $this->breadcrumbs = array('Корзина');
-    $this->render('success', array('orderId' => $orderId));
+    $this->renderAjax();
   }
 
   public function actionFastOrder()
@@ -114,7 +53,7 @@ class BasketController extends FController
       $this->basket->add($data);
     }
 
-    $this->renderPartial('/product_panel');
+    $this->renderAjax();
   }
 
   public function actionRepeatOrder()
@@ -160,7 +99,7 @@ class BasketController extends FController
           $this->basket->add($data);
         }
 
-        $this->actionAdd();
+        $this->renderAjax();
       }
     }
     catch(CHttpException $e)
@@ -173,10 +112,6 @@ class BasketController extends FController
   protected function processBasketAction()
   {
     $request = Yii::app()->request;
-
-    if( !$request->isAjaxRequest )
-      return;
-
     $data = $request->getPost($this->basket->keyCollection);
     $action = $request->getPost('action');
 
@@ -217,5 +152,17 @@ class BasketController extends FController
         break;
       }
     }
+  }
+
+  protected function renderAjax()
+  {
+    $this->renderPartial('/_basket_header');
+    $this->renderPanel();
+  }
+
+  private function renderPanel()
+  {
+    if( $this->renderPanel )
+      $this->renderPartial('/panel/panel');
   }
 }

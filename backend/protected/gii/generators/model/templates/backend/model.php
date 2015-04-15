@@ -29,7 +29,7 @@
   if (preg_match("~^array\(self::([^,]+), '([^']+)', '([^']+)'\)$~", $relation, $matches))
     {
       $relationType = $matches[1];
-      $relationModel = $matches[2];
+      $relationModel = 'B'.$matches[2];
 
       switch($relationType){
           case 'HAS_ONE':
@@ -76,12 +76,19 @@ class <?php echo $modelClass; ?> extends <?php echo $this->baseClass."\r\n"; ?>
     );
   }
 <?php if(!empty($relations)): ?>
+
   public function relations()
   {
     return array(
-<?php foreach($relations as $name => $relation): ?>
+<?php foreach($relations as $name => $relation) {
+  if (preg_match("~^array\(self::([^,]+), '([^']+)', '([^']+)'\)$~", $relation, $matches))
+  {
+    $relationModel = $matches[2];
+    $relation = str_replace($relationModel, 'B'.$relationModel, $relation);
+  }
+  ?>
       <?php echo "'$name' => $relation,\r\n"; ?>
-<?php endforeach; ?>
+<?php } ?>
     );
   }
 <?php endif; ?>

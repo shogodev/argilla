@@ -13,7 +13,7 @@
 
     <div class="fr">
       <?php if( Yii::app()->user->isGuest ) { ?>
-        <a href="<?php echo $this->createUrl('user/login'); ?>"><span>Вход</span></a>
+        <a href="<?php echo $this->createUrl('user/login'); ?>" class="auth-link"><span>Вход</span></a>
         <a href="<?php echo $this->createUrl('user/registration') ?>"><span>Регистрация</span></a>
       <?php } else { ?>
         <a href="<?php echo $this->createUrl('user/data'); ?>"><span><?php echo Yii::app()->user->name?></span></a>

@@ -12,6 +12,7 @@ class m010101_000007_init_grid_settings extends CDbMigration
     $this->execute("INSERT INTO `{{settings_grid}}` (`id`, `position`, `name`, `header`, `class`, `type`, `filter`, `visible`) VALUES (7, 70, 'type', 'Тип', 'BProductAssignmentColumn', '', 1, 1);");
     $this->execute("INSERT INTO `{{settings_grid}}` (`id`, `position`, `name`, `header`, `class`, `type`, `filter`, `visible`) VALUES (8, 90, 'visible', '', 'JToggleColumn', '', 1, 1);");
     $this->execute("INSERT INTO `{{settings_grid}}` (`id`, `position`, `name`, `header`, `class`, `type`, `filter`, `visible`) VALUES (9, 80, 'BProduct', 'Продукты', '', '', 0, 1);");
+    $this->execute("INSERT INTO `{{settings_grid}}` (`id`, `position`, `name`, `header`, `class`, `type`, `filter`, `visible`) VALUES (10, 100, 'dump', 'Наличие', '', '', 1, 0);");
 	}
 
 	public function down()

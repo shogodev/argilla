@@ -130,7 +130,7 @@ class Order extends FActiveRecord
       }
     }
 
-    return Yii::app()->createAbsoluteUrl('basket/success');
+    return Yii::app()->createAbsoluteUrl('order/thirdStep');
   }
 
   public function setFastOrderBasket(FBasket $fastOrderBasket)
@@ -163,7 +163,7 @@ class Order extends FActiveRecord
       $orderProduct = $this->saveModel(new OrderProduct(), array(
         'order_id' => $this->primaryKey,
         'name' => $product->name,
-        'price' => $product->price,
+        'price' => $product->getPrice(),
         'count' => $product->collectionAmount,
         'discount' => $product->discount,
         'sum' => $product->getSumTotal(),

@@ -24,6 +24,7 @@
   <?php echo $form->textFieldRow($userProfile, 'phone'); ?>
   <?php echo $form->textFieldRow($userProfile, 'address'); ?>
   <?php echo $form->textFieldRow($userProfile, 'birthday'); ?>
+  <?php echo $form->textFieldRow($userProfile, 'discount'); ?>
 
   <?php echo $form->checkBoxRow($model, 'visible');?>
 

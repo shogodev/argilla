@@ -46,7 +46,10 @@ class ActiveImageBehavior extends SBehavior
    */
   public function getImage($type = 'main')
   {
-    return Arr::reset($this->getImages($type));
+    if( $image = Arr::reset($this->getImages($type)) )
+      return $image;
+
+    return new ProductImage;
   }
 
   /**

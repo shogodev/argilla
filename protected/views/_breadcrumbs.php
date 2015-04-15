@@ -4,6 +4,6 @@
  */
 $this->widget('FBreadcrumbs', array(
   'links' => $this->breadcrumbs,
-  'separator' => '<span class="breadcrumbs-separator"></span>',
+  'separator' => '<div class="breadcrumbs-separator"></div>',
   'htmlOptions' => array('class' => 'breadcrumbs'),
 ));

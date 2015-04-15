@@ -42,6 +42,7 @@
  * @mixin ProductParametersBehavior
  * @mixin ActiveImageBehavior
  * @mixin ProductPriceBehavior
+ * @mixin ProductDumpBehavior
  */
 class Product extends FActiveRecord
 {
@@ -60,13 +61,14 @@ class Product extends FActiveRecord
       'collectionElement' => array('class' => 'FCollectionElementBehavior'),
       'productParametersBehavior' => array('class' => 'ProductParametersBehavior'),
       'imagesBehavior' => array('class' => 'ActiveImageBehavior', 'imageClass' => 'ProductImage'),
+      'productDumpBehavior' => array('class' => 'ProductDumpBehavior'),
     );
   }
 
   public function relations()
   {
     return array(
-      'assignment' => array(self::HAS_ONE, 'ProductAssignment', 'product_id'),
+      'assignment' => array(self::HAS_ONE, 'ProductAssignment', 'product_id', 'alias' => 'a'),
       'section' => array(self::HAS_ONE, 'ProductSection', array('section_id' => 'id'), 'through' => 'assignment'),
       'type' => array(self::HAS_ONE, 'ProductType', array('type_id' => 'id'), 'through' => 'assignment'),
       'category' => array(self::HAS_ONE, 'ProductCategory', array('category_id' => 'id'), 'through' => 'assignment'),
@@ -79,8 +81,9 @@ class Product extends FActiveRecord
     $alias = $this->getTableAlias(false, false);
 
     return array(
-      'condition' => $alias.'.visible=1',
-      'order' => $alias.'.position'
+      'condition' => $alias.'.visible=1 AND a.visible=1',
+      'order' => $alias.'.position',
+      'with' => array('assignment')
     );
   }
 

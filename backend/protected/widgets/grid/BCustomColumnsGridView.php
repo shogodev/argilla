@@ -35,7 +35,20 @@ class BCustomColumnsGridView extends BGridView
     $this->columns = $this->getGridColumns();
 
     array_push($this->columns, array('class' => 'BButtonColumn'));
-    array_unshift($this->columns, array('name' => 'id', 'class' => 'BPkColumn', 'filter' => true));
+
+    $columnAttributes = array(
+      'name' => 'id',
+      'class' => 'BPkColumn',
+      'filter' => true,
+      'associationClass' => 'BAssociation',
+    );
+
+    if( Yii::app()->controller->popup && $bPkColumnAttributes = Yii::app()->request->getParam('BPkColumn') )
+    {
+      $columnAttributes = CMap::mergeArray($columnAttributes, $bPkColumnAttributes);
+    }
+
+    array_unshift($this->columns, $columnAttributes);
 
     $this->mergeTemplateColumns($this->templateColumns);
     parent::init();
