@@ -68,7 +68,6 @@ class BaseList extends CComponent
 
   public function init()
   {
-    $this->initCriteria();
     $this->setOrder();
   }
 
@@ -159,11 +158,6 @@ class BaseList extends CComponent
     }
 
     return $this->filteredCriteria;
-  }
-
-  protected function initCriteria()
-  {
-
   }
 
   protected function setOrder()

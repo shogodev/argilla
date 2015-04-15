@@ -38,15 +38,6 @@ class ProductList extends BaseList
     $this->parametersCriteria->addColumnCondition(array($this->getTablePrefix().'.section' => 1, $this->getTablePrefix().'.section_list' => 1), 'OR');
   }
 
-  protected function initCriteria()
-  {
-    $assignment = ProductAssignment::model()->tableName();
-    $this->criteria->join = 'JOIN `'.$assignment.'` AS a ON a.product_id = t.id '.$this->criteria->join;
-    $this->criteria->distinct = true;
-    $this->criteria->compare('t.visible', 1);
-    $this->criteria->compare('a.visible', 1);
-  }
-
   protected function afterFetchData($event)
   {
     $this->setImages();
