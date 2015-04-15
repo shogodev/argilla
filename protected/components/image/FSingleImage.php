@@ -101,7 +101,7 @@ class FSingleImage implements ImageInterface
    */
   public function __toString()
   {
-    if( file_exists($this->getFullPath()) )
+    if( !empty($this->name) && file_exists($this->getFullPath()) )
     {
       return '/' . $this->getFullPath();
     }
