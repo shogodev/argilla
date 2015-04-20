@@ -779,8 +779,8 @@ CREATE TABLE `argilla_product` (
   `archive` tinyint(1) NOT NULL,
   `xml` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
-  UNIQUE KEY `url` (`url`),
   KEY `currency_id` (`currency_id`),
+  KEY `url` (`url`),
   CONSTRAINT `argilla_product_ibfk_1` FOREIGN KEY (`currency_id`) REFERENCES `argilla_product_currency` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
