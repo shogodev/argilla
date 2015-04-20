@@ -22,6 +22,8 @@ class MenuBuilder
    */
   private $cacheExpire = 300;
 
+  private $imagePath = '/f/product/';
+
   public function __construct()
   {
     $this->assignment = ProductAssignment::model();
@@ -47,7 +49,8 @@ class MenuBuilder
    */
   public function getSectionMenu()
   {
-    if( $this->cacheExists(__METHOD__) ) return $this->getCache(__METHOD__);
+    $key = $this->getKey(__METHOD__, func_get_args());
+    if( $this->cacheExists($key) ) return $this->getCache($key);
 
     $menu = array();
     $assignments = $this->assignment->getAssignments();
@@ -59,7 +62,7 @@ class MenuBuilder
     }
 
     $this->sortRecursive($menu);
-    $this->setCache(__METHOD__, $menu);
+    $this->setCache($key, $menu);
 
     return $menu;
   }
@@ -69,7 +72,8 @@ class MenuBuilder
    */
   public function getSectionTypeMenu()
   {
-    if( $this->cacheExists(__METHOD__) ) return $this->getCache(__METHOD__);
+    $key = $this->getKey(__METHOD__, func_get_args());
+    if( $this->cacheExists($key) ) return $this->getCache($key);
 
     $menu = array();
     $assignments = $this->assignment->getAssignments();
@@ -88,7 +92,7 @@ class MenuBuilder
     }
 
     $this->sortRecursive($menu);
-    $this->setCache(__METHOD__, $menu);
+    $this->setCache($key, $menu);
 
     return $menu;
   }
@@ -99,7 +103,6 @@ class MenuBuilder
       'label' => $item['section_name'],
       'url' => array('product/section', 'section' => $item['section_url']),
       'items' => array(),
-      'linkOptions' => array('data-target' => 'hd-filter-'.$item['section_id']),
     );
   }
 
@@ -109,6 +112,11 @@ class MenuBuilder
       'label' => $item['type_name'],
       'url' => array('product/type', 'type' => $item['type_url']),
     );
+  }
+
+  private function buildImage($image)
+  {
+    return !empty($image) ? $this->imagePath.$image : '/i/sp.gif';
   }
 
   private function sortRecursive(&$menu)
@@ -138,6 +146,11 @@ class MenuBuilder
 
       return strcmp($a['label'], $b['label']);
     });
+  }
+
+  private function getKey($method, $args)
+  {
+    return $method.crc32(serialize($args));
   }
 
   /**

@@ -41,7 +41,7 @@ $.widget('argilla.filterSlider', {
 
     options.controls.filterButton.on('click', function(e) {
       e.preventDefault();
-      var input = widget.element.siblings('input');
+      var input = widget.element.siblings('input:hidden');
       input.val(input.data('value')).trigger('change');
     });
 
@@ -87,7 +87,7 @@ $.widget('argilla.filterSlider', {
     var widget = this;
     var minInput = widget.options.controls.minInput,
       maxInput = widget.options.controls.maxInput,
-      hiddenInput = widget.element.siblings('input'),
+      hiddenInput = widget.element.siblings('input:hidden'),
       form = hiddenInput.closest('form');
 
     var value = parseInt(minInput.val()) + '-' + parseInt(maxInput.val());
