@@ -1,4 +1,7 @@
 {
+  "description": "Argilla",
+  "repository": "https://github.com/shogodev/argilla.git",
+  "readme": "https://github.com/shogodev/argilla/blob/master/README.md",
   "devDependencies": {
     "gulp": "~3.8.10",
     "gulp-ruby-sass": "~0.7.1",
@@ -10,6 +13,7 @@
     "del": "~1.1.1",
     "gulp-shell": "~0.2.11",
     "yargs": "~1.3.3",
-    "gulp-if": "~1.2.5"
+    "gulp-if": "~1.2.5",
+    "gulp-base64": "~0.1.2"
   }
 }
