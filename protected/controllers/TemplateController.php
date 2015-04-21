@@ -30,12 +30,32 @@ class TemplateController extends FController
     $this->render($url);
   }
 
-  public function actionBasketThirdStep()
+  public function actionBasket($step)
   {
-    //$this->basket->clear();
-    Yii::app()->session['orderSuccess'] = true;
-    Yii::app()->session['orderId'] = 1234;
-    $this->forward('order/thirdStep', false);
+    $this->basket->clear();
+    $this->basket->add(array('type' => 'product', 'id' => 1));
+    $this->basket->add(array('type' => 'product', 'id' => 2));
+    $this->basket->add(array('type' => 'product', 'id' => 3));
+    $this->basket->add(array('type' => 'product', 'id' => 4));
+
+    switch( $step )
+    {
+      case 1:
+        $this->forward('order/firstStep', false);
+      break;
+
+      case 2:
+        $this->forward('order/secondStep', false);
+      break;
+
+      case 3:
+        Yii::app()->session['orderSuccess'] = true;
+        Yii::app()->session['orderId'] = 1234;
+        $this->forward('order/thirdStep', false);
+      break;
+    }
+
+    $this->basket->clear();
   }
 
   public function actionProfileData($url)

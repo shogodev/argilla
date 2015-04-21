@@ -127,39 +127,49 @@
   <div class="templates-navigation-toggle"></div>
   <div class="templates-navigation-header">Список шаблонов:</div>
   <div class="templates-map-container">
-    <ul class="templates-map scroll-pane">
-      <li><a href="<?php echo $this->createUrl('index/index');?>" data-description="">Главная</a><li>
-      <li><a href="<?php echo $this->createUrl('order/firstStep');?>" data-description="">Корзина (пустая)</a></li>
-      <li><a href="/templates/basket_step_3/" data-description="">Корзина (шаг 3)</a></li>
-      <ul>
-        <li><a href="<?php echo $this->createUrl('contact/index');?>" data-description="">Контакты</a></li>
+      <ul class="templates-map scroll-pane">
         <li>
-          <a href="<?php echo $this->createUrl('news/section', array('section' => 'news'));?>" data-description="">Новости</a>
+          <a href="<?php echo $this->createUrl('index/index');?>" data-description="">Главная</a>
           <ul>
-            <li><a href="<?php echo $this->createUrl('news/one', array('section' => 'news','url' => 'v_manezhe_otkrylis_vosem_fotovystavok'));?>" data-description="">Одна новость</a></li>
-          </ul>
+            <li>
+              <a href="<?php echo $this->createUrl('product/section', array('section' => 'yablonya'));?>" data-description="">Каталог</a>
+              <ul>
+                <li><a href="<?php echo $this->createUrl('product/one', array('url' => 'bogatyr'));?>" data-description="">Карточка</a></li>
+              </ul>
+            </li>
+            <li><a href="<?php echo $this->createUrl('order/firstStep');?>" data-description="">Корзина (пустая)</a></li>
+            <li><a href="/templates/basket_step_1/" data-description="">Корзина (шаг 1)</a></li>
+            <li><a href="/templates/basket_step_2/" data-description="">Корзина (шаг 2)</a></li>
+            <li><a href="/templates/basket_step_3/" data-description="">Корзина (шаг 3)</a></li>
+              <li><a href="<?php echo $this->createUrl('contact/index');?>" data-description="">Контакты</a></li>
+              <li>
+                <a href="<?php echo $this->createUrl('news/section', array('section' => 'news'));?>" data-description="">Новости</a>
+                <ul>
+                  <li><a href="<?php echo $this->createUrl('news/one', array('section' => 'news','url' => 'v_manezhe_otkrylis_vosem_fotovystavok'));?>" data-description="">Одна новость</a></li>
+                </ul>
+              </li>
+              <li><a href="<?php echo $this->createUrl('info/index', array('url' => 'garantia'));?>" data-description="">Инфостраница</a></li>
+              <li>
+                <a href="/templates/personal/" data-description="">Личный кабинет</a>
+                <ul>
+                  <li><a href="/templates/personal_history/" data-description="">История заказов</a></li>
+                  <li><a href="/templates/personal_history/?empty=true" data-description="">История заказов (пустая)</a></li>
+                  <li><a href="/templates/personal_password/" data-description="">Смена пароля</a></li>
+                </ul>
+              </li>
+              <li><a href="<?php echo $this->createUrl('user/login');?>" data-description="Всегда нужно, здесь выводятся ошибки">Вход</a></li>
+              <li><a href="<?php echo $this->createUrl('user/registration');?>" data-description="">Регистрация</a></li>
+              <li><a href="<?php echo $this->createUrl('user/restore');?>" data-description="">Восстановление пароля</a></li>
+              <li><a href="<?php echo $this->createUrl('search/index', array('searchid' => 2193125, 'text' => 1))?>" data-description="">Результаты поиска</a></li>
+              <li>
+                <a href="<?php echo $this->createUrl('link/index');?>" data-description="">Ресурсы по теме</a>
+                <ul>
+                  <li><a href="<?php echo $this->createUrl('link/section', array('section' => 'doors'));?>" data-description="">Ресурсы по теме (категория)</a></li>
+                </ul>
+              </li>
+              <li><a href="<?php echo $this->createUrl('sitemap/index');?>" data-description="">Карта сайта</a></li>
+            </ul>
         </li>
-        <li><a href="<?php echo $this->createUrl('info/index', array('url' => 'garantia'));?>" data-description="">Инфостраница</a></li>
-        <li>
-          <a href="/templates/personal/" data-description="">Личный кабинет</a>
-          <ul>
-            <li><a href="/templates/personal_history/" data-description="">История заказов</a></li>
-            <li><a href="/templates/personal_history/?empty=true" data-description="">История заказов (пустая)</a></li>
-            <li><a href="/templates/personal_password/" data-description="">Смена пароля</a></li>
-          </ul>
-        </li>
-        <li><a href="<?php echo $this->createUrl('user/login');?>" data-description="Всегда нужно, здесь выводятся ошибки">Вход</a></li>
-        <li><a href="<?php echo $this->createUrl('user/registration');?>" data-description="">Регистрация</a></li>
-        <li><a href="<?php echo $this->createUrl('user/restore');?>" data-description="">Восстановление пароля</a></li>
-        <li><a href="<?php echo $this->createUrl('search/index', array('searchid' => 2193125, 'text' => 1))?>" data-description="">Результаты поиска</a></li>
-        <li>
-          <a href="<?php echo $this->createUrl('link/index');?>" data-description="">Ресурсы по теме</a>
-          <ul>
-            <li><a href="<?php echo $this->createUrl('link/section', array('section' => 'doors'));?>" data-description="">Ресурсы по теме (категория)</a></li>
-          </ul>
-        </li>
-        <li><a href="<?php echo $this->createUrl('sitemap/index');?>" data-description="">Карта сайта</a></li>
-      </ul>
       <li><a href="/templates/email/" data-description="">Почтовое уведомление</a></li>
     </ul>
   </div>

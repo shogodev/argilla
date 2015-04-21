@@ -140,11 +140,11 @@ class ProductController extends FController
 
   private function renderPage(array $models, CDbCriteria $criteria)
   {
-    $this->setFilter();
+    //$this->setFilter();
     $productList = new ProductList($criteria, $this->getSorting(), true, $this->filter);
     $dataProvider = $productList->getDataProvider();
 
-    $this->filter->setSelectedModels($models);
+    //$this->filter->setSelectedModels($models);
 
     $data = array(
       'model' => Arr::reset($models),
