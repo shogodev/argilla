@@ -24,4 +24,10 @@ function initCommonScripts() {
 
 $(function() {
   initCommonScripts();
+
+  // OverlayLoader init
+  $(document).on('click.overlay', '.js-overlay', function(e) {
+    e.preventDefault();
+    $.overlayLoader(true, $($(this).attr('href')));
+  });
 });

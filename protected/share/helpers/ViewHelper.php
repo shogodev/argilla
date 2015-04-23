@@ -88,4 +88,45 @@ class ViewHelper
 
     return $template;
   }
+
+  /**
+   * @return Contact|FActiveRecord|null
+   */
+  public static function contact()
+  {
+    if( $contact = Yii::app()->controller->getHeaderContacts() )
+      return $contact;
+
+    return null;
+  }
+
+  /**
+   * @return ContactField[]
+   */
+  public static function phones()
+  {
+    if( $contact = self::contact() )
+    {
+      return $contact->getFields('phones');
+    }
+
+    return array();
+  }
+
+  /**
+   * @param bool $clear
+   *
+   * @return ContactField|null|string
+   */
+  public static function phone($clear = false)
+  {
+    if( $phones = self::phones() )
+    {
+      $phone = Arr::reset($phones);
+
+      return $clear ? $phone->getClearPhone() : $phone;
+    }
+
+    return null;
+  }
 }

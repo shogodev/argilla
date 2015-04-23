@@ -23,9 +23,16 @@ class SeoBehavior extends CBehavior
 
   public function getCopyrights($key = 'copyright')
   {
-    $url        = Yii::app()->request->requestUri;
-    $copyrights = LinkBlock::model()->getLinks($key, $url);
+    $copyrights = LinkBlock::model()->getLinks($key, Yii::app()->request->requestUri);
 
     return $copyrights;
+  }
+
+  public function getCopyright($key = 'copyright')
+  {
+    if( $copyrights = $this->getCopyrights($key) )
+      return Arr::reset($copyrights);
+
+    return '';
   }
 } 
