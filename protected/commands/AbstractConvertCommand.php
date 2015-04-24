@@ -82,7 +82,7 @@ abstract class AbstractConvertCommand extends CConsoleCommand
   {
     foreach($this->dstTables as $table)
     {
-      $command = Yii::app()->db->createCommand("TRUNCATE TABLE ".$table);
+      $command = Yii::app()->db->createCommand(Yii::app()->db->schema->truncateTable($table));
       $command->execute();
     }
   }

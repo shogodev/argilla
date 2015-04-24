@@ -165,7 +165,7 @@ class BProductStructure extends BActiveRecord
        */
       $model = new $class;
       $criteria->select[] = $class.'.visible AS '.$row.'_visible';
-      $criteria->join[] = 'LEFT OUTER JOIN '.$model->tableName().' AS '.$class.' ON t.'.$row.' = '.$class.'.id';
+      $criteria->join[] = 'LEFT OUTER JOIN '.$this->dbConnection->schema->quoteTableName($model->tableName()).' AS '.$class.' ON t.'.$row.' = '.$class.'.id';
     }
 
     $criteria->join = implode(' ', $criteria->join);
