@@ -109,10 +109,12 @@ class Product extends FActiveRecord
   }
 
   /**
+   * @param bool $absolute
+   *
    * @return string
    */
-  public function getUrl()
+  public function getUrl($absolute = false)
   {
-    return Yii::app()->createUrl('product/one', array('url' => $this->url));
+    return $absolute ? Yii::app()->createAbsoluteUrl('product/one', array('url' => $this->url)) : Yii::app()->createUrl('product/one', array('url' => $this->url));
   }
 }

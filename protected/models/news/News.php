@@ -81,10 +81,13 @@ class News extends FActiveRecord
     return Yii::app()->locale->dateFormatter->format($format, DateTime::createFromFormat('Y-m-d', $this->date)->getTimestamp());
   }
 
-  protected function afterFind()
+  /**
+   * @param bool $absolute
+   *
+   * @return string
+   */
+  public function getUrl($absolute = false)
   {
-    $this->url = Yii::app()->controller->createUrl('news/one', array('section' => $this->section->url, 'url' => $this->url));
-
-    parent::afterFind();
+    return $absolute ? Yii::app()->createAbsoluteUrl('news/one', array('section' => $this->section->url, 'url' => $this->url)) : Yii::app()->createUrl('news/one', array('section' => $this->section->url, 'url' => $this->url));
   }
 }
