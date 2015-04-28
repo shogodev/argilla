@@ -31,6 +31,8 @@ class BInfo extends BAbstractMenuEntry
 
   public $parent;
 
+  private $childrenIdsForDelete = array();
+
   public function behaviors()
   {
     return array(
@@ -137,5 +139,37 @@ class BInfo extends BAbstractMenuEntry
   public function getUrl()
   {
     return $this->url;
+  }
+
+  public function deleteNode()
+  {
+    if( $nestedSetBehavior = $this->asa('nestedSetBehavior') )
+    {
+      $event = new CModelEvent($this);
+      $this->onBeforeDelete($event);
+      $result = $nestedSetBehavior->deleteNode();
+      $this->onAfterDelete($event);
+
+      return $result;
+    }
+  }
+
+  public function onAfterDelete($event)
+  {
+    if( !empty($this->childrenIdsForDelete) )
+    {
+      $criteria = new CDbCriteria();
+      $criteria->addInCondition('item_id', CMap::mergeArray(array($this->getId()), $this->childrenIdsForDelete));
+      $criteria->compare('type', get_class($this));
+      $criteria->compare('frontend_model', $this->getFrontendModelName());
+
+      BFrontendMenuItem::model()->deleteAll($criteria);
+    }
+  }
+
+  public function onBeforeDelete($event)
+  {
+    foreach($this->descendants()->findAll() as $item)
+      $this->childrenIdsForDelete[$item->id] = $item->id;
   }
 }
