@@ -44,7 +44,7 @@ class SeoBehavior extends CBehavior
       'og:title' => $title,
       'og:site_name' => Yii::app()->name,
       'og:image' => $image,
-      'g:description' => $description,
+      'og:description' => $description,
     );
 
     if( $clientScript = Yii::app()->clientScript )
