@@ -31,7 +31,7 @@ $form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId()));
 
   <?php echo $form->textFieldRow($model, 'articul'); ?>
 
-  <?php echo $form->dependedInputs($model, 'section_id', array('type_id'), CHtml::listData(BProductSection::model()->findAll(), 'id', 'name')); ?>
+  <?php echo $form->dependedInputsChainRow($model, array('section_id', 'type_id')); ?>
 
   <?php echo $form->textFieldRow($model, 'price', array('class' => 'span4')); ?>
 

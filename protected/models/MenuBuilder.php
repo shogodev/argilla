@@ -114,9 +114,9 @@ class MenuBuilder
     );
   }
 
-  private function buildImage($image)
+  private function buildImage($image, $default = '/i/sp.gif')
   {
-    return !empty($image) ? $this->imagePath.$image : '/i/sp.gif';
+    return !empty($image) ? $this->imagePath.$image : $default;
   }
 
   private function sortRecursive(&$menu)

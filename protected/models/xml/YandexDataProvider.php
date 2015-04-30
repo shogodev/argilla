@@ -76,7 +76,7 @@ class YandexDataProvider
   {
     $this->products[] = array(
       'id'          => $product->id,
-      'price'       => $product->price,
+      'price'       => $product->getPrice(),
       'currencyId'  => 'RUR',
       'url'         => $this->getUrl($product),
       'categoryId'  => $product->section->id,
