@@ -1,5 +1,12 @@
 <?php
+/**
+ * Команда миграции:
+ * protected/yiic migrate up --migrationPath=backend.modules.product.modules.text.migrations
+ */
 
+/**
+ * Class m141224_065502_create_product_text_table
+ */
 class m141224_065502_create_product_text_table extends CDbMigration
 {
 	public function up()
@@ -20,15 +27,4 @@ class m141224_065502_create_product_text_table extends CDbMigration
 		echo "m141224_065502_create_product_text_table does not support migration down.\n";
 		return false;
 	}
-
-	/*
-	// Use safeUp/safeDown to do migration with transaction
-	public function safeUp()
-	{
-	}
-
-	public function safeDown()
-	{
-	}
-	*/
 }

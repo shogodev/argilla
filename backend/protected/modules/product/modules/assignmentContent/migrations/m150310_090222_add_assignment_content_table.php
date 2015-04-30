@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * Команда миграции:
+ * protected/yiic migrate up --migrationPath=backend.modules.product.modules.assignmentContent.migrations
+ */
 class m150310_090222_add_assignment_content_table extends CDbMigration
 {
 	public function up()
