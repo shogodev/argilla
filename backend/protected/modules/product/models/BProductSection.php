@@ -41,4 +41,12 @@ class BProductSection extends BProductStructure
     return CMap::mergeArray(parent::attributeLabels(), array(
     ));
   }
+
+  protected function getSearchCriteria(CDbCriteria $criteria)
+  {
+    $criteria->compare('t.visible', $this->visible);
+    $criteria->compare('t.name', $this->name, true);
+
+    return $criteria;
+  }
 }
