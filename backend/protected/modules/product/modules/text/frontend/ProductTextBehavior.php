@@ -24,6 +24,8 @@ class ProductTextBehavior extends SBehavior
 
   const MAIN = 'content';
 
+  private $text;
+
   /**
    * @param string $location
    *
@@ -31,8 +33,14 @@ class ProductTextBehavior extends SBehavior
    */
   public function getText($location = self::UPPER)
   {
-    $productText = ProductText::model()->whereUrl($this->owner->getCurrentUrl())->find();
-    return $productText ? $productText->{$location} : '';
+    if( !isset($this->text[$location]) )
+    {
+      $productText = ProductText::model()->whereUrl($this->owner->getCurrentUrl())->find();
+
+      $this->text = $productText ? $productText->{$location} : '';
+    }
+
+    return $this->text;
   }
 
   /**
