@@ -146,15 +146,15 @@ class BInfo extends BAbstractMenuEntry
     if( $nestedSetBehavior = $this->asa('nestedSetBehavior') )
     {
       $event = new CModelEvent($this);
-      $this->onBeforeDelete($event);
+      $this->beforeNodeDelete($event);
       $result = $nestedSetBehavior->deleteNode();
-      $this->onAfterDelete($event);
+      $this->afterNodeDelete($event);
 
       return $result;
     }
   }
 
-  public function onAfterDelete($event)
+  public function afterNodeDelete($event)
   {
     if( !empty($this->childrenIdsForDelete) )
     {
@@ -167,7 +167,7 @@ class BInfo extends BAbstractMenuEntry
     }
   }
 
-  public function onBeforeDelete($event)
+  public function beforeNodeDelete($event)
   {
     foreach($this->descendants()->findAll() as $item)
       $this->childrenIdsForDelete[$item->id] = $item->id;

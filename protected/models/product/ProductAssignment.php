@@ -79,7 +79,7 @@ class ProductAssignment extends FActiveRecord
 
     if( !empty($criteria->condition) && (empty($criteria->join) || strpos($criteria->join, $tableName) === false) )
     {
-      $criteria->join = 'JOIN '.$this->dbConnection->schema->quoteTableName($tableName) .' AS a ON '.$on.' = t.id '.$criteria->join;
+      $criteria->join = 'JOIN '.$this->dbConnection->schema->quoteTableName($tableName) .' AS a ON a.'.$on.' = t.id '.$criteria->join;
       $criteria->distinct = $distinct;
       $criteria->compare('a.visible', 1);
     }
