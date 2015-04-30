@@ -119,16 +119,8 @@ class FilterDataProvider
   private function getProductsByActionCriteria(CDbCriteria $criteria)
   {
     $criteria->select = 't.id';
-
-    $assignment = ProductAssignment::model()->tableName();
-    if( !empty($criteria->condition) && (empty($criteria->join) || strpos($criteria->join, $assignment) === false) )
-    {
-      $criteria->join = 'JOIN `'.$assignment.'` AS a ON a.product_id = t.id '.$criteria->join;
-      $criteria->distinct = true;
-
-      $criteria->compare('t.visible', 1);
-      $criteria->compare('a.visible', 1);
-    }
+    $criteria->compare('t.visible', 1);
+    ProductAssignment::model()->addAssignmentCondition($criteria);
     $command = $this->builder->createFindCommand(Product::model()->tableName(), $criteria);
 
     return $command->queryColumn();

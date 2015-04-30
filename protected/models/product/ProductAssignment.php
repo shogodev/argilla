@@ -57,19 +57,37 @@ class ProductAssignment extends FActiveRecord
    */
   public function getModels($modelName, CDbCriteria $defaultCriteria = null)
   {
-    $modelId = preg_replace('/product([a-z]+)/i', 'a.$1_id', $modelName);
-
-    $criteria = new CDbCriteria(array('distinct' => true));
-    $criteria->join = 'JOIN `'.self::table().'` AS a ON t.id = '.$modelId.' ';
-    $criteria->join .= 'JOIN `'.Product::table().'` AS p ON p.id = a.product_id';
-
+    $criteria = new CDbCriteria();
+    $criteria->join = 'JOIN `'.Product::table().'` AS p ON p.id = a.product_id';
     $criteria->compare('p.visible', 1);
-    $criteria->compare('a.visible', 1);
+    $this->addAssignmentCondition($criteria, true, self::getFieldByModel($modelName));
 
     if( $defaultCriteria )
       $criteria->mergeWith($defaultCriteria);
 
     return $modelName::model()->findAll($criteria);
+  }
+
+  /**
+   * @param CDbCriteria $criteria
+   * @param bool $distinct
+   * @param string $on default 'product_id'
+   */
+  public function addAssignmentCondition(CDbCriteria $criteria, $distinct = true, $on = 'product_id')
+  {
+    $tableName = self::table();
+
+    if( !empty($criteria->condition) && (empty($criteria->join) || strpos($criteria->join, $tableName) === false) )
+    {
+      $criteria->join = 'JOIN '.$this->dbConnection->schema->quoteTableName($tableName) .' AS a ON '.$on.' = t.id '.$criteria->join;
+      $criteria->distinct = $distinct;
+      $criteria->compare('a.visible', 1);
+    }
+  }
+
+  public static function getFieldByModel($modelName)
+  {
+    return lcfirst(str_replace('Product', '', $modelName)).'_id';
   }
 
   private function buildCriteria(CDbCriteria $defaultCriteria = null)
