@@ -129,6 +129,11 @@ class FSingleImage implements ImageInterface
     $this->imageDir = $imageDir;
   }
 
+  public function isNotEmpty()
+  {
+    return !empty($this->name);
+  }
+
   /**
    * Создание полного пути до файла
    *
