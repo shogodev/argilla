@@ -24,24 +24,12 @@ class FListViewSorting extends CWidget
   {
     $this->dropDowns = array(
       array(
-        'label' => Yii::t('app', 'Популярность'),
+        'label' => Yii::t('app', 'Сортировка'),
         'items' => array(
           'Не важно',
           'popular_up' => Yii::t('app', 'Сначала популярные'),
-        )
-      ),
-      array(
-        'label' => Yii::t('app', 'Цена'),
-        'items' => array(
-          'Не важно',
           'price_up' => Yii::t('app', 'Сначала дешевые'),
           'price_down' => Yii::t('app', 'Сначала дорогие'),
-        )
-      ),
-      array(
-        'label' => Yii::t('app', 'Наличие'),
-        'items' => array(
-          'Не важно',
           'available_up' => Yii::t('app', 'Сначала "В наличии"'),
         )
       )

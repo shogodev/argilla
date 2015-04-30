@@ -10,13 +10,13 @@
  */
 class FListViewPageSize extends CWidget
 {
-  public $label = 'Отображать по:';
-
-  public $dropDownName = 'product-list-pager';
+  public $containerClass = 'select-container';
 
   public $labelClass = 'sort-label';
 
-  public $containerClass = 'select-container';
+  public $label = 'Отображать по:';
+
+  public $dropDownContainerClass = 'product-list-pager';
 
   public $postUrl;
 
@@ -30,9 +30,11 @@ class FListViewPageSize extends CWidget
 
   public function run()
   {
+    echo CHtml::tag('div', array('class' => $this->containerClass), false, false);
     echo CHtml::tag('span', array('class' => $this->labelClass), Yii::t('app', $this->label));
     echo '&nbsp;';
-    echo CHtml::tag('div', array('class' => $this->containerClass), $this->renderDropDown());
+    echo CHtml::tag('div', array('class' => $this->dropDownContainerClass), $this->renderDropDown());
+    echo CHtml::closeTag('div');
   }
 
   private function renderDropDown()
