@@ -33,4 +33,12 @@ class BProductCategory extends BProductStructure
       array('notice', 'safe'),
     );
   }
+
+  protected function getSearchCriteria(CDbCriteria $criteria)
+  {
+    $criteria->compare('t.visible', $this->visible);
+    $criteria->compare('t.name', $this->name, true);
+
+    return $criteria;
+  }
 }

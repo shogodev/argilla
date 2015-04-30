@@ -76,6 +76,8 @@ class OrderController extends FController
   private function renderBasketFirstStep($data = array())
   {
     $view = $this->basket->isEmpty() ? 'empty' : 'first_step';
+    $this->onBeforeRender(new CEvent($this, array('data' => $data, 'view' => $view)));
+
     $html = array(CHtml::openTag('div', array('id' => self::CLASS_WRAPPER)));
     $html[] = $this->renderPartial($view, $data, true);
     $html[] = CHtml::closeTag('div');
@@ -84,11 +86,11 @@ class OrderController extends FController
 
     if( !Yii::app()->request->isAjaxRequest )
     {
+      $this->onBeforeRenderLayout(new CEvent($this, array('content' => $output)));
       $output = $this->renderFile($this->getLayoutFile($this->layout), array('content' => $output), true);
       $output = $this->processOutput($output);
-
     }
 
     echo $output;
   }
-} 
+}

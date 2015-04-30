@@ -28,11 +28,27 @@ class SeoBehavior extends CBehavior
     return $copyrights;
   }
 
-  public function getCopyright($key = 'copyright')
+  /**
+   * @param string $url
+   * @param string $title
+   * @param string $image
+   * @param string $description
+   *
+   * Example:
+   * $this->registerSocialMeta($model->getUrl(true), $model->getHeader(), $model->getImage(), $model->notice);
+   */
+  public function registerSocialMeta($url, $title, $image, $description)
   {
-    if( $copyrights = $this->getCopyrights($key) )
-      return Arr::reset($copyrights);
+    $tags = array(
+      'og:url' => $url,
+      'og:title' => $title,
+      'og:site_name' => Yii::app()->name,
+      'og:image' => $image,
+      'og:description' => $description,
+    );
 
-    return '';
+    if( $clientScript = Yii::app()->clientScript )
+      foreach($tags as $tag => $content)
+        $clientScript->registerMetaTag($content, null, null, array('property' => $tag));
   }
-} 
+}

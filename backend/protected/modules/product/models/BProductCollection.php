@@ -45,4 +45,12 @@ class BProductCollection extends BProductStructure
       'parent_id' => 'Категория',
     ));
   }
+
+  protected function getSearchCriteria(CDbCriteria $criteria)
+  {
+    $criteria->compare('t.visible', $this->visible);
+    $criteria->compare('t.name', $this->name, true);
+
+    return $criteria;
+  }
 }

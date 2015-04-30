@@ -96,8 +96,8 @@ class ProductAssignment extends FActiveRecord
 
     $criteria->select = array(
       'a.section_id, a.collection_id, a.category_id, a.type_id',
-      'section.name AS section_name, section.url AS section_url',
-      'type.name AS type_name, type.url AS type_url',
+      'section.name AS section_name, section.url AS section_url, section.position AS section_position',
+      'type.name AS type_name, type.url AS type_url, type.position AS type_position',
       'category.name AS category_name, category.url AS category_url',
       'collection.name AS collection_name, collection.url AS collection_url',
     );
@@ -125,9 +125,6 @@ class ProductAssignment extends FActiveRecord
 
     if( $defaultCriteria !== null )
       $criteria->mergeWith($defaultCriteria);
-
-    if( empty($criteria->order) )
-      $criteria->order = 'section.position, type.position';
 
     return $criteria;
   }

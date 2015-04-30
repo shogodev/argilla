@@ -140,11 +140,11 @@ class BOrder extends BActiveRecord
    */
   protected function addUserCondition(CDbCriteria $criteria)
   {
-    if( preg_match("/^\d+$/", $this->user_id) )
+    if( preg_match("/^[\d\(\)\-\ +]+$/", $this->user_id) )
     {
       $criteria->addSearchCondition('phone', $this->user_id);
     }
-    else if( preg_match("/^[a-z@.\-_]+$/", $this->user_id) )
+    else if( preg_match("/^[a-z0-9@.\-_]+$/", $this->user_id) )
     {
       $criteria->addSearchCondition('email', $this->user_id);
     }
