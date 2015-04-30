@@ -101,6 +101,7 @@ class MenuBuilder
   {
     return array(
       'label' => $item['section_name'],
+      'position' => $item['section_position'],
       'url' => array('product/section', 'section' => $item['section_url']),
       'items' => array(),
     );
@@ -110,6 +111,7 @@ class MenuBuilder
   {
     return array(
       'label' => $item['type_name'],
+      'position' => $item['type_position'],
       'url' => array('product/type', 'type' => $item['type_url']),
     );
   }
