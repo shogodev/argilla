@@ -77,7 +77,7 @@ class IndexerCommand extends CConsoleCommand
 
   public function actionDelete()
   {
-    $this->builder->createSqlCommand("TRUNCATE TABLE ".$this->searchTable)->execute();
+    $this->builder->createSqlCommand("TRUNCATE TABLE ".$this->builder->schema->quoteTableName($this->searchTable))->execute();
     $this->updateProduction();
   }
 
@@ -92,7 +92,7 @@ class IndexerCommand extends CConsoleCommand
   {
     $criteria = new CDbCriteria();
     $criteria->select = 't.id';
-    $criteria->join = 'JOIN '.BProductAssignment::model()->tableName().' AS a ON a.product_id = t.id';
+    $criteria->join = 'JOIN '.$this->builder->schema->quoteTableName(BProductAssignment::model()->tableName()).' AS a ON a.product_id = t.id';
 
     foreach($this->properties as $property)
       $criteria->select .= ', '.Yii::app()->db->getSchema()->quoteColumnName($property);
@@ -110,7 +110,7 @@ class IndexerCommand extends CConsoleCommand
     $criteria = new CDbCriteria();
     $criteria->distinct = true;
     $criteria->select = 't.param_id, t.product_id, t.variant_id, t.value, v.name';
-    $criteria->join = 'LEFT OUTER JOIN '.BProductParamVariant::model()->tableName().' AS v ON v.id = t.variant_id';
+    $criteria->join = 'LEFT OUTER JOIN '.$this->builder->schema->quoteTableName(BProductParamVariant::model()->tableName()).' AS v ON v.id = t.variant_id';
     $criteria->addInCondition('t.param_id', $this->parameters);
 
     $command = $this->builder->createFindCommand(BProductParam::model()->tableName(), $criteria);

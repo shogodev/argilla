@@ -362,11 +362,16 @@ class BActiveForm extends TbActiveForm
     if( !class_exists($modelName) )
       throw new CHttpException(500, 'Не удалось найти модель '.$modelName);
 
+    /**
+     * @var BActiveRecord $productStructure
+     */
+    $productStructure = $modelName::model();
+
     $criteria = null;
     if( isset($parentAttribute, $model->{$parentAttribute}) )
     {
       $criteria = new CDbCriteria();
-      $criteria->join = ' JOIN '.BProductTreeAssignment::model()->tableName().' AS tree_assignment ON dst_id = :dst_id AND dst = :dst AND src = :src';
+      $criteria->join = ' JOIN '.$productStructure->dbConnection->schema->quoteTableName(BProductTreeAssignment::model()->tableName()).' AS tree_assignment ON dst_id = :dst_id AND dst = :dst AND src = :src';
       $criteria->params = array(
         ':dst_id' => $model->{$parentAttribute},
         ':dst' => BProductStructure::getRelationName(BProductStructure::getModelName($parentAttribute)),
@@ -375,7 +380,7 @@ class BActiveForm extends TbActiveForm
       $criteria->condition = 'tree_assignment.src_id = t.id';
     }
 
-    return $modelName::model()->listData('id', 'name', $criteria);
+    return $productStructure->listData('id', 'name', $criteria);
   }
 
   /**

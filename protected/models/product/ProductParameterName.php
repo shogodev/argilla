@@ -83,7 +83,7 @@ class ProductParameterName extends FActiveRecord
    */
   public function getRootId()
   {
-    return $this->findBySql("SELECT * FROM ".$this->tableName()." WHERE parent = id")->id;
+    return $this->findBySql("SELECT * FROM ".$this->dbConnection->schema->quoteTableName($this->tableName())." WHERE parent = id")->id;
   }
 
   /**
@@ -120,7 +120,7 @@ class ProductParameterName extends FActiveRecord
     $groupCriteria->compare('parent', $this->getRootId());
     $groupCriteria->select = 'id';
     $assignmentTable = ProductParameterAssignment::model()->tableName();
-    $groupCriteria->join = 'LEFT OUTER JOIN '.$assignmentTable.' AS assignment ON assignment.param_id = t.id';
+    $groupCriteria->join = 'LEFT OUTER JOIN '.$this->dbConnection->schema->quoteTableName($assignmentTable).' AS assignment ON assignment.param_id = t.id';
 
     $builder = new CDbCommandBuilder(Yii::app()->db->getSchema());
     $command = $builder->createFindCommand($this->tableName(), $groupCriteria);
