@@ -28,6 +28,14 @@ class SeoBehavior extends CBehavior
     return $copyrights;
   }
 
+  public function getCopyright($key = 'copyright')
+  {
+    if( $copyrights = $this->getCopyrights($key) )
+      return Arr::reset($copyrights);
+
+    return '';
+  }
+
   /**
    * @param string $url
    * @param string $title
