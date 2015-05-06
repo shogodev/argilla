@@ -184,18 +184,23 @@
 <script>
 //<![CDATA[
   // На маленьких мониторах сразу прячем панель
-  if ( $(window).width() < 1100 ) {
+  if ( $(window).width() < 1100 || $.cookie('templates_navigation') == 'false' ) {
     $('#templates-navigation').toggleClass('collapsed');
   }
   // Скрытие панели
   $('.templates-navigation-toggle').on('click', function() {
     $('#templates-navigation').toggleClass('collapsed');
-  })
+    if ( $('#templates-navigation').hasClass('collapsed') ) {
+      $.cookie('templates_navigation', false);
+    } else {
+      $.cookie('templates_navigation', true);
+    }
+  });
   // Закрытие панели
   $('.templates-navigation-close').on('click', function(e){
     e.preventDefault();
     $('#templates-navigation').hide();
-  })
+  });
 
   var changeDescription = function() {
     // Выводит описание открытой страницы из дата-атрибутов
