@@ -27,26 +27,36 @@ if( $this->getModelClass() ) {
   $model = new $modelName;
   $table = $model->dbConnection->getSchema()->getTable($model->tableName());
 
-  foreach($this->getModelAttributes() as $key => $attribute) {
+  $counter = 0;
+  foreach($this->getModelAttributes(array('id')) as $attribute) {
     switch($attribute)
     {
+      case 'img':
+      break;
+
       case 'position':
         echo "      array('name' => '".$attribute."', 'htmlOptions' => array('class' => 'span1'), 'class' => 'OnFlyEditField', 'filter' => false),\r\n";
+        $counter++;
         break;
       case 'id':
         echo "      array('name' => '".$attribute."', 'class' => 'BPkColumn', 'htmlOptions' => array('class' => 'center span1'), 'filter' => false),\r\n";
+        $counter++;
         break;
       case 'name':
         echo "      array('name' => '".$attribute."', 'htmlOptions' => array('class' => 'span6'), 'class' => 'OnFlyEditField'),\r\n";
+        $counter++;
         break;
       case 'notice':
-        echo "      array('name' => '".$attribute."'),\r\n";
+      case 'content':
+        echo "      array('name' => '".$attribute."', 'filter' => false),\r\n";
+        $counter++;
         break;
       case 'visible':
         echo "      array('name' => '".$attribute."', 'class' => 'JToggleColumn', 'filter' => CHtml::listData(\$model->yesNoList(), 'id', 'name')),\r\n";
+        $counter++;
         break;
       default:
-        if( ($key + 1) < 7 )
+        if( ($counter++) < 7 )
         {
           /**
            * @var CMysqlColumnSchema $column

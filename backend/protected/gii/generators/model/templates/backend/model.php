@@ -54,14 +54,17 @@
  */
 class <?php echo $modelClass; ?> extends <?php echo $this->baseClass."\r\n"; ?>
 {
-<?php if( $timestampAttribute = $this->getTimestampAttribute() ) {?>
+<?php if( $behaviors = $this->getBehaviors() ) {?>
   public function behaviors()
   {
     return array(
-      'dateFilterBehavior' => array(
-        'class' => 'DateFilterBehavior',
-        'attribute' => '<?php echo $timestampAttribute;?>',
-      )
+<?php foreach($behaviors as $behaviorName => $behavior) {?>
+      '<?php echo $behaviorName?>' => array(
+<?php foreach($behavior as $key => $value) {?>
+        '<?php echo $key?>' => '<?php echo $value?>',
+<?php }?>
+      )<?php echo (end($behaviors) != $behavior ? ',' : '')."\r\n"?>
+<?php }?>
     );
   }
 

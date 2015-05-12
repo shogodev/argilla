@@ -5,7 +5,7 @@ class BFormCode extends FormCode
 {
   protected $_modelClass;
 
-  public function getModelAttributes()
+  public function getModelAttributes($noFilterAttributes = array())
   {
     $modelClass = $this->getModelClass();
     $model = new $modelClass();
@@ -14,7 +14,7 @@ class BFormCode extends FormCode
     $safeAttributes = parent::getModelAttributes();
 
     foreach($attributes as $key => $attribute)
-      if( array_search($attribute, $safeAttributes) === false )
+      if( array_search($attribute, $safeAttributes) === false && !in_array($key, $noFilterAttributes))
         unset($attributes[$key]);
 
     return $attributes;
