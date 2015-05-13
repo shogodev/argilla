@@ -79,16 +79,16 @@ class DataProviderList
       $groupedProducts = array();
       foreach($productList->getDataProvider()->getData() as $product)
       {
-        foreach($modelProductIds as $modelId => $productIds)
+        foreach($modelProductIds as $id => $productIds)
         {
           if( array_search($product->id, $productIds) !== false )
-            $groupedProducts[$modelId][$product->id] = $product;
+            $groupedProducts[$id][$product->id] = $product;
         }
       }
 
-      foreach($groupedProducts as $modelId => $products)
+      foreach($groupedProducts as $id => $products)
       {
-        $this->dataProviders[$modelId] = new FArrayDataProvider($products, array('pagination' => false));
+        $this->dataProviders[$id] = new FArrayDataProvider($products, array('pagination' => false));
       }
     }
 
