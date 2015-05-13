@@ -109,7 +109,7 @@ class UploadBehavior extends CActiveRecordBehavior
   public function isResizeable($extension)
   {
     $this->init();
-    return in_array($extension, $this->uploader->getResizeableTypes());
+    return in_array(strtolower($extension), $this->uploader->getResizeableTypes());
   }
 
   public function getThumb($fileName)
