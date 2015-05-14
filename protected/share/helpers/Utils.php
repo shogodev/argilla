@@ -60,22 +60,6 @@ class Utils
   }
 
   /**
-   * Добавляет случайное число после имени файла
-   *
-   * @param string $filename
-   *
-   * @return string
-   */
-  public static function doCustomFilename($filename)
-  {
-    $ext      = pathinfo($filename, PATHINFO_EXTENSION);
-    $filename = str_replace('.'.$ext, '', $filename);
-    $filename = $filename . '_' . rand(1, 1000) . '.' . $ext;
-
-    return $filename;
-  }
-
-  /**
    * Обрезаем текст до нужной длины по пробелу
    *
    * @param $str

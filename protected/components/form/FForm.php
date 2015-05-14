@@ -558,11 +558,7 @@ class FForm extends CForm
 
       foreach($files as $file)
       {
-        $name = Utils::translite($file->name, false);
-
-        while(file_exists($model->uploadPath.$name))
-          $name = Utils::doCustomFilename($name);
-
+        $name = UploadHelper::prepareFileName($model->uploadPath, $file->name);
         $path = $model->uploadPath.$name;
 
         if( $file->saveAs($path) )
