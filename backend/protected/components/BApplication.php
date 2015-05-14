@@ -53,6 +53,12 @@ class BApplication extends CWebApplication
     Yii::app()->clientScript->registerScript('ajaxUpdateError', '
       function ajaxUpdateError(xhr, err)
       {
+        if( xhr.status === 0 && xhr.readyState === 0 )
+        {
+          console.log("Ajax request aborted");
+          return;
+        }
+
         if( xhr.status === 401 )
           assigner.open(
             "'.Yii::app()->controller->createUrl("/base/index", array('popup' => true)).'",
@@ -65,7 +71,10 @@ class BApplication extends CWebApplication
             if( xhr.status && !/^\s*$/.test(xhr.status) )
               err = "Error " + xhr.status;
             else
+            {
               err = "Error";
+            }
+
             if( xhr.responseText && !/^\s*$/.test(xhr.responseText) )
               err = err + ": " + xhr.responseText;
           }
