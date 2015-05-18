@@ -178,6 +178,7 @@ class BProduct extends BActiveRecord
       'product_img' => 'Изображения',
       'BProduct' => 'Продукты',
       'spec' => 'Лидер продаж',
+      'price_raw' => 'Цена',
     ));
   }
 
