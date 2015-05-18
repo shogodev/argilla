@@ -240,7 +240,7 @@ class BInputHorizontal extends BInput
       'skin' => 'kama',
       'options' => array(
         'filebrowserBrowseUrl' => CHtml::normalizeUrl(array('/bFileUploader/elfinderCKEditor')),
-        'filebrowserUploadUrl' => false
+        'filebrowserUploadUrl' => CHtml::normalizeUrl(array('/bFileUploader/quickUpload'))
       ),
     ));
 

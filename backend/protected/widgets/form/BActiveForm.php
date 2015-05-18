@@ -9,6 +9,7 @@
 
 Yii::import('bootstrap.widgets.TbActiveForm');
 
+
 class BActiveForm extends TbActiveForm
 {
   const INPUT_HORIZONTAL = 'BInputHorizontal';
@@ -56,7 +57,7 @@ class BActiveForm extends TbActiveForm
    *
    * @param CModel $model the data model
    * @param string $attribute the attribute
-   * @param array  $htmlOptions additional HTML attributes
+   * @param array $htmlOptions additional HTML attributes
    *
    * @return string the generated row
    */
@@ -70,7 +71,7 @@ class BActiveForm extends TbActiveForm
    *
    * @param CModel $model the data model
    * @param string $attribute the attribute
-   * @param array  $htmlOptions additional HTML attributes
+   * @param array $htmlOptions additional HTML attributes
    *
    * @return string the generated row
    */
@@ -81,9 +82,11 @@ class BActiveForm extends TbActiveForm
 
   /**
    * Renders a text field input row.
+   *
    * @param CModel $model the data model
    * @param string $attribute the attribute
    * @param array $htmlOptions additional HTML attributes
+   *
    * @return string the generated row
    */
   public function textFieldRow($model, $attribute, $htmlOptions = array())
@@ -96,7 +99,7 @@ class BActiveForm extends TbActiveForm
    *
    * @param CModel $model the data model
    * @param string $attribute the attribute
-   * @param array  $htmlOptions additional HTML attributes
+   * @param array $htmlOptions additional HTML attributes
    *
    * @return string the generated row
    */
@@ -110,7 +113,7 @@ class BActiveForm extends TbActiveForm
    *
    * @param CModel $model the data model
    * @param string $attribute the attribute
-   * @param array  $htmlOptions additional HTML attributes
+   * @param array $htmlOptions additional HTML attributes
    *
    * @return string the generated row
    */
@@ -129,7 +132,7 @@ class BActiveForm extends TbActiveForm
    *
    * @param CModel $model the data model
    * @param string $attribute the attribute
-   * @param array  $htmlOptions additional HTML attributes
+   * @param array $htmlOptions additional HTML attributes
    *
    * @return string the generated row
    */
@@ -149,10 +152,12 @@ class BActiveForm extends TbActiveForm
 
   /**
    * Renders a drop-down list input row.
+   *
    * @param CModel $model the data model
    * @param string $attribute the attribute
    * @param array $data the list data
    * @param array $htmlOptions additional HTML attributes
+   *
    * @return string the generated row
    */
   public function dropDownListDefaultRow($model, $attribute, $data = array(), $htmlOptions = array())
@@ -202,7 +207,7 @@ class BActiveForm extends TbActiveForm
 
     foreach($chain as $index => $tmp)
     {
-      if( count($chain) == 1  )
+      if( count($chain) == 1 )
         break;
 
       $attribute = $chain[$index];
@@ -229,15 +234,11 @@ class BActiveForm extends TbActiveForm
    * @param array $htmlOptions
    *
    * @return string
-   *
    * Examples:
-   *
    * two depended inputs [section] - [type]
    * echo $form->dependedInputs($model, 'section_id', array('type_id'), BProductType::model()->listData());
-   *
    * several depended inputs [section] - [type,category]
    * echo $form->dependedInputs($model, 'section_id', array('type_id', 'category_id'), BProductType::model()->listData());
-   *
    * three inputs depended each other [section] - [type] - [category]
    * echo $form->inputRow('dependedInput', $model, 'section_id', array('listData' => BProductSection::model()->listData(), 'inputs' => array('type_id')));
    * echo $form->dependedInputs($model, 'type_id', array('category_id'), BProductType::model()->listData());
@@ -265,9 +266,7 @@ class BActiveForm extends TbActiveForm
    * @param array $gridOptions
    *
    * @return string
-   *
    * Example:
-   *
    * $form->uploadRow($model, 'product_img', true, array(), array('class' => 'ProductImageGrid'));
    * $form->uploadRow($model, 'product_img', true, array('id' => 'BProductImg'), array('class' => 'ProductImageGrid'));
    */
@@ -288,8 +287,8 @@ class BActiveForm extends TbActiveForm
   /**
    * Renders related items row
    *
-   * @param       $model
-   * @param       $relation
+   * @param $model
+   * @param $relation
    * @param array $attributes
    * @param array $htmlOptions
    *
@@ -309,7 +308,7 @@ class BActiveForm extends TbActiveForm
    *
    * @return string
    */
-  public function associationButtonRow($model, $label, $destinationClassName, $iframeAction,  $parameters = array())
+  public function associationButtonRow($model, $label, $destinationClassName, $iframeAction, $parameters = array())
   {
     $parameters['model'] = $model;
     $parameters['label'] = $label;
@@ -387,16 +386,18 @@ class BActiveForm extends TbActiveForm
    * Renders a depended drop-down list rows.
    *
    * @param BProduct $model
-   * @param       $attribute
-   * @param       $dependedAttribute
+   * @param $attribute
+   * @param $dependedAttribute
    *
    * @return string
    */
   protected function dropDownDependedRows($model, $attribute, $dependedAttribute)
   {
-    $assignmentModel = Arr::reduce($model->assignment) ? Arr::reduce($model->assignment) : BProductAssignment::model();
-    $depends         = $assignmentModel->getDepends($attribute, $dependedAttribute);
-    $dependedRow     = $this->dropDownListDefaultRow($model, $dependedAttribute, CHtml::listData($depends, 'id', 'name'), array('class' => 'depended'));
+    $assignmentModel = Arr::reduce($model->assignment) ? Arr::reduce($model->assignment) : new BProductAssignment();
+    if( $assignmentModel->isNewRecord )
+      $assignmentModel->setAttributes(Yii::app()->request->getPost('BProduct', array()), false);
+    $depends = $assignmentModel->getDepends($attribute, $dependedAttribute);
+    $dependedRow = $this->dropDownListDefaultRow($model, $dependedAttribute, CHtml::listData($depends, 'id', 'name'), array('class' => 'depended'));
 
     return $dependedRow;
   }
@@ -405,15 +406,15 @@ class BActiveForm extends TbActiveForm
    * Renders a depended check box list rows.
    *
    * @param BProduct $model
-   * @param       $attribute
-   * @param       $dependedAttribute
+   * @param $attribute
+   * @param $dependedAttribute
    *
    * @return string
    */
   protected function checkBoxListDependedRows($model, $attribute, $dependedAttribute)
   {
     $assignmentModel = Arr::reduce($model->assignment) ? Arr::reduce($model->assignment) : BProductAssignment::model();
-    $depends         = $assignmentModel->getDepends($attribute, $dependedAttribute);
+    $depends = $assignmentModel->getDepends($attribute, $dependedAttribute);
 
     $dependedRow = $this->checkBoxListRow(
       $model,

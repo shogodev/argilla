@@ -184,7 +184,7 @@ class UploadAction extends CAction
 
       if( $model->validate() )
       {
-        $this->prepareName($model);
+        $model->name = UploadHelper::prepareFileName($this->path, $model->name);
         $this->saveFile($model);
 
         $file = CMap::mergeArray($file, array(
@@ -252,19 +252,6 @@ class UploadAction extends CAction
       $cropImage->save($cropImagePath);
       chmod($cropImagePath, $this->fileMode);
     }
-  }
-
-  /**
-   * Если файл существует с таким названием уже существует, то создаёт новое имя файла.
-   *
-   * @param $model
-   */
-  private function prepareName($model)
-  {
-    $model->name = Utils::translite($model->name, false);
-
-    while( file_exists($this->path . $model->name) )
-      $model->name = Utils::doCustomFilename($model->name);
   }
 
   private function saveFile($model)

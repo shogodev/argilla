@@ -8,7 +8,12 @@
  * Пример подключения:
  * <pre>
  *   ...
- *   'productTextBehavior' => array('class' => 'backend.modules.product.modules.text.frontend.ProductTextBehavior')
+ *   public function behaviors()
+ *   {
+ *     return CMap::mergeArray(parent::behaviors(), array(
+ *       'productTextBehavior' => array('class' => 'backend.modules.product.modules.text.frontend.ProductTextBehavior')
+ *     ));
+ *   }
  *   ...
  * </pre>
  */

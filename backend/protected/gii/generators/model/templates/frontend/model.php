@@ -51,6 +51,11 @@
     ?>
 <?php endforeach; ?>
 <?php endif; ?>
+<?php if( isset($this->getBehaviors(false)['imageBehavior']) ) {?>
+ * @property FSingleImage $image
+ * @mixin <?php echo $this->getBehaviors(false)['imageBehavior']['class'];?>
+
+<?php }?>
  */
 class <?php echo $modelClass; ?> extends <?php echo $this->baseClass."\r\n"; ?>
 {
@@ -59,8 +64,23 @@ class <?php echo $modelClass; ?> extends <?php echo $this->baseClass."\r\n"; ?>
   {
     return '<?php echo $tableName; ?>';
   }
-<?php }?>
 
+<?php }?>
+<?php if( $behaviors = $this->getBehaviors(false) ) {?>
+  public function behaviors()
+  {
+    return array(
+  <?php foreach($behaviors as $behaviorName => $behavior) {?>
+    '<?php echo $behaviorName?>' => array(
+    <?php foreach($behavior as $key => $value) {?>
+    '<?php echo $key?>' => '<?php echo $value?>',
+    <?php }?>
+  )<?php echo (end($behaviors) != $behavior ? ',' : '')."\r\n"?>
+  <?php }?>
+  );
+  }
+
+<?php }?>
   public function rules()
   {
     return array(

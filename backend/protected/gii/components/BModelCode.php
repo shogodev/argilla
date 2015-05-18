@@ -7,6 +7,10 @@ class BModelCode extends ModelCode
 
   public $requiredException = array('position', 'img', 'visible');
 
+  public $validateException = array('img');
+
+  public $module;
+
   private $defaultSort;
 
   public function generateLabels($table)
@@ -51,7 +55,7 @@ class BModelCode extends ModelCode
      */
     foreach($table->columns as $column)
     {
-      if( $column->autoIncrement )
+      if( $column->autoIncrement || in_array($column->name, $this->validateException) )
         continue;
 
       $r = !$column->allowNull && $column->defaultValue === null && $column->dbType != 'text' && $column->dbType != 'timestamp';
@@ -105,9 +109,7 @@ class BModelCode extends ModelCode
 
   public function getTimestampAttribute()
   {
-    $table = Yii::app()->db->getSchema()->getTable($this->tableName);
-
-    foreach($table->columns as $column)
+    foreach($this->getColumns() as $column)
     {
       if( $column->dbType == 'timestamp' )
       {
@@ -116,5 +118,51 @@ class BModelCode extends ModelCode
     }
 
     return null;
+  }
+
+  public function getBehaviors($backend = true)
+  {
+    $behaviors = array();
+
+    if( $backend )
+    {
+      if( $timestampAttribute = $this->getTimestampAttribute() )
+      {
+        $behaviors['dateFilterBehavior'] = array(
+          'class' => 'DateFilterBehavior',
+          'attribute' => $timestampAttribute,
+        );
+      }
+
+      if( isset($this->getColumns()['img']) )
+      {
+        $behaviors['uploadBehavior'] = array(
+          'class' => 'UploadBehavior',
+          'validAttributes' => "img"
+        );
+      }
+    }
+    else
+    {
+      if( isset($this->getColumns()['img']) )
+      {
+        $behaviors['imageBehavior'] = array(
+          'class' => 'SingleImageBehavior',
+          'path' => $this->module,
+         );
+      }
+    }
+
+    return $behaviors;
+  }
+
+  /**
+   * @return CDbColumnSchema[]
+   */
+  private function getColumns()
+  {
+    $table = Yii::app()->db->getSchema()->getTable($this->tableName);
+
+    return $table->columns;
   }
 }

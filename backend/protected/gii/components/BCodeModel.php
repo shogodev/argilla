@@ -44,6 +44,8 @@ class BCodeModel extends CCodeModel
     $codeModel->baseClass = $baseClass;
     $codeModel->buildRelations = true;
     $codeModel->commentsAsLabels = true;
+    if( isset($this->module) && preg_match('/.([^\.]+)$/', $this->module, $matches) )
+      $codeModel->module = $matches[1];
 
     $codeModel->prepare();
 

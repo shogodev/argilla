@@ -5,7 +5,9 @@ class BFormCode extends FormCode
 {
   protected $_modelClass;
 
-  public function getModelAttributes()
+  public $skipCheckSafe = array('img');
+
+  public function getModelAttributes($noFilterAttributes = array())
   {
     $modelClass = $this->getModelClass();
     $model = new $modelClass();
@@ -13,9 +15,13 @@ class BFormCode extends FormCode
     $attributes = $model->attributeNames();
     $safeAttributes = parent::getModelAttributes();
 
+    $noFilterAttributes = CMap::mergeArray($noFilterAttributes, $this->skipCheckSafe);
+
     foreach($attributes as $key => $attribute)
-      if( array_search($attribute, $safeAttributes) === false )
+    {
+      if( array_search($attribute, $safeAttributes) === false && !in_array($attribute, $noFilterAttributes) )
         unset($attributes[$key]);
+    }
 
     return $attributes;
   }
