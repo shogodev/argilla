@@ -23,6 +23,8 @@ abstract class AbstractXml extends CComponent
    */
   public $criteria;
 
+  public $cacheDurationInSeconds = 86400;
+
   /**
    * @var SimpleXMLElement
    */
@@ -42,14 +44,13 @@ abstract class AbstractXml extends CComponent
 
       if( isset($this->dataProviderClass) )
       {
-        $this->criteria     = isset($this->criteria) ? $this->criteria : new CDbCriteria();
+        $this->criteria = isset($this->criteria) ? $this->criteria : new CDbCriteria();
         $this->dataProvider = new $this->dataProviderClass($this->criteria);
       }
 
       $this->buildXml();
+      $this->saveXml();
     }
-
-    $this->saveXml();
   }
 
   public function render()
@@ -64,13 +65,13 @@ abstract class AbstractXml extends CComponent
    */
   private function loadXml()
   {
-    if( Yii::app()->request->getQuery('force') === 'force' )
+    if( Yii::app()->request->getQuery('force') === 'force' || !file_exists($this->filePath) || ( time() - filemtime($this->filePath) > $this->cacheDurationInSeconds ) )
     {
       set_time_limit(0);
       ignore_user_abort(true);
       return false;
     }
-    else if( file_exists($this->filePath) )
+    else
     {
       $this->xmlDocument = simplexml_load_file($this->filePath);
       return true;
