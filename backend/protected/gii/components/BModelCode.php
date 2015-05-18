@@ -7,6 +7,8 @@ class BModelCode extends ModelCode
 
   public $requiredException = array('position', 'img', 'visible');
 
+  public $validateException = array('img');
+
   public $module;
 
   private $defaultSort;
@@ -53,7 +55,7 @@ class BModelCode extends ModelCode
      */
     foreach($table->columns as $column)
     {
-      if( $column->autoIncrement )
+      if( $column->autoIncrement || in_array($column->name, $this->validateException) )
         continue;
 
       $r = !$column->allowNull && $column->defaultValue === null && $column->dbType != 'text' && $column->dbType != 'timestamp';
