@@ -303,4 +303,25 @@ class Utils
 
     return Yii::t('app', implode('|', $titles), $number);
   }
+
+  /**
+   * @param string $date date in YYYY-MM-DD format
+   *
+   * @return bool
+   */
+  public static function dateUntil($date)
+  {
+    return strtotime('now') < strtotime($date);
+  }
+
+  /**
+   * @param string $dateFrom date in YYYY-MM-DD format
+   * @param string $dateTo date in YYYY-MM-DD format
+   *
+   * @return bool
+   */
+  public static function dateBetween($dateFrom, $dateTo)
+  {
+    return (strtotime('now') > strtotime($dateFrom)) && (strtotime('now') < strtotime($dateTo));
+  }
 }
