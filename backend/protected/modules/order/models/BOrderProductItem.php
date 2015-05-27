@@ -50,4 +50,9 @@ class BOrderProductItem extends BActiveRecord
   {
     return 0;
   }
+
+  public function __toString()
+  {
+    return $this->value;
+  }
 }

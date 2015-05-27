@@ -33,7 +33,7 @@ class BConditionDataColumn extends BDataColumn
   {
     foreach($this->columns as $i => $column)
     {
-      foreach(array('name', 'header', 'htmlOptions') as $value)
+      foreach(array('name', 'header', 'htmlOptions', 'value') as $value)
       {
         if( $this->issetProperty($column['class'], $value) && !isset($column[$value]) )
           $column[$value] = $this->{$value};

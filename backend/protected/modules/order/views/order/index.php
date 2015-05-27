@@ -16,12 +16,16 @@ $this->widget('BGridView', array(
     array('name' => 'date_create', 'class' => 'BDatePickerColumn'),
 
     array(
-      'name' => 'user_id',
+      'name' => 'userProfile',
       'value' => '$data->user ? $data->user->getFullName() : $data->name',
+      'attribute' => 'user_id',
       'class' => 'BOrderUserColumn',
       'iframeAction' => '/user/BFrontendUser/update',
       'htmlOptions' => array('class' => 'span3')
     ),
+
+    array('name' => 'email', 'filter' => false),
+    array('name' => 'phone', 'filter' => false),
 
     array('name' => 'comment', 'filter' => false, 'value' => 'Utils::stripText($data->comment, 50)'),
     array('name' => 'type', 'htmlOptions' => array('class' => 'span2'), 'value' => '$data->typeLabel[$data->type]', 'filter' => false),
@@ -35,6 +39,21 @@ $this->widget('BGridView', array(
       'filter' => BOrderStatus::model()->listData(),
     ),
 
-    array('class' => 'BOrderButtonColumn'),
+    array(
+      'class' => 'BOrderButtonColumn',
+      'template' => '{setUser} {print} {update} {delete}',
+      'buttons' => array(
+        'print' => array(
+          'label' => 'Распечатать заказ',
+          'icon' => 'print',
+          'url' => 'Yii::app()->controller->createUrl("/order/bOrder/print", array(
+          "id" => $data->id
+        ))',
+        'options' => array(
+          'class' => 'print',
+          "target" => "_blank",
+        ))
+      )
+    ),
   ),
 ));

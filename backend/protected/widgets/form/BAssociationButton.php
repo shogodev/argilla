@@ -51,15 +51,20 @@ class BAssociationButton extends CWidget
 
   public function run()
   {
-    echo CHtml::tag('a', array(
-      'class' => 'btn-assign'.($this->count ? " active" : ""),
-      'rel' => 'tooltip',
-      'data-original-title' => 'Привязка',
-      'data-iframeurl' => $this->iframeUrl,
-      'data-ajaxurl' => $this->ajaxUrl,
-      'href' => '#'.($this->count ? $this->count : ''),
-      'onClick' => 'assigner.ajaxHandler(this,'.CJavaScript::encode($this->assignerOptions).')',
-    ), $this->count ? '<span>'.$this->count.'</span>' : '');
+    Yii::app()->controller->widget('BAssignerButton', array(
+      'label' => $this->count ? '<span>'.$this->count.'</span>' : '',
+      'encodeLabel' => false,
+      'htmlOptions' => array(
+        'class' => 'btn-assign'.($this->count ? " active" : ""),
+        'href' => '#'.($this->count ? $this->count : ''),
+        'rel' => 'tooltip',
+        'data-original-title' => 'Привязка',
+      ),
+      'assignerOptions' => CMap::mergeArray(array(
+        'iframeUrl' => $this->iframeUrl,
+        'submitUrl' => $this->ajaxUrl,
+      ), $this->assignerOptions)
+    ));
   }
 
   protected function getAssociationsCount($parameters)

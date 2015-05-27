@@ -20,6 +20,7 @@ class BOrderController extends BController
       'ajaxOnly + setUser',
     ));
   }
+
   public function actions()
   {
     $actions = parent::actions();
@@ -52,11 +53,16 @@ class BOrderController extends BController
 
   public function actionSetUser()
   {
-    $ids        = Yii::app()->request->getPost('ids', array());
     $attributes = Yii::app()->request->getQuery($this->modelClass);
-
     $modelOrder = BOrder::model()->findByPk(Arr::get($attributes, 'id'));
-    $modelUser  = BFrontendUser::model()->findByPk(Arr::reset($ids));
+
+    $elements = Yii::app()->request->getPost('elements', array());
+
+    foreach($elements as $key => $element)
+      if( $element == 'false' )
+        unset($elements[$key]);
+
+    $modelUser = BFrontendUser::model()->findByPk(key($elements));
 
     if( !$modelOrder || !$modelUser )
       throw new CHttpException(404, 'Некорректный запрос.');
@@ -80,5 +86,44 @@ class BOrderController extends BController
   {
     $paymentSystem = new PlatronSystem($orderId);
     $paymentSystem->getCapturePayment();
+  }
+
+  public function actionPrint($id)
+  {
+    $this->layout = '//layouts/print';
+    $model = $this->loadModel($id);
+
+    if(!empty($model->user->profile->birthday))
+    {
+      preg_match_all('#\d+#', $model->user->profile->birthday, $match);
+      $model->user->profile->birthday = (int)$match[0][0].' '.Yii::app()->locale->getMonthName((int)$match[0][1]).' '.(int)$match[0][2].' г.';
+    }
+
+    $this->render('print', array(
+      'model' => $model,
+    ));
+  }
+
+  public function actionSendNotification($orderId)
+  {
+    $successSend = false;
+
+    /**
+     * @var BOrder $order
+     */
+    if( $order = $this->loadModel($orderId) )
+    {
+      if( $order->email )
+      {
+        Yii::app()->notification->send('Order', array('model' => $order), $order->email);
+        Yii::app()->user->setFlash('success', 'Уведомление отправлено');
+        $successSend = true;
+      }
+    }
+
+    if( !$successSend )
+      Yii::app()->user->setFlash('error', 'Не удалось отправить уведомление');
+
+    Yii::app()->request->redirect($this->createUrl('/order/order/update', array('id' => $orderId)));
   }
 }

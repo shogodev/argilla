@@ -85,12 +85,10 @@ class OptionWidget extends CWidget
 
   private function registerUpdateScript($widgetId, $updateButtonClass)
   {
-    $closeOperation = "function(){ $.fn.yiiGridView.update('{$widgetId}')}";
-
     Yii::app()->clientScript->registerScript($updateButtonClass.'_script', "
       jQuery(document).on('click', '.{$updateButtonClass}', function(e){
         e.preventDefault();
-        assigner.open(this.href, {'closeOperation' : {$closeOperation}});
+        assigner.open(this.href, {'updateGridId' : '{$widgetId}'});
       });
     ");
   }

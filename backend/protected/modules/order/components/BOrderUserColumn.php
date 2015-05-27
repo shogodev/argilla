@@ -8,11 +8,13 @@
  */
 class BOrderUserColumn extends BOrderPopupColumn
 {
+  public $attribute;
+
   protected function getIframeUrl($data)
   {
-    if( $data->{$this->name} )
+    if( $data->{$this->attribute})
     {
-      return Yii::app()->controller->createUrl($this->iframeAction, array('id' => $data->{$this->name}, 'popup' => true));
+      return Yii::app()->controller->createUrl($this->iframeAction, array('id' => $data->{$this->attribute}, 'popup' => true));
     }
     else
     {

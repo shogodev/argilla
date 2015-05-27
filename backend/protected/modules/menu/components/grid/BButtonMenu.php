@@ -12,11 +12,9 @@ class BButtonMenu extends BButtonColumn
 
   public function init()
   {
-    $closeOperation = "function(){ $.fn.yiiGridView.update('{$this->grid->id}')}";
-
     $script = "function(e) {
       e.preventDefault();
-      assigner.open(this.href, {'closeOperation' : {$closeOperation}});
+      assigner.open(this.href, {'updateGridId' : '{$this->grid->id}'});
     }";
 
     $this->buttons['updateItem'] = array(

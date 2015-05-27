@@ -27,6 +27,8 @@ class OrderModule extends BModule
   {
     return array(
       'backend.modules.user.models.*',
+      'backend.modules.product.models.*',
+      'backend.modules.product.models.behaviors.*',
     );
   }
 }

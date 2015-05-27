@@ -45,12 +45,10 @@ class BOrderPopupColumn extends BDataColumn
 
   protected function registerPopupScript()
   {
-    $assignerOptions = CJavaScript::encode(array());
-
     Yii::app()->clientScript->registerScript($this->name.'ColumnClick', "
       $('body').on('click', '.items a.{$this->name}_popup', function(e){
         e.preventDefault();
-        assigner.ajaxHandler(this, {$assignerOptions});
+        assigner.apply(this, {});
       });
     ", CClientScript::POS_READY);
   }

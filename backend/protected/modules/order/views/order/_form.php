@@ -8,7 +8,7 @@
 
 <?php $form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId())); ?>
 
-<?php $this->renderPartial('//_form_buttons', array('model' => $model)); ?>
+<?php $this->renderPartial('_form_buttons', array('model' => $model)); ?>
 <?php echo $form->errorSummary($model); ?>
 <?php echo $form->renderRequire(); ?>
 
@@ -29,9 +29,9 @@
 
     <?php if( $model->isNewRecord || !is_null($model->delivery_id) ) echo $form->dropDownListRow($model, 'delivery_id', BOrderDeliveryType::model()->listData()); ?>
 
-    <?php if( $model->isNewRecord || !is_null($model->delivery_sum) ) echo $form->textFieldRow($model, 'delivery_sum'); ?>
+    <?php echo $form->textFieldRow($model, 'delivery_sum'); ?>
 
-    <?php echo $form->textFieldRow($model, 'sum'); ?>
+    <?php echo $form->textRow($model, 'sum', array('id' => 'js-order-sum')); ?>
 
     <?php echo $form->textAreaRow($model, 'comment'); ?>
 
@@ -48,5 +48,5 @@
   <?php $this->renderPartial('_payments', array('model' => $model));?>
 <?php } ?>
 
-<?php $this->renderPartial('//_form_buttons', array('model' => $model));?>
+<?php $this->renderPartial('_form_buttons', array('model' => $model));?>
 <?php $this->endWidget(); ?>

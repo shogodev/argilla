@@ -30,8 +30,9 @@ echo $form->renderRequire();
   <tr>
     <th>Элементы: </th>
     <td>
+      <?php $gridId = BFrontendMenuGridView::buildGridId($model)?>
       <?php $this->widget('BFrontendMenuGridView', array(
-        'id' => BFrontendMenuGridView::buildGridId($model),
+        'id' => $gridId,
         'dataProvider' => $model->getGridData(),
         'buttonsTemplate' => false,
         'columns' => array(
@@ -40,7 +41,7 @@ echo $form->renderRequire();
             'name' => 'position',
             'header' => 'Позиция',
             'class' => 'BFrontendMenuGridPositionColumn',
-            'gridId' => BFrontendMenuGridView::buildGridId($model),
+            'gridId' => $gridId,
             'action' => 'setPosition'
           ),
           array('name' => 'url', 'header' => 'Url'),
@@ -59,12 +60,15 @@ echo $form->renderRequire();
   <tr>
     <th>Добавить: </th>
     <td>
-      <?php echo CHtml::tag('div', array(
-        'class' => 'btn',
-        'rel' => 'tooltip',
-        'href' => '#',
-        'onClick' => 'assigner.open("'.$this->createUrl('menuCustomItem/create', array('popup' => true)).'", {"closeOperation" : function(){location.reload();}})',
-      ), 'Создать');?>
+      <?php $this->widget('BAssignerButton', array(
+        'label' => 'Создать',
+        'type' => 'info',
+        'assignerOptions' => array(
+          'iframeUrl' => $this->createUrl('menuCustomItem/create', array('popup' => true)),
+          'updateGridId' => $gridId
+        )
+      ));
+      ?>
     </td>
   </tr>
   <?php endif;?>

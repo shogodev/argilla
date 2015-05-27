@@ -10,4 +10,9 @@ class UserModule extends BModule
 {
   public $defaultController = 'BFrontendUser';
   public $name = 'Пользователи';
+
+  protected function getExtraDirectoriesToImport()
+  {
+    return array('backend.modules.order.models.BOrder');
+  }
 }

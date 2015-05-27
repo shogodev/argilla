@@ -63,6 +63,8 @@ class OnFlyEditField extends BDataColumn
 
   public $action = 'onflyedit';
 
+  public $gridUpdate = false;
+
   /**
    * URL для AJAX запроса.
    *
@@ -144,6 +146,7 @@ class OnFlyEditField extends BDataColumn
       'data-onflyedit' => $name.'-'.$fieldID,
       'data-ajax-url' => $this->ajaxUrl,
       'data-grid-id' => $this->gridId,
+      'data-grid-update' => $this->gridUpdate
     ];
 
     if( empty($this->dropDown) )

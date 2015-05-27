@@ -139,10 +139,7 @@ abstract class RowGridWidget extends CWidget
     Yii::app()->clientScript->registerScript($this->getId().'_grid_update_script', "
       jQuery(document).on('click', '".implode(', ', $this->updateSelectors)."', function(e) {
         e.preventDefault();
-        assigner.open(this.href, {'closeOperation' : function() {
-          $.fn.yiiGridView.update('{$this->getId()}');
-        }
-        });
+        assigner.open(this.href, {'updateGridId' : '{$this->getId()}'});
       });
     ");
   }
