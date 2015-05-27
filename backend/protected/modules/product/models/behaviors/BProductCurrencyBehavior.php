@@ -29,12 +29,14 @@
  * echo $form->textFieldRow($model, 'price_raw', array('class' => 'span4'));
  *
  * migrations/update_product_table
- * 
+ *
  * $this->execute("ALTER TABLE `{{product}}` ADD `price_raw` DECIMAL( 10, 2 ) NULL AFTER `price`");
  * </pre>
  *
  * @property BProduct $owner
  * @property string $price_raw
+ * @property integer $currency_id
+ *
  */
 class BProductCurrencyBehavior extends SActiveRecordBehavior
 {
@@ -46,7 +48,7 @@ class BProductCurrencyBehavior extends SActiveRecordBehavior
     /**
      * @var BActiveRecord $owner
      */
-    if( !array_key_exists('price_raw', $owner->attributes) )
+    if( !array_key_exists('price_raw', $this->owner->attributes) )
     {
       throw new CHttpException(500, 'В модели отсутствует обязательный атрибут "price_raw"!');
     }
