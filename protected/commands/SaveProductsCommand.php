@@ -18,7 +18,15 @@ class SaveProductsCommand extends CConsoleCommand
 {
   public function actionIndex()
   {
-    foreach(BProduct::model()->findAll() as $product)
+    $criteria = new CDbCriteria();
+    $criteria->select = 'id';
+    $command = Yii::app()->db->schema->commandBuilder->createFindCommand(BProduct::model()->tableName(), $criteria);
+
+    foreach($command->queryColumn() as $productId)
+    {
+      $product = BProduct::model()->findByPk($productId);
       $product->save();
+      $product->detachBehaviors();
+    }
   }
 }

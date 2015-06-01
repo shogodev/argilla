@@ -22,10 +22,6 @@ class BAssociationButton extends CWidget
 
   public $assignerOptions = array();
 
-  protected $iframeUrl;
-
-  protected $ajaxUrl;
-
   public function init()
   {
     $parameters = array(
@@ -45,8 +41,10 @@ class BAssociationButton extends CWidget
         $parameters[ucfirst($this->name)."[".$name."]"] = $value;
     }
 
-    $this->iframeUrl = Yii::app()->controller->createUrl($this->iframeAction, $parameters);
-    $this->ajaxUrl = Yii::app()->controller->createUrl($this->ajaxAction, $parameters);
+    $this->assignerOptions = CMap::mergeArray(array(
+      'iframeUrl' => Yii::app()->controller->createUrl($this->iframeAction, $parameters),
+      'submitUrl' => Yii::app()->controller->createUrl($this->ajaxAction, $parameters),
+    ), $this->assignerOptions);
   }
 
   public function run()
@@ -60,10 +58,7 @@ class BAssociationButton extends CWidget
         'rel' => 'tooltip',
         'data-original-title' => 'Привязка',
       ),
-      'assignerOptions' => CMap::mergeArray(array(
-        'iframeUrl' => $this->iframeUrl,
-        'submitUrl' => $this->ajaxUrl,
-      ), $this->assignerOptions)
+      'assignerOptions' => $this->assignerOptions
     ));
   }
 

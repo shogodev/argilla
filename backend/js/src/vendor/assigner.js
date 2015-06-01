@@ -7,17 +7,18 @@ var assigner = {
   /**
    * @param element
    * @param inputOptions
-   *  - afterAjaxSend функция вызыватся после отправки данных по кнопке кнопки "Выбрать"
-   *  - submitUrl url куда отпаравить данные по нажатию кнопки "Выбрать"
-   *  - iframeUrl url страницв подгружаемой в iframe  
-   *  - updateGridId идентификтор грида который нужно обновить
+   *  - afterAjaxSend функция вызывается после отправки данных по кнопке кнопки "Выбрать"
+   *  - submitUrl url куда отправить данные по нажатию кнопки "Выбрать"
+   *  - iframeUrl url страница подгружаемой в iframe
+   *  - updateGridId идентификатор грида который нужно обновить
    *  - addButton показывать кнопку "Выбрать"
-   *  - multiSelect множестивенный выбор, true по умолчанию
-   *  - selectButtonClickHandler фукция обработчик нажиния на кнопку "Выбрать", function(elements, options){}
-   *  - afterLoad фукция вызывается после загрузки контента в iframe
-   *  - afterShow фукция вызывается после создантя попапа
-   *  - afterClose фукция вызывается после закрытия попапа
-   *  - width ширира попапа
+   *  - multiSelect множественный выбор, true по умолчанию
+   *  - ajaxSubmitOnChange отправлять данные по change
+   *  - selectButtonClickHandler функция обработчик нажатия на кнопку "Выбрать", function(elements, options){}
+   *  - afterLoad функция вызывается после загрузки контента в iframe
+   *  - afterShow функция вызывается после создания попапа
+   *  - afterClose функция вызывается после закрытия попапа
+   *  - width ширина попапа
    *  - height высота
    *  - left
    *  - top
@@ -27,7 +28,7 @@ var assigner = {
   apply: function(element, inputOptions)
   {
     var iframeUrl = $(element).data('iframeurl') ? $(element).data('iframeurl') : inputOptions.iframeUrl;
-    var submitUrl = $(element).data('ajaxurl');
+    var submitUrl = $(element).data('submiturl');
 
     var options = {
       'selectButtonClickHandler' : assigner._selectButtonClickHandler,
@@ -49,7 +50,8 @@ var assigner = {
       width : '',
       height : '',
       addButton : inputOptions && inputOptions.addButton,
-      multiSelect : true
+      multiSelect : true,
+      ajaxSubmitOnChange : true
     };
 
     $.extend(options, inputOptions);
@@ -87,6 +89,18 @@ var assigner = {
             elements.prop('checked', false);
             $(this).prop('checked', true);
           }
+        });
+      }
+
+      if( options.ajaxSubmitOnChange == true )
+      {
+        $('iframe').contents().on('change', '.grid-view input.select', function() {
+          var value = $(this).prop('checked') ? 1 : 0;
+          var id = $(this).attr('id').match(/pk_(\d+)/)[1];
+
+          var submitUrl = options.submitUrl ? options.submitUrl : $(this).data('submit-url');
+
+          $.post(submitUrl, {'value' : value, 'ids' : id});
         });
       }
     });

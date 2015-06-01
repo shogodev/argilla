@@ -45,9 +45,13 @@
       </div>
 
     <div class="order-form-total">
+      <div class="s13 grey" id="js-delivery-block" style="display: none">
+        <span class="s19 bb uppercase black">Стоимость доставки:</span>
+        <span class="s22 red bb" id="js-delivery-price"></span>
+      </div>
       <div class="s13 grey">
         <span class="s19 bb uppercase black">Стоимость вашей покупки:</span>
-        <span class="s22 red bb"><?php echo PriceHelper::price($this->basket->getSumTotal(), ' руб.')?></span>
+        <span class="s22 red bb" id="js-total-sum" data-sum="<?php echo floatval($this->basket->getSumTotal());?>"><?php echo PriceHelper::price($this->basket->getSumTotal(), ' руб.')?></span>
       </div>
     </div>
 
@@ -68,13 +72,16 @@
   $(function() {
     var form = $('#<?php echo $form->getActiveFormWidget()->id?>');
     var deliverySelf = <?php echo OrderDeliveryType::SELF_DELIVERY?>;
+    var deliveryRegion = <?php echo OrderDeliveryType::DELIVERY_REGION?>;
     var delivery = <?php echo CJavaScript::encode(array(
         OrderDeliveryType::DELIVERY_MOSCOW,
         OrderDeliveryType::DELIVERY_MOSCOW_REGION,
         OrderDeliveryType::DELIVERY_REGION
       ))?>;
+    var deliveryPriceList = <?php echo CJSON::encode(PriceHelper::decimalToFloat(CHtml::listData(OrderDeliveryType::model()->findAll(), 'id', 'price')));?>;
 
     var paymentEPay = <?php echo OrderPaymentType::E_PAY?>;
+    var paymentCash = <?php echo OrderPaymentType::CASH?>;
     var platronElements = $('#platron-block input:radio');
     var paymentMethodBlock = $('#Order_payment_id').closest('.form-row');
     var radioBlockContainer = 'div';
@@ -94,6 +101,28 @@
           $('.selfdelivery-block').stop(true, true).fadeOut();
           element.closest('fieldset').removeClass('with-map');
         }
+        if( value == deliveryRegion )
+        {
+          var paymentCashElement = paymentMethodBlock.find('input:radio[value=' + paymentCash + ']');
+          paymentCashElement.prop('checked', false).change();
+          paymentCashElement.closest(radioBlockContainer).hide();
+        }
+        else
+        {
+          paymentMethodBlock.find('input:radio[value=' + paymentCash + ']').closest(radioBlockContainer).show();
+        }
+
+        if( deliveryPriceList[value] && deliveryPriceList[value] > 0 )
+        {
+          $('#js-delivery-price').text(number_format(deliveryPriceList[value]) + ' руб.');
+          $('#js-total-sum').text(number_format(deliveryPriceList[value] + $('#js-total-sum').data('sum'))  + ' руб.');
+          $('#js-delivery-block').show();
+        }
+        else {
+          $('#js-total-sum').text(number_format($('#js-total-sum').data('sum'))  + ' руб.');
+          $('#js-delivery-block').hide();
+        }
+
       }},
       {'action' : 'call', 'src' : 'Order[payment_id]', 'callback' : function(element, value) {
         if( value != paymentEPay )

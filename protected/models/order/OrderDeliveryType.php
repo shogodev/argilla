@@ -12,6 +12,7 @@
  * @property string $name
  * @property int    $position
  * @property string $notice
+ * @property string $price
  * @property bool   $visible
  */
 class OrderDeliveryType extends FActiveRecord
@@ -24,7 +25,7 @@ class OrderDeliveryType extends FActiveRecord
 
   const DELIVERY_REGION = 4;
 
-  const FREE_DELIVERY_LIMIT = 0;
+  const FREE_DELIVERY_LIMIT = null;
 
 
   public function defaultScope()
@@ -52,7 +53,7 @@ class OrderDeliveryType extends FActiveRecord
       if( $this->isFreeDelivery($orderSum) )
         return 0;
       else
-        return self::DELIVERY_PRICE;
+        return floatval($this->price);
     }
 
     return null;
@@ -60,6 +61,6 @@ class OrderDeliveryType extends FActiveRecord
 
   public static function isFreeDelivery($orderSum)
   {
-    return $orderSum > self::FREE_DELIVERY_LIMIT;
+    return !is_null(self::FREE_DELIVERY_LIMIT) && $orderSum > self::FREE_DELIVERY_LIMIT;
   }
 }

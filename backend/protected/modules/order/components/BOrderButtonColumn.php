@@ -46,6 +46,7 @@ class BOrderButtonColumn extends BButtonColumn
       'addButton' => true,
       'multiSelect' => false,
       'updateGridId' => $this->grid->id,
+      'ajaxSubmitOnChange' => false
     ));
 
     Yii::app()->clientScript->registerScript('userSearchPopup', "

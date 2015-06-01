@@ -132,4 +132,19 @@ class PriceHelper
 
     return $discount;
   }
+
+  /**
+   * Преобразует массив decimal во float
+   * @param $array
+   *
+   * @return $array
+   */
+  public static function decimalToFloat($array)
+  {
+    array_walk($array, function(&$value) {
+      $value = floatval($value);
+    });
+
+    return $array;
+  }
 }

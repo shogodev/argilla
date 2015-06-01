@@ -9,7 +9,6 @@
   <?php if( $this->isUpdate() ) {?>
     <?php $this->widget('BButton', array(
       'label' => 'Печать',
-      'icon' => 'icon-print',
       'popupDepended' => false,
       'disabled' => $model->isNewRecord,
       'url' => Yii::app()->controller->createUrl("/order/bOrder/print", array(
@@ -17,6 +16,7 @@
         )),
       'htmlOptions' => array(
         'target' => '_blank',
+        'class' => 'btn-print'
       ),
     )); ?>
   <?php }?>

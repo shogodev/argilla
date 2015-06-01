@@ -594,6 +594,7 @@ CREATE TABLE `argilla_order_delivery_type` (
   `name` varchar(128) NOT NULL,
   `position` int(11) DEFAULT '0',
   `notice` text,
+  `price` decimal(10,2) NOT NULL,
   `visible` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -871,6 +872,23 @@ CREATE TABLE `argilla_product_collection` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `argilla_product_common_association`
+--
+
+DROP TABLE IF EXISTS `argilla_product_common_association`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `argilla_product_common_association` (
+  `product_id` int(10) unsigned NOT NULL,
+  `tag` varchar(255) NOT NULL,
+  UNIQUE KEY `product_id_2` (`product_id`,`tag`),
+  KEY `product_id` (`product_id`),
+  KEY `tag` (`tag`),
+  CONSTRAINT `argilla_product_common_association_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `argilla_product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `argilla_product_currency`
 --
 
@@ -919,6 +937,27 @@ CREATE TABLE `argilla_product_img` (
   `type` varchar(255) NOT NULL DEFAULT 'main',
   PRIMARY KEY (`id`),
   KEY `parent` (`parent`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `argilla_product_option`
+--
+
+DROP TABLE IF EXISTS `argilla_product_option`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `argilla_product_option` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `position` int(11) DEFAULT '0',
+  `product_id` int(10) unsigned NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `price` decimal(10,2) DEFAULT NULL,
+  `img` varchar(255) NOT NULL,
+  `content` text,
+  `visible` tinyint(1) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`id`),
+  KEY `product_options_ibfk_1` (`product_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1014,6 +1053,20 @@ CREATE TABLE `argilla_product_param_variant` (
   CONSTRAINT `argilla_product_param_variants_ibfk_1` FOREIGN KEY (`param_id`) REFERENCES `argilla_product_param_name` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Temporary table structure for view `argilla_product_search_index`
+--
+
+DROP TABLE IF EXISTS `argilla_product_search_index`;
+/*!50001 DROP VIEW IF EXISTS `argilla_product_search_index`*/;
+SET @saved_cs_client     = @@character_set_client;
+SET character_set_client = utf8;
+/*!50001 CREATE TABLE `argilla_product_search_index` (
+ `id` tinyint NOT NULL,
+  `name` tinyint NOT NULL
+) ENGINE=MyISAM */;
+SET character_set_client = @saved_cs_client;
 
 --
 -- Table structure for table `argilla_product_section`
@@ -1443,6 +1496,25 @@ CREATE TABLE `argilla_vacancy_file` (
 --
 
 --
+
+--
+-- Final view structure for view `argilla_product_search_index`
+--
+
+/*!50001 DROP TABLE IF EXISTS `argilla_product_search_index`*/;
+/*!50001 DROP VIEW IF EXISTS `argilla_product_search_index`*/;
+/*!50001 SET @saved_cs_client          = @@character_set_client */;
+/*!50001 SET @saved_cs_results         = @@character_set_results */;
+/*!50001 SET @saved_col_connection     = @@collation_connection */;
+/*!50001 SET character_set_client      = utf8 */;
+/*!50001 SET character_set_results     = utf8 */;
+/*!50001 SET collation_connection      = utf8_general_ci */;
+/*!50001 CREATE ALGORITHM=UNDEFINED */
+/*!50013 DEFINER=CURRENT_USER SQL SECURITY DEFINER */
+/*!50001 VIEW `argilla_product_search_index` AS select `p`.`id` AS `id`,cast(concat_ws(' ',`p`.`name`,`p`.`articul`,`s`.`name`,`c`.`name`) as char charset utf8) AS `name` from (((`argilla_product` `p` join `argilla_product_assignment` `a` on((`p`.`id` = `a`.`product_id`))) left join `argilla_product_section` `s` on((`a`.`section_id` = `s`.`id`))) left join `argilla_product_category` `c` on((`a`.`category_id` = `c`.`id`))) */;
+/*!50001 SET character_set_client      = @saved_cs_client */;
+/*!50001 SET character_set_results     = @saved_cs_results */;
+/*!50001 SET collation_connection      = @saved_col_connection */;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 /*!40101 SET SQL_MODE=@OLD_SQL_MODE */;

@@ -16,7 +16,8 @@
       'iframeUrl' => $this->createUrl('/product/product/index', array('popup' => 1, 'src' => 'BOrder', 'srcId' => $model->id)),
       'submitUrl' => $this->createUrl('/order/orderProduct/addProducts', array('orderId' => $model->id)),
       'updateGridId' => $widgetId,
-      'addButton' => true
+      'addButton' => true,
+      'ajaxSubmitOnChange' => false
     ),
   ))?>
 </div>
@@ -109,6 +110,7 @@ $this->widget('BGridView', array(
         submitUrl : this.href,
         iframeUrl : this.href,
         multiSelect : false,
+        ajaxSubmitOnChange : false,
         updateGridId : '<?php echo $widgetId?>',
         width : 800,
         height : 400,

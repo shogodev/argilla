@@ -10,7 +10,7 @@
   $this->widget('BAssignerButton', array(
     'label' => 'Добавить',
     'assignerOptions' => array(
-      'iframUrl' => $this->createUrl("option/option/create", array('product_id' => $model->id, 'popup' => true)),
+      'iframeUrl' => $this->createUrl("/product/option/option/create", array('product_id' => $model->id, 'popup' => true)),
       'updateGridId' => $grid->id
     ),
     'type' => 'info',

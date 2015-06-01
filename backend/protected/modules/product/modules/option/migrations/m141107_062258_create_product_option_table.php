@@ -1,4 +1,8 @@
 <?php
+/**
+ * Команда миграции:
+ * protected/yiic migrate up --migrationPath=backend.modules.product.modules.option.migrations
+ */
 
 class m141107_062258_create_product_option_table extends CDbMigration
 {

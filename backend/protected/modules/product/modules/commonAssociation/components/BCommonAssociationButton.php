@@ -9,11 +9,10 @@ Yii::import('backend.modules.product.modules.commonAssociation.models.BCommonAss
 
 class BCommonAssociationButton extends BAssociationButton
 {
-  public $ajaxAction = '/product/product/index';
+  public $ajaxAction = '/product/commonAssociation/commonAssociation/association';
 
   public $parameters = array(
     'BPkColumn[associationClass]' => 'commonAssociation.models.BCommonAssociation',
-    'BPkColumn[ajaxAction]' => '/product/commonAssociation/commonAssociation/association',
   );
 
   protected function getAssociationsCount($parameters)
