@@ -52,6 +52,10 @@ Backend.modules.onFly = function(box) {
         if (data.value == resp)
         {
           wrappedElem.removeClass('text-error');
+          if( updateGrid = wrappedElem.data('grid-update') )
+          {
+            $.fn.yiiGridView.update(wrappedElem.closest('.grid-view').attr('id'));
+          }
         }
         else
         {

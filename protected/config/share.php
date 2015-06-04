@@ -16,6 +16,7 @@ return array(
     'share.formatters.*',
     'share.helpers.*',
     'share.validators.*',
+    'share.currency.*',
   ),
 
   'components' => array(

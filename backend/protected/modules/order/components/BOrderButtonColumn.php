@@ -24,10 +24,7 @@ class BOrderButtonColumn extends BButtonColumn
         "BFrontendUser[fullName]" => $data->name,
         "popup" => true
       ))',
-      'options' => array(
-        'class' => 'add',
-        'data-ajaxurl' => Yii::app()->controller->createUrl('/order/bOrder/setUser'),
-      ),
+      'options' => array('class' => 'add'),
     );
 
     $this->registerPopupScript();
@@ -47,44 +44,18 @@ class BOrderButtonColumn extends BButtonColumn
   {
     $assignerOptions = CJavaScript::encode(array(
       'addButton' => true,
+      'multiSelect' => false,
+      'updateGridId' => $this->grid->id,
+      'ajaxSubmitOnChange' => false
     ));
 
     Yii::app()->clientScript->registerScript('userSearchPopup', "
       jQuery('body').on('click', '.items a.add', function(e){
         e.preventDefault();
         var options = {$assignerOptions};
-
-        var iframeUrl = $(this).attr('href');
-        var ajaxUrl = $(this).data('ajaxurl') + '?' + iframeUrl.split('?')[1];
-
-        options.callback = function(elements)
-        {
-          var ids = [];
-          $(elements).filter(':checked').each(function(){
-            ids.push($(this).attr('id').match(/pk_(\d+)/)[1]);
-          });
-
-          if( !ids.length )
-            return;
-
-          var finish = function(){jQuery.fn.yiiGridView.update('{$this->grid->id}');};
-          $.post(ajaxUrl, {'ids' : ids}, finish).fail(function(xhr){ajaxUpdateError(xhr)});
-        };
-
-        options.iframe_load = function()
-        {
-          $('iframe').contents().on('click', '.items .select', function()
-          {
-            var elements = $('iframe').contents().find('.items .select');
-            if( elements.length > 1 )
-            {
-              elements.prop('checked', false);
-              $(this).prop('checked', true);
-            }
-          });
-        };
-
-        assigner.open(iframeUrl, options);
+        options.iframeUrl = $(this).attr('href');
+        options.submitUrl = '".Yii::app()->controller->createUrl('/order/bOrder/setUser')."' + '?' + $(this).attr('href').split('?')[1];
+        assigner.apply(this, options);
       });
     ", CClientScript::POS_READY);
   }

@@ -5,9 +5,11 @@
  * @copyright Copyright &copy; 2003-2015 Shogo
  * @license http://argilla.ru/LICENSE
  */
-class CommonAssociationModule extends ProductModule
+class BOrderDeliveryTypeController extends BController
 {
-  public $defaultController = 'BCommonAssociation';
+  public $position = 70;
 
-  public $enabled = true;
+  public $name = 'Доставка';
+
+  public $modelClass = 'BOrderDeliveryType';
 }

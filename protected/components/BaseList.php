@@ -121,6 +121,8 @@ class BaseList extends CComponent
       $criteria->offset = -1;
     }
 
+    ProductAssignment::model()->addAssignmentCondition($criteria);
+
     $builder = new CDbCommandBuilder(Yii::app()->db->getSchema());
     $command = $builder->createFindCommand($this->getModel()->tableName(), $criteria);
 

@@ -142,13 +142,84 @@ class ArrTest extends CTestCase
     $this->assertEquals([1 => [1, 2], 2 => [1]], $array);
   }
 
-  public function testDivide()
+  public function testDivideEmpty()
   {
-    $array = [1, 2];
-
-    $result = Arr::divide($array);
-    $this->assertEquals([[1], [2]], $result);
     $this->assertEquals(array(), Arr::divide(array()));
+  }
+
+  public function testDivideOneColumn()
+  {
+    $array = array('one', 'two');
+
+    $result = Arr::divide($array, 1);
+    $this->assertEquals(array(array('one', 'two')), $result);
+  }
+
+  public function testDivideTwoColumn()
+  {
+    $array = array('one');
+    $result = Arr::divide($array, 2);
+    $this->assertEquals(array(array('one')), $result);
+
+    $array = array('one', 'two');
+    $result = Arr::divide($array, 2);
+    $this->assertEquals(array(array('one'), array('two')), $result);
+
+    $array = array('one', 'two', 'three', 'four', 'five');
+    $result = Arr::divide($array, 2);
+    $this->assertEquals(array(array('one', 'two', 'three'), array('four', 'five')), $result);
+  }
+
+  public function testDivideThreeColumn()
+  {
+    $array = array('one');
+    $result = Arr::divide($array, 3);
+    $this->assertEquals(array(array('one')), $result);
+
+    $array = array('one', 'two');
+    $result = Arr::divide($array, 3);
+    $this->assertEquals(array(array('one'), array('two')), $result);
+
+    $array = array('one', 'two', 'three', 'four', 'five');
+    $result = Arr::divide($array, 3);
+    $this->assertEquals(array(array('one', 'two'), array('three', 'four'), array('five')), $result);
+
+    $array = array('one', 'two', 'three', 'four', 'five', 'six');
+    $result = Arr::divide($array, 3);
+    $this->assertEquals(array(array('one', 'two'), array('three', 'four'), array('five', 'six')), $result);
+  }
+
+  public function testDivideFourColumn()
+  {
+    $array = array('one');
+    $result = Arr::divide($array, 4);
+    $this->assertEquals(array(array('one')), $result);
+
+    $array = array('one', 'two');
+    $result = Arr::divide($array, 4);
+    $this->assertEquals(array(array('one'), array('two')), $result);
+
+    $array = array('one', 'two', 'three', 'four', 'five');
+    $result = Arr::divide($array, 4);
+    $this->assertEquals(array(array('one', 'two'), array('three'), array('four'), array('five')), $result);
+
+    $array = array('one', 'two', 'three', 'four', 'five', 'six');
+    $result = Arr::divide($array, 4);
+    $this->assertEquals(array(array('one', 'two'), array('three', 'four'), array('five'), array('six')), $result);
+  }
+
+  public function testDivideAssociationIndex()
+  {
+    $array = array('oneIndex' => 'one', 'two' => 'two', 'three' => 'three', 'four' => 'four', 'five' => 'five', 'six' => 'six');
+    $result = Arr::divide($array, 4, false);
+    $this->assertEquals(array(array('oneIndex' => 'one', 'two' => 'two'), array('three' => 'three', 'four' => 'four'), array('five' => 'five'), array('six' => 'six')), $result);
+  }
+
+  public function testDivideFlipSort()
+  {
+    $array = array( 'one', 'two', 'three', 'four', 'five', 'six');
+    $result = Arr::divide($array, 4, true, true);
+    $this->assertEquals(array(array('one', 'five'), array('two', 'six'), array('three'), array('four')), $result);
   }
 
   public function testArrayMergeAssoc()

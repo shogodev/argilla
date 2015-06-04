@@ -34,7 +34,7 @@ class CoordinateSetter extends CWidget
     echo CHtml::tag('div', array(
       'class' => 'coordinateSetter',
       'data-iframeurl' => $url,
-      'onClick' => 'assigner.ajaxHandler(this, {width : "800", height : "500"}); return false',
+      'onClick' => 'assigner.apply(this, {width : "800", height : "500"}); return false',
     ), '&nbsp;');
 
     echo $form->textField($this->model, $this->attribute, array('class' => 'span4'));

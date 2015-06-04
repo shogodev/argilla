@@ -102,6 +102,7 @@ class BFrontendUser extends BActiveRecord
       'fullName' => 'Имя',
       'userPhone' => 'Телефон',
       'confirmPassword' => 'Подтверждение пароля',
+      'ordersUrl' => 'Заказы'
     ));
   }
 
@@ -136,5 +137,20 @@ class BFrontendUser extends BActiveRecord
   public static function clear($login)
   {
     return trim(mb_strtolower($login, 'utf-8'));
+  }
+
+  public function getDiscount()
+  {
+    return isset($this->profile) ? $this->profile->discount : '';
+  }
+
+  public function getOrdersUrl()
+  {
+    $url = '';
+
+    if( $orderCount = BOrder::model()->countByAttributes(array('user_id' => $this->id)) )
+      $url = '<a href="'.Yii::app()->request->getUserHost().'/backend/order/order/?BOrder[user_id]='.$this->id.'">Заказы ('.$orderCount.')</a>';
+
+    return $url;
   }
 }

@@ -22,10 +22,6 @@ class BAssociationButton extends CWidget
 
   public $assignerOptions = array();
 
-  protected $iframeUrl;
-
-  protected $ajaxUrl;
-
   public function init()
   {
     $parameters = array(
@@ -45,21 +41,25 @@ class BAssociationButton extends CWidget
         $parameters[ucfirst($this->name)."[".$name."]"] = $value;
     }
 
-    $this->iframeUrl = Yii::app()->controller->createUrl($this->iframeAction, $parameters);
-    $this->ajaxUrl = Yii::app()->controller->createUrl($this->ajaxAction, $parameters);
+    $this->parameters = $parameters;
   }
 
   public function run()
   {
-    echo CHtml::tag('a', array(
-      'class' => 'btn-assign'.($this->count ? " active" : ""),
-      'rel' => 'tooltip',
-      'data-original-title' => 'Привязка',
-      'data-iframeurl' => $this->iframeUrl,
-      'data-ajaxurl' => $this->ajaxUrl,
-      'href' => '#'.($this->count ? $this->count : ''),
-      'onClick' => 'assigner.ajaxHandler(this,'.CJavaScript::encode($this->assignerOptions).')',
-    ), $this->count ? '<span>'.$this->count.'</span>' : '');
+    Yii::app()->controller->widget('BAssignerButton', array(
+      'label' => $this->count ? '<span>'.$this->count.'</span>' : '',
+      'encodeLabel' => false,
+      'bindHandlerByClass' => 'js-'.str_replace('_', '-',Utils::toSnakeCase($this->name)).'-association',
+      'htmlOptions' => array(
+        'class' => 'btn-assign'.($this->count ? " active" : ""),
+        'href' => '#'.($this->count ? $this->count : ''),
+        'rel' => 'tooltip',
+        'data-original-title' => 'Привязка',
+        'data-iframeurl' => Yii::app()->controller->createUrl($this->iframeAction, $this->parameters),
+        'data-submiturl' => Yii::app()->controller->createUrl($this->ajaxAction, $this->parameters),
+      ),
+      'assignerOptions' => $this->assignerOptions
+    ));
   }
 
   protected function getAssociationsCount($parameters)

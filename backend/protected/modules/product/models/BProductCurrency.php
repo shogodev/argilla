@@ -5,6 +5,10 @@
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.product
+ */
+Yii::import('frontend.share.currency.CurrencyManager');
+/**
+ * Class BProductCurrency
  *
  * @method static BProductCurrency model(string $class = __CLASS__)
  *
@@ -39,14 +43,9 @@ class BProductCurrency extends BActiveRecord
 
   public function getAutoRate()
   {
-    $rate = null;
+    $currencyManager = new CurrencyManager();
 
-    if( !empty($this->autorate_id) && file_exists($this->getPath()) )
-    {
-      $rate = file_get_contents($this->getPath());
-    }
-
-    return round($rate / 10000, 2);
+    return $currencyManager->getCurrency($this->autorate_id);
   }
 
   /**
@@ -75,10 +74,6 @@ class BProductCurrency extends BActiveRecord
     return $this->rate * (PriceHelper::isNotEmpty($this->multiplier) ? $this->multiplier : 1);
   }
 
-  public function getPath()
-  {
-    return '/tmp/'.$this->autorate_id.'4.txt';
-  }
 
   protected function afterSave()
   {

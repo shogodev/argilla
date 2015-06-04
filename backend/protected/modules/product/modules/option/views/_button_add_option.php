@@ -7,23 +7,14 @@
 ?>
 <div class="s-buttons s-buttons-top">
   <?php
-  $buttonId = 'add_option_button_'.$model->id;
-  $closeOperation = "function(){ $.fn.yiiGridView.update('{$grid->id}')}";
-
-  $this->widget('BButton', array(
-    'htmlOptions' => array('id' => $buttonId),
+  $this->widget('BAssignerButton', array(
     'label' => 'Добавить',
-    'url' => $this->createUrl("option/option/create", array('product_id' => $model->id, 'popup' => true)),
+    'assignerOptions' => array(
+      'iframeUrl' => $this->createUrl("/product/option/option/create", array('product_id' => $model->id, 'popup' => true)),
+      'updateGridId' => $grid->id
+    ),
     'type' => 'info',
     'popupDepended' => true,
   ));
-
-  $cs = Yii::app()->getClientScript();
-  $cs->registerScript($buttonId.'_script', "
-    jQuery(document).on('click', '#{$buttonId}', function(e){
-      e.preventDefault();
-      assigner.open(this.href, {'closeOperation' : {$closeOperation}});
-    });
-  ");
   ?>
 </div>

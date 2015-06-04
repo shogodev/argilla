@@ -7,11 +7,11 @@
  */
 class BOptionController extends BController
 {
-  public $enabled = false;
-
   public $name = 'Опции';
 
   public $modelClass = 'BOption';
+
+  public $showInMenu = false;
 
   protected function actionSave($model)
   {

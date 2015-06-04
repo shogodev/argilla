@@ -45,6 +45,8 @@ class BOrder extends BActiveRecord
 
   public $date_create_to;
 
+  public $userProfile;
+
   public function relations()
   {
     return array(
@@ -68,7 +70,7 @@ class BOrder extends BActiveRecord
       array('sum', 'numerical'),
       array('order_comment, delivery_id, payment_id, delivery_sum', 'safe'),
 
-      array('id, type, sum, date_create_from, date_create_to, user_id', 'safe', 'on' => 'search'),
+      array('id, type, sum, date_create_from, date_create_to, user_id, userProfile', 'safe', 'on' => 'search'),
     );
   }
 
@@ -78,7 +80,7 @@ class BOrder extends BActiveRecord
       'name' => 'Имя',
       'date_create_from' => 'Дата с...',
       'date_create_to' => 'по ...',
-      'user_id' => 'Пользователь',
+      'userProfile' => 'Пользователь',
       'type' => 'Тип заказа',
       'status_id' => 'Статус',
       'order_comment' => 'Комментарий менеджера',
@@ -135,22 +137,36 @@ class BOrder extends BActiveRecord
     return DateTime::createFromFormat('Y-m-d H:i:s', $this->date_create)->format($format);
   }
 
+  public function recalc($save = true)
+  {
+    if( $save )
+      $this->refresh();
+
+    $this->sum = $this->delivery_sum;
+
+    foreach($this->products as $product)
+      $this->sum += $product->sum;
+
+    if( $save )
+      $this->save();
+  }
+
   /**
    * @param CDbCriteria $criteria
    */
   protected function addUserCondition(CDbCriteria $criteria)
   {
-    if( preg_match("/^[\d\(\)\-\ +]+$/", $this->user_id) )
+    if( preg_match("/^[\d\(\)\-\ +]+$/", $this->userProfile) )
     {
-      $criteria->addSearchCondition('phone', $this->user_id);
+      $criteria->addSearchCondition('phone', $this->userProfile);
     }
-    else if( preg_match("/^[a-z0-9@.\-_]+$/", $this->user_id) )
+    else if( preg_match("/^[a-z0-9@.\-_]+$/", $this->userProfile) )
     {
-      $criteria->addSearchCondition('email', $this->user_id);
+      $criteria->addSearchCondition('email', $this->userProfile);
     }
     else
     {
-      $criteria->addSearchCondition('name', $this->user_id);
+      $criteria->addSearchCondition('name', $this->userProfile);
     }
   }
 
@@ -167,6 +183,8 @@ class BOrder extends BActiveRecord
         if( $oldModel->status_id != $this->status_id )
           $this->modelChangeStatus($oldModel);
       }
+
+      $this->recalc(false);
 
       return true;
     }
@@ -198,6 +216,7 @@ class BOrder extends BActiveRecord
     $criteria->compare('id', $this->id);
     $criteria->compare('status_id', $this->status_id);
     $criteria->compare('sum', $this->sum);
+    $criteria->compare('user_id', $this->user_id);
 
     $this->addUserCondition($criteria);
 

@@ -16,6 +16,8 @@ $this->widget('BGridView', array(
     array('name' => 'fullName', 'value' => '$data->getFullName()', 'header' => 'Имя'),
     array('name' => 'email'),
     array('name' => 'userPhone', 'value' => '$data->profile ? $data->profile->phone : ""'),
+    array('name' => 'ordersUrl', 'type' => 'html', 'filter' => false),
+    array('name' => 'discount'),
     array('class' => 'JToggleColumn', 'name' => 'visible'),
     array('class' => 'BButtonUpdateColumn'),
   ),

@@ -42,8 +42,6 @@ class BPkColumn extends BDataColumn
       $this->ajaxUrl = Yii::app()->controller->createUrl(
         $this->ajaxAction, array('srcId' => $this->assocSrcId, 'src' => $this->assocSrc, 'dst' => $this->assocDst)
       );
-
-      $this->registerScript();
     }
 
     parent::init();
@@ -77,6 +75,7 @@ class BPkColumn extends BDataColumn
       'type' => 'checkbox',
       'class' => 'select',
       'id' => 'pk_'.$data->getPrimaryKey(),
+      'data-url' => $this->ajaxUrl
     );
 
     $association = Yii::createComponent($this->associationClass);
@@ -91,17 +90,5 @@ class BPkColumn extends BDataColumn
       $options['disabled'] = 'disabled';
 
     echo CHtml::tag('input', $options);
-  }
-
-  protected function registerScript()
-  {
-    Yii::app()->clientScript->registerScript('pkColumnChange', "
-      $('body').on('change', '.grid-view input.select', function() {
-        var value = $(this).prop('checked') ? 1 : 0;
-        var id    = $(this).attr('id').match(/pk_(\d+)/)[1];
-
-        $.post('{$this->ajaxUrl}', {'value' : value, 'ids' : id});
-      });
-    ", CClientScript::POS_READY);
   }
 }

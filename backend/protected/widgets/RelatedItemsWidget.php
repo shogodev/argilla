@@ -10,7 +10,7 @@
  * <pre>
  * echo $form->relatedItemsRow($model, 'steps', array(
  *   'position' => array('class' => 'span1'),
- *   'content' => array('class' => 'span8'),
+ *   'content' => array('class' => 'span8', 'label' => 'Текст'),
  * ));
  *
  * echo $form->relatedItemsRow($model, 'steps', array(
@@ -88,7 +88,8 @@ class RelatedItemsWidget extends CWidget
     foreach($this->attributes as $key => $attribute)
     {
       $name = is_array($attribute) ? $key : $attribute;
-      echo CHtml::tag('li', array('class' => 'multi-list-header-col'), $element->getAttributeLabel($name), false);
+      $label = Arr::cut($attribute, 'label', $element->getAttributeLabel($name));
+      echo CHtml::tag('li', array('class' => 'multi-list-header-col'), $label, false);
       echo '&nbsp;';
     }
 

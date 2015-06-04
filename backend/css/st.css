@@ -113,8 +113,10 @@ td.button-column a:before {
   vertical-align: middle; }
 .btn-alone.update:before,
 .btn-alone.delete:before,
+.btn-alone.print:before,
 td.button-column a.update:before,
-td.button-column a.delete:before {
+td.button-column a.delete:before,
+td.button-column a.print:before {
   vertical-align: baseline; }
 .btn:hover,
 td.button-column a:hover {

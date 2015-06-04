@@ -5,6 +5,12 @@
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
  * @package frontend.models.product
+ */
+
+/**
+ * Class ProductParameterName
+ *
+ * @method static ProductParameterName model(string $class = __CLASS__)
  * @property integer $id
  * @property integer $parent
  * @property integer $position
@@ -23,7 +29,8 @@
  * @property ProductParameterVariant[] $variants
  * @property integer $productId
  * @property string $value
- * @method static ProductParameterName model(string $class = __CLASS__)
+ *
+ * @property ProductParameterVariant $variant
  */
 class ProductParameterName extends FActiveRecord
 {
@@ -298,5 +305,13 @@ class ProductParameterName extends FActiveRecord
           }, array()
         ));
     }
+  }
+
+  /**
+   * @return ProductParameterVariant
+   */
+  public function getVariant()
+  {
+    return !empty($this->parameters) ? Arr::reset($this->parameters)->variant : new ProductParameterVariant();
   }
 }

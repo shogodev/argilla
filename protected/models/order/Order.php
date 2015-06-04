@@ -92,7 +92,8 @@ class Order extends FActiveRecord
       return parent::beforeSave();
 
     $this->delivery_id = !empty($this->delivery_id) ? $this->delivery_id : null;
-    $this->delivery_sum = null;
+    $this->refresh();
+    $this->delivery_sum = $this->deliveryType ? $this->deliveryType->calcDelivery($this->basket->getSumTotal()) : null;
 
     $this->sum = $this->basket->getSumTotal() + $this->delivery_sum;
     $this->ip = ip2long(Yii::app()->request->userHostAddress);
@@ -160,12 +161,13 @@ class Order extends FActiveRecord
   {
     foreach($this->basket as $product)
     {
+      $discountPrice = $this->getDiscountPrice($product);
       $orderProduct = $this->saveModel(new OrderProduct(), array(
         'order_id' => $this->primaryKey,
         'name' => $product->name,
-        'price' => $product->getPrice(),
+        'price' => $product->getPrice() + $discountPrice,
         'count' => $product->collectionAmount,
-        'discount' => $product->discount,
+        'discount' => $discountPrice,
         'sum' => $product->getSumTotal(),
       ));
 
@@ -256,5 +258,20 @@ class Order extends FActiveRecord
         $this->saveCollectionItem($item, $orderProduct);
       }
     }
+  }
+
+  private function getDiscountPrice($product)
+  {
+    $discountPrice = 0;
+    try
+    {
+      $discountPrice = $product->getRealDiscountPrice();
+    }
+    catch(Exception $e)
+    {
+
+    }
+
+    return $discountPrice;
   }
 }

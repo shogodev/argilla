@@ -18,18 +18,13 @@ class BPopupColumn extends BDataColumn
 
   public $parameters = array();
 
-  public $closeOperation;
-
   protected function renderDataCellContent($row, $data)
   {
-    if( $this->closeOperation === null )
-      $this->closeOperation = '$.fn.yiiGridView.update("'.$this->grid->id.'");';
-
     $widgetOptions = array(
       'name' => $this->name,
       'model' => $data,
       'assignerOptions' => array(
-        'closeOperation' => new CJavaScriptExpression('function(){'.$this->closeOperation.'}'),
+        'updateGridId' => $this->grid->id,
       ),
     );
 
