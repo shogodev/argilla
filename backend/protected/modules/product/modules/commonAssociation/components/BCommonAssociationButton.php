@@ -4,6 +4,17 @@
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2015 Shogo
  * @license http://argilla.ru/LICENSE
+ *
+ * Пример использования в Grid:
+ *
+ * 'columns' => array(
+ *   array(
+ *     'name' => 'color',
+ *     'widget' => 'commonAssociation.components.BCommonAssociationButton',
+ *     'header' => 'Цвета',
+ *     'class' => 'BPopupColumn',
+ *   )
+ * )
  */
 Yii::import('backend.modules.product.modules.commonAssociation.models.BCommonAssociation');
 
