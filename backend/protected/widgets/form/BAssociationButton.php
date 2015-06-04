@@ -41,10 +41,7 @@ class BAssociationButton extends CWidget
         $parameters[ucfirst($this->name)."[".$name."]"] = $value;
     }
 
-    $this->assignerOptions = CMap::mergeArray(array(
-      'iframeUrl' => Yii::app()->controller->createUrl($this->iframeAction, $parameters),
-      'submitUrl' => Yii::app()->controller->createUrl($this->ajaxAction, $parameters),
-    ), $this->assignerOptions);
+    $this->parameters = $parameters;
   }
 
   public function run()
@@ -52,11 +49,14 @@ class BAssociationButton extends CWidget
     Yii::app()->controller->widget('BAssignerButton', array(
       'label' => $this->count ? '<span>'.$this->count.'</span>' : '',
       'encodeLabel' => false,
+      'bindHandlerByClass' => 'js-'.str_replace('_', '-',Utils::toSnakeCase($this->name)).'-association',
       'htmlOptions' => array(
         'class' => 'btn-assign'.($this->count ? " active" : ""),
         'href' => '#'.($this->count ? $this->count : ''),
         'rel' => 'tooltip',
         'data-original-title' => 'Привязка',
+        'data-iframeurl' => Yii::app()->controller->createUrl($this->iframeAction, $this->parameters),
+        'data-submiturl' => Yii::app()->controller->createUrl($this->ajaxAction, $this->parameters),
       ),
       'assignerOptions' => $this->assignerOptions
     ));
