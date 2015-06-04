@@ -50,7 +50,8 @@ class Arr
       $value = isset($array[$key]) ? $array[$key] : $default;
     }
 
-    unset($array[$key]);
+    if( isset($array[$key]) )
+      unset($array[$key]);
 
     return $value;
   }
@@ -299,24 +300,16 @@ class Arr
     return $res;
   }
 
-  /**
-   * Делит массив на $countOfParts колонок
-   * @param array $array
-   * @param int $countOfParts
-   * @param bool $resetIndex - не использовать ассоциативные ключи, по умолчанию true
-   * @param bool $flipSort - сортировка элементов по горизонтали, по умолчанию false
-   *
-   * @return array
-   */
-  public static function divide(array $array, $countOfParts = 2, $resetIndex = true, $flipSort = false)
+  public static function divide(array $array, $countOfParts = 2)
   {
     if( !count($array) )
+    {
       return array();
-
-    $matrix = self::createMatrix($countOfParts, $array);
-    $outArray = self::createArrayByMatrix($array, $matrix, $resetIndex, $flipSort);
-
-    return $outArray;
+    }
+    else
+    {
+      return array_chunk($array, count($array) < $countOfParts ? count($array) : ceil(count($array) / $countOfParts));
+    }
   }
 
   /**
@@ -406,67 +399,5 @@ class Arr
     });
 
     return $result;
-  }
-
-  private static function createMatrix($countColumns, $array)
-  {
-    $matrix = array();
-    $countElements = count($array);
-    $rowsCount = ceil($countElements / $countColumns);
-
-    for($rowIndex = 0; $rowIndex < $rowsCount; $rowIndex++)
-    {
-      for($columnIndex = 0; $columnIndex < $countColumns; $columnIndex++)
-      {
-        $value = array_shift($array) ? 1 : 0;
-        $matrix[$columnIndex][$rowIndex] = $value;
-      }
-    }
-
-    return $matrix;
-  }
-
-  private static function createArrayByMatrix($array, $matrix, $resetKeys = true, $flipSort = false)
-  {
-    if( empty($matrix) || empty($array) )
-      return array();
-
-    $countColumns = count($matrix);
-    $rowsCount = count($matrix[0]);
-
-    $outArray = array();
-
-    $arrayProcess = function($columnIndex, $rowIndex) use($matrix, $resetKeys, &$outArray, &$array) {
-      if( $matrix[$columnIndex][$rowIndex] == 1)
-      {
-        reset($array);
-        $key = key($array);
-        $value = array_shift($array);
-        $outArray[$columnIndex][$resetKeys ? $rowIndex : $key] = $value;
-      }
-    };
-
-    if( !$flipSort )
-    {
-      for($columnIndex = 0; $columnIndex < $countColumns; $columnIndex++)
-      {
-        for($rowIndex = 0; $rowIndex < $rowsCount; $rowIndex++)
-        {
-          $arrayProcess($columnIndex, $rowIndex);
-        }
-      }
-    }
-    else
-    {
-      for($rowIndex = 0; $rowIndex < $rowsCount; $rowIndex++)
-      {
-        for($columnIndex = 0; $columnIndex < $countColumns; $columnIndex++)
-        {
-          $arrayProcess($columnIndex, $rowIndex);
-        }
-      }
-    }
-
-    return $outArray;
   }
 }
