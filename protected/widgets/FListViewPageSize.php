@@ -30,11 +30,11 @@ class FListViewPageSize extends CWidget
 
   public function run()
   {
-    echo CHtml::tag('div', array('class' => $this->containerClass), false, false);
-    echo CHtml::tag('span', array('class' => $this->labelClass), Yii::t('app', $this->label));
+    echo isset($this->containerClass) ? CHtml::tag('div', array('class' => $this->containerClass), false, false) : '';
+    echo isset($this->labelClass) ? CHtml::tag('div', array('class' => $this->labelClass), Yii::t('app', $this->label)) : '';
     echo '&nbsp;';
     echo CHtml::tag('div', array('class' => $this->dropDownContainerClass), $this->renderDropDown());
-    echo CHtml::closeTag('div');
+    echo isset($this->containerClass) ? CHtml::closeTag('div') : '';
   }
 
   private function renderDropDown()
