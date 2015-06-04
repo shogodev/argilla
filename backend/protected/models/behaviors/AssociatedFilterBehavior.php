@@ -41,7 +41,7 @@ class AssociatedFilterBehavior extends SActiveRecordBehavior
     if( isset($this->associated) )
     {
       $field = $this->owner->tableAlias.'.id';
-      $keys = BAssociation::model()->getAssociatedKeys();
+      $keys = $this->getAssociationModel()->getAssociatedKeys();
 
       if( !empty($this->associated) )
         $criteria->addInCondition($field, $keys);
@@ -62,5 +62,15 @@ class AssociatedFilterBehavior extends SActiveRecordBehavior
   private function attachEvents()
   {
     $this->owner->attachEventHandler('onBeforeSearch', array($this, 'beforeSearch'));
+  }
+
+  /**
+   * @return BAssociation
+   */
+  private function getAssociationModel()
+  {
+    $associationClass = Arr::get(Yii::app()->request->getParam('BPkColumn', array()), 'associationClass', 'BAssociation');
+
+    return Yii::createComponent($associationClass);
   }
 }

@@ -91,6 +91,23 @@ class BCommonAssociation extends BActiveRecord
     return false;
   }
 
+  public function getAssociatedKeys($data = null)
+  {
+    if( !isset($data) )
+    {
+      $data = Arr::extract($_GET, array('src', 'dst', 'srcId'));
+    }
+
+    if( isset($data['srcId']) )
+    {
+      $data['src_id'] = Arr::cut($data, 'srcId');
+    }
+
+    $attributes = array('tag' => $this->getTag($data['src_id']));
+
+    return CHtml::listData(self::model()->findAllByAttributes($attributes), 'product_id', 'product_id');
+  }
+
   private function createTag($primaryKey)
   {
     while($tag = md5(microtime()))
