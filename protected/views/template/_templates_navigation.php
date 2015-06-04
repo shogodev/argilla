@@ -191,9 +191,9 @@
   $('.templates-navigation-toggle').on('click', function() {
     $('#templates-navigation').toggleClass('collapsed');
     if ( $('#templates-navigation').hasClass('collapsed') ) {
-      $.cookie('templates_navigation', false);
+      $.cookie('templates_navigation', false, {'path' : '/'});
     } else {
-      $.cookie('templates_navigation', true);
+      $.cookie('templates_navigation', true, {'path' : '/'});
     }
   });
   // Закрытие панели

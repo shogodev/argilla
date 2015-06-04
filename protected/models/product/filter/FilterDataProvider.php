@@ -119,6 +119,8 @@ class FilterDataProvider
   private function getProductsByActionCriteria(CDbCriteria $criteria)
   {
     $criteria->select = 't.id';
+    $criteria->compare('t.visible', 1);
+
     ProductAssignment::model()->addAssignmentCondition($criteria);
     $command = $this->builder->createFindCommand(Product::model()->tableName(), $criteria);
 

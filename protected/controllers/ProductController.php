@@ -19,6 +19,13 @@ class ProductController extends FController
    */
   private $filter;
 
+  public function behaviors()
+  {
+    return CMap::mergeArray(parent::behaviors(), array(
+      'productTextBehavior' => array('class' => 'backend.modules.product.modules.text.frontend.ProductTextBehavior')
+    ));
+  }
+
   public function beforeAction($action)
   {
     $this->setSorting();
@@ -136,6 +143,12 @@ class ProductController extends FController
       $this->renderPartial('one/product', $data);
     else
       $this->render('one/product', $data);
+  }
+
+  public function isFirstPage()
+  {
+    $page = Yii::app()->request->getParam('page');
+    return $page === null || $page == 1;
   }
 
   private function renderPage(array $models, CDbCriteria $criteria)

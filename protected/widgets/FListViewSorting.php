@@ -24,7 +24,7 @@ class FListViewSorting extends CWidget
   {
     $this->dropDowns = array(
       array(
-        'label' => Yii::t('app', 'Сортировка'),
+        'label' => Yii::t('app', 'Сортировать по:'),
         'items' => array(
           'Не важно',
           'popular_up' => Yii::t('app', 'Сначала популярные'),
@@ -42,10 +42,10 @@ class FListViewSorting extends CWidget
   {
     foreach($this->dropDowns as $dropDown)
     {
-      echo CHtml::tag('div', array('class' => $this->containerClass), false, false);
-      echo CHtml::tag('div', array('class' => $this->labelClass), $dropDown['label']);
+      echo isset($this->containerClass) ? CHtml::tag('div', array('class' => $this->containerClass), false, false) : '';
+      echo isset($this->labelClass) ? CHtml::tag('div', array('class' => $this->labelClass), $dropDown['label']) : $dropDown['label'];
       echo CHtml::tag('div', array('class' => $this->dropDownContainerClass), $this->renderDropDown($dropDown));
-      echo CHtml::closeTag('div');
+      echo isset($this->containerClass) ? CHtml::closeTag('div') : '';
     }
   }
 
