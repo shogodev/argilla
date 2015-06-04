@@ -9,5 +9,5 @@ class CommonAssociationModule extends ProductModule
 {
   public $defaultController = 'BCommonAssociation';
 
-  public $enabled = true;
+  public $enabled = false;
 }

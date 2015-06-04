@@ -93,7 +93,12 @@ class BCommonAssociation extends BActiveRecord
 
   private function createTag($primaryKey)
   {
-    $tag = (new DateTime())->getTimestamp();
+    while($tag = md5(microtime()))
+    {
+      if( !$this->findByAttributes(array('tag' => $tag)) )
+        break;
+    }
+
     $this->createItem($primaryKey, $tag);
 
     return $tag;
