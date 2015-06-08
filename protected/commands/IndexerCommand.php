@@ -64,14 +64,17 @@ class IndexerCommand extends CConsoleCommand
 
   public function actionRefresh()
   {
-    Yii::app()->db->beginTransaction();
+    if( !($transaction = Yii::app()->db->getCurrentTransaction()) )
+       Yii::app()->db->beginTransaction();
 
     $this->actionDelete();
     $this->buildProperties();
     $this->buildParameters();
     $this->save();
 
-    Yii::app()->db->currentTransaction->commit();
+    if( !$transaction )
+      Yii::app()->db->getCurrentTransaction()->commit();
+
     $this->updateProduction();
   }
 
