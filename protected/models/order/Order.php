@@ -45,7 +45,7 @@ class Order extends FActiveRecord
   public function rules()
   {
     return array(
-      array('name, phone', 'required', 'except' => 'fastOrder'),
+      array('name, phone, payment_id, delivery_id', 'required', 'except' => 'fastOrder'),
       array('phone', 'required', 'on' => 'fastOrder'),
       array('email', 'email'),
       array('name, phone, address, comment', 'length', 'min' => 3, 'max' => 255),

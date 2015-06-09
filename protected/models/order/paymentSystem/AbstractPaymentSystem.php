@@ -49,7 +49,7 @@ abstract class AbstractPaymentSystem extends CComponent implements IPaymentSyste
 
       if( !file_exists($path) )
       {
-        throw new CException('Не удается найти конфигурацию платежной системы');
+        throw new NoConfigException('Не удается найти конфигурацию платежной системы');
       }
 
       $config = require $path;
