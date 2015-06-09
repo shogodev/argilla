@@ -27,7 +27,8 @@ class AssociationBehavior extends SActiveRecordBehavior
    */
   public function getAssociationForMe($modelName = '')
   {
-    return Association::model()->setSource($this->owner, $modelName);
+    $model = new Association();
+    return $model->setSource($this->owner, $modelName);
   }
 
   /**
@@ -37,6 +38,7 @@ class AssociationBehavior extends SActiveRecordBehavior
    */
   public function getAssociationWithMe($modelName = '')
   {
-    return Association::model()->setDestination($this->owner, $modelName);
+    $model = new Association();
+    return $model->setDestination($this->owner, $modelName);
   }
 }

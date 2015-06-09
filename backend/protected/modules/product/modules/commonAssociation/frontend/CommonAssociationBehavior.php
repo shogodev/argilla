@@ -29,6 +29,7 @@ class CommonAssociationBehavior extends SActiveRecordBehavior
    */
   public function getCommonAssociation($withMe = false)
   {
-    return CommonAssociation::model()->setTagByModel($this->owner, $withMe);
+    $model = new CommonAssociation();
+    return $model->setTagByModel($this->owner, $withMe);
   }
 }
