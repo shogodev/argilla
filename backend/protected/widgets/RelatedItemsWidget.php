@@ -111,6 +111,9 @@ class RelatedItemsWidget extends CWidget
 
     foreach($this->attributes as $key => $attribute)
     {
+      if( is_null($attribute) )
+        continue;
+
       $name = is_array($attribute) ? $key : $attribute;
       $tag  = Arr::get($attribute, 'tag', 'input');
 

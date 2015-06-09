@@ -10,11 +10,11 @@ Yii::import('zii.widgets.CListView');
 
 class FListView extends CListView
 {
+  public $separator = " ";
+
   public $template = "{pager}\n{items}\n{pager}";
 
   public $pager = array('class' => 'FLinkPager');
-
-  public $separator = ' ';
 
   public $ajaxUpdate = false;
 
@@ -29,6 +29,8 @@ class FListView extends CListView
   public $columnsCount;
 
   public $lastItemClass = 'last';
+
+  public $dummyElement;
 
   public function renderPager()
   {
@@ -105,6 +107,10 @@ class FListView extends CListView
         if( $j++ < $n - 1 )
           echo $this->separator;
       }
+
+      if( isset($this->dummyElement) )
+        for( $i = 0; $i < $this->columnsCount - 1; $i++ )
+          echo ' '.$this->dummyElement.' ';
     }
     else
       $this->renderEmptyText();

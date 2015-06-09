@@ -14,7 +14,8 @@
 <?php if( !in_array($model->type, array('text', 'slider')) ) { ?>
   <?php echo $form->relatedItemsRow($model, 'variants', array(
     'position' => array('class' => 'span1'),
-    'name'
+    'name',
+    'notice' => $model->key == 'color' ? array('label'=> 'Цвет') : null
   )) ?>
 <?php } ?>
 
