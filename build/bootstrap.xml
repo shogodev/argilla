@@ -4,8 +4,20 @@
   <property name="argilla.yiiStorage" value="/usr/local/yii"/>
   <php expression="dirName(getcwd())" returnProperty="projectDirectory"/>
   <taskdef name="useGulp" classname="build.tasks.CheckUseGulp"/>
+  <import file="build/db.xml"/>
 
-  <target name="bootstrap" depends="symlinkYii, createDBConfig" />
+  <target name="bootstrap" depends="symlinkYii, createDBConfig" >
+    <phing phingfile="build/db.xml" target="applySchema" haltonfailure="true"/>
+    <exec command="protected/yiic migrate --interactive=0" logoutput="true" passthru="true" checkreturn="true"/>
+    <exec command="protected/yiic rbac build" logoutput="true" passthru="true" checkreturn="true"/>
+    <if>
+      <isset property="demo"/>
+      <then>
+        <exec command="protected/yiic migrate --migrationPath=frontend.migrations.demo --interactive=0" logoutput="true" passthru="true" checkreturn="true"/>
+      </then>
+    </if>
+  </target>
+
   <target name="packJS" description="Pack JS">
     <useGulp returnProperty="idUseGulp"/>
     <if>

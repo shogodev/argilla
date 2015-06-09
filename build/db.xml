@@ -50,6 +50,7 @@
     <exec command="mysqldump --dump-date --routines --no-data -u${db.username} -p${db.password} -h${db.host} ${db.dbname} > ${dbSchemaLocation}"/>
     <changeTablePrefix file="${dbSchemaLocation}" originalPrefix="${db.prefix}" newPrefix="argilla_"/>
     <fixSchema file="${dbSchemaLocation}"/>
+    <chmod file="${dbSchemaLocation}" mode="0666" />
   </target>
 
   <target name="applySchema" depends="getDbSettings" description="Apply DB schema">
@@ -95,10 +96,7 @@
   </target>
 
   <target name="migrate" description="Apply migrations">
-    <available file="${dbSchemaLocation}" property="schema_exists" value="1"/>
-    <fail unless="schema_exists" message="Schema file does not exist in specified location (${dbSchemaLocation})"/>
-
-    <exec command="protected/yiic migrate" passthru="true"/>
+    <exec command="protected/yiic migrate --interactive=0" passthru="true"/>
   </target>
 
   <target name="applyDump" depends="getDbSettings" description="Apply DB dump">
@@ -158,6 +156,7 @@
       <then>
         <exec command="mysqldump --dump-date --routines -u${db.username} -p${db.password} -h${db.host} ${db.dbname} > ${sqlFolder}/${dumpFileName}"/>
         <fixDump file="${sqlFolder}/${dumpFileName}" tablePrefix="${db.prefix}"/>
+        <chmod file="${sqlFolder}/${dumpFileName}" mode="0666" />
       </then>
     </if>
   </target>

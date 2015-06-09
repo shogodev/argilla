@@ -160,10 +160,6 @@
     <phing phingFile="build/bootstrap.xml" target="compileJS"/>
   </target>
 
-  <target name="addPassword" description="Add backend user">
-    <phing phingFile="build/passwords.xml" target="addPassword"/>
-  </target>
-
   <target name="bootstrap" description="Do a bootstrap process">
     <phing phingFile="build/bootstrap.xml"/>
     <echo message="bootstrap done"/>
