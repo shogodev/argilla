@@ -11,37 +11,23 @@
  * Class ProductController
  * @mixin ProductTextBehavior
  * @mixin ProductFilterBehavior
+ * @mixin ProductSortingBehavior
  */
 class ProductController extends FController
 {
-  public $sorting = 'default';
-
   public $pageSize = 10;
-
-  public $pageSizeRange;
 
   public function behaviors()
   {
     return CMap::mergeArray(parent::behaviors(), array(
       'productTextBehavior' => array('class' => 'backend.modules.product.modules.text.frontend.ProductTextBehavior'),
-      'productFilterBehavior' => array('class' => 'ProductFilterBehavior')
+      'productFilterBehavior' => array('class' => 'ProductFilterBehavior'),
+      'productSortingBehavior' => array(
+        'class' => 'ProductSortingBehavior',
+        'defaultSorting' => 'default',
+        'pageSizeRange' => array(20, 40, 60)
+      )
     ));
-  }
-
-  public function beforeAction($action)
-  {
-    $this->setSorting();
-
-    return parent::beforeAction($action);
-  }
-
-  public function init()
-  {
-    parent::init();
-
-    $params = Yii::app()->session->get($this->id);
-    $this->pageSize = Arr::get($params, 'pageSize', $this->getSettings('product_page_size', $this->pageSize));
-    $this->pageSizeRange = Arr::reflect(array(20, 40, 60));
   }
 
   public function actionCategories()
@@ -149,10 +135,10 @@ class ProductController extends FController
 
   private function renderPage(array $models, CDbCriteria $criteria)
   {
-    $productList = new ProductList($criteria, $this->getSorting(), true, $this->filter);
+    $productList = new ProductList($criteria, $this->getSorting(), true, $this->getFilter());
     $dataProvider = $productList->getDataProvider();
 
-    $this->filter->setSelectedModels($models);
+    $this->getFilter()->setSelectedModels($models);
 
     $data = array(
       'model' => Arr::reset($models),
@@ -169,29 +155,5 @@ class ProductController extends FController
     {
       $this->render('content', $data);
     }
-  }
-
-  private function setSorting()
-  {
-    if( Yii::app()->request->isPostRequest && isset($_POST['setSorting']) )
-    {
-      $sessionParams = Yii::app()->session[$this->id];
-
-      $sorting = Yii::app()->request->getPost('sorting');
-      $sessionParams['sorting'] = !empty($sorting) ? $sorting : null;
-
-      $this->pageSize = Yii::app()->request->getPost('pageSize', $this->pageSize);
-      $sessionParams['pageSize'] = $this->pageSize;
-
-      Yii::app()->session[$this->id] = $sessionParams;
-    }
-  }
-
-  private function getSorting()
-  {
-    $params = Yii::app()->session->get($this->id);
-    $this->sorting = Arr::get($params, 'sorting', $this->sorting);
-
-    return $this->sorting;
   }
 }
