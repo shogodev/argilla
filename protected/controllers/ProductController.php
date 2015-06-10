@@ -6,6 +6,12 @@
  * @license http://argilla.ru/LICENSE
  * @package frontend.controllers
  */
+
+/**
+ * Class ProductController
+ * @mixin ProductTextBehavior
+ * @mixin ProductFilterBehavior
+ */
 class ProductController extends FController
 {
   public $sorting = 'default';
@@ -14,15 +20,11 @@ class ProductController extends FController
 
   public $pageSizeRange;
 
-  /**
-   * @var Filter
-   */
-  private $filter;
-
   public function behaviors()
   {
     return CMap::mergeArray(parent::behaviors(), array(
-      'productTextBehavior' => array('class' => 'backend.modules.product.modules.text.frontend.ProductTextBehavior')
+      'productTextBehavior' => array('class' => 'backend.modules.product.modules.text.frontend.ProductTextBehavior'),
+      'productFilterBehavior' => array('class' => 'ProductFilterBehavior')
     ));
   }
 
@@ -40,14 +42,6 @@ class ProductController extends FController
     $params = Yii::app()->session->get($this->id);
     $this->pageSize = Arr::get($params, 'pageSize', $this->getSettings('product_page_size', $this->pageSize));
     $this->pageSizeRange = Arr::reflect(array(20, 40, 60));
-  }
-
-  /**
-   * @return Filter
-   */
-  public function getFilter()
-  {
-    return $this->filter;
   }
 
   public function actionCategories()
@@ -137,10 +131,12 @@ class ProductController extends FController
 
     $data = array(
       'model' => $model,
+      'similarDataProvider' => $model->getSimilarProducts(4),
+      'relatedDataProvider' => $model->getRelatedProducts(4),
     );
 
     if( Yii::app()->request->isAjaxRequest )
-      $this->renderPartial('one/product', $data);
+      $this->renderPartial('_details', array('data' => $model));
     else
       $this->render('one/product', $data);
   }
@@ -153,16 +149,16 @@ class ProductController extends FController
 
   private function renderPage(array $models, CDbCriteria $criteria)
   {
-    //$this->setFilter();
     $productList = new ProductList($criteria, $this->getSorting(), true, $this->filter);
     $dataProvider = $productList->getDataProvider();
 
-    //$this->filter->setSelectedModels($models);
+    $this->filter->setSelectedModels($models);
 
     $data = array(
       'model' => Arr::reset($models),
       'dataProvider' => $dataProvider,
       'filter' => $this->getFilter(),
+      'menus' => array()
     );
 
     if( Yii::app()->request->isAjaxRequest )
@@ -172,61 +168,6 @@ class ProductController extends FController
     else
     {
       $this->render('content', $data);
-    }
-  }
-
-  private function setFilter()
-  {
-    if( !isset($this->filter) )
-    {
-      $this->filter = new Filter(null, true);
-    }
-
-    $this->filter->addElement(array(
-      'id'          => 'section_id',
-      'label'       => 'Разделы',
-      'htmlOptions' => ['class' => ''],
-      'itemLabels'  => CHtml::listData(ProductSection::model()->findAll(), 'id', 'name'),
-    ));
-
-    $this->filter->addElement(array(
-      'id'          => 'category_id',
-      'label'       => 'Бренды',
-      'type'        => 'checkbox',
-      'htmlOptions' => ['class' => 'filter-block m30'],
-      'itemLabels'  => CHtml::listData(ProductCategory::model()->findAll(), 'id', 'name'),
-    ));
-
-    $this->filter->addElement(array(
-      'id'          => 'type_id',
-      'label'       => 'Возраст',
-      'type'        => 'checkbox',
-      'htmlOptions' => ['class' => 'filter-block m30'],
-      'itemLabels'  => CHtml::listData(ProductType::model()->findAll(), 'id', 'name'),
-    ));
-
-    $this->filter->addElement(array(
-      'id'          => 'price',
-      'label'       => 'Цена',
-      'type'        => 'slider',
-      'htmlOptions' => ['class' => ''],
-      'borderRange' => 100,
-    ));
-
-    $criteria = new CDbCriteria();
-    $criteria->compare('t.selection', 1);
-    $parameters = ProductParameterName::model()->search($criteria);
-
-    foreach($parameters as $parameter)
-    {
-      $this->filter->addElement(array(
-        'id'          => $parameter->id,
-        'key'         => $parameter->key,
-        'label'       => $parameter->name,
-        'type'        => 'parameter',
-        'htmlOptions' => ['class' => ''],
-        'variants'    => $parameter->variants,
-      ));
     }
   }
 

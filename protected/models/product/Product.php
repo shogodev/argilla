@@ -43,6 +43,7 @@
  * @mixin ActiveImageBehavior
  * @mixin ProductPriceBehavior
  * @mixin ProductDumpBehavior
+ * @mixin RelatedProductsBehavior
  */
 class Product extends FActiveRecord
 {
@@ -62,6 +63,7 @@ class Product extends FActiveRecord
       'productParametersBehavior' => array('class' => 'ProductParametersBehavior'),
       'imagesBehavior' => array('class' => 'ActiveImageBehavior', 'imageClass' => 'ProductImage'),
       'productDumpBehavior' => array('class' => 'ProductDumpBehavior'),
+      'relatedProductsBehavior' => array('class' => 'RelatedProductsBehavior', 'groupRelatedThrough' => 'type'),
     );
   }
 

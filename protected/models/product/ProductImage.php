@@ -21,7 +21,7 @@ class ProductImage extends FActiveImage
 {
   protected $imageDir = 'f/product/';
 
-  protected $availableTypes = array('pre');
+  protected $availableTypes = array('pre','big');
 
   public function tableName()
   {

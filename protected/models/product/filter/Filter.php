@@ -249,7 +249,7 @@ class Filter extends CComponent
   public function getElements($onlyMultiItems = false, array $excludeIds = array())
   {
     return array_filter($this->elements, function(FilterElement $element) use ($excludeIds, $onlyMultiItems) {
-      return !in_array($element->id, $excludeIds) && count($element->getItems()) > ($onlyMultiItems ? 1 : 0);
+      return !(in_array($element->id, $excludeIds) || in_array($element->key, $excludeIds)) && count($element->getItems()) > ($onlyMultiItems ? 1 : 0);
     });
   }
 

@@ -5,34 +5,32 @@
  */
 ?>
 
-<div class="filter-caption m20">Цвет</div>
-<div class="no-overflow colors-filter">
-  <div class="m10 filter-block-body nofloat">
-    <?php foreach($element->getItems() as $item) { ?>
-    <?php if( !empty($item->notice) ) { ?>
+<div class="m60">
+  <div class="s19 uppercase m10">Цвет</div>
+  <div class="color-filter">
+    <?php foreach($element->items as $item) { ?>
     <label class="color-box" style="background: <?php echo $item->notice?>">
       <?php echo CHtml::checkBox($item->name, $item->isSelected(), array('id' => $item->cssId, 'value' => $item->id, 'class' => 'hidden'));?>
     </label>
     <?php } ?>
-    <?php } ?>
   </div>
-</div>
+  <script>
+    $(function() {
+      $('.color-box input').each(function() {
+        var self = $(this);
+        if ( self.prop('checked') ) {
+          self.closest('.color-box').addClass('active');
+        }
+      });
 
-<script>
-  //<![CDATA[
-  $(function() {
-    // Фильтры цветов
-    $('.color-box :checked').each(function(){
-      $(this).closest('.color-box').addClass('checked');
+      $('.color-box input').change(function() {
+        var self = $(this);
+        if ( self.prop('checked') ) {
+          self.closest('.color-box').addClass('active');
+        } else {
+          self.closest('.color-box').removeClass('active');
+        }
+      });
     });
-    $('.color-box').click(function(){
-      var self = $(this);
-      if ( self.find('input').prop('checked') ) {
-        self.addClass('checked');
-      } else {
-        self.removeClass('checked');
-      }
-    });
-  });
-  //]]>
-</script>
+  </script>
+</div>

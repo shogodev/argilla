@@ -3,33 +3,23 @@
  * @var Product $model
  */
  ?>
-<?php if($parameters = $model->getProductOneParameters()) {?>
-<div class="grid_9 first m30" id="specification-anchor">
-  <h3 class="left">Параметры <?php echo $model->name?></h3>
-  <div class="equip-tabs">
 
-    <div style="clear: both">
-      <table class="zero eqSpecs">
-
-        <?php foreach($parameters as $parameter) { ?>
-        <?php if( empty($parameter->value) ) continue;?>
-        <tr>
-          <th>
-            <?php if( $parameter->img ) { ?>
-            <div class="specs-icon"><img src="<?php echo $parameter->img?>" alt="" /></div>
-            <?php } ?>
-            <?php echo $parameter->name?></th>
-          <td><?php echo $parameter->value?></td>
-        </tr>
-        <?php } ?>
-
-        <tr>
-          <th>Артикул</th>
-          <td><?php echo $model->articul?></td>
-        </tr>
-
-      </table>
+<?php if( $parameters ) { ?>
+  <div id="params">
+    <div class="h1 bb uppercase caption center m20">Характеристики</div>
+    <div class="nofloat m30">
+      <?php foreach(Arr::divide($parameters, 2) as $i => $part) { ?>
+      <div class="<?php echo $i == 0 ? 'l' : 'r'?>-main">
+        <table class="zero params-table">
+          <?php foreach($part as $parameter) { ?>
+          <tr>
+            <th><?php echo $parameter->name?>:</th>
+            <td><?php echo $parameter->value?></td>
+          </tr>
+          <?php } ?>
+        </table>
+      </div>
+      <?php } ?>
     </div>
   </div>
-</div>
-<?php }?>
+<?php } ?>

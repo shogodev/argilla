@@ -94,7 +94,7 @@ class RelatedProductsBehavior extends AssociationBehavior
       Yii::import('backend.modules.product.modules.group.frontendModels.ProductGroup', true);
       $associationIds = $this->getAssociationForMe('ProductGroup')->getKeys();
 
-      if( empty($associationIds) && !is_null($this->groupRelatedThrough) )
+      if( empty($associationIds) && !is_null($this->groupRelatedThrough) && $this->owner->{$this->groupRelatedThrough} )
         $associationIds = $this->owner->{$this->groupRelatedThrough}->getAssociationForMe('ProductGroup')->getKeys();
 
       /**

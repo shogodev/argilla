@@ -5,39 +5,37 @@
  */
 ?>
 
-<div class="filter-caption m30">Цена <span class="lowercase s14 nn">(руб.)</span></div>
-<div class="m25 filter-block-body">
-  <div class="nofloat m10">
-    <div class="fl helios">
-      <label for="left-filter-price-min" class="s16 white">от</label>
-      <input id="left-filter-price-min" class="slider-inp inp" type="text" value="<?php echo $element->selectedMin?>" />
-    </div>
-    <div class="fr">
-      <label for="left-filter-price-max" class="s16 white">до</label>
-      <input id="left-filter-price-max" class="slider-inp inp" type="text" value="<?php echo $element->selectedMax?>" />
-    </div>
+<div class="m30">
+  <div class="s19 uppercase m10">Цена</div>
+  <div class="slider-inputs nofloat m20">
+    <span class="s16 slider-inp-label">от</span>
+    <input id="filter-price-min" class="inp slider-inp" type="text" value="<?php echo $element->selectedMin?>" />
+    <span class="s16 slider-inp-label">до</span>
+    <input id="filter-price-max" class="inp slider-inp" type="text" value="<?php echo $element->selectedMax?>" />
+    <span class="s16 slider-inp-label">руб.</span>
   </div>
-  <div class="m20" style="position: relative">
-    <div id="left-filter-price-slider" class="m5 filter-price-slider"></div>
+  <div class="m25" style="position: relative">
+    <div id="filter-price-slider" class="m10"></div>
     <?php $element->render()?>
-    <div class="price-tooltip" id="left-filter-price-tooltip">Выбрано товаров: <span id="left-filter-tooltip-counter"></span> <a href="#" id="left-filter-tooltip-button" style="margin-left: 10px">Показать</a></div>
+    <div class="slider-tooltip" id="filter-price-tooltip">Выбрано товаров: <span id="filter-price-tooltip-counter"></span> <a href="#" id="filter-price-tooltip-button">Показать</a></div>
   </div>
   <script>
-    //<![CDATA[
-    $(function(){
-      $('#left-filter-price-slider').filterSlider({
-        'ranges'   :  <?php echo json_encode($element)?>,
+    $(function() {
+      $('#filter-price-slider').filterSlider({
+        'ranges' :  <?php echo json_encode($element)?>,
         'controls' : {
-          'hiddenInput'    : '#left-filter-price-input',
-          'minInput'       : '#left-filter-price-min',
-          'maxInput'       : '#left-filter-price-max',
-          'tooltip'        : '#left-filter-price-tooltip',
-          'tooltipButton'  : '#left-filter-tooltip-button',
-          'tooltipCounter' : '#left-filter-tooltip-counter',
-          'filterButton'   : '#left-filter-submit'
+          hiddenInput    : '#filter-price-input',
+          minInput       : '#filter-price-min',
+          maxInput       : '#filter-price-max',
+          tooltip        : '#filter-price-tooltip',
+          tooltipButton  : '#filter-price-tooltip-button',
+          tooltipCounter : '#filter-price-tooltip-counter',
+          filterButton   : '#filter-submit'
         }
       });
     });
-    //]]>
   </script>
+  <div class="center">
+    <button class="btn blue-btn cornered-btn h32btn p20btn s19 condensed uppercase" id="filter-submit" style="display: none">Применить</button>
+  </div>
 </div>

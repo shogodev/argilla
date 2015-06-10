@@ -10,18 +10,6 @@
 
 <?php //$this->renderPartial('/popups/_compare', $_data_)?>
 
-<?php //$this->renderPartial('/popups/_fastorder', $_data_)?>
+<?php $this->renderPartial('/popups/_fastorder', $_data_)?>
 
 <?php //if( $this->id != 'basket' ) $this->renderPartial('/panel/panel', $_data_)?>
-
-<script>
-  //<![CDATA[
-  $(function(){
-    $('body').on('click', '.popup .close,.popup .close-btn', function(e){
-      e.preventDefault();
-      var target = $(this).closest('.popup');
-      $.overlayLoader(false, target);
-    });
-  });
-  //]]>
-</script>

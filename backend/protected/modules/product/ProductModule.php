@@ -19,7 +19,8 @@ class ProductModule extends BModule
     return array(
       'product' => array(
         'origin' => array(4500, 4500),
-        'pre' => array(300, 300),
+        'big' => array(400, 400),
+        'pre' => array(250, 250),
       )
     );
   }
