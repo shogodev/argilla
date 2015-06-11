@@ -1,75 +1,59 @@
 <?php
 /**
- * @author Sergey Glagolev <glagolev@shogo.ru>
+ * @author Alexey Tatarinov <tatarinov@shogo.ru>
  * @link https://github.com/shogodev/argilla/
- * @copyright Copyright &copy; 2003-2014 Shogo
+ * @copyright Copyright &copy; 2003-2015 Shogo
  * @license http://argilla.ru/LICENSE
  */
-class ImageGrid
+abstract class ImageGrid extends BGridView
 {
-  public $widget;
-
-  protected $gridId;
+  public $attribute;
 
   /**
-   * @var CModel|BActiveRecord
+   * @var CActiveRecord|UploadBehavior
    */
-  protected $model;
+  public $model;
 
-  protected $columns = array();
+  public $template = "{filters}\n{buttons}\n{summary}\n{dropZoneText}\n{items}\n{pagesize}\n{pager}\n{buttons}\n{scripts}";
 
-  public function getColumns()
+  public function init()
   {
-    if( empty($this->columns) )
-      $this->initColumns();
+    if( $this->model->isNewRecord )
+      $this->emptyText = 'Для загрузки изображений сохраните страницу';
 
-    return $this->columns;
+    $this->dataProvider = $this->model->getUploadedFiles();
+
+    parent::init();
   }
 
-  public function __construct(UploadWidget $widget)
+  protected function renderDropZoneText()
   {
-    $this->widget = $widget;
-    $this->gridId = $widget->htmlOptions['gridId'];
-    $this->model  = $widget->model;
-  }
-
-  protected function initColumns()
-  {
-    $this->imageColumn();
-    $this->gridColumns();
-    $this->buttonColumn();
+    if( !$this->model->isNewRecord )
+      echo '  Для загрузки изображений перетащите их в эту область.';
   }
 
   protected function imageColumn()
   {
     $this->columns[] = array(
-      'header'              => 'Изоб.',
-      'class'               => 'EImageColumn',
+      'header' => 'Изоб.',
+      'class' => 'EImageColumn',
       'imagePathExpression' => '!empty($data["thmb"]) ? $data["thmb"] : $data["path"]',
-      'htmlOptions'         => array('class' => 'center image-column', 'style' => 'width:6.5%'),
-      'style'               => 'max-width: 20px; cursor: pointer',
+      'htmlOptions' => array('class' => 'center image-column', 'style' => 'width:6.5%'),
+      'style' => 'max-width: 20px; cursor: pointer',
     );
-  }
-
-  protected function gridColumns()
-  {
-    $this->columns[] = array('name' => 'position', 'header' => 'Позиция', 'class' => 'OnFlyEditField', 'gridId' => $this->gridId, 'htmlOptions' => array('class' => 'span2'));
-    $this->columns[] = array('name' => 'type', 'header' => 'Тип', 'class' => 'OnFlyEditField', 'dropDown' => $this->model->imageTypes, 'gridId' => $this->gridId, 'htmlOptions' => array('class' => 'span2'));
-    $this->columns[] = array('name' => 'size', 'header' => 'Размер', 'htmlOptions' => array('class' => 'span2'));
-    $this->columns[] = array('name' => 'notice', 'class' => 'OnFlyEditField', 'gridId' => $this->gridId, 'header' => 'Описание', 'htmlOptions' => array('class' => ''));
   }
 
   protected function buttonColumn()
   {
     $this->columns[] = array(
-      'class'           => 'BButtonColumn',
-      'template'        => '{delete}',
-      'deleteButtonUrl' => function ($data){
+      'class' => 'BButtonColumn',
+      'template' => '{delete}',
+      'deleteButtonUrl' => function ($data) {
         return Yii::app()->controller->createUrl('upload', array(
-          'id'     => $this->model->id,
-          'model'  => get_class($this->model),
+          'id' => $this->model->id,
+          'model' => get_class($this->model),
           'fileId' => $data['id'],
-          'attr'   => $this->widget->attribute,
+          'attr' => $this->attribute,
           'method' => 'delete'));
       },
     );

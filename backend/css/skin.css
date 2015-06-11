@@ -631,3 +631,32 @@ span.cke_skin_kama table.cke_editor td {
   margin-left: 5px; }
 .multi-list-header .multi-list-header-col:first-child {
   margin-left: 0; }
+
+.images-uploader {
+  position: relative; }
+
+#dropzone {
+  display: none;
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  top: 0;
+  border: 3px dashed #ccc;
+  text-align: center;
+  font-size: 18px;
+  color: #aaa;
+  background: rgba(255, 255, 255, .5);
+  transition: all .4s ease; }
+#dropzone > p {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -webkit-transform: translateY(-50%) translateX(-50%);
+  transform: translateY(-50%) translateX(-50%); }
+#dropzone.in {
+  display: block; }
+#dropzone.hover {
+  color: #888;
+  border-color: #999;
+  background: rgba(255, 255, 255, .75); }
+#dropzone.fade {}

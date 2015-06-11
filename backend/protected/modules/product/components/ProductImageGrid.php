@@ -6,13 +6,13 @@
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.product.components
  */
-class ProductImageGrid extends ImageGrid
-{
-  /**
-   * @var BProduct
-   */
-  protected $model;
 
+/**
+ * Class ProductImageGrid
+ * @property BProduct $model
+ */
+class ProductImageGrid extends MultiImageGrid
+{
   protected function gridColumns()
   {
     parent::gridColumns();
@@ -25,7 +25,7 @@ class ProductImageGrid extends ImageGrid
         'header' => 'Цвет',
         'class' => 'OnFlyEditField',
         'dropDown' => CMap::mergeArray(array('0' => 'Не задано'), CHtml::listData($colors, 'id', 'name')),
-        'gridId' => $this->gridId,
+        'gridId' => $this->id,
         'htmlOptions' => array('class' => 'span2')
       );
     }

@@ -122,12 +122,12 @@ class UploadBehavior extends CActiveRecordBehavior
   {
     if( array_key_exists($this->attribute, $this->owner->attributes) )
     {
-      $this->table    = $this->owner->tableName();
+      $this->table = $this->owner->tableName();
       $this->uploader = $this->UploaderFactory(true);
     }
     else
     {
-      $this->table    = Yii::app()->db->tablePrefix.$this->attribute;
+      $this->table = Yii::app()->db->tablePrefix.$this->attribute;
       $this->uploader = $this->UploaderFactory(false);
     }
   }

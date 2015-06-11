@@ -73,8 +73,6 @@ class UploadWidget extends CJuiInputWidget
    */
   public $gridOptions = array();
 
-  public $gridClass;
-
   /**
    * @var string name of the form view to be rendered
    */
@@ -101,25 +99,7 @@ class UploadWidget extends CJuiInputWidget
   {
     parent::init();
     $this->publishAssets();
-  }
 
-  public function attachBehaviorToModel()
-  {
-    if( $behavior = $this->model->asa('uploadBehavior') )
-    {
-      $behavior->attribute = $this->attribute;
-    }
-    else
-    {
-      $this->model->attachBehavior('uploadBehavior', array(
-        'class' => 'UploadBehavior',
-        'attribute' => $this->attribute)
-      );
-    }
-  }
-
-  public function run()
-  {
     $this->attachBehaviorToModel();
 
     list($name, $id) = $this->resolveNameID();
@@ -145,30 +125,64 @@ class UploadWidget extends CJuiInputWidget
     $this->options['autoUpload']       = $this->autoUpload;
     $this->options['previewMaxWidth']  = $this->previewMaxWidth;
     $this->options['previewMaxHeight'] = $this->previewMaxWidth;
+  }
+
+  public function attachBehaviorToModel()
+  {
+    if( $behavior = $this->model->asa('uploadBehavior') )
+    {
+      $behavior->attribute = $this->attribute;
+    }
+    else
+    {
+      $this->model->attachBehavior('uploadBehavior', array(
+        'class' => 'UploadBehavior',
+        'attribute' => $this->attribute)
+      );
+    }
+  }
+
+  public function run()
+  {
+    if( !isset($this->gridOptions['class']) )
+      $this->gridOptions['class'] = $this->multiple ? 'MultiImageGrid' : 'SingleImageGrid';
+
+    $classes = Arr::get($this->htmlOptions['gridOptions'], 'class', '');
+    $this->htmlOptions['gridOptions']['class'] = $classes.(empty($classes) ? '' : ' ').'images-uploader';
 
     $this->publishInitScript(CJavaScript::encode($this->options));
+    $this->registerDropZoneScript();
+
+    $this->render($this->uploadView);
+    $this->render($this->downloadView);
+
+    if( !$this->multiple )
+      $this->htmlOptions['gridOptions']['style'] = 'width: 15%';
+
+    $this->renderGrid($this->gridOptions['class']);
 
     $htmlOptions = array();
 
     if( $this->multiple )
       $htmlOptions['multiple'] = true;
 
-    $this->render($this->uploadView);
-    $this->render($this->downloadView);
-
-    if( !isset($this->gridOptions['class']) )
-      $this->gridOptions['class'] = $this->multiple ? 'ImageGrid' : 'SingleImageGrid';
-
-    $this->gridClass = Yii::createComponent($this->gridOptions['class'], $this);
-
-    $this->render($this->formGrid, array(
-      'model'       => $this->model,
-      'gridId'      => $this->htmlOptions['gridId'],
-      'htmlOptions' => $this->htmlOptions['gridOptions']
-    ));
-
     if( !$this->model->isNewRecord )
       $this->render($this->formView, compact('htmlOptions'));
+
+    $this->registerCropImageScript();
+  }
+
+  private function renderGrid($widgetGrid)
+  {
+    $this->widget($widgetGrid, array(
+      'id' => $this->htmlOptions['gridId'],
+      'model' => $this->model,
+      'attribute' => $this->attribute,
+      'htmlOptions' => $this->htmlOptions['gridOptions'],
+      'buttonsTemplate' => false,
+      'enableHistory' => false,
+      'summaryTagName' => 'span'
+    ));
   }
 
   private function publishInitScript($options)
@@ -246,5 +260,136 @@ class UploadWidget extends CJuiInputWidget
     {
       throw new CHttpException(500, __CLASS__.' - Error: Couldn\'t find assets to publish.');
     }
+  }
+
+  private function registerDropZoneScript()
+  {
+    Yii::app()->clientScript->registerScript(__CLASS__.'DropZoneScript#'.$this->htmlOptions['gridId'], "
+      $(document).bind('dragover', function (e) {
+        var dropzoneContainer = $('#{$this->htmlOptions['gridId']}');
+        var dropzone = $('<div id=\"dropzone\" />').html('<p>Перетащите файлы сюда</p>').appendTo(dropzoneContainer);
+
+        setTimeout(function() {
+          var dropZone = $('#dropzone'),
+              timeout = window.dropZoneTimeout;
+          if (!timeout) {
+              dropZone.addClass('in');
+          } else {
+              clearTimeout(timeout);
+          }
+          var found = false,
+              node = e.target;
+          do {
+              if (node === dropZone[0]) {
+                  found = true;
+                  break;
+              }
+              node = node.parentNode;
+          } while (node != null);
+          if (found) {
+              dropZone.addClass('hover');
+          } else {
+              dropZone.removeClass('hover');
+          }
+          window.dropZoneTimeout = setTimeout(function () {
+              window.dropZoneTimeout = null;
+              dropZone.removeClass('in hover');
+          }, 100);
+        }, 0);
+      });
+      ", CClientScript::POS_HEAD);
+  }
+
+  private function registerCropImageScript()
+  {
+    Yii::app()->clientScript->registerScript(__CLASS__.'CropImageScript#'.$this->htmlOptions['gridId'], "
+      $('.image-column > img').click(function(e) {
+        e.preventDefault();
+
+        // Блок с картинкой для ресайза
+        var popupBlock = $('<div/>').addClass('img-resize-popup').html(
+          '<span class=\"img-resize-inner\"><img src=\"' + $(this).attr('src') + '\" alt=\"\" id=\"raw-image\" /></span>'
+        );
+
+        // Вызов оверлея и попапа для ресайза картинки
+        $('body').append( $('<div/>').addClass('overlay-white') ).append( popupBlock );
+
+        $('#raw-image').Jcrop({
+          onChange: showSize,
+          onSelect: showSize,
+          onRelease: clearSize
+        }, function(){
+          jcrop_api = this;
+        });
+      });
+
+      // Фиксирование соотношения сторон при выборе чекбокса Квадратные превью
+      $('body').on('change', '#img-resize-squared-lock', function(){
+        jcrop_api.setOptions(
+          this.checked ? { aspectRatio: 1/1 } : { aspectRatio: 0 }
+        );
+        jcrop_api.focus();
+      });
+
+      // Изменение выбранной области при изменении значения в поле ширина
+      $('body').on('input', '#preview-width', function(){
+        var pos_x = jcrop_api.tellSelect().x,
+            pos_y = jcrop_api.tellSelect().y,
+            pos_x2 = jcrop_api.tellSelect().x2,
+            pos_y2 = jcrop_api.tellSelect().y2;
+        if ( $.isNumeric( $(this).val() )) {
+          jcrop_api.setSelect([ pos_x, pos_y, parseInt(pos_x) + parseInt($(this).val()), pos_y2 ]);
+        }
+      });
+
+      // Изменение выбранной области при изменении значения в поле высота
+      $('body').on('input', '#preview-height', function(){
+        var pos_x = jcrop_api.tellSelect().x,
+            pos_y = jcrop_api.tellSelect().y,
+            pos_x2 = jcrop_api.tellSelect().x2,
+            pos_y2 = jcrop_api.tellSelect().y2;
+        if ( $.isNumeric( $(this).val() )) {
+          jcrop_api.setSelect([ pos_x, pos_y, pos_x2, parseInt(pos_y) + parseInt($(this).val()) ]);
+        }
+      });
+
+      // Обновление полей с размерами превью
+      function showSize(c) {
+        $('#preview-width').val(c.w);
+        $('#preview-height').val(c.h);
+      }
+
+      // Очистка полей с размерами превью
+      function clearSize(c) {
+        $('#preview-width').val('');
+        $('#preview-height').val('');
+      }
+
+      // Собственно кроп картинки
+      $('body').on('click', '#preview-submit', function(){
+        var pos_x = jcrop_api.tellSelect().x,
+            pos_y = jcrop_api.tellSelect().y,
+            pos_x2 = jcrop_api.tellSelect().x2,
+            pos_y2 = jcrop_api.tellSelect().y2;
+        console.log( pos_x, pos_y, pos_x2, pos_y2 );
+        closeResizePopup();
+      });
+
+      // Клик по кнопке закрыть
+      $('body').on('click','.img-resize-popup', function(e){
+        e.preventDefault();
+        closeResizePopup();
+      });
+
+      $('body').on('click', '.img-resize-popup .img-resize-inner', function(e){
+        e.stopPropagation();
+        e.preventDefault();
+      });
+
+      // Закрытие попапа для ресайза картинки
+      function closeResizePopup() {
+        jcrop_api.disable();
+        $('.img-resize-popup, .overlay-white').hide().remove();
+      }", CClientScript::POS_LOAD);
   }
 }
