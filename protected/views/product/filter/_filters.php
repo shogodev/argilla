@@ -10,21 +10,21 @@
 <div class="left-filters m20" id="left-filter">
 
   <?php echo $filter->render->begin() ?>
-  <?php $filter->render->registerOnChangeScript(true)?>
+  <?php $filter->render->registerOnChangeScript(true, 'product_list')?>
   <?php $filter->render->registerRemoveElementsScript()?>
 
   <?php if( $items = $filter->getSelectedItems() ) { ?>
-  <div class="filter-caption bb m10">Вы выбрали</div>
-  <div class="m20 filter-block-body selected-filters-block">
-    <?php foreach($items as $item) { ?>
-      <div class="m15 nofloat selected-filter">
-        <?php if( !$item->isDisabled() ) { ?>
-        <?php $item->renderRemoveButton('')?>
-        <?php } ?>
-        <span><?php echo $item->label?></span>
-      </div>
-    <?php } ?>
-  </div>
+    <div class="filter-caption bb m10">Вы выбрали</div>
+    <div class="m20 filter-block-body selected-filters-block">
+      <?php foreach($items as $item) { ?>
+        <div class="m15 nofloat selected-filter">
+          <?php if( !$item->isDisabled() ) { ?>
+            <?php $item->renderRemoveButton('')?>
+          <?php } ?>
+          <span><?php echo $item->label?></span>
+        </div>
+      <?php } ?>
+    </div>
   <?php } ?>
 
   <?php if( isset($filter->elements[ProductFilterBehavior::FILTER_PRICE]) ) { ?>

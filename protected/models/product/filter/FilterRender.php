@@ -48,7 +48,7 @@ class FilterRender extends CComponent
     return 'callback_'.$this->parent->filterKey;
   }
 
-  public function registerOnChangeScript($ajaxUpdate = false)
+  public function registerOnChangeScript($ajaxUpdate = false, $listViewId)
   {
     $ajaxUpdate = intval($ajaxUpdate);
 
@@ -78,7 +78,7 @@ class FilterRender extends CComponent
         }
         else
         {
-          $('#product_list').yiiListView.update('product_list', {'url' : url[0], 'data' : $.deparam(url[1])});
+          $('#{$listViewId}').yiiListView.update('{$listViewId}', {'url' : url[0], 'data' : $.deparam(url[1])});
         }
       };
 
