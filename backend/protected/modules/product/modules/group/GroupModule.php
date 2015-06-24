@@ -16,4 +16,6 @@ Yii::import('backend.modules.product.ProductModule');
 class GroupModule extends ProductModule
 {
   public $defaultController = 'BProductGroup';
+
+  public $enabled = false;
 }

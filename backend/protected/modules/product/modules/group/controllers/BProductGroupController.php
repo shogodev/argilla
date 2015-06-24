@@ -13,6 +13,4 @@ class BProductGroupController extends BController
   public $name = 'Группы товаров';
 
   public $modelClass = 'BProductGroup';
-
-  public $enabled = false;
 }
