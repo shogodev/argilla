@@ -872,23 +872,6 @@ CREATE TABLE `argilla_product_collection` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Table structure for table `argilla_product_common_association`
---
-
-DROP TABLE IF EXISTS `argilla_product_common_association`;
-/*!40101 SET @saved_cs_client     = @@character_set_client */;
-/*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `argilla_product_common_association` (
-  `product_id` int(10) unsigned NOT NULL,
-  `tag` varchar(255) NOT NULL,
-  UNIQUE KEY `product_id_2` (`product_id`,`tag`),
-  KEY `product_id` (`product_id`),
-  KEY `tag` (`tag`),
-  CONSTRAINT `argilla_product_common_association_ibfk_1` FOREIGN KEY (`product_id`) REFERENCES `argilla_product` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;
-/*!40101 SET character_set_client = @saved_cs_client */;
-
---
 -- Table structure for table `argilla_product_currency`
 --
 

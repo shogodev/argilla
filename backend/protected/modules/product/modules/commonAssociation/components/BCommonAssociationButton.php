@@ -28,6 +28,6 @@ class BCommonAssociationButton extends BAssociationButton
 
   protected function getAssociationsCount($parameters)
   {
-    return BCommonAssociation::model()->getCount($parameters['srcId']);
+    return BCommonAssociation::model()->getCount($parameters['srcId'], $parameters['dst']);
   }
 }

@@ -23,13 +23,15 @@ class CommonAssociationBehavior extends SActiveRecordBehavior
   /**
    * Возвращает привязки к текушей модели
    *
+   * @param string $associationGroup - группа привязок
    * @param bool $withMe - с родиткльской моделью
    *
-   * @return Association
+   * @return CommonAssociation
    */
-  public function getCommonAssociation($withMe = false)
+  public function getCommonAssociation($associationGroup, $withMe = false)
   {
     $model = new CommonAssociation();
+    $model->association_group = $associationGroup;
     return $model->setTagByModel($this->owner, $withMe);
   }
 }

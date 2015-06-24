@@ -23,7 +23,7 @@ class BCommonAssociationController extends BController
 
       if( BProduct::model()->findByPk($srcId) )
       {
-        BCommonAssociation::model()->makeAssociation($srcId, $id, $value);
+        BCommonAssociation::model()->makeAssociation($srcId, $id, $value, $dst);
       }
     }
     else

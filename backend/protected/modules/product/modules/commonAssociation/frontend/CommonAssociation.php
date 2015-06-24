@@ -10,8 +10,9 @@
  *
  * @method static CommonAssociation model(string $class = __CLASS__)
  *
- * @property integer $product_id
+ * @property integer $pk
  * @property string $tag
+ * @property string $association_group
  */
 class CommonAssociation extends FActiveRecord
 {
@@ -71,15 +72,14 @@ class CommonAssociation extends FActiveRecord
   public function setTagByModel(FActiveRecord $model, $withMe = false)
   {
     $criteria = new CDbCriteria();
-    $criteria->select = 'product_id AS pk';
 
-    if( $commonAssociation = $this->findByAttributes(array('product_id' => $model->primaryKey)) )
+    if( $commonAssociation = $this->findByAttributes(array('pk' => $model->primaryKey, 'association_group' => $this->association_group)) )
     {
       $criteria->compare('tag', $commonAssociation->tag);
       if( !$withMe )
-        $criteria->compare('product_id', '<>'.$model->primaryKey);
+        $criteria->compare('pk', '<>'.$model->primaryKey);
       else
-        $criteria->compare('product_id', '='.$model->primaryKey, false, 'OR');
+        $criteria->compare('pk', '='.$model->primaryKey, false, 'OR');
     }
     else
       $criteria->compare('tag', 0);
