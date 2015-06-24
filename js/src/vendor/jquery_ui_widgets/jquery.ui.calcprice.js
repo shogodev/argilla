@@ -95,7 +95,7 @@
       price = options.element.data(options.dataKey);
 
     var sumTotal = price * amountElement.val();
-    options.element.text(number_format(sumTotal) + options.suffix);
+    options.element.html(number_format(sumTotal) + options.suffix);
     if( options.newDataKey )
       this.element.data(options.newDataKey, sumTotal);
 
@@ -111,7 +111,7 @@
     var priceOldParentElement = parentElement.find(options.parentBlockSelector);
 
     var sumTotal = price * amountElement.val();
-    options.element.text(number_format(sumTotal) + options.suffix);
+    options.element.html(number_format(sumTotal) + options.suffix);
 
     if( sumTotal > 0 && !(newPrice == sumTotal))
     {
@@ -131,7 +131,7 @@
 
     if(priceOld > 0 && price > 0 && economy > 0 )
     {
-      options.element.text(options.prefix + number_format(economy) + options.suffix);
+      options.element.html(options.prefix + number_format(economy) + options.suffix);
       economyParentElement.show();
     }
     else

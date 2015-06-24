@@ -26,7 +26,7 @@ class NewsLocation extends LocationBase
     /** @var $current News */
     $current = $this->_modelSource->current();
 
-    return Yii::app()->request->hostInfo.$current->url;
+    return $this->_controller->createAbsoluteUrl($this->getRoute(), array('section' => $current->section->url, 'url' => $current->url));
   }
 
   /**

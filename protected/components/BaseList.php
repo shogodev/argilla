@@ -155,11 +155,77 @@ class BaseList extends CComponent
 
       $this->filteredCriteria = $filteredCriteria;
 
-      foreach(array('distinct', 'order', 'join') as $value)
+      foreach(array('distinct', 'order') as $value)
+      {
         $this->filteredCriteria->$value = $this->criteria->$value;
+        if( $value == 'order' && !empty($this->criteria->join) )
+        {
+          $this->filteredCriteria->join = $this->getOrderJoin($this->filteredCriteria->order, $this->criteria->join);
+        }
+      }
     }
 
     return $this->filteredCriteria;
+  }
+
+  /**
+   * Возвращает раздельный массив join'ов
+   * @param $sql
+   *
+   * @return array
+   * @throws CHttpException
+   */
+  protected function getJoins($sql)
+  {
+    $joins = array();
+    $sql = strtr($sql, array("\n" => ' ', "\r" => '', '  ' => ' '));
+    $sql = trim(preg_replace('/\s+2/', '', $sql));
+    if( $data = preg_split('/(CROSS JOIN)|(INNER JOIN)|(LEFT OUTER JOIN)|(LEFT JOIN)|(RIGHT JOIN)|(RIGHT OUTER JOIN)|(JOIN)/i', $sql, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE) )
+    {
+      if( count($data) % 2 !== 0 )
+        throw new CHttpException(500, 'Ошибка!');
+
+      for($i = 0; $i < count($data); $i += 2)
+      {
+        $joins[] = $data[$i].' '.$data[$i + 1];
+      }
+    }
+
+    return $joins;
+  }
+
+  /**
+   * Возвращает join нужный для сортировки
+   * @param $order
+   * @param $baseJoin
+   *
+   * @return string
+   * @throws CHttpException
+   */
+  protected function getOrderJoin($order, $baseJoin)
+  {
+    $orderJoins = array();
+
+    $joins = $this->getJoins($baseJoin);
+
+    if( preg_match_all('/(\w+)\./i', $order, $matches) )
+    {
+      $tableAliases = array_unique($matches[1]);
+
+      foreach($tableAliases as $alias)
+      {
+        foreach($joins as $join)
+        {
+          if( preg_match('/AS\s*(\w+)\s|$/i', $join, $matches) )
+          {
+            if( $matches[1] == $alias )
+              $orderJoins[] = $join;
+          }
+        }
+      }
+    }
+
+    return implode(' ', $orderJoins);
   }
 
   protected function setOrder()

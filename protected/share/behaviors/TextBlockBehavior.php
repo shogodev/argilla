@@ -55,7 +55,7 @@ class TextBlockBehavior extends SBehavior
    *
    * @return string
    */
-  public function textBlockRegister($name = null, $content = null, $htmlOptions = array('class' => 'success-message'), array $replace = array())
+  public function textBlockRegister($name = null, $content = null, $htmlOptions = array(), array $replace = array())
   {
     if( $name === null )
       $location = $this->owner->route;

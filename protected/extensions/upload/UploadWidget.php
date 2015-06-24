@@ -125,6 +125,12 @@ class UploadWidget extends CJuiInputWidget
     $this->options['autoUpload']       = $this->autoUpload;
     $this->options['previewMaxWidth']  = $this->previewMaxWidth;
     $this->options['previewMaxHeight'] = $this->previewMaxWidth;
+
+    if( !isset($this->gridOptions['class']) )
+      $this->gridOptions['class'] = $this->multiple ? 'MultiImageGrid' : 'SingleImageGrid';
+
+    $classes = Arr::get($this->htmlOptions['gridOptions'], 'class', '');
+    $this->htmlOptions['gridOptions']['class'] = $classes.(empty($classes) ? '' : ' ').'images-uploader';
   }
 
   public function attachBehaviorToModel()
@@ -144,12 +150,6 @@ class UploadWidget extends CJuiInputWidget
 
   public function run()
   {
-    if( !isset($this->gridOptions['class']) )
-      $this->gridOptions['class'] = $this->multiple ? 'MultiImageGrid' : 'SingleImageGrid';
-
-    $classes = Arr::get($this->htmlOptions['gridOptions'], 'class', '');
-    $this->htmlOptions['gridOptions']['class'] = $classes.(empty($classes) ? '' : ' ').'images-uploader';
-
     $this->publishInitScript(CJavaScript::encode($this->options));
     $this->registerDropZoneScript();
 

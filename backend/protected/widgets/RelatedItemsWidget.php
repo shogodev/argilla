@@ -87,6 +87,9 @@ class RelatedItemsWidget extends CWidget
     echo CHtml::openTag('ul', array('class' => 'multi-list-header clearfix'));
     foreach($this->attributes as $key => $attribute)
     {
+      if( is_null($attribute) )
+        continue;
+
       $name = is_array($attribute) ? $key : $attribute;
       $label = Arr::cut($attribute, 'label', $element->getAttributeLabel($name));
       echo CHtml::tag('li', array('class' => 'multi-list-header-col'), $label, false);

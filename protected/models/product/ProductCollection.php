@@ -24,7 +24,7 @@ class ProductCollection extends FActiveRecord
 
     return array(
       'condition' => $alias.'.visible=1',
-      'order' => "IF($alias.position=0, 99999, $alias.position), name",
+      'order' => "IF($alias.position=0, 99999, $alias.position), $alias.name",
     );
   }
 }
