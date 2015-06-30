@@ -92,7 +92,7 @@ class ProductAssignment extends FActiveRecord
 
   private function buildCriteria(CDbCriteria $defaultCriteria = null)
   {
-    $criteria = new CDbCriteria(array('distinct' => true));
+    $criteria = new CDbCriteria();
 
     $criteria->select = array(
       'a.section_id, a.collection_id, a.category_id, a.type_id',
