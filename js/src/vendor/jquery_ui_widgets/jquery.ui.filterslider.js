@@ -18,6 +18,14 @@ $.widget('argilla.filterSlider', {
     timers : {}
   },
 
+  submit : function() {
+    var widget = this;
+    console.log(widget);
+
+    var input = widget.element.siblings('input:hidden');
+    input.val(input.data('value')).trigger('change');
+  },
+
   _create: function() {
 
     var options = this.options;
@@ -36,13 +44,12 @@ $.widget('argilla.filterSlider', {
 
     options.controls.tooltipButton.on('click', function(e) {
       e.preventDefault();
-      options.controls.filterButton.trigger('click');
+      widget.submit();
     });
 
     options.controls.filterButton.on('click', function(e) {
       e.preventDefault();
-      var input = widget.element.siblings('input:hidden');
-      input.val(input.data('value')).trigger('change');
+      widget.submit();
     });
 
     options.controls.minInput.on('change', function(e) {
