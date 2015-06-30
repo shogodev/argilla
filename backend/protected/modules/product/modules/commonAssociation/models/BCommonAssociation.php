@@ -145,6 +145,9 @@ class BCommonAssociation extends BActiveRecord
     if( $this->getTag($pk, $associationGroup) == $tag )
      return;
 
+    if( $this->findByAttributes(array('pk' => $pk, 'tag' => $tag, 'association_group' => $associationGroup)) )
+      return;
+
     $model = new BCommonAssociation();
     $model->pk = $pk;
     $model->tag = $tag;
