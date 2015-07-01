@@ -131,7 +131,7 @@ class UserControllerTest extends CTestCase
     $this->setOutputCallback(function($data) {
       return Arr::get(CJSON::decode($data), 'messageForm');
     });
-    $this->expectOutputRegex("/Регистрация успешно завершена./");
+    $this->expectOutputRegex("/Регистрация успешно завершена/");
     $this->controller->run('registration');
   }
 

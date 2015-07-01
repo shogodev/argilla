@@ -69,6 +69,7 @@ class FilterTest extends CDbTestCase
     $criteria = new CDbCriteria();
     $this->filter->apply($criteria);
 
+    $criteria = new CDbCriteria();
     $criteria->compare('param_id', 'category_id');
     $criteria->compare('value', 8);
 
