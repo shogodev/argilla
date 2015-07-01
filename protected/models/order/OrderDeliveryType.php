@@ -27,6 +27,7 @@ class OrderDeliveryType extends FActiveRecord
 
   const FREE_DELIVERY_LIMIT = null;
 
+  const FREE_DELIVERY = null; // бесплатная доставка
 
   public function defaultScope()
   {
@@ -44,19 +45,19 @@ class OrderDeliveryType extends FActiveRecord
   public function calcDelivery($orderSum)
   {
     if( is_null($this->id) )
-      return null;
+      return 0;
 
     if( $this->id == self::SELF_DELIVERY )
       return 0;
     else
     {
       if( $this->isFreeDelivery($orderSum) )
-        return 0;
+        return self::FREE_DELIVERY;
       else
         return floatval($this->price);
     }
 
-    return null;
+    return 0;
   }
 
   public static function isFreeDelivery($orderSum)

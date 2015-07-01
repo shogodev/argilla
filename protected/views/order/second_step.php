@@ -79,6 +79,8 @@
         OrderDeliveryType::DELIVERY_REGION
       ))?>;
     var deliveryPriceList = <?php echo CJSON::encode(PriceHelper::decimalToFloat(CHtml::listData(OrderDeliveryType::model()->findAll(), 'id', 'price')));?>;
+    var freeDeliveryLimit = <?php echo OrderDeliveryType::FREE_DELIVERY_LIMIT?>;
+    var currencySuffix = ' руб.';
 
     var paymentEPay = <?php echo OrderPaymentType::E_PAY?>;
     var paymentCash = <?php echo OrderPaymentType::CASH?>;
@@ -114,12 +116,20 @@
 
         if( deliveryPriceList[value] && deliveryPriceList[value] > 0 )
         {
-          $('#js-delivery-price').text(number_format(deliveryPriceList[value]) + ' руб.');
-          $('#js-total-sum').text(number_format(deliveryPriceList[value] + $('#js-total-sum').data('sum'))  + ' руб.');
+          if( freeDeliveryLimit > $('#js-total-sum').data('sum') ) {
+            $('#js-delivery-price').text(number_format(deliveryPriceList[value]) + currencySuffix);
+            $('#js-total-sum').text(number_format(deliveryPriceList[value] + $('#js-total-sum').data('sum')) + currencySuffix);
+          }
+          else
+          {
+            $('#js-delivery-price').text('Бесплатно');
+            $('#js-total-sum').text(number_format($('#js-total-sum').data('sum')) + currencySuffix);
+          }
+
           $('#js-delivery-block').show();
         }
         else {
-          $('#js-total-sum').text(number_format($('#js-total-sum').data('sum'))  + ' руб.');
+          $('#js-total-sum').text(number_format($('#js-total-sum').data('sum'))  + currencySuffix);
           $('#js-delivery-block').hide();
         }
 

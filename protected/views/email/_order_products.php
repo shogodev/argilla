@@ -84,13 +84,17 @@
         </td>
       </tr>
     <?php }?>
-    <?php if( PriceHelper::isNotEmpty($model->delivery_sum) ) {?>
+    <?php if( PriceHelper::isNotEmpty($model->delivery_sum) || $model->delivery_sum === OrderDeliveryType::FREE_DELIVERY ) {?>
       <tr>
         <td colspan="3" style="text-align: right; padding-right: 20px; font-size: 16px">
           Доставка:
         </td>
         <td style="text-align: center; font-size: 22px; font-weight: bold">
-          <?php echo PriceHelper::price($model->delivery_sum, ' руб.')?>
+          <?php if( $model->delivery_sum === OrderDeliveryType::FREE_DELIVERY ) {?>
+            Бесплатно
+          <?php } else {?>
+            <?php echo PriceHelper::price($model->delivery_sum, ' руб.')?>
+          <?php }?>
         </td>
       </tr>
     <?php }?>

@@ -93,9 +93,12 @@ class Order extends FActiveRecord
 
     $this->delivery_id = !empty($this->delivery_id) ? $this->delivery_id : null;
     $this->refresh();
-    $this->delivery_sum = $this->deliveryType ? $this->deliveryType->calcDelivery($this->basket->getSumTotal()) : null;
 
-    $this->sum = $this->basket->getSumTotal() + $this->delivery_sum;
+    $this->sum = $this->basket->getSumTotal();
+    $this->delivery_sum = $this->deliveryType ? $this->deliveryType->calcDelivery($this->basket->getSumTotal()) : null;
+    if( $this->delivery_sum > 0 )
+      $this->sum += $this->delivery_sum;
+
     $this->ip = ip2long(Yii::app()->request->userHostAddress);
     $this->type = $this->isFast() ? self::TYPE_FAST : self::TYPE_BASKET;
     $this->user_id = !Yii::app()->user->isGuest ? Yii::app()->user->getId() : null;
