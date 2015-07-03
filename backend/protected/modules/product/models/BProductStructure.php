@@ -96,7 +96,7 @@ class BProductStructure extends BActiveRecord
   {
     $field = self::getRowName(get_class($this));
     $criteria = new CDbCriteria();
-    $criteria->compare($field, '<>0');
+    $criteria->compare($field, $this->id);
 
     $command = $this->dbConnection->schema->commandBuilder->createUpdateCommand($this->assignmentTable, array($field => 0), $criteria);
     $command->execute();
