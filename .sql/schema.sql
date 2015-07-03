@@ -121,7 +121,7 @@ CREATE TABLE `argilla_banner` (
   `img` varchar(255) NOT NULL,
   `swf_w` int(4) DEFAULT NULL,
   `swf_h` int(4) DEFAULT NULL,
-  `code` varchar(511) NOT NULL,
+  `code` text,
   `pagelist` text,
   `pagelist_exc` text,
   `new_window` tinyint(1) NOT NULL DEFAULT '0',
