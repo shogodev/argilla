@@ -5,11 +5,13 @@
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
  * @package frontend.models.product.behaviors
- *
+ */
+
+/**
+ * Class ProductParametersBehavior
  * Поведение для работы с параметрами продукта
  *
- * @property Product $id
- * @property ProductSection $section
+ * @property Product $owner
  */
 class ProductParametersBehavior extends CModelBehavior
 {
@@ -112,6 +114,23 @@ class ProductParametersBehavior extends CModelBehavior
     }
 
     return null;
+  }
+
+  /**
+   * @param string $name
+   * @param string $value
+   *
+   * @return stdClass|ProductParameter
+   */
+  private function createFakeParameter($name, $value, $key = 'fake')
+  {
+    $parameter = new stdClass();
+    $parameter->name = $name;
+    $parameter->value = $value;
+    $parameter->key = $key;
+    $parameter->id = null;
+
+    return $parameter;
   }
 
   private function getParametersByAttributes(array $attributes, $notEmptyValue = true, $exceptionKeys = array())
