@@ -237,8 +237,8 @@ class BaseList extends CComponent
   protected function buildDataProvider(CDbCriteria $criteria)
   {
     $config = array('criteria' => $criteria);
-    if( !$this->pagination )
-      $config['pagination'] = false;
+    if( !$this->pagination || $this->pagination instanceof FPagination )
+      $config['pagination'] = $this->pagination;
 
     $this->dataProvider = new FActiveDataProvider($this->getModelName(), $config);
 
