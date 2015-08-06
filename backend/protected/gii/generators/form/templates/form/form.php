@@ -43,7 +43,7 @@ if( $this->getModelClass() ) {
         echo "    <?php echo \$form->uploadRow(\$model, '".$attribute."', false); ?>\r\n\r\n";
         break;
       case 'url':
-        echo "    <?php echo \$form->urlRow(\$model, '".$attribute."', false); ?>\r\n\r\n";
+        echo "    <?php echo \$form->urlRow(\$model, '".$attribute."'); ?>\r\n\r\n";
         break;
       default:
         /**

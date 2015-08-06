@@ -101,26 +101,35 @@ class ProductParametersBehavior extends CModelBehavior
   }
 
   /**
-   * @param $key
+   * @param string|array $key
+   * @param bool $notEmptyOnly
    *
    * @return null|ProductParameterName
    */
-  public function getParameterByKey($key)
+  public function getParameterByKey($key, $notEmptyOnly = true)
   {
+    $parameters = array();
+
     foreach($this->getParameters() as $parameter)
     {
-      if( $parameter->key == $key )
-        return $parameter;
+      if( (is_array($key) && in_array($parameter->key, $key)) || ($parameter->key == $key) )
+      {
+        if( $notEmptyOnly && empty($parameter->value) )
+          continue;
+
+        $parameters[] = $parameter;
+      }
     }
 
-    return null;
+    return is_array($key) ? $parameters : Arr::reset($parameters);
   }
 
   /**
    * @param string $name
    * @param string $value
+   * @param string $key
    *
-   * @return stdClass|ProductParameter
+   * @return ProductParameter|stdClass
    */
   private function createFakeParameter($name, $value, $key = 'fake')
   {

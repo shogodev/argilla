@@ -34,6 +34,9 @@ class ProductList extends BaseList
   {
     parent::init();
 
+    $this->criteria->compare('t.visible', 1);
+    ProductAssignment::model()->addAssignmentCondition($this->criteria);
+
     $this->parametersCriteria = new CDbCriteria();
     $this->parametersCriteria->addColumnCondition(array($this->getTablePrefix().'.section' => 1, $this->getTablePrefix().'.section_list' => 1), 'OR');
   }

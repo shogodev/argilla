@@ -5,12 +5,25 @@
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license   http://argilla.ru/LICENSE
  */
-require_once Yii::getPathOfAlias('frontend').DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'build'.DIRECTORY_SEPARATOR.'tasks'.DIRECTORY_SEPARATOR.'CheckDbTask.php';
-
 class PrivilegeCheckerTest extends CTestCase
 {
+  private $skip = true;
+
+  public function setUp()
+  {
+    $this->checkPhingModule();
+  }
+
   public function testHasPrivilege()
   {
+    if( $this->skip )
+    {
+      $this->markTestSkipped('Test skipped. Phing not to be find.');
+      return;
+    }
+
+    require_once Yii::getPathOfAlias('frontend').DIRECTORY_SEPARATOR.'..'.DIRECTORY_SEPARATOR.'build'.DIRECTORY_SEPARATOR.'tasks'.DIRECTORY_SEPARATOR.'CheckDbTask.php';
+
     $checker = new PrivilegeChecker($this->getShowGrantsRawOutput());
 
     $this->assertTrue($checker->hasPrivilege(PrivilegeEnum::TRIGGER, 'cuberussia2013', 'cuberussia2013', 'localhost'));
@@ -70,5 +83,20 @@ class PrivilegeCheckerTest extends CTestCase
         'All privilegies and all hosts' => "GRANT ALL ON *.* TO 'root'@'%' WITH GRANT OPTION"
       ),
     );
+  }
+
+  private function checkPhingModule()
+  {
+    try
+    {
+      include "phing/Task.php";
+
+      if( class_exists('Task') )
+        $this->skip = false;
+    }
+    catch(Exception $e)
+    {
+
+    }
   }
 }

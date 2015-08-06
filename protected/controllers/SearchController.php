@@ -35,7 +35,7 @@ class SearchController extends FController
       $ids = $command->queryColumn();
 
       $data = array();
-      foreach(Product::model()->findAllByPk($ids) as $product)
+      foreach(Product::model()->visible()->findAllByPk($ids) as $product)
       {
         $data[] = array(
           'label' => $this->createTemplate($product, $query),

@@ -105,7 +105,7 @@ class ProductController extends FController
     /**
      * @var Product $model
      */
-    $model = Product::model()->findByAttributes(array('url' => $url));
+    $model = Product::model()->visible()->findByAttributes(array('url' => $url));
 
     if( !$model )
       throw new CHttpException(404, 'Страница не найдена');

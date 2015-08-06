@@ -98,6 +98,41 @@ abstract class BActiveRecord extends CActiveRecord implements IHasFrontendModel
    */
   public function saveRelatedModels($relationName, array $relatedData, $ignoreEmptyItems = true)
   {
+    if( !$this->validateRelatedModels($relationName, $relatedData, $ignoreEmptyItems) )
+      return false;
+
+    $relation  = $this->getActiveRelation($relationName);
+    $className = $relation->className;
+
+    foreach($relatedData as $id => $item)
+    {
+      $value = trim(implode("", $item));
+
+      if( empty($value) && $ignoreEmptyItems )
+        continue;
+
+      /**
+       * @var BActiveRecord $model
+       */
+      $model = $className::model()->findByPk($id);
+
+      if( !$model )
+      {
+        $model = new $className();
+        $model->{$relation->foreignKey} = $this->getPrimaryKey();
+      }
+
+      $model->setAttributes(Arr::trim($item));
+
+      if( !$model->save(false) )
+        throw new CHttpException(500, "Не удается сохранить зависимую модель {$className}");
+    }
+
+    return true;
+  }
+
+  public function validateRelatedModels($relationName, array $relatedData, $ignoreEmptyItems = true)
+  {
     $relation  = $this->getActiveRelation($relationName);
     $className = $relation->className;
 
@@ -131,9 +166,6 @@ abstract class BActiveRecord extends CActiveRecord implements IHasFrontendModel
 
         $validationError = true;
       }
-
-      if( !$model->save(false) )
-        throw new CHttpException(500, "Не удается сохранить зависимую модель {$className}");
     }
 
     return !$validationError;
