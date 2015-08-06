@@ -277,9 +277,12 @@ td.button-column a:hover {
   width: auto;
   text-align: left; }
 .detail-view th label {
+  display: inline-block;
   font-weight: bold; }
 .detail-view th label,
-.detail-view label label {
+.detail-view label label,
+.detail-view .checkbox label, {
+  display: inline-block;
   margin-bottom: 0; }
 .detail-view td input {
   -webkit-box-sizing: border-box;
@@ -373,10 +376,11 @@ td.button-column a:hover {
 .pagination ul > li:last-child > a,
 .pagination ul > li:last-child > span {
   font-weight: normal; }
-.pagination ul > li > a:hover,
+.pagination ul > li > a:hover {
+  background-color: transparent; }
 .pagination ul > .active > a,
 .pagination ul > .active > span {
-  background-color: transparent; }
+  background-color: #E0E6EB; }
 .pagination ul > li > a:hover {
   text-decoration: underline; }
 .pagination ul > .disabled > a,
