@@ -7,6 +7,7 @@
  * @package frontend.models.product
  *
  * @method static Product model(string $class = __CLASS__)
+ * @method Product visible() scope
  *
  * @property integer $id
  * @property integer $parent
@@ -83,21 +84,22 @@ class Product extends FActiveRecord
     $alias = $this->getTableAlias(false, false);
 
     return array(
-      'condition' => $alias.'.visible=1 AND a.visible=1',
       'order' => $alias.'.position',
-      'with' => array('assignment')
     );
   }
 
   public function scopes()
   {
+    $alias = $this->getTableAlias(false, false);
+
     return array(
       'visible' => array(
-        'condition' => 'visible=1',
-        'order' => 'position'
+        'condition' => $alias.'.visible=1 AND a.visible=1',
+        'order' => $alias.'.position',
+        'with' => array('assignment')
       ),
       'main' => array(
-        'condition' => 'main=1'
+        'condition' => $alias.'.main=1'
       )
     );
   }

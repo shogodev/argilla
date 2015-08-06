@@ -150,19 +150,21 @@ class BaseList extends CComponent
       $filteredCriteria = clone $this->criteria;
 
       if( $this->filters )
+      {
         foreach($this->filters as $filter)
           $filteredCriteria = $filter->apply($filteredCriteria);
 
-      $this->filteredCriteria = $filteredCriteria;
-
-      foreach(array('distinct', 'order') as $value)
-      {
-        $this->filteredCriteria->$value = $this->criteria->$value;
-        if( $value == 'order' && !empty($this->criteria->join) )
+        foreach(array('distinct', 'order') as $value)
         {
-          $this->filteredCriteria->join = $this->getOrderJoin($this->filteredCriteria->order, $this->criteria->join);
+          $filteredCriteria->$value = $this->criteria->$value;
+          if( $value == 'order' && !empty($this->criteria->join) )
+          {
+            $filteredCriteria->join = $this->getOrderJoin($filteredCriteria->order, $this->criteria->join);
+          }
         }
       }
+
+      $this->filteredCriteria = $filteredCriteria;
     }
 
     return $this->filteredCriteria;
