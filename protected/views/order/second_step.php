@@ -114,22 +114,29 @@
           paymentMethodBlock.find('input:radio[value=' + paymentCash + ']').closest(radioBlockContainer).show();
         }
 
+        var setTotalPrice = function(price) {
+          if( number(price) > 0 )
+            $('#js-total-sum').text(number_format(price) + currencySuffix);
+          else
+            $('#js-total-sum').text('Звоните');
+        };
+
         if( deliveryPriceList[value] && deliveryPriceList[value] > 0 )
         {
           if( freeDeliveryLimit > $('#js-total-sum').data('sum') ) {
             $('#js-delivery-price').text(number_format(deliveryPriceList[value]) + currencySuffix);
-            $('#js-total-sum').text(number_format(deliveryPriceList[value] + $('#js-total-sum').data('sum')) + currencySuffix);
+          setTotalPrice(deliveryPriceList[value] + $('#js-total-sum').data('sum'));
           }
           else
           {
             $('#js-delivery-price').text('Бесплатно');
-            $('#js-total-sum').text(number_format($('#js-total-sum').data('sum')) + currencySuffix);
+            setTotalPrice($('#js-total-sum').data('sum'));
           }
 
           $('#js-delivery-block').show();
         }
         else {
-          $('#js-total-sum').text(number_format($('#js-total-sum').data('sum'))  + currencySuffix);
+          setTotalPrice($('#js-total-sum').data('sum'));
           $('#js-delivery-block').hide();
         }
 

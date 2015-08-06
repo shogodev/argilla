@@ -30,7 +30,7 @@ echo $form->renderRequire();
 
     <?php echo $form->dropDownListRow($model, 'location', AssignmentContentModule::$locations)?>
 
-    <?php echo $form->ckeditorRow($model, 'content', AssignmentContentModule::$locations)?>
+    <?php echo $form->ckeditorRow($model, 'content')?>
 
     <?php echo $form->checkBoxRow($model, 'visible');?>
     </tbody>
