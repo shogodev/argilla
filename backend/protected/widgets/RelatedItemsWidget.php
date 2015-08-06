@@ -11,6 +11,8 @@
  * echo $form->relatedItemsRow($model, 'steps', array(
  *   'position' => array('class' => 'span1'),
  *   'content' => array('class' => 'span8', 'label' => 'Текст'),
+ *   'visible' => array('type' => 'checkbox'),
+ *   'image' =>  array('tag' => 'image')
  * ));
  *
  * echo $form->relatedItemsRow($model, 'steps', array(
@@ -85,13 +87,13 @@ class RelatedItemsWidget extends CWidget
   protected function renderHeader($element)
   {
     echo CHtml::openTag('ul', array('class' => 'multi-list-header clearfix'));
-    foreach($this->attributes as $key => $attribute)
+    foreach($this->attributes as $key => $attributeOptions)
     {
-      if( is_null($attribute) )
+      if( is_null($attributeOptions) )
         continue;
 
-      $name = is_array($attribute) ? $key : $attribute;
-      $label = Arr::cut($attribute, 'label', $element->getAttributeLabel($name));
+      $name = is_array($attributeOptions) ? $key : $attributeOptions;
+      $label = Arr::cut($attributeOptions, 'label', $element->getAttributeLabel($name));
       echo CHtml::tag('li', array('class' => 'multi-list-header-col'), $label, false);
       echo '&nbsp;';
     }
@@ -112,28 +114,49 @@ class RelatedItemsWidget extends CWidget
 
     echo CHtml::tag('li', $htmlOptions, false, false);
 
-    foreach($this->attributes as $key => $attribute)
+    foreach($this->attributes as $key => $attributeOptions)
     {
-      if( is_null($attribute) )
+      if( is_null($attributeOptions) )
         continue;
 
-      $name = is_array($attribute) ? $key : $attribute;
-      $tag  = Arr::get($attribute, 'tag', 'input');
+      $attribute = is_array($attributeOptions) ? $key : $attributeOptions;
+      $tag = Arr::get($attributeOptions, 'tag', 'input');
+      $type = Arr::get($attributeOptions, 'type', 'text');
 
-      $options = Arr::get($attribute, 'htmlOptions', array('class' => 'span4'));
+      $options = Arr::get($attributeOptions, 'htmlOptions', array('class' => 'span4'));
 
-      if( isset($attribute['class']) )
-        $options['class'] = $attribute['class'];
+      if( isset($attributeOptions['class']) )
+        $options['class'] = $attributeOptions['class'];
 
-      $options['name'] = "{$this->className}[{$id}][{$name}]";
-      $options['value'] = $element->$name;
+      $options['name'] = "{$this->className}[{$id}][{$attribute}]";
+      $options['value'] = $element->$attribute;
 
       if( is_string($tag) )
       {
-        if( $tag === 'input' )
-          $options['type'] = Arr::get($options, 'type', 'text');
+        switch($tag)
+        {
+          case 'image':
+            echo CHtml::openTag('span', array('style' => 'display: inline-block;'));
+            echo CHtml::openTag('span', array('style' => 'display: inline-block; width: 24px; margin-right: 7px;'));
+            echo CHtml::image($element->getImage($attribute), '', Arr::get($attributeOptions, 'imageOptions', array('style' => 'max-width: 24px; max-height: 24px;')));
+            echo CHtml::closeTag('span');
+            echo CHtml::fileField($options['name'], $options['value']);
+            echo CHtml::closeTag('span');
+          break;
 
-        echo CHtml::tag($tag, $options);
+          case 'input':
+            $options['type'] = Arr::get($options, 'type', $type);
+
+            if( $options['type'] == 'checkbox' )
+            {
+              $options['value'] = CheckBoxBehavior::CHECKED_VALUE;
+              if( !empty($element->$attribute) )
+                $options['checked'] = 'checked';
+            }
+
+          default:
+            echo CHtml::tag($tag, $options);
+        }
       }
       elseif( is_callable($tag) )
       {
@@ -196,10 +219,13 @@ class RelatedItemsWidget extends CWidget
 
       var setHeaderSizes = function() {
         $('.multi-list-header li').each(function(index) {
-          $(this).width( $(this).closest('.multi-list-header').next('ul').find('li:eq(2) :eq('+ index +')').outerWidth() );
+          var width = $('ul.multi-list-items li:eq(1)').children().eq(index).outerWidth();
+          $(this).width(width);
         });
-      }
+      };
+
       setHeaderSizes();
+
       $(window).on('resize', function() {
         setHeaderSizes()
       });", CClientScript::POS_READY);
