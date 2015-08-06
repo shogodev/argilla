@@ -281,8 +281,8 @@ td.button-column a:hover {
   font-weight: bold; }
 .detail-view th label,
 .detail-view label label,
-.detail-view .checkbox label, {
-  display: inline-block;
+.param-table .checkbox label {
+  display: inline-block !important;
   margin-bottom: 0; }
 .detail-view td input {
   -webkit-box-sizing: border-box;
@@ -380,7 +380,8 @@ td.button-column a:hover {
   background-color: transparent; }
 .pagination ul > .active > a,
 .pagination ul > .active > span {
-  background-color: #E0E6EB; }
+  background-color: #E0E6EB !important;
+  text-decoration: none !important; }
 .pagination ul > li > a:hover {
   text-decoration: underline; }
 .pagination ul > .disabled > a,
