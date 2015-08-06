@@ -337,10 +337,30 @@ abstract class BController extends CController
     {
       $post = Yii::app()->request->getPost(get_class($model));
       $model->setAttributes($post);
-      $valid = $model->validate() && $valid && !empty($post);
+      $valid = $model->validate() && $valid && !empty($post) && $this->validateRelatedModels($model);
     }
 
     return $valid;
+  }
+
+  /**
+   * @param BActiveRecord $model
+   *
+   * @return bool
+   */
+  protected function validateRelatedModels($model)
+  {
+    $success = true;
+
+    foreach($this->getModelsAllowedForSave() as $relationName => $modelName)
+    {
+      $success = $model->validateRelatedModels($relationName, Yii::app()->request->getPost($modelName, array()));
+
+      if( !$success )
+        break;
+    }
+
+    return $success;
   }
 
   /**
