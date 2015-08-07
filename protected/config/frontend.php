@@ -56,6 +56,8 @@ return array_merge_recursive(array(
     'frontend.controllers.*',
     'frontend.controllers.behaviors.*',
     'frontend.widgets.*',
+    'frontend.widgets.list_view.*',
+    'frontend.widgets.basket.*',
     'frontend.forms.FormLayouts',
   ),
 

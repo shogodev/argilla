@@ -308,4 +308,14 @@ class Utils
   {
     return (strtotime('now') > strtotime($dateFrom)) && (strtotime('now') < strtotime($dateTo));
   }
+
+  /**
+   * @param CModel $class
+   *
+   * @return string
+   */
+  public static function modelToSnakeCase(CModel $class)
+  {
+    return self::toSnakeCase(get_class($class));
+  }
 }

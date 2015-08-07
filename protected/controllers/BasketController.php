@@ -138,12 +138,12 @@ class BasketController extends FController
           $this->basket->changeAmount($data['index'], $amount > 0 ? $amount : 1);
         break;
 
-        case 'changeOptions':
+        case 'changeItems':
           if( !$this->basket->exists($data['index']) )
             throw new CHttpException(500, 'Продукт не найден. Обновите страницу.');
 
           $items = Arr::get($this->basket[$data['index']]->getCollectionElement()->toArray(), 'items', array());
-          $items['options'] = $data['options'];
+          $items = $data;
           $this->basket->changeItems($data['index'], $items);
         break;
 
