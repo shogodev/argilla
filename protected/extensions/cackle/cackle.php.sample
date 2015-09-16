@@ -4,5 +4,7 @@ return array(
 
   'accountApiKey' => '',
 
-  'siteApiKey' => ''
+  'siteApiKey' => '',
+
+  'singleSignOn' => false
 );

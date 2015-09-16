@@ -13,6 +13,10 @@ class Cackle extends CApplicationComponent
 {
   protected $siteId;
 
+  protected $siteApiKey;
+
+  protected $singleSignOn = false;
+
   public function init()
   {
     parent::init();
@@ -22,6 +26,10 @@ class Cackle extends CApplicationComponent
     {
       $config = require($configPath);
       $this->siteId = $config['siteId'];
+      $this->siteApiKey = $config['siteApiKey'];
+
+      if( isset($config['singleSignOn']) )
+        $this->singleSignOn = $config['singleSignOn'];
     }
     else
     {
@@ -40,6 +48,7 @@ class Cackle extends CApplicationComponent
       'siteId' => $this->siteId,
       'channel' => $channel,
       'container' => $containerId,
+      'ssoAuth' => $this->singleSignOn ? $this->getSingleSignOnString() : '',
     ));
   }
 
@@ -53,8 +62,35 @@ class Cackle extends CApplicationComponent
       'widget' => CackleWidget::REVIEW,
       'siteId' => $this->siteId,
       'channel' => $channel,
-      'container' => $containerId
+      'container' => $containerId,
+      'ssoAuth' => $this->singleSignOn ? $this->getSingleSignOnString() : array()
     ));
+  }
+
+  protected function getSingleSignOnString()
+  {
+    $user = array();
+
+    if( !Yii::app()->user->isGuest )
+    {
+      /**
+       * @link http://admin.cackle.me/help/integrating-sso
+       */
+      $user = array(
+        'id' => Yii::app()->user->data->id,
+        'name' => Yii::app()->user->profile->name,
+        'email' => Yii::app()->user->data->getEmail(),
+        'avatar' => Yii::app()->createAbsoluteUrl('userProfile/avatar', array('id' => Yii::app()->user->data->id)),
+      );
+    }
+    $currentTime = time();
+
+    $singleSignOn = array();
+    $singleSignOn['userData'] = base64_encode(!empty($user) ? json_encode($user) : '{}');
+    $singleSignOn['sign'] = md5($singleSignOn['userData'].$this->siteApiKey.$currentTime);
+    $singleSignOn['timestamp'] = $currentTime;
+
+    return implode(' ', $singleSignOn);
   }
 
   protected function setSiteId($siteId)

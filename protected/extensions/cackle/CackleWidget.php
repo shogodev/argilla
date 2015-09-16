@@ -23,6 +23,8 @@ class CackleWidget extends CWidget
 
   public $channel;
 
+  public $ssoAuth;
+
   private $settings;
 
   private static $innerCounter = 1;
@@ -30,11 +32,19 @@ class CackleWidget extends CWidget
   public function init()
   {
     $this->registerCommonScript();
-
+    /**
+     * @link http://admin.cackle.me/help/widget-api
+     */
     $this->settings = array(
       'id' => $this->siteId,
       'widget' => $this->widget,
       'container' => $this->getContainer(),
+      'ssoAuth' => $this->ssoAuth,
+      'ssoProvider' => array(
+        'name' => 'Вход через сайт'.Yii::app()->params->project,
+        'url' => Yii::app()->createUrl('user/login', array('light' => 'true')),
+        'logo' => '/i/logo-shogo.png ',
+      ),
     );
 
     if( $channel = $this->getChannel() )
@@ -45,7 +55,9 @@ class CackleWidget extends CWidget
   {
     echo CHtml::tag('div', array('id' => $this->getContainer()), $this->getContent());
 
-    Yii::app()->clientScript->registerScript('CackleScript#'.$this->getContainer(), "cackle_widget.push(".CJSON::encode($this->settings).");", CClientScript::POS_BEGIN);
+    $json = CJavaScript::encode($this->settings);
+    $json = str_replace('[]', '{}', $json);
+    Yii::app()->clientScript->registerScript('CackleScript#'.$this->getContainer(), "cackle_widget.push(".$json.");", CClientScript::POS_BEGIN);
   }
 
   protected function getChannel()
