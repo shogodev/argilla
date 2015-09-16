@@ -44,18 +44,6 @@ class BasketController extends FController
     }
   }
 
-  public function actionFavoriteToBasket()
-  {
-    foreach($this->favorite as $item)
-    {
-      $data = $item->toArray();
-      unset($data['index']);
-      $this->basket->add($data);
-    }
-
-    $this->renderAjax();
-  }
-
   public function actionRepeatOrder()
   {
     $data = Yii::app()->request->getPost($this->basket->keyCollection);

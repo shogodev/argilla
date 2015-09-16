@@ -12,4 +12,4 @@
 
 <?php $this->renderPartial('/popups/_fastorder', $_data_)?>
 
-<?php //if( $this->id != 'basket' ) $this->renderPartial('/panel/panel', $_data_)?>
+<?php //if( $this->id != 'order' ) $this->renderPartial('/panel/panel', $_data_)?>

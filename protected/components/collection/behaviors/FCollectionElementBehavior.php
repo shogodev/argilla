@@ -66,7 +66,7 @@ class FCollectionElementBehavior extends CBehavior
       }
     }
 
-    return $this->getSum() + $price * $this->collectionAmount;
+    return $this->owner->getSum() + $price * $this->collectionAmount;
   }
 
   public function getCollectionItemSum($index = null)

@@ -30,7 +30,7 @@
       <span class="s18">В вашем заказе <?php echo $this->basket->countAmount()?> <?php echo Utils::plural($this->basket->countAmount(), 'товар,товара,товаров')?> на сумму <?php echo PriceHelper::price($this->basket->getSumTotal(), ' руб.')?></span>
     </div>
     <div class="fr">
-      <a href="<?php echo $this->createUrl('basket/index')?>" class="btn to-order-btn golden-btn h32-btn s15 bb">Оформить заказ</a>
+      <a href="<?php echo $this->createUrl('order/firstStep')?>" class="btn to-order-btn golden-btn h32-btn s15 bb">Оформить заказ</a>
     </div>
     <div class="fr products-panel-one-click">
       <div class="form-row">
