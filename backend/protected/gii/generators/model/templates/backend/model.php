@@ -54,7 +54,7 @@
  */
 class <?php echo $modelClass; ?> extends <?php echo $this->baseClass."\r\n"; ?>
 {
-<?php if( $behaviors = $this->getBehaviors() ) {?>
+<?php if( method_exists($this, 'getBehaviors') && $behaviors = $this->getBehaviors() ) {?>
   public function behaviors()
   {
     return array(

@@ -51,7 +51,7 @@
     ?>
 <?php endforeach; ?>
 <?php endif; ?>
-<?php if( isset($this->getBehaviors(false)['imageBehavior']) ) {?>
+<?php if( method_exists($this, 'getBehaviors') && isset($this->getBehaviors(false)['imageBehavior']) ) {?>
  * @property FSingleImage $image
  * @mixin <?php echo $this->getBehaviors(false)['imageBehavior']['class'];?>
 
@@ -66,7 +66,7 @@ class <?php echo $modelClass; ?> extends <?php echo $this->baseClass."\r\n"; ?>
   }
 
 <?php }?>
-<?php if( $behaviors = $this->getBehaviors(false) ) {?>
+<?php if( method_exists($this, 'getBehaviors') && $behaviors = $this->getBehaviors(false) ) {?>
   public function behaviors()
   {
     return array(
