@@ -13,6 +13,8 @@ class UserModule extends BModule
 
   protected function getExtraDirectoriesToImport()
   {
-    return array('backend.modules.order.models.BOrder');
+    return array(
+      'backend.modules.order.models.*',
+    );
   }
 }

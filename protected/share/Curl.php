@@ -36,7 +36,7 @@ class Curl extends CApplicationComponent
 
     foreach($options as $key => $value)
       if( method_exists($this, "set".$key) )
-        call_user_func_array(array($this, "set".$key), $value);
+        call_user_func_array(array($this, "set".$key), array($value));
   }
 
   public function init()
@@ -58,6 +58,22 @@ class Curl extends CApplicationComponent
   public function setProxy($proxy)
   {
     curl_setopt($this->ch, CURLOPT_PROXY, $proxy);
+  }
+
+  /**
+   * @param integer $flag
+   */
+  public function setFollowLocation($flag)
+  {
+    curl_setopt($this->ch, CURLOPT_FOLLOWLOCATION, $flag);
+  }
+
+  /**
+   * @param string $agent
+   */
+  public function setUserAgent($agent)
+  {
+    curl_setopt($this->ch, CURLOPT_USERAGENT, $agent);
   }
 
   /**

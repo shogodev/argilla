@@ -18,6 +18,8 @@
  */
 class ProductParameter extends FActiveRecord
 {
+  const BASKET_KEY = 'basket';
+
   public function tableName()
   {
     return '{{product_param}}';

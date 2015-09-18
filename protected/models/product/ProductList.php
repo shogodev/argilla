@@ -37,8 +37,9 @@ class ProductList extends BaseList
     $this->criteria->compare('t.visible', 1);
     ProductAssignment::model()->addAssignmentCondition($this->criteria);
 
+    $prefix = $this->getTablePrefix();
     $this->parametersCriteria = new CDbCriteria();
-    $this->parametersCriteria->addColumnCondition(array($this->getTablePrefix().'.section' => 1, $this->getTablePrefix().'.section_list' => 1), 'OR');
+    $this->parametersCriteria->addColumnCondition(array($prefix.'.section' => 1, $prefix.'.section_list' => 1, $prefix.'.key' => ProductParameter::BASKET_KEY), 'OR');
   }
 
   protected function afterFetchData($event)

@@ -79,11 +79,6 @@
 </table>
 
 <?php if( $this->isUpdate() ) { ?>
-  <?php //$this->renderPartial('orderProducts', CMap::mergeArray($_data_, array('form' => $form)));?>
-<?php }?>
-
-
-<?php if( $this->isUpdate() ) { ?>
   <?php $this->renderPartial('orderHistory', array('model' => $model));?>
   <?php $this->renderPartial('_payments', array('model' => $model));?>
 <?php } ?>

@@ -16,6 +16,12 @@ class BProductAssignmentColumn extends BDataColumn
     {
       echo $value->name;
     }
+    elseif( is_array($value) )
+    {
+      echo implode(', ', array_map(function($item){
+        return Arr::get($item, 'name');
+      }, $value));
+    }
     else
     {
       echo $this->grid->nullDisplay;

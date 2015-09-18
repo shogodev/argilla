@@ -41,6 +41,7 @@ class ProductParametersBehavior extends CModelBehavior
       {
         $criteria = new CDbCriteria();
         $criteria->compare('t.product', '1');
+        $criteria->compare('t.key', ProductParameter::BASKET_KEY, false, 'OR');
       }
 
       $this->parameters = $productParamNames->search($criteria);
@@ -122,6 +123,28 @@ class ProductParametersBehavior extends CModelBehavior
     }
 
     return is_array($key) ? $parameters : Arr::reset($parameters);
+  }
+
+  /**
+   * @param $id
+   * @param bool $noEmpty
+   *
+   * @return null|ProductParameterName
+   */
+  public function getParameterById($id, $noEmpty = true)
+  {
+    foreach($this->getParameters() as $parameter)
+    {
+      if( $parameter->id == $id )
+      {
+        if( $noEmpty && empty($parameter->value) )
+          break;
+
+        return $parameter;
+      }
+    }
+
+    return null;
   }
 
   /**

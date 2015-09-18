@@ -5,7 +5,6 @@
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
  * @package frontend.components.url
- *
  * @property bool $defaultParams
  */
 class FUrlManager extends CUrlManager
@@ -33,6 +32,12 @@ class FUrlManager extends CUrlManager
    * @var array
    */
   protected $defaultParams;
+
+  public function __construct()
+  {
+    $this->rules = require(Yii::getPathOfAlias('frontend.config.').DIRECTORY_SEPARATOR.'routes.php');
+    $this->rules = CMap::mergeArray($this->rules, $this->getRouteModules());
+  }
 
   public function init()
   {
@@ -74,6 +79,7 @@ class FUrlManager extends CUrlManager
     else
     {
       $url = parent::createUrl($route, $params, $ampersand);
+
       return $this->urlCreator->getUrl($url);
     }
   }
@@ -90,7 +96,6 @@ class FUrlManager extends CUrlManager
 
   /**
    * Запоминаем или нет адрес текущей страницы в сессию пользователя
-   *
    * @return bool
    */
   public function shouldRememberReturnUrl()
@@ -131,5 +136,20 @@ class FUrlManager extends CUrlManager
   private function hasStaticPatterns(array $params)
   {
     return isset($params['url']) && $this->urlCreator->hasStaticPatterns($params['url']);
+  }
+
+  private function getRouteModules()
+  {
+    $routeModules = array();
+
+    $basePath = Yii::getPathOfAlias('frontend.modules');
+    foreach(glob($basePath.DIRECTORY_SEPARATOR.'*', GLOB_ONLYDIR) as $moduleDirectory)
+    {
+      $routesPath = $moduleDirectory.DIRECTORY_SEPARATOR.'routes.php';
+      if( file_exists($routesPath) )
+        $routeModules = array_merge($routeModules, require($routesPath));
+    }
+
+    return $routeModules;
   }
 }

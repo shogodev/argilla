@@ -20,9 +20,10 @@ class FavoriteController extends FController
 
   public function actionMergeWithBasket()
   {
-    foreach($this->favorite as $item)
+    foreach($this->favorite->toArray() as $item)
     {
-      $this->basket->add($item);
+      if( !$this->basket->getIndex($item) )
+        $this->basket->add($item);
     }
     $this->favorite->clear();
 

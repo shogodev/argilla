@@ -62,7 +62,7 @@ class FForm extends CForm
   {
     if( is_string($config) )
     {
-      $config = strpos($config, '.') !== false ? $config : self::$DEFAULT_FORMS_PATH.$config;
+      $config = strpos($config, '.') !== false ? $config : static::$DEFAULT_FORMS_PATH.$config;
       $this->formName = get_class($model);
     }
     else if( is_array($config) )
@@ -76,36 +76,6 @@ class FForm extends CForm
   public function __toString()
   {
     return $this->render();
-  }
-
-  public function render()
-  {
-    $this->returnUrl = Yii::app()->request->getUrl();
-    $message = $this->getSuccessMessage();
-
-    if( !empty($message) )
-      return $message;
-    else
-    {
-      $errors = $this->getErrorMessage();
-      if( !empty($errors) )
-      {
-        $this->model->clearErrors();
-        $this->model->addErrors($errors);
-      }
-    }
-
-    if( $this->loadFromSession )
-    {
-      $this->loadFromSession();
-    }
-
-    if( $this->setUserData )
-    {
-      $this->setUserData();
-    }
-
-    return parent::render();
   }
 
   /**
@@ -204,6 +174,8 @@ class FForm extends CForm
 
   public function renderBegin()
   {
+    $this->beforeRender();
+
     $options = array(
       'validateOnSubmit' => $this->validateOnSubmit,
       'validateOnChange' => $this->validateOnChange
@@ -534,7 +506,7 @@ class FForm extends CForm
       if( $this->loadFromSession && Yii::app()->session[$this->getSessionKey($model)] )
         continue;
 
-      $attributes = array('email' => Yii::app()->user->data->email);
+      $attributes = array('email' => Yii::app()->user->data->getEmail());
       $attributes = CMap::mergeArray($attributes, Yii::app()->user->profile->getAttributes());
 
       foreach($model->getAttributes() as $attribute => $value)
@@ -636,6 +608,34 @@ class FForm extends CForm
     $button->attributes['id'] = $this->getActiveFormWidget()->id.'_'.$button->name;
 
     return $button;
+  }
+
+  protected function beforeRender()
+  {
+    $this->returnUrl = Yii::app()->request->getUrl();
+    $message = $this->getSuccessMessage();
+
+    if( !empty($message) )
+      return $message;
+    else
+    {
+      $errors = $this->getErrorMessage();
+      if( !empty($errors) )
+      {
+        $this->model->clearErrors();
+        $this->model->addErrors($errors);
+      }
+    }
+
+    if( $this->loadFromSession )
+    {
+      $this->loadFromSession();
+    }
+
+    if( $this->setUserData )
+    {
+      $this->setUserData();
+    }
   }
 
   /**

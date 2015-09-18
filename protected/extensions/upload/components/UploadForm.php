@@ -23,7 +23,7 @@ class UploadForm extends CFormModel
   {
     return array(
       array('file', 'file'),
-      array('file', 'file', 'types' => 'jpg, png, gif, jpeg, doc, pdf, rar, xls, zip, csv', 'on' => 'create'),
+      array('file', 'file', 'types' => 'jpg, png, gif, jpeg, doc, docx, pdf, rar, xls, zip, csv', 'on' => 'create'),
     );
   }
 }

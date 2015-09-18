@@ -314,4 +314,9 @@ class ProductParameterName extends FActiveRecord
   {
     return !empty($this->parameters) ? Arr::reset($this->parameters)->variant : new ProductParameterVariant();
   }
+
+  public function getImage()
+  {
+    return 'f/upload/images/param_'.$this->id.'.png';
+  }
 }

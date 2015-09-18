@@ -20,6 +20,7 @@ abstract class FileUploader
     'xls' => 'icn_xls.gif',
     'csv' => 'icn_xls.gif',
     'zip' => 'icn_zip.gif',
+    'docx' => 'icn_doc.gif',
   );
 
   /**
