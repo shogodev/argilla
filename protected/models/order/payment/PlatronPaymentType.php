@@ -45,4 +45,9 @@ class PlatronPaymentType extends FActiveRecord
       $labelArray[] = $this->notice;
     return implode(" ", $labelArray);
   }
+
+  public function getImage()
+  {
+    return CHtml::image($this->path.$this->img);
+  }
 }

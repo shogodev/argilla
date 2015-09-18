@@ -33,9 +33,8 @@ class OrderController extends FController
 
     $this->breadcrumbs = array('Корзина');
 
-    $orderForm = new FForm('OrderForm', new Order());
-    $orderForm->loadFromSession = true;
-    $orderForm->autocomplete = true;
+    $orderForm = new FOrderForm('OrderForm', new Order());
+
     $orderForm->ajaxValidation();
 
     if( $orderForm->save() )
@@ -47,7 +46,7 @@ class OrderController extends FController
 
       echo CJSON::encode(array(
         'status' => 'ok',
-        'redirect'  => $orderForm->model->getSuccessUrl(),
+        'redirect'  => $orderForm->getSuccessUrl(),
       ));
 
       Yii::app()->session['orderSuccess'] = true;

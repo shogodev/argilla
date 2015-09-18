@@ -30,10 +30,10 @@
   </table>
   <div class="nofloat">
     <div class="fr s14">
-      <?php if( PriceHelper::isNotEmpty($data->delivery_sum) ) {?>
-        <div class="m3">Стоимость доставки: <span class="red"><?php echo PriceHelper::price($data->delivery_sum, ' руб.');?></span></div>
+      <?php if( PriceHelper::isNotEmpty($data->deliveryPrice) ) {?>
+        <div class="m3">Стоимость доставки: <span class="red"><?php echo PriceHelper::price($data->deliveryPrice, ' руб.');?></span></div>
       <?php }?>
-      Итог: <span class="red"><?php echo PriceHelper::price($data->sum, ' руб.');?></span>
+      Итог: <span class="red"><?php echo PriceHelper::price($data->totalSum, ' руб.');?></span>
     </div>
   </div>
 </div>

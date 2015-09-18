@@ -29,14 +29,14 @@ $this->widget('BGridView', array(
 
     array('name' => 'comment', 'filter' => false, 'value' => 'Utils::stripText($data->comment, 50)'),
     array('name' => 'type', 'htmlOptions' => array('class' => 'span2'), 'value' => '$data->typeLabel[$data->type]', 'filter' => false),
-    array('name' => 'sum', 'class' => 'BOrderPopupColumn', 'type' => 'number', 'iframeAction' => '/order/BOrder/orderProducts'),
+    array('name' => 'totalSum', 'class' => 'BOrderPopupColumn', 'type' => 'number', 'iframeAction' => '/order/BOrder/orderProducts'),
 
     array(
       'name' => 'status_id',
       'class' => 'OnFlyEditField',
-      'dropDown' => BOrderStatus::model()->listData(),
+      'dropDown' => BOrderStatus::model()->listData('id', 'name', new CDbCriteria(array('order' => 'id'))),
       'value' => '$data->status ? $data->status->name : ""',
-      'filter' => BOrderStatus::model()->listData(),
+      'filter' => BOrderStatus::model()->listData('id', 'name', new CDbCriteria(array('order' => 'id'))),
     ),
 
     array(

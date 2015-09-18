@@ -5,6 +5,9 @@
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
  * @package frontend.models.order
+ */
+/**
+ * Class Order
  *
  * @method static Order model(string $className = __CLASS__)
  *
@@ -17,18 +20,17 @@
  * @property string $comment
  * @property string $type
  * @property float $sum
- * @property string $delivery_sum
  * @property integer $ip
  * @property string $date_create
  * @property integer $status_id
  * @property string $order_comment
  * @property bool $deleted
- * @property integer $payment_id
- * @property integer $delivery_id
  * @property Product[]|FBasket $basket
+ * @property string $totalSum
+ * @property string $deliveryPrice
  *
- * @property OrderPaymentType $paymentType
- * @property OrderDeliveryType $deliveryType
+ * @property OrderPayment $payment
+ * @property OrderDelivery $delivery
  * @property OrderProduct[] $products
  * @property OrderStatus $status
  *
@@ -45,18 +47,11 @@ class Order extends FActiveRecord
   public function rules()
   {
     return array(
-      array('name, phone, payment_id, delivery_id', 'required', 'except' => 'fastOrder'),
+      array('name, phone', 'required', 'except' => 'fastOrder'),
       array('phone', 'required', 'on' => 'fastOrder'),
       array('email', 'email'),
       array('name, phone, address, comment', 'length', 'min' => 3, 'max' => 255),
-      array('payment_id, delivery_id, sum, delivery_sum', 'safe'),
-    );
-  }
-
-  public function behaviors()
-  {
-    return array(
-      'paymentBehavior' => 'frontend.models.order.behaviors.PlatronPaymentBehavior',
+      array('sum', 'safe'),
     );
   }
 
@@ -66,9 +61,6 @@ class Order extends FActiveRecord
       'name' => $this->isFast() ? 'Ваше имя' : 'Имя',
       'email' => 'E-mail',
       'phone' => 'Телефон',
-      'address' => 'Адрес доставки',
-      'delivery_id' => 'Способ доставки',
-      'payment_id' => 'Методы оплаты',
       'comment' => 'Комментарии к заказу'
     );
   }
@@ -81,8 +73,8 @@ class Order extends FActiveRecord
     return array(
       'products' => [self::HAS_MANY, 'OrderProduct', 'order_id'],
       'status' => [self::BELONGS_TO, 'OrderStatus', 'status_id'],
-      'paymentType' => [self::BELONGS_TO, 'OrderPaymentType', 'payment_id'],
-      'deliveryType' => [self::BELONGS_TO, 'OrderDeliveryType', 'delivery_id'],
+      'delivery' => [self::HAS_ONE, 'OrderDelivery', 'order_id'],
+      'payment' => [self::HAS_ONE, 'OrderPayment', 'order_id'],
     );
   }
 
@@ -91,14 +83,7 @@ class Order extends FActiveRecord
     if( !$this->isNewRecord )
       return parent::beforeSave();
 
-    $this->delivery_id = !empty($this->delivery_id) ? $this->delivery_id : null;
-    $this->refresh();
-
     $this->sum = $this->basket->getSumTotal();
-    $this->delivery_sum = $this->deliveryType ? $this->deliveryType->calcDelivery($this->basket->getSumTotal()) : null;
-    if( $this->delivery_sum > 0 )
-      $this->sum += $this->delivery_sum;
-
     $this->ip = ip2long(Yii::app()->request->userHostAddress);
     $this->type = $this->isFast() ? self::TYPE_FAST : self::TYPE_BASKET;
     $this->user_id = !Yii::app()->user->isGuest ? Yii::app()->user->getId() : null;
@@ -120,23 +105,6 @@ class Order extends FActiveRecord
     return Yii::app()->request->hostInfo.'/backend/order/bOrder/update/'.$this->id;
   }
 
-  public function getSuccessUrl()
-  {
-    if( $behavior = $this->asa('paymentBehavior') )
-    {
-      try
-      {
-        return $behavior->getSuccessUrl();
-      }
-      catch(NoConfigException $e)
-      {
-        // Не выводим ошибку отсутствия конфига
-      }
-    }
-
-    return Yii::app()->createAbsoluteUrl('order/thirdStep');
-  }
-
   public function setFastOrderBasket(FBasket $fastOrderBasket)
   {
     $this->fastOrderBasket = $fastOrderBasket;
@@ -145,6 +113,19 @@ class Order extends FActiveRecord
   public function getDate($format = 'd.m.Y H:i')
   {
     return DateTime::createFromFormat('Y-m-d H:i:s', $this->date_create)->format($format);
+  }
+
+  public function getTotalSum()
+  {
+    return $this->delivery ? $this->delivery->delivery_price + $this->sum : $this->sum;
+  }
+
+  public function getDeliveryPrice()
+  {
+    if( !$this->delivery )
+      return 0;
+
+    return $this->delivery->delivery_price;
   }
 
   protected function isFast()

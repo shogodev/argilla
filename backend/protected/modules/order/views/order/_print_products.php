@@ -56,16 +56,16 @@
       <b><?php echo PriceHelper::price($totalDiscount, '', '')?></b>
     </td>
     <td nowrap>
-      <b><?php echo PriceHelper::price($model->sum)?></b>
+      <b><?php echo PriceHelper::price($model->totalSum)?></b>
     </td>
   </tr>
-  <?php if( PriceHelper::isNotEmpty($model->delivery_sum) ) {?>
+  <?php if( PriceHelper::isNotEmpty($model->delivery->delivery_price) ) {?>
     <tr>
       <td align=right colspan="5">
-        <b>Доставка:</b>
+        <b>Стоимость доставка:</b>
       </td>
       <td nowrap>
-        <b><?php echo PriceHelper::price($model->delivery_sum)?></b>
+        <b><?php echo PriceHelper::price($model->delivery->delivery_price)?></b>
       </td>
     </tr>
   <?php }?>

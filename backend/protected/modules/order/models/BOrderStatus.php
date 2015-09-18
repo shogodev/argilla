@@ -18,15 +18,13 @@ class BOrderStatus extends BActiveRecord
 
   const STATUS_CONFIRMED = 2;
 
-  const STATUS_WAIT_PAYMENT_PLATRON = 3;
+  const STATUS_WAIT_PAYMENT = 3;
 
-  const STATUS_WAIT_PAYMENT_NOCASH = 4;
+  const STATUS_PAID = 4;
 
-  const STATUS_PAID = 5;
+  const STATUS_DELIVERED = 5;
 
-  const STATUS_DELIVERED = 6;
-
-  const STATUS_CANCELED = 7;
+  const STATUS_CANCELED = 6;
 
   private $platronStatus = array(
     'error'   => 'Ошибка',
@@ -48,18 +46,13 @@ class BOrderStatus extends BActiveRecord
     {
       case BOrderPaymentType::CASH:
         $criteria->addNotInCondition('id', array(
-          self::STATUS_WAIT_PAYMENT_NOCASH,
-          self::STATUS_WAIT_PAYMENT_PLATRON,
+          self::STATUS_WAIT_PAYMENT,
           self::STATUS_PAID
         ));
       break;
 
-      case BOrderPaymentType::NON_CASH:
-        $criteria->addNotInCondition('id', array(self::STATUS_WAIT_PAYMENT_PLATRON));
-      break;
-
       case BOrderPaymentType::EPAY:
-        $criteria->addNotInCondition('id', array(self::STATUS_WAIT_PAYMENT_NOCASH));
+        $criteria->addNotInCondition('id', array(self::STATUS_WAIT_PAYMENT));
       break;
     }
 

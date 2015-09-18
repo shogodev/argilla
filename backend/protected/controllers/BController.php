@@ -354,7 +354,8 @@ abstract class BController extends CController
 
     foreach($this->getModelsAllowedForSave() as $relationName => $modelName)
     {
-      $success = $model->validateRelatedModels($relationName, Yii::app()->request->getPost($modelName, array()));
+      $models = $model->prepareModels($relationName, Yii::app()->request->getPost($modelName, array()));
+      $success = $model->validateRelatedModels($models);
 
       if( !$success )
         break;
@@ -383,8 +384,6 @@ abstract class BController extends CController
 
   /**
    * @param BActiveRecord $model
-   *
-   * @return mixed
    */
   protected function actionSave($model)
   {

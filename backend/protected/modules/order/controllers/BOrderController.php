@@ -25,12 +25,13 @@ class BOrderController extends BController
   {
     $actions = parent::actions();
     unset($actions['delete']);
+
     return $actions;
   }
 
   public function actionDelete()
   {
-    $id   = Yii::app()->request->getQuery('id');
+    $id = Yii::app()->request->getQuery('id');
     $data = BOrder::model()->findByPk($id);
 
     $data->deleted = 1;
@@ -93,7 +94,7 @@ class BOrderController extends BController
     $this->layout = '//layouts/print';
     $model = $this->loadModel($id);
 
-    if(!empty($model->user->profile->birthday))
+    if( !empty($model->user->profile->birthday) )
     {
       preg_match_all('#\d+#', $model->user->profile->birthday, $match);
       $model->user->profile->birthday = (int)$match[0][0].' '.Yii::app()->locale->getMonthName((int)$match[0][1]).' '.(int)$match[0][2].' г.';
@@ -125,5 +126,28 @@ class BOrderController extends BController
       Yii::app()->user->setFlash('error', 'Не удалось отправить уведомление');
 
     Yii::app()->request->redirect($this->createUrl('/order/order/update', array('id' => $orderId)));
+  }
+
+  /**
+   * @param BOrder $model
+   *
+   * @throws CHttpException
+   */
+  protected function actionSave($model)
+  {
+    $delivery = isset($model->delivery) ? $model->delivery : new BOrderDelivery;
+    $payment = isset($model->payment) ? $model->payment : new BOrderPayment();
+
+    $this->saveModels(array($model));
+    $this->render('_form', array(
+      'model' => $model,
+      'modelDelivery' => $delivery,
+      'modelPayment' => $payment
+    ));
+  }
+
+  protected function getModelsAllowedForSave()
+  {
+    return array('payment' => 'BOrderPayment', 'delivery' => 'BOrderDelivery');
   }
 }

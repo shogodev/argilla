@@ -5,7 +5,6 @@
  * @copyright Copyright &copy; 2003-2013 Shogo
  * @license http://argilla.ru/LICENSE
  * @package frontend.models.order.paymentSystem
- *
  * @property integer $id
  */
 class PayableOrder implements IPayableOrder
@@ -14,6 +13,11 @@ class PayableOrder implements IPayableOrder
    * @var Order
    */
   protected $order;
+
+  /**
+   * @var OrderPayment
+   */
+  protected $payment;
 
   public function __construct($orderId)
   {
@@ -24,10 +28,12 @@ class PayableOrder implements IPayableOrder
       throw new CException('Не удалось найти заказ с id = '.$orderId);
     }
 
-    if( !isset($this->order->payment) )
+    $this->payment = OrderPayment::model()->findByAttributes(array('order_id' => $orderId));
+
+    if( !isset($this->payment) )
     {
-      $this->order->payment = new OrderPayment();
-      $this->order->payment->order_id = $orderId;
+      $this->payment = new OrderPayment();
+      $this->payment->order_id = $orderId;
     }
   }
 
@@ -123,7 +129,7 @@ class PayableOrder implements IPayableOrder
    */
   public function getPaymentId()
   {
-    return $this->order->payment->payment_id;
+    return $this->payment->payment_id;
   }
 
   /**
@@ -133,10 +139,11 @@ class PayableOrder implements IPayableOrder
    */
   public function setPaymentId($id)
   {
-    if( isset($id) && empty($this->order->payment->payment_id) )
+    if( isset($id) && empty($this->payment->payment_id) )
     {
-      $this->order->payment->payment_id = $id;
-      return $this->order->payment->save(false);
+      $this->payment->payment_id = $id;
+
+      return $this->payment->save(false);
     }
 
     return false;
@@ -157,8 +164,9 @@ class PayableOrder implements IPayableOrder
    */
   public function setStatus($status)
   {
-    $this->order->payment->status = $status;
-    return $this->order->payment->save(false);
+    $this->payment->status = $status;
+
+    return $this->payment->save(false);
   }
 
   /**
@@ -184,11 +192,13 @@ class PayableOrder implements IPayableOrder
     if( $result )
     {
       $description = 'Оплата успешно принята';
+
       return $this->setStatus('ok');
     }
     else
     {
       $description = 'Оплата заказа не принята';
+
       return $this->setStatus('failed');
     }
   }
@@ -202,7 +212,8 @@ class PayableOrder implements IPayableOrder
    */
   public function setCaptureResult($result, $paymentData, &$description)
   {
-    $this->order->payment->captured_status = 'ok';
-    return $this->order->payment->save(false);
+    $this->payment->captured_status = 'ok';
+
+    return $this->payment->save(false);
   }
 }

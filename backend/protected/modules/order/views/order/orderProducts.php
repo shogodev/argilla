@@ -2,26 +2,26 @@
 /* @var $this BOrderController */
 /* @var $model BOrder */
 ?>
-<ul class="s-breadcrumbs breadcrumb">
-  <li class="active">Товары</li>
-</ul>
-
 <?php $widgetId = 'products-grid';?>
 
-<div class="s-buttons s-buttons-additional">
-  <?php $this->widget('BAssignerButton', array(
-    'type' => BButton::TYPE_INFO,
-    'label' => 'Добавить',
-    'assignerOptions' => array(
-      'iframeUrl' => $this->createUrl('/product/product/index', array('popup' => 1, 'src' => 'BOrder', 'srcId' => $model->id)),
-      'submitUrl' => $this->createUrl('/order/orderProduct/addProducts', array('orderId' => $model->id)),
-      'updateGridId' => $widgetId,
-      'addButton' => true,
-      'ajaxSubmitOnChange' => false
-    ),
-  ))?>
-</div>
-
+<tr>
+  <th>
+    <div class="s-breadcrumbs">Товары</div>
+    <div class="s-buttons s-buttons-additional">
+      <?php $this->widget('BAssignerButton', array(
+        'type' => BButton::TYPE_INFO,
+        'label' => 'Добавить',
+        'assignerOptions' => array(
+          'iframeUrl' => $this->createUrl('/product/product/index', array('popup' => 1, 'src' => 'BOrder', 'srcId' => $model->id)),
+          'submitUrl' => $this->createUrl('/order/orderProduct/addProducts', array('orderId' => $model->id)),
+          'updateGridId' => $widgetId,
+          'addButton' => true,
+          'ajaxSubmitOnChange' => false
+        ),
+      ))?>
+    </div>
+  </th>
+  <td style="text-align: center">
 <?php
 $onFlyAjaxUrl = Yii::app()->controller->createUrl('/order/orderProduct/onflyedit');
 $this->widget('BGridView', array(
@@ -89,36 +89,32 @@ $this->widget('BGridView', array(
     ),
   ),
 )); ?>
+    <script language="JavaScript">
+      $(function() {
+        jQuery.fn.yiiGridView.addObserver('<?php echo $widgetId?>', function(id, data) {
+          var content = $('<div>' + data + '</div>');
+          $('#js-order-sum').replaceWith(content.find('#js-order-sum'));
+          $('#js-total-sum').replaceWith(content.find('#js-total-sum'));
+          $('#js-top-price').replaceWith(content.find('#js-top-price'));
+        });
 
-<div class="s-buttons s-buttons-additional">
-  <?php $this->widget('BButton', array(
-    'type' => BButton::BUTTON_LINK,
-    'icon' => 'icon-share-alt',
-    'label' => 'Отправить уведомление о заказе',
-    'url' => $this->createUrl('/order/order/sendNotification', array('orderId' => $model->id))
-  ))?>
-</div>
-
-<script language="JavaScript">
-  $(function() {
-    jQuery.fn.yiiGridView.addObserver('<?php echo $widgetId?>', function(id, data) { $('#js-order-sum').replaceWith($('<div>' + data + '</div>').find('#js-order-sum')); });
-
-    jQuery(document).on('click', '.js-add-order-product-item', function(e) {
-      e.preventDefault();
-      assigner.apply(this, {
-        addButton : true,
-        submitUrl : this.href,
-        iframeUrl : this.href,
-        multiSelect : false,
-        ajaxSubmitOnChange : false,
-        updateGridId : '<?php echo $widgetId?>',
-        width : 800,
-        height : 400,
-        left : '50%',
-        top : '50%',
-        marginTop : '-250px',
-        marginLeft: '-400px'
+        jQuery(document).on('click', '.js-add-order-product-item', function(e) {
+          e.preventDefault();
+          assigner.apply(this, {
+            addButton : true,
+            submitUrl : this.href,
+            iframeUrl : this.href,
+            multiSelect : false,
+            ajaxSubmitOnChange : false,
+            updateGridId : '<?php echo $widgetId?>',
+            width : 800,
+            height : 400,
+            left : '50%',
+            top : '50%',
+            marginTop : '-250px',
+            marginLeft: '-400px'
+          });
+        });
       });
-    });
-  });
-</script>
+    </script>
+  </td></tr>

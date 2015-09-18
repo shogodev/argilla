@@ -98,66 +98,31 @@ abstract class BActiveRecord extends CActiveRecord implements IHasFrontendModel
    */
   public function saveRelatedModels($relationName, array $relatedData, $ignoreEmptyItems = true)
   {
-    if( !$this->validateRelatedModels($relationName, $relatedData, $ignoreEmptyItems) )
+    $models = $this->prepareModels($relationName, $relatedData, $ignoreEmptyItems);
+
+    if( !$this->validateRelatedModels($models) )
       return false;
 
-    $relation  = $this->getActiveRelation($relationName);
-    $className = $relation->className;
-
-    foreach($relatedData as $id => $item)
+    foreach($models as $id => $model)
     {
-      $value = trim(implode("", $item));
-
-      if( empty($value) && $ignoreEmptyItems )
-        continue;
-
-      /**
-       * @var BActiveRecord $model
-       */
-      $model = $className::model()->findByPk($id);
-
-      if( !$model )
-      {
-        $model = new $className();
-        $model->{$relation->foreignKey} = $this->getPrimaryKey();
-      }
-
-      $model->setAttributes(Arr::trim($item));
-
       if( !$model->save(false) )
-        throw new CHttpException(500, "Не удается сохранить зависимую модель {$className}");
+        throw new CHttpException(500, "Не удается сохранить зависимую модель ".get_class($model));
     }
 
     return true;
   }
 
-  public function validateRelatedModels($relationName, array $relatedData, $ignoreEmptyItems = true)
+  /**
+   * @param BActiveRecord[] $models
+   *
+   * @return bool
+   */
+  public function validateRelatedModels(array $models)
   {
-    $relation  = $this->getActiveRelation($relationName);
-    $className = $relation->className;
-
     $validationError = false;
 
-    foreach($relatedData as $id => $item)
+    foreach($models as $id => $model)
     {
-      $value = trim(implode("", $item));
-
-      if( empty($value) && $ignoreEmptyItems )
-        continue;
-
-      /**
-       * @var BActiveRecord $model
-       */
-      $model = $className::model()->findByPk($id);
-
-      if( !$model )
-      {
-        $model = new $className();
-        $model->{$relation->foreignKey} = $this->getPrimaryKey();
-      }
-
-      $model->setAttributes(Arr::trim($item));
-
       if( !$model->validate() )
       {
         foreach($model->errors as $errors)
@@ -169,6 +134,75 @@ abstract class BActiveRecord extends CActiveRecord implements IHasFrontendModel
     }
 
     return !$validationError;
+  }
+
+  /**
+   * @param $relationName
+   * @param array $relatedData
+   * @param bool|true $ignoreEmptyItems
+   *
+   * @return BActiveRecord[]
+   */
+  public function prepareModels($relationName, array $relatedData, $ignoreEmptyItems = true)
+  {
+    $models = array();
+    $relation = $this->getActiveRelation($relationName);
+    $className = $relation ? $relation->className : null;
+
+    if( is_null($className) )
+      return $models;
+
+    if( is_array(reset($relatedData)) )
+    {
+      foreach($relatedData as $id => $attributes)
+      {
+        $value = trim(implode("", $attributes));
+
+        if( empty($value) && $ignoreEmptyItems )
+          continue;
+
+        $models[$id] = $this->prepareModel($className, $relation, $id, $attributes);
+      }
+    }
+    else
+    {
+      if( $relatedModel = $this->{$relationName} )
+      {
+        $models[$relatedModel->primaryKey] = $this->prepareModel($className, $relation, $relatedModel->primaryKey, $relatedData);
+      }
+      else
+      {
+        $models[] = $this->prepareModel($className, $relation, null, $relatedData);
+      }
+    }
+
+    return $models;
+  }
+
+  /**
+   * @param string $className
+   * @param CActiveRelation $relation
+   * @param integer $id
+   * @param array $attributes
+   *
+   * @return BActiveRecord
+   */
+  private function prepareModel($className, $relation, $id, $attributes)
+  {
+    /**
+     * @var BActiveRecord $model
+     */
+    $model = $className::model()->findByPk($id);
+
+    if( !$model )
+    {
+      $model = new $className();
+      $model->{$relation->foreignKey} = $this->getPrimaryKey();
+    }
+
+    $model->setAttributes(Arr::trim($attributes));
+
+    return $model;
   }
 
   public function getFormId()

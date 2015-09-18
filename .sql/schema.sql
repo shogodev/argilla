@@ -561,9 +561,6 @@ CREATE TABLE `argilla_order` (
   `email` varchar(255) NOT NULL,
   `phone` varchar(255) NOT NULL,
   `address` varchar(255) NOT NULL,
-  `delivery_id` int(10) unsigned DEFAULT NULL,
-  `delivery_sum` decimal(10,2) DEFAULT NULL,
-  `payment_id` int(10) unsigned DEFAULT NULL,
   `comment` text NOT NULL,
   `type` varchar(255) NOT NULL DEFAULT 'basket',
   `sum` decimal(10,2) NOT NULL,
@@ -574,11 +571,26 @@ CREATE TABLE `argilla_order` (
   `deleted` tinyint(1) NOT NULL,
   PRIMARY KEY (`id`),
   KEY `user_id` (`user_id`),
-  KEY `delivery_id` (`delivery_id`),
-  KEY `payment_id` (`payment_id`),
-  CONSTRAINT `argilla_order_ibfk_1` FOREIGN KEY (`delivery_id`) REFERENCES `argilla_order_delivery_type` (`id`) ON UPDATE CASCADE,
-  CONSTRAINT `argilla_order_ibfk_2` FOREIGN KEY (`payment_id`) REFERENCES `argilla_order_payment_type` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `user_id` FOREIGN KEY (`user_id`) REFERENCES `argilla_user` (`id`) ON UPDATE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `argilla_order_delivery`
+--
+
+DROP TABLE IF EXISTS `argilla_order_delivery`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `argilla_order_delivery` (
+  `order_id` int(10) unsigned NOT NULL,
+  `delivery_type_id` int(10) unsigned DEFAULT NULL,
+  `delivery_price` decimal(10,2) NOT NULL,
+  `address` varchar(255) NOT NULL,
+  PRIMARY KEY (`order_id`),
+  KEY `delivery_type_id` (`delivery_type_id`),
+  CONSTRAINT `argilla_order_delivery_ibfk_3` FOREIGN KEY (`delivery_type_id`) REFERENCES `argilla_order_delivery_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `argilla_order_delivery_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `argilla_order` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -610,14 +622,17 @@ DROP TABLE IF EXISTS `argilla_order_payment`;
 CREATE TABLE `argilla_order_payment` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `order_id` int(10) unsigned NOT NULL,
+  `payment_type_id` int(10) unsigned NOT NULL,
   `system_id` varchar(255) DEFAULT 'platron',
-  `payment_type_id` int(11) DEFAULT NULL,
+  `system_payment_type_id` int(11) DEFAULT NULL,
   `payment_id` int(11) DEFAULT NULL,
   `status` varchar(255) NOT NULL,
   `captured_status` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   KEY `order_id` (`order_id`),
-  CONSTRAINT `argilla_order_payment_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `argilla_order` (`id`)
+  KEY `payment_type_id` (`payment_type_id`),
+  CONSTRAINT `argilla_order_payment_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `argilla_order` (`id`),
+  CONSTRAINT `argilla_order_payment_ibfk_2` FOREIGN KEY (`payment_type_id`) REFERENCES `argilla_order_payment_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -1409,8 +1424,6 @@ CREATE TABLE `argilla_user` (
   `login` varchar(255) NOT NULL,
   `password_hash` varchar(255) NOT NULL,
   `email` varchar(255) NOT NULL,
-  `service` varchar(255) NOT NULL,
-  `service_id` varchar(255) NOT NULL,
   `restore_code` varchar(255) NOT NULL,
   `type` varchar(255) NOT NULL DEFAULT 'user',
   `visible` tinyint(1) NOT NULL DEFAULT '1',
@@ -1438,6 +1451,26 @@ CREATE TABLE `argilla_user_profile` (
   `discount` decimal(5,2) NOT NULL,
   PRIMARY KEY (`user_id`),
   CONSTRAINT `argilla_user_profile_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `argilla_user` (`id`) ON DELETE CASCADE
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Table structure for table `argilla_user_social`
+--
+
+DROP TABLE IF EXISTS `argilla_user_social`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `argilla_user_social` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `date_create` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `service_name` varchar(255) NOT NULL,
+  `service_id` varchar(255) NOT NULL,
+  `email` varchar(255) NOT NULL,
+  `name` varchar(255) NOT NULL,
+  `user_id` int(10) unsigned NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `user_id` (`user_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 

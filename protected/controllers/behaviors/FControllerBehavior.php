@@ -155,7 +155,7 @@ class FControllerBehavior extends CBehavior
   {
     if( !isset($this->fastOrderForm) )
     {
-      $this->fastOrderForm = new FForm('FastOrder', new Order('fastOrder'));
+      $this->fastOrderForm = new FForm('frontend.forms.order.FastOrder', new Order('fastOrder'));
       $this->fastOrderForm->action = Yii::app()->createUrl('basket/fastOrder');
     }
 

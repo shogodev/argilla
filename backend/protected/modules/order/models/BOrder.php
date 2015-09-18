@@ -14,9 +14,6 @@
  * @property string $email
  * @property string $phone
  * @property string $address
- * @property integer $delivery_id
- * @property string $delivery_sum
- * @property integer $payment_id
  * @property string $comment
  * @property string $type
  * @property string $sum
@@ -30,6 +27,8 @@
  * @property BOrderProduct[] $products
  * @property BOrderStatusHistory[] $history
  * @property BOrderPayment $payment
+ * @property BOrderDelivery $delivery
+ * @property string $totalSum
  */
 class BOrder extends BActiveRecord
 {
@@ -57,6 +56,7 @@ class BOrder extends BActiveRecord
       'history' => array(self::HAS_MANY, 'BOrderStatusHistory', 'order_id'),
       'orderPayDetails' => array(self::BELONGS_TO, 'BOrderPayDetails', array('id' => 'order_id')),
       'payment' => [self::HAS_ONE, 'BOrderPayment', 'order_id'],
+      'delivery' => array(self::HAS_ONE, 'BOrderDelivery', 'order_id'),
     );
   }
 
@@ -65,10 +65,10 @@ class BOrder extends BActiveRecord
     return array(
       array('name', 'required'),
       array('email', 'email'),
-      array('address, comment, phone', 'safe'),
+      array('comment, phone', 'safe'),
       array('status_id', 'numerical', 'integerOnly' => true),
       array('sum', 'numerical'),
-      array('order_comment, delivery_id, payment_id, delivery_sum', 'safe'),
+      array('order_comment', 'safe'),
 
       array('id, type, sum, date_create_from, date_create_to, user_id, userProfile', 'safe', 'on' => 'search'),
     );
@@ -84,9 +84,8 @@ class BOrder extends BActiveRecord
       'type' => 'Тип заказа',
       'status_id' => 'Статус',
       'order_comment' => 'Комментарий менеджера',
-      'delivery_id' => 'Метод доставки',
-      'payment_id' => 'Метод оплаты',
-      'delivery_sum' => 'Доставка'
+      'sum' => 'Стоимость заказа',
+      'totalSum' => 'Итого (с доставкой)'
     ));
   }
 
@@ -142,13 +141,18 @@ class BOrder extends BActiveRecord
     if( $save )
       $this->refresh();
 
-    $this->sum = $this->delivery_sum;
+    $this->sum = 0;
 
     foreach($this->products as $product)
       $this->sum += $product->sum;
 
     if( $save )
       $this->save();
+  }
+
+  public function getTotalSum()
+  {
+    return $this->delivery ? $this->delivery->delivery_price + $this->sum : $this->sum;
   }
 
   /**

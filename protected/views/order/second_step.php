@@ -1,7 +1,7 @@
 <?php
 /**
  * @var BasketController $this
- * @var FForm $form
+ * @var FOrderForm $form
  */
 ?>
 <div class="wrapper">
@@ -29,9 +29,14 @@
 
       <fieldset>
         <div class="h2">Доставка и оплата</div>
-        <?php foreach(array('delivery_id', 'address', 'payment_id', 'payment') as $element) {?>
-          <?php echo $form->renderElement($element);?>
+        <?php foreach(array('delivery_type_id', 'address') as $element) {?>
+          <?php echo $form->getDeliveryForm()->renderElement($element);?>
         <?php }?>
+
+        <?php echo $form->getPaymentForm()->renderElement('payment_type_id');?>
+        <div id="js-platron-block">
+          <?php echo $form->getPaymentForm()->renderElement('system_payment_type_id');?>
+        </div>
       </fieldset>
 
       <fieldset>
@@ -55,7 +60,7 @@
       </div>
     </div>
 
-    <div class="selfdelivery-block" style="display: none"></div>
+    <div class="selfdelivery-block" style="display: none"><!--Карта проезда--></div>
 
     <?php echo $form->renderEnd()?>
 
@@ -84,15 +89,15 @@
 
     var paymentEPay = <?php echo OrderPaymentType::E_PAY?>;
     var paymentCash = <?php echo OrderPaymentType::CASH?>;
-    var platronElements = $('#platron-block input:radio');
-    var paymentMethodBlock = $('#Order_payment_id').closest('.form-row');
+    var platronElements = $('#js-platron-block input:radio');
+    var paymentMethodBlock = $('#OrderPayment_payment_type_id').closest('.form-row');
     var radioBlockContainer = 'div';
 
     paymentMethodBlock.find('input:radio[value=' + paymentEPay + ']').closest(radioBlockContainer).hide();
 
     form.relatedFields({rules : [
-      {'action' : 'show', 'dest' : 'Order[address]', 'src': 'Order[delivery_id]', 'srcValues' : delivery},
-      {'action' : 'call', 'src': 'Order[delivery_id]', 'callback' : function(element, value) {
+      {'action' : 'show', 'dest' : 'Order[address]', 'src': 'OrderDelivery[delivery_type_id]', 'srcValues' : delivery},
+      {'action' : 'call', 'src': 'OrderDelivery[delivery_type_id]', 'callback' : function(element, value) {
         if( value == deliverySelf )
         {
           $('.selfdelivery-block').stop(true, true).fadeIn();
@@ -115,7 +120,8 @@
         }
 
         var setTotalPrice = function(price) {
-          if( number(price) > 0 )
+          price = Number(price)
+          if( price > 0 )
             $('#js-total-sum').text(number_format(price) + currencySuffix);
           else
             $('#js-total-sum').text('Звоните');
@@ -123,9 +129,10 @@
 
         if( deliveryPriceList[value] && deliveryPriceList[value] > 0 )
         {
-          if( freeDeliveryLimit > $('#js-total-sum').data('sum') ) {
+          if( freeDeliveryLimit == -1 || freeDeliveryLimit > $('#js-total-sum').data('sum') )
+          {
             $('#js-delivery-price').text(number_format(deliveryPriceList[value]) + currencySuffix);
-          setTotalPrice(deliveryPriceList[value] + $('#js-total-sum').data('sum'));
+            setTotalPrice(deliveryPriceList[value] + $('#js-total-sum').data('sum'));
           }
           else
           {
@@ -141,11 +148,11 @@
         }
 
       }},
-      {'action' : 'call', 'src' : 'Order[payment_id]', 'callback' : function(element, value) {
+      {'action' : 'call', 'src' : 'OrderPayment[payment_type_id]', 'callback' : function(element, value) {
         if( value != paymentEPay )
           platronElements.prop('checked', false).change();
       }},
-      {'action' : 'call', 'src' : 'OrderPayment[payment_type_id]', 'callback' : function(element, value) {
+      {'action' : 'call', 'src' : 'OrderPayment[system_payment_type_id]', 'callback' : function(element, value) {
         if( value !== undefined ) {
           paymentMethodBlock.find('input:radio[value=' + paymentEPay + ']').click();
         }

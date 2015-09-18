@@ -1,42 +1,46 @@
 <?php
 /**
- * @author Sergey Glagolev <glagolev@shogo.ru>
+ * @author Alexey Tatarinov <tatarinov@shogo.ru>
  * @link https://github.com/shogodev/argilla/
- * @copyright Copyright &copy; 2003-2014 Shogo
+ * @copyright Copyright &copy; 2003-2015 Shogo
  * @license http://argilla.ru/LICENSE
- * @package frontend.models.order.payment
- *
- * @method static OrderPayment model(string $className = __CLASS__)
+ */
+
+/**
+ * Class OrderPayment
  *
  * @property integer $id
  * @property integer $order_id
- * @property string $system_id
  * @property integer $payment_type_id
+ * @property string $system_id
+ * @property integer $system_payment_type_id
  * @property integer $payment_id
  * @property integer $captured_status
  *
  * @property Order $order
+ * @mixin PlatronPaymentBehavior
  */
 class OrderPayment extends FActiveRecord
 {
-  public function relations()
+  public function behaviors()
   {
     return array(
-      'order' => array(self::BELONGS_TO, 'Order', 'order_id'),
+      'paymentBehavior' => 'frontend.models.order.behaviors.PlatronPaymentBehavior',
     );
   }
 
   public function rules()
   {
     return array(
-      array('payment_type_id', 'safe'),
+      array('payment_type_id', 'required'),
+      array('payment_type_id, system_payment_type_id', 'safe'),
     );
   }
 
   protected function beforeSave()
   {
-    if( $this->order && $this->order->payment_id == $this->order->getPaymentSystemTypeId() && empty($this->payment_type_id) )
-      throw new CHttpException(500, 'Не задано обязательное свойство payment_type_id');
+    if( $this->order_id && $this->payment_type_id == $this->getPaymentSystemTypeId() && empty($this->payment_type_id) )
+      throw new CHttpException(500, 'Не задано обязательное свойство system_payment_type_id');
 
     return parent::beforeSave();
   }
@@ -44,7 +48,8 @@ class OrderPayment extends FActiveRecord
   public function attributeLabels()
   {
     return CMap::mergeArray(parent::attributeLabels(), array(
-      'payment_type_id' => '',
+      'payment_type_id' => 'Метод оплаты',
+      'system_payment_type_id' => ''
     ));
   }
 }

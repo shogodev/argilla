@@ -160,7 +160,12 @@ class PlatronSystem extends AbstractPaymentSystem
     $url = self::SYSTEM_URL.self::STATUS_URL;
 
     $request['pg_merchant_id'] = $this->merchantId;
-    $request['pg_payment_id'] = $this->order->getPaymentId();
+
+    if( $paymentId = $this->order->getPaymentId() )
+      $request['pg_payment_id'] = $paymentId;
+    else
+      $request['pg_order_id'] = $this->order->getId();
+
     $request['pg_salt'] = $this->getSalt();
     $request['pg_sig'] = $this->getSignature($request, PG_Signature::getScriptNameFromUrl($url));
 
@@ -316,7 +321,11 @@ class PlatronSystem extends AbstractPaymentSystem
     // Данные пользователя
     $request['pg_user_phone'] = $this->order->getUserPhone();
     $request['pg_user_contact_email'] = $this->order->getUserEmail();
-    $request['pg_user_ip'] = Yii::app()->request->userHostAddress;
+
+    //$request['pg_recurring_start'] = 1;
+
+    if( !$this->getTestMode() )
+      $request['pg_user_ip'] = Yii::app()->request->userHostAddress;
 
     // Режим работы
     $request['pg_testing_mode'] = $this->getTestMode();

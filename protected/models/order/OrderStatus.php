@@ -18,11 +18,13 @@ class OrderStatus extends FActiveRecord
 
   const STATUS_CONFIRMED = 2;
 
-  const STATUS_WAIT_DELIVERY = 3;
+  const STATUS_WAIT_PAYMENT = 3;
 
-  const STATUS_DELIVERED = 4;
+  const STATUS_PAID = 4;
 
-  const STATUS_CANCELED = 5;
+  const STATUS_DELIVERED = 5;
+
+  const STATUS_CANCELED = 6;
 
   public function __toString()
   {

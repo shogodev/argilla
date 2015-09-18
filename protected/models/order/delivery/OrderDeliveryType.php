@@ -25,7 +25,7 @@ class OrderDeliveryType extends FActiveRecord
 
   const DELIVERY_REGION = 4;
 
-  const FREE_DELIVERY_LIMIT = null;
+  const FREE_DELIVERY_LIMIT = -1;
 
   const FREE_DELIVERY = null; // бесплатная доставка
 
@@ -62,6 +62,6 @@ class OrderDeliveryType extends FActiveRecord
 
   public static function isFreeDelivery($orderSum)
   {
-    return !is_null(self::FREE_DELIVERY_LIMIT) && $orderSum > self::FREE_DELIVERY_LIMIT;
+    return self::FREE_DELIVERY_LIMIT > 0 && $orderSum > self::FREE_DELIVERY_LIMIT;
   }
 }
