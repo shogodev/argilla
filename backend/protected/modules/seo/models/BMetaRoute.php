@@ -82,7 +82,9 @@ class BMetaRoute extends BActiveRecord
       )
     );
 
-    $routes = require_once Yii::getPathOfAlias('frontend.config')."/routes.php";
+    Yii::import('frontend.components.url.FUrlManager');
+    $frontendUrlManager = new FUrlManager();
+    $routes = $frontendUrlManager->rules;
 
     foreach($routes as $value)
     {

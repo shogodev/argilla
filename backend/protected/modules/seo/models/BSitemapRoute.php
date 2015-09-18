@@ -57,10 +57,11 @@ class BSitemapRoute extends BSitemap
    */
   public function getRoutes()
   {
-    $routeConfigs = require_once(Yii::getPathOfAlias('frontend.config').'/routes.php');
-    $routes = array();
+    Yii::import('frontend.components.url.FUrlManager');
+    $frontendUrlManager = new FUrlManager();
 
-    array_walk($routeConfigs, function (array $routeConfig) use (&$routes)
+    $routes = array();
+    array_walk($frontendUrlManager->rules, function (array $routeConfig) use (&$routes)
     {
       $route = reset($routeConfig);
       $routes[$route] = $route;

@@ -171,7 +171,7 @@ class FController extends CController
    */
   public function getCurrentUrl($cutDefaultParams = true)
   {
-    return $this->createUrl($this->id.'/'.$this->action->id, $this->getActionParams($cutDefaultParams));
+    return $this->createUrl($this->getCurrentRoute(), $this->getActionParams($cutDefaultParams));
   }
 
   /**
@@ -181,7 +181,20 @@ class FController extends CController
    */
   public function getCurrentAbsoluteUrl($cutDefaultParams = true)
   {
-    return $this->createAbsoluteUrl($this->id.'/'.$this->action->id, $this->getActionParams($cutDefaultParams));
+    return $this->createAbsoluteUrl($this->getCurrentRoute(), $this->getActionParams($cutDefaultParams));
+  }
+
+  /**
+   * @return string
+   */
+  public function getCurrentRoute()
+  {
+    $route = $this->id.'/'.$this->action->id;
+
+    if( $module = $this->getModule() )
+      $route = '/'.$module->id.'/'.$route;
+
+    return $route;
   }
 
   /**
@@ -211,6 +224,22 @@ class FController extends CController
     }
 
     return $params;
+  }
+
+  /**
+   * @param string $route
+   * @param array $params
+   * @param string $ampersand
+   *
+   * @return string
+   */
+  public function createUrl($route, $params = array(), $ampersand = '&')
+  {
+    // Исправляем относительные роуты в модуле на абсолютные
+    if( !empty($route) && $route[0] !== '/' && ($module = $this->getModule()) !== null )
+      $route = '/'.$route;
+
+    return parent::createUrl($route, $params, $ampersand);
   }
 
   /**
