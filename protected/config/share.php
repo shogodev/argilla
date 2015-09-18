@@ -12,11 +12,12 @@ return array(
 
   'import' => array(
     'share.*',
+    'share.exception.*',
     'share.behaviors.*',
     'share.formatters.*',
     'share.helpers.*',
     'share.validators.*',
-    'share.currency.*',
+    'share.currency.*'
   ),
 
   'components' => array(
@@ -34,7 +35,7 @@ return array(
     'phpThumb' => array(
       'class' => 'ext.phpthumb.EPhpThumb',
       'options' => array(
-        'jpegQuality' => '75',
+        'jpegQuality' => '85',
       ),
     ),
 

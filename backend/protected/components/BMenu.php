@@ -101,10 +101,17 @@ class BMenu extends CComponent
 
       Yii::import($moduleConfig['class']);
       $moduleClassName = ucfirst($moduleId).'Module';
+
+      if( !class_exists($moduleClassName) )
+      {
+        throw new ClassNotFoundException($moduleClassName, $moduleConfig['class']);
+      }
+
       /**
        * @var BModule $module
        */
       $module = new $moduleClassName($moduleId, $parent);
+
       if( !$this->allowedModule($module) )
         continue;
 

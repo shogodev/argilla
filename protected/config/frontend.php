@@ -32,6 +32,9 @@ return array_merge_recursive(array(
     'frontend.models.user.*',
     'frontend.models.info.*',
     'frontend.models.order.*',
+    'frontend.models.order.components.*',
+    'frontend.models.order.payment.*',
+    'frontend.models.order.delivery.*',
     'frontend.models.order.paymentSystem.*',
     'frontend.models.order.paymentSystem.platron.*',
     'frontend.models.xml.*',
@@ -51,7 +54,7 @@ return array_merge_recursive(array(
     'frontend.components.collection.behaviors.*',
     'frontend.components.collection.*',
     'frontend.components.sitemap.*',
-
+    'frontend.components.exceptions.*',
 
     'frontend.controllers.*',
     'frontend.controllers.behaviors.*',
@@ -97,7 +100,6 @@ return array_merge_recursive(array(
       'urlFormat'        => 'path',
       'useStrictParsing' => true,
       'showScriptName'   => false,
-      'rules'            => require(__DIR__.'/routes.php'),
     ),
 
     'requestRedirect' => array(
