@@ -54,6 +54,9 @@ class BInputHorizontal extends BInput
       case 'date':
         $value = strtotime($value) !== false ? Yii::app()->format->formatDatetime(strtotime($value)) : '';
         break;
+      case 'price':
+        $value = PriceHelper::price($value, Arr::get($this->data, 'suffix', ''), '');
+        break;
     }
 
     echo $this->getLabel();

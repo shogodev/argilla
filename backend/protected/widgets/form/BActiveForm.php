@@ -55,15 +55,20 @@ class BActiveForm extends TbActiveForm
   /**
    * Renders a Text row.
    *
+   * example:
+   *
+   * $form->textRow($model, $attribute, $htmlOptions, $options = array('format' => 'price', 'suffix' => '  руб.'))
+   *
    * @param CModel $model the data model
    * @param string $attribute the attribute
    * @param array $htmlOptions additional HTML attributes
+   * @param array $options
    *
    * @return string the generated row
    */
-  public function textRow($model, $attribute, $htmlOptions = array())
+  public function textRow($model, $attribute, $htmlOptions = array(), $options = array())
   {
-    return $this->inputRow('text', $model, $attribute, null, $htmlOptions);
+    return $this->inputRow('text', $model, $attribute, $options, $htmlOptions);
   }
 
   /**
@@ -72,12 +77,13 @@ class BActiveForm extends TbActiveForm
    * @param CModel $model the data model
    * @param string $attribute the attribute
    * @param array $htmlOptions additional HTML attributes
+   * @param array $options
    *
    * @return string the generated row
    */
-  public function dateTextRow($model, $attribute, $htmlOptions = array())
+  public function dateTextRow($model, $attribute, $htmlOptions = array(), $options = array('format' => 'date'))
   {
-    return $this->inputRow('text', $model, $attribute, array('format' => 'date'), $htmlOptions);
+    return $this->inputRow('text', $model, $attribute, $options, $htmlOptions);
   }
 
   /**
@@ -148,7 +154,6 @@ class BActiveForm extends TbActiveForm
     else
       return $this->dropDownListDefaultRow($model, $attribute, $data, $htmlOptions);
   }
-
 
   /**
    * Renders a drop-down list input row.
