@@ -4,7 +4,7 @@
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
- * @package 
+ * @package
  */
 class ParametersWidget extends CWidget
 {
@@ -85,7 +85,7 @@ class ParametersWidget extends CWidget
 
       case 'checkbox':
         echo CHtml::tag('div', array('style' => 'float: left'), false, false);
-        echo $this->form->checkBoxList($param, "[$param->id]value", CHtml::listData($param->variants, 'id', 'name'));
+        echo $this->form->checkBoxList($param, "[$param->id]value", CHtml::listData($param->variants, 'id', 'name'), array('template' => '<span class="{labelCssClass}">{input}{label}</span>'));
         echo CHtml::closeTag('div');
       break;
 

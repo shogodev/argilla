@@ -104,7 +104,7 @@ class Meta extends CApplicationComponent
    */
   public function getDescription()
   {
-    return CHtml::encode($this->clear($this->description));
+    return $this->clear($this->description);
   }
 
   /**
@@ -112,7 +112,7 @@ class Meta extends CApplicationComponent
    */
   public function getKeywords()
   {
-    return CHtml::encode($this->clear($this->keywords));
+    return $this->clear($this->keywords);
   }
 
   /**
