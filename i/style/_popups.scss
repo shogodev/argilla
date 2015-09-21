@@ -1,0 +1,49 @@
+.popup {
+  display: none;
+  position: absolute;
+  z-index: 9999;
+  background: $white;
+  padding: 30px 25px;
+  .close {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 25px;
+    height: 25px;
+    right: 0;
+    top: 0;
+  }
+}
+
+.sm-auth {
+  text-align: center;
+  a {
+    display: inline-block;
+    vertical-align: top;
+    width: 67px;
+    height: 69px;
+    border: 2px solid transparent;
+    border-radius: 10px;
+    background-position: 50% 50%;
+    background-repeat: no-repeat;
+    &:hover {
+      border-color: $white;
+    }
+    + a {
+      margin-left: 50px;
+    }
+  }
+  .sm-fb {
+    background-image: url(/i/sm/fb-big.png);
+  }
+  .sm-vk {
+    background-image: url(/i/sm/vk-big.png);
+  }
+  .sm-twit {
+    background-image: url(/i/sm/twit-big.png);
+  }
+  .sm-gplus {
+    background-image: url(/i/sm/gplus-big.png);
+  }
+}

@@ -1102,6 +1102,24 @@ CREATE TABLE `argilla_product_tag` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Table structure for table `argilla_product_text`
+--
+
+DROP TABLE IF EXISTS `argilla_product_text`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `argilla_product_text` (
+  `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+  `name` varchar(255) DEFAULT NULL,
+  `url` varchar(255) DEFAULT NULL,
+  `visible` tinyint(1) DEFAULT '0',
+  `content` text,
+  `content_upper` text,
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
 -- Table structure for table `argilla_product_tree_assignment`
 --
 

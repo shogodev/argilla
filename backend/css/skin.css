@@ -256,6 +256,10 @@ td.button-column a.print:before,
 .table tr.group td {
   font-weight: bolder;
   background-color: #BFCDD7!important; }
+.table tr.group td + td {
+  border-left: 1px solid white !important; }
+.table tr.group + tr.group td {
+  border-top: 1px solid white !important; }
 
 .detail-view .null {
   color: #888888; }
@@ -267,6 +271,7 @@ td.button-column a.print:before,
 .pagination ul > .disabled > a:hover,
 .pagination ul > .disabled > span {
   color: #666666; }
+
 
 
 /*   -=========== Top header with navigation ===========-   */
