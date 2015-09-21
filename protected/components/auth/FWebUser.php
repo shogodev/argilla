@@ -7,6 +7,8 @@
  * @package frontend.components.auth
  * @property User $data
  * @property UserProfile $profile
+ * @property string $email
+ * @property string $name
  */
 class FWebUser extends CWebUser
 {
@@ -41,5 +43,45 @@ class FWebUser extends CWebUser
   public function getProfile()
   {
     return $this->getData()->profile;
+  }
+
+  /**
+   * @return string
+   */
+  public function getEmail()
+  {
+    if( !empty($this->getData()->email) )
+      return $this->getData()->email;
+
+    if( isset($this->getData()->socials) )
+    {
+      foreach($this->getData()->socials as $social)
+      {
+        if( !empty($social->email) )
+          return $social->email;
+      }
+    }
+
+    return '';
+  }
+
+  /**
+   * @return string
+   */
+  public function getName()
+  {
+    if( !empty($this->getProfile()->name) )
+      return $this->getProfile()->name;
+
+    if( isset($this->getData()->socials) )
+    {
+      foreach($this->getData()->socials as $social)
+      {
+        if( !empty($social->name) )
+          return $social->name;
+      }
+    }
+
+    return '';
   }
 }

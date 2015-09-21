@@ -8,6 +8,14 @@
  */
 class UserController extends FController
 {
+  public function actionSocialLogin($service)
+  {
+    if( isset($service) )
+    {
+      $this->socialRegistration($service);
+    }
+  }
+
   public function actionLogin()
   {
     if( !Yii::app()->user->isGuest )
@@ -142,5 +150,46 @@ class UserController extends FController
     }
     else
       $this->redirect(array('user/restore'));
+  }
+
+  private function socialRegistration($service)
+  {
+    /**
+     * @var $eauth EAuthServiceBase
+     */
+    $eauth = Yii::app()->eauth->getIdentity($service);
+    $eauth->redirectUrl = Yii::app()->user->getReturnUrl($this->createAbsoluteUrl('index/index'));
+    $eauth->cancelUrl = Yii::app()->user->getReturnUrl($this->createAbsoluteUrl('index/index'));
+
+    try
+    {
+      if( $eauth->authenticate() )
+      {
+        $identity = new FUserSocialIdentity($eauth);
+
+        if( $identity->authenticate() )
+        {
+          Yii::app()->user->login($identity);
+          $eauth->redirect();
+        }
+        else
+        {
+          $eauth->cancel();
+        }
+      }
+
+      Yii::app()->user->setFlash('success', 'Авторизация прошла успешно');
+
+      // Something went wrong, redirect to login page
+      $this->redirect(Yii::app()->user->getReturnUrl($this->createAbsoluteUrl('user/data')));
+    }
+    catch(EAuthException $e)
+    {
+      // save authentication error to session
+      Yii::app()->user->setFlash('error', 'Ошибка авторизации: '.$e->getMessage());
+
+      // close popup window and redirect to cancelUrl
+      $eauth->redirect($eauth->getCancelUrl());
+    }
   }
 }

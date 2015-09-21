@@ -20,12 +20,15 @@
  * @property integer $visible
  *
  * @property UserProfile $profile
+ * @property UserSocial[] $socials
  */
 class User extends FActiveRecord
 {
   const SCENARIO_REGISTRATION = 'insert';
 
   const SCENARIO_CHANGE_PASSWORD = 'update';
+
+  const SCENARIO_CHANGE_EMAIL = 'change';
 
   const TYPE_USER = 'user';
 
@@ -52,10 +55,15 @@ class User extends FActiveRecord
   public function rules()
   {
     return array(
-      array('login, email', 'filter', 'filter' => array('User', 'clear')),
+      array('login, email', 'filter', 'filter' => array('User', 'clear'), 'on' => self::SCENARIO_REGISTRATION),
       array('login, email, password, confirmPassword', 'required', 'on' => self::SCENARIO_REGISTRATION),
       array('login, email', 'unique', 'on' => self::SCENARIO_REGISTRATION),
       array('email', 'email', 'on' => self::SCENARIO_REGISTRATION),
+
+      array('email', 'email', 'on' => self::SCENARIO_CHANGE_EMAIL),
+      array('email', 'filter', 'filter' => array('User', 'clear'), 'on' => self::SCENARIO_CHANGE_EMAIL),
+      array('email', 'unique', 'on' => self::SCENARIO_CHANGE_EMAIL),
+      array('email', 'required', 'on' => self::SCENARIO_CHANGE_EMAIL),
 
       array('oldPassword, password, confirmPassword', 'required', 'on' => self::SCENARIO_CHANGE_PASSWORD),
       array('oldPassword', 'checkOldPassword', 'on' => self::SCENARIO_CHANGE_PASSWORD),
@@ -90,6 +98,7 @@ class User extends FActiveRecord
   {
     return array(
       'profile' => array(self::HAS_ONE, 'UserProfile', 'user_id'),
+      'socials' => array(self::HAS_MANY, 'UserSocial', 'user_id'),
     );
   }
 

@@ -79,7 +79,7 @@ class Cackle extends CApplicationComponent
       $user = array(
         'id' => Yii::app()->user->data->id,
         'name' => Yii::app()->user->profile->name,
-        'email' => Yii::app()->user->data->getEmail(),
+        'email' => Yii::app()->user->getEmail(),
         'avatar' => Yii::app()->createAbsoluteUrl('userProfile/avatar', array('id' => Yii::app()->user->data->id)),
       );
     }

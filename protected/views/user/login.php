@@ -5,16 +5,24 @@
  */
 ?>
 <div class="wrapper">
-  <?php $this->renderPartial('/_breadcrumbs');?>
-</div>
-
-<div class="white-body pre-footer">
-  <div class="wrapper">
-    <div class="nofloat m5">
-      <h1 class="uppercase s33 fl"><?php echo Yii::app()->meta->setHeader('Вход')?></h1>
+    <div class="breadcrumbs-offset m15">
+      <?php $this->renderOverride('_breadcrumbs');?>
     </div>
 
-    <?php echo $loginForm->render()?>
+  <div class="auth-popup inline">
+    <div class="auth-tabs" id="auth-tabs">
+      <ul class="ui-tabs-nav">
+        <li class="ui-tabs-active"><a>Вход</a></li>
+        <li><a href="<?php echo $this->createUrl('user/registration')?>">Регистрация</a></li>
+      </ul>
 
+      <div id="login" class="tabs-inner">
+        <div class="center s20 light m20">Войти через соц. сети</div>
+        <?php $this->renderPartial('/user/_login_social', $_data_);?>
+        <div class="center s25 light m20">или</div>
+        <?php echo $loginForm->render();?>
+      </div>
+
+    </div>
   </div>
 </div>

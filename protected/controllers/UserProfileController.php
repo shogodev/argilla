@@ -19,8 +19,7 @@ class UserProfileController extends FController
   {
     return array(
       array('deny',
-        'actions' => array('profile', 'data', 'changePassword', 'currentOrders', 'historyOrders'),
-        'users'   => array('?'),
+        'users' => array('?'),
       ),
     );
   }
@@ -46,7 +45,24 @@ class UserProfileController extends FController
       'Личные данные',
     );
 
-    $userForm = new FForm('UserData', UserProfile::model()->findByPk(Yii::app()->user->getId()));
+    if( empty(Yii::app()->user->data->login) )
+    {
+      Yii::app()->user->data->scenario = User::SCENARIO_REGISTRATION;
+      if( !empty(Yii::app()->user->data->socials) )
+      {
+        if( empty(Yii::app()->user->data->email) )
+          Yii::app()->user->data->email = Yii::app()->user->getEmail();
+
+        if( empty(Yii::app()->user->profile->name) )
+          Yii::app()->user->profile->name = Yii::app()->user->getName();
+      }
+    }
+    else
+      Yii::app()->user->data->scenario = User::SCENARIO_CHANGE_EMAIL;
+
+    $userForm = new FForm('UserData', Yii::app()->user->data);
+    $userForm['profile']->model = Yii::app()->user->profile;
+    $userForm['profile']->elements['birthday']->form = $userForm['profile'];
     $userForm->ajaxValidation();
 
     if( Yii::app()->request->isAjaxRequest && $userForm->save() )
@@ -66,7 +82,6 @@ class UserProfileController extends FController
       'Личный кабинет',
       'Сменить пароль',
     );
-
     $model = User::model()->findByPk(Yii::app()->user->getId());
     $model->scenario = User::SCENARIO_CHANGE_PASSWORD;
 
@@ -97,6 +112,58 @@ class UserProfileController extends FController
     $this->render('history_orders', array('orderDataProvider' => $orderDataProvider));
   }
 
+  public function actionSocial()
+  {
+    $this->breadcrumbs = array(
+      'Мой профиль',
+      'Мои социальные сети',
+    );
+
+    $socialManager = new SocialManager();
+
+    $this->render('social', array('socials' => $socialManager->getSocialList()));
+  }
+
+  public function actionBindSocial($service)
+  {
+    if( isset($service) )
+    {
+      /**
+       * @var $eauth EAuthServiceBase
+       */
+      $eauth = Yii::app()->eauth->getIdentity($service);
+      $eauth->redirectUrl = $this->createAbsoluteUrl('userProfile/social');
+      $eauth->cancelUrl = $this->createAbsoluteUrl('userProfile/social');
+
+      try
+      {
+        if( $eauth->authenticate() )
+        {
+          if( $eauth->isAuthenticated )
+          {
+            $socialManager = new SocialManager();
+
+            if( $socialManager->isAllowedUnbind() && $socialManager->isBinded($eauth) )
+              $socialManager->unbindSocial($eauth);
+            else
+              $socialManager->bingSocial($eauth);
+          }
+          else
+          {
+            $eauth->cancel();
+          }
+        }
+
+        $this->redirect($this->createAbsoluteUrl('userProfile/social'));
+      }
+      catch(EAuthException $e)
+      {
+        Yii::app()->user->setFlash('error', 'EAuthException: '.$e->getMessage());
+
+        $eauth->redirect($eauth->getCancelUrl());
+      }
+    }
+  }
   public function getMenu()
   {
     $menu = array(
@@ -108,6 +175,10 @@ class UserProfileController extends FController
         'label' => 'История заказов',
         'url' => array('userProfile/historyOrders')
       ),
+          array(
+            'label' => 'Мои социальный сети',
+            'url' => array('userProfile/social')
+          ),
       array(
         'label' => 'Сменить пароль',
         'url' => array('userProfile/changePassword')

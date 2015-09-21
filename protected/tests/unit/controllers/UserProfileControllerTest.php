@@ -109,7 +109,7 @@ class UserProfileControllerTest extends CDbTestCase
 
     $this->setOutputCallback(function($data) {
       $validateErrors = json_decode(Arr::get(json_decode($data, true), 'validateErrors'), true);
-      $this->assertEquals(array('UserProfile_name' => array('Необходимо заполнить поле «Имя».')), $validateErrors);
+      $this->assertEquals(array('UserProfile_name' => array('Необходимо заполнить поле «Имя».'), 'User_email' => array('Необходимо заполнить поле «E-mail».')), $validateErrors);
     });
 
     $this->controller->run('data');
@@ -122,7 +122,7 @@ class UserProfileControllerTest extends CDbTestCase
   {
     $this->login();
 
-    Yii::app()->request->setAjax(array('UserProfile' => array('name' => 'new name', 'phone' => '12345')));
+    Yii::app()->request->setAjax(array('UserProfile' => array('name' => 'new name', 'phone' => '12345'), 'User' => array('email' => 'test@email.com')));
 
     $this->setOutputCallback(function($data) {
       return Arr::get(CJSON::decode($data), 'messageForm');

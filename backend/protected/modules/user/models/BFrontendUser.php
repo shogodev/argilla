@@ -40,9 +40,9 @@ class BFrontendUser extends BActiveRecord
    */
   public $confirmPassword;
 
-  public $fullName;
-
   public $userPhone;
+
+  private $fullName;
 
   public function tableName()
   {
@@ -53,7 +53,7 @@ class BFrontendUser extends BActiveRecord
   {
     return array(
       array('login, email', 'filter', 'filter' => array('BFrontendUser', 'clear')),
-      array('login, email', 'required'),
+      array('login', 'filter', 'filter' => function($value){return empty($value) ? null : $value;}),
       array('email', 'email'),
       array('email', 'unique'),
       array('confirmPassword', 'compare', 'compareAttribute' => 'password'),
@@ -110,6 +110,11 @@ class BFrontendUser extends BActiveRecord
   {
     $fullName = $this->profile ? (implode(" ", array($this->profile->last_name, $this->profile->name, $this->profile->patronymic))) : '';
     return preg_replace("/\s+/", " ", trim($fullName));
+  }
+
+  public function setFullName($fullName)
+  {
+    $this->fullName = $fullName;
   }
 
   /**

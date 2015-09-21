@@ -5,14 +5,19 @@
  * @var array $_data_
  */
 ?>
-<div class="wrapper" style="background-color: #F4F4F4;">
-  <?php $this->renderPartial('/_breadcrumbs');?>
+<div class="wrapper">
+  <div class="breadcrumbs-offset m25">
+    <?php $this->renderPartial('/_breadcrumbs');?>
+  </div>
 
-  <div class="nofloat profile">
-    <h1><?php echo Yii::app()->meta->setHeader('Личный кабинет')?></h1>
+  <h1 class="uppercase s33 m20"><?php echo Yii::app()->meta->setHeader('Профиль')?></h1>
 
-    <?php $this->renderPartial('_menu', $_data_)?>
+  <div class="nofloat m50">
+    <?php $this->renderPartial('_menu', $_data_) ?>
 
-    <?php echo $model->profile->name?>
+    <section id="main" class="personal-page">
+      <div><?php echo $model->profile->name?></div>
+      <div><?php echo $model->login?></div>
+    </section>
   </div>
 </div>

@@ -39,12 +39,15 @@ return array(
   'userLogout' => array('user/logout', 'pattern' => 'user/logout', 'shouldRemember' => false),
   'userRestoreConfirmed' => array('user/restoreConfirmed', 'pattern' => 'user/restore/<code:\w+>', 'shouldRemember' => false),
   'userRestore' => array('user/restore', 'pattern' => 'user/restore', 'shouldRemember' => false),
+  'userSocialLogin' => array('user/socialLogin', 'pattern' => 'user/socialLogin/<service:\w+>', 'shouldRemember' => false),
 
   // userProfile
   'userProfile' => array('userProfile/profile', 'pattern' => 'user', 'shouldRemember' => false),
   'userProfileData' => array('userProfile/data', 'pattern' => 'user/data', 'shouldRemember' => false),
   'userProfileChangePassword' => array('userProfile/changePassword', 'pattern' => 'user/change_password', 'shouldRemember' => false),
   'userProfileHistoryOrders' => array('userProfile/historyOrders', 'pattern' => 'user/orders/history', 'shouldRemember' => false),
+  'userProfileSocial' => array('userProfile/social', 'pattern' => 'user/social', 'shouldRemember' => false),
+  'userProfileBindSocial' => array('userProfile/bindSocial', 'pattern' => 'user/bind/<service:\w+>', 'shouldRemember' => false),
 
   // forms
   'callback' => array('callback/index', 'pattern' => 'callback'),
@@ -58,6 +61,7 @@ return array(
   // basket
   'basket'  => array('basket/ajax', 'pattern' => 'basket/ajax'),
   'basketFastOrder' => array('basket/fastOrder', 'pattern' => 'basket/fastorder'),
+  'basketRepeatOrder' => array('basket/repeatOrder', 'pattern' => 'basket/repeat'),
 
   // payment system
   'paymentCheck'   => array('payment/check',   'pattern' => 'payment/check'),

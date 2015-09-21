@@ -506,7 +506,7 @@ class FForm extends CForm
       if( $this->loadFromSession && Yii::app()->session[$this->getSessionKey($model)] )
         continue;
 
-      $attributes = array('email' => Yii::app()->user->data->getEmail());
+      $attributes = array('email' => Yii::app()->user->getEmail());
       $attributes = CMap::mergeArray($attributes, Yii::app()->user->profile->getAttributes());
 
       foreach($model->getAttributes() as $attribute => $value)

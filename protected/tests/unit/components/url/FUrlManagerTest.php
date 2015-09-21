@@ -31,7 +31,7 @@ class FUrlManagerTest extends CTestCase
       'slash' => array('info/slash', 'pattern' => 'info/<url:\w+>/'),
       'article' => array('info/article', 'pattern' => 'info/<url:\w+>', 'urlSuffix' => '.html'),
       'index' => array('index/index', 'pattern' => '/'),
-    ));
+    ), false);
 
     $url = $this->manager->createUrl('info/index', array('url' => 'about'), '&');
     $this->assertEquals('/info/about/', $url);

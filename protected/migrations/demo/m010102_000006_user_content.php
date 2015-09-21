@@ -9,16 +9,16 @@ class m010102_000006_user_content extends CDbMigration
 	{
     $passHash = FUserIdentity::createPassword('test', '123');
 
-    $this->execute("INSERT INTO `{{user}}` (`id`, `date_create`, `login`, `password_hash`, `email`, `service`, `service_id`, `restore_code`, `type`, `visible`)
-        VALUES (1, '2015-04-01 12:50:00', 'test', '".$passHash."', 'test@test.ru', '', '', '', 'user', 1)");
+    $this->execute("INSERT INTO `{{user}}` (`id`, `date_create`, `login`, `password_hash`, `email`, `restore_code`, `type`, `visible`)
+        VALUES (1, '2015-04-01 12:50:00', 'test', '".$passHash."', 'test@test.ru', '', 'user', 1)");
 
     $this->execute("INSERT INTO `{{user_profile}}` (`user_id`, `name`, `last_name`, `patronymic`, `address`, `phone`, `birthday`)
         VALUES (1, 'Виктор', '', '', '', '', '0000-00-00');");
 
     $passHash2 = FUserIdentity::createPassword('test2', '123');
 
-    $this->execute("INSERT INTO `{{user}}` (`id`, `date_create`, `login`, `password_hash`, `email`, `service`, `service_id`, `restore_code`, `type`, `visible`)
-        VALUES (2, '2015-04-01 13:50:00', 'test2', '".$passHash2."', 'test2@test.ru', '', '', '', 'user', 1)");
+    $this->execute("INSERT INTO `{{user}}` (`id`, `date_create`, `login`, `password_hash`, `email`, `restore_code`, `type`, `visible`)
+        VALUES (2, '2015-04-01 13:50:00', 'test2', '".$passHash2."', 'test2@test.ru', '', 'user', 1)");
 
     $this->execute("INSERT INTO `{{user_profile}}` (`user_id`, `name`, `last_name`, `patronymic`, `address`, `phone`, `birthday`)
         VALUES (2, 'Петр', '', '', '', '', '0000-00-00');");
@@ -43,37 +43,37 @@ class m010102_000006_user_content extends CDbMigration
       array(
         'sum' => 14000,
         'date_create' => '2014-05-21 07:55:20',
-        'delivery_sum' => 0,
+        'delivery_price' => 0,
         'status_id' => 1,
       ),
       array(
         'sum' => 60000,
         'date_create' => '2014-05-21 07:44:30',
-        'delivery_sum' => 500,
+        'delivery_price' => 500,
         'status_id' => 2,
       ),
       array(
         'sum' => 1300,
         'date_create' => '2014-05-21 05:24:10',
-        'delivery_sum' => 2000,
+        'delivery_price' => 2000,
         'status_id' => 3,
       ),
       array(
         'sum' => 400,
         'date_create' => '2014-05-21 07:14:20',
-        'delivery_sum' => 100,
+        'delivery_price' => 100,
         'status_id' => 4,
       ),
       array(
         'sum' => 100,
         'date_create' => '2014-05-21 15:10:40',
-        'delivery_sum' => 0,
+        'delivery_price' => 0,
         'status_id' => 5,
       ),
       array(
         'sum' => 0,
         'date_create' => '2014-05-21 21:14:04',
-        'delivery_sum' => 0,
+        'delivery_price' => 0,
         'status_id' => 1,
       )
     );
@@ -87,11 +87,12 @@ class m010102_000006_user_content extends CDbMigration
         'id' => $i,
         'user_id' => 1,
         'name' => 'Василий',
-        'sum' => $item['sum'] + $item['delivery_sum'],
+        'sum' => $item['sum'],
         'date_create' => $item['date_create'],
-        'delivery_sum' => $item['delivery_sum'],
         'status_id' => $item['status_id'],
       ));
+
+      $this->insert('{{order_delivery}}', array('order_id' => $i, 'delivery_type_id' => 2, 'delivery_price' => $item['delivery_price']));
 
       $this->generateOrderProducts($item['sum'], $i);
     }
