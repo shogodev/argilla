@@ -114,7 +114,7 @@ class UserProfileControllerTest extends CDbTestCase
         'User_email' => array('Необходимо заполнить поле «E-mail».'),
         'User_login' => array('Необходимо заполнить поле «Логин».'),
         'User_password' => array('Необходимо заполнить поле «Пароль».'),
-        'User_password_confirm' => array('Необходимо заполнить поле «Подтверждение пароля».'),
+        'User_confirmPassword' => array('Необходимо заполнить поле «Подтверждение пароля».'),
       ), $validateErrors);
     });
 
