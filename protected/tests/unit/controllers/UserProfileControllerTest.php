@@ -109,7 +109,13 @@ class UserProfileControllerTest extends CDbTestCase
 
     $this->setOutputCallback(function($data) {
       $validateErrors = json_decode(Arr::get(json_decode($data, true), 'validateErrors'), true);
-      $this->assertEquals(array('UserProfile_name' => array('Необходимо заполнить поле «Имя».'), 'User_email' => array('Необходимо заполнить поле «E-mail».')), $validateErrors);
+      $this->assertEquals(array(
+        'UserProfile_name' => array('Необходимо заполнить поле «Имя».'),
+        'User_email' => array('Необходимо заполнить поле «E-mail».'),
+        'User_login' => array('Необходимо заполнить поле «Логин».'),
+        'User_password' => array('Необходимо заполнить поле «Пароль».'),
+        'User_password_confirm' => array('Необходимо заполнить поле «Подтверждение пароля».'),
+      ), $validateErrors);
     });
 
     $this->controller->run('data');
@@ -122,18 +128,30 @@ class UserProfileControllerTest extends CDbTestCase
   {
     $this->login();
 
-    Yii::app()->request->setAjax(array('UserProfile' => array('name' => 'new name', 'phone' => '12345'), 'User' => array('email' => 'test@email.com')));
+    Yii::app()->request->setAjax(array(
+      'UserProfile' => array(
+        'name' => 'new name',
+        'phone' => '12345'
+      ),
+      'User' => array(
+        'email' => 'test@email.com',
+        'login' => 'testUser',
+        'password' => 'testPassword',
+        'confirmPassword' => 'testPassword',
+      )
+    ));
 
     $this->setOutputCallback(function($data) {
-      return Arr::get(CJSON::decode($data), 'messageForm');
+      return Arr::get(CJSON::decode($data), 'messageForm') == 'Изменения сохранены' ? 'Changes save success' : 'failed';
     });
 
-    $this->expectOutputRegex("/Изменения сохранены/");
+    $this->expectOutputRegex("/Changes save success/");
     $this->controller->run('data');
   }
 
   public function testChangePasswordRender()
   {
+    Yii::app()->request->clearAjax();
     $this->login();
 
     ob_start();
@@ -168,9 +186,9 @@ class UserProfileControllerTest extends CDbTestCase
 
     Yii::app()->request->setAjax(array('User' => array('oldPassword' => '123', 'confirmPassword' => '12345', 'password' => '12345')));
     $this->setOutputCallback(function($data) {
-      return Arr::get(CJSON::decode($data), 'messageForm');
+      return Arr::get(CJSON::decode($data), 'messageForm') == "Изменения сохранены" ? 'Changes save success' : 'failed';
     });
-    $this->expectOutputRegex("/Изменения сохранены/");
+    $this->expectOutputRegex("/Changes save success/");
     $this->controller->run('changePassword');
   }
 

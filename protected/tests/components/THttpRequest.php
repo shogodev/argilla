@@ -32,6 +32,13 @@ class THttpRequest extends CHttpRequest
     $_POST = $data;
   }
 
+  public function clearAjax()
+  {
+    unset($_SERVER['HTTP_X_REQUESTED_WITH']);
+    $_SERVER['REQUEST_METHOD'] = 'GET';
+    $_POST = array();
+  }
+
   public function redirect($url, $terminate = true, $statusCode = 302)
   {
     throw new TRedirectException(200, 'Location: '.$url, $statusCode);

@@ -9,6 +9,7 @@ class PlatronSystemTest extends CDbTestCase
 {
   protected $fixtures = array(
     'order' => 'Order',
+    'order_payment' => 'OrderPayment',
   );
 
   /**
