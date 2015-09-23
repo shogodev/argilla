@@ -1,0 +1,201 @@
+/*
+	jQuery Touch Optimized Sliders "R"Us
+	Core CSS
+*/
+
+
+@import 'variables';
+
+
+.tos-noanimation
+{
+	@include vendor-prefix-property( 'transition-property', none !important );
+}
+.tos-fastanimation
+{
+	@include vendor-prefix-property( 'transition-duration', ( $transitionDuration / 2 ) !important );
+	@include vendor-prefix-property( 'transition-timing-function', ease-out !important );
+}
+
+//	Wrapper
+.tos-wrapper
+{
+	opacity: 0;
+	@include vendor-prefix-property( 'transition', opacity $transitionDuration $transitionFunction );
+
+	display: none;
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	overflow: hidden;
+
+	&.tos-opened
+	{
+		display: block;
+	}
+	&.tos-opening
+	{
+		opacity: 1;
+	}
+
+	&.tos-fixed
+	{
+		background-color: rgb( 0, 0, 0 );
+		position: fixed;
+		top: 0;
+		left: 0;
+		z-index: 9000;
+	}
+	&.tos-inline
+	{
+		position: relative;
+	}
+}
+
+//	Slider
+.tos-slider
+{
+	white-space: nowrap;
+	width: 100%;
+	height: 100%;
+	padding: 0;
+	margin: 0;
+	position: relative;
+}
+.tos-wrapper.tos-fx-slide
+{
+	.tos-slider
+	{
+		left: 0;
+		@include vendor-prefix-property( 'transition', left $transitionDuration $transitionFunction );
+	}
+	&.tos-fixed .tos-slider
+	{
+		position: absolute;
+	}
+}
+.tos-wrapper.tos-fx-fade .tos-slider
+{
+	opacity: 1;
+	@include vendor-prefix-property( 'transition', opacity $transitionDuration $transitionFunction );
+}
+
+
+//	UI elements
+.tos-uibg
+{
+	@include vendor-prefix-value( 'background-image', linear-gradient( bottom, rgba( $uiBgColor, $uiBgOpacity ) 0%, rgba( $uiBgColor, 0 ) 100% ) );
+	@include vendor-prefix-property( 'transition', opacity $transitionDuration $transitionFunction );
+	opacity: 0;
+	
+	width: 100%;
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	z-index: 1;
+}
+.tos-desktop .tos-wrapper:hover,
+.tos-touch .tos-wrapper.tos-hover
+{
+	.tos-uibg
+	{
+		opacity: 1;
+	}
+}
+
+
+//	Slides
+.tos-slide
+{
+	-webkit-overflow-scrolling: touch;
+
+	line-height: 1px;
+	text-align: center;
+	box-sizing: border-box;
+
+	display: inline-block;
+	width: 100%;
+	height: 100%;
+	overflow: hidden;
+	position: relative;
+
+	&:before
+	{
+		content: "";
+		display: inline-block;
+		height: 50%;
+		width: 1px;
+		margin-right: -1px;
+	}
+	
+	&.tos-loading > *
+	{
+		opacity: 0;
+	}
+	
+	> *
+	{
+		opacity: 1;
+		@include vendor-prefix-property( 'transition', opacity $transitionDuration $transitionFunction );
+	}
+}
+
+
+//	Content
+.tos-slide
+{
+	 > *
+	{
+		vertical-align: middle;
+		display: inline-block;
+		max-height: 100%;
+		max-width: 100%;
+		box-sizing: border-box;
+	}
+	&.tos-html > div
+	{
+		-webkit-overflow-scrolling: touch;
+
+		white-space: normal;
+		text-align: left;
+		line-height: 1.5;
+
+		*
+		{
+			@include vendor-prefix-property( 'text-size-adjust', none );
+		}
+	}
+}
+.tos-wrapper
+{
+	&.tos-fill .tos-slide.tos-image > img
+	{
+		max-height: none;
+		max-width: none;
+		min-height: 100%;
+		min-width: 100%;
+	}
+	&.tos-fixed
+	{
+		.tos-slide.tos-html > div
+		{
+			background-color: $htmlBgColor;
+			color: $htmlTextColor;
+
+			box-sizing: border-box;
+			display: inline-block;
+			padding: $uiPadding * 2;
+			overflow: auto;
+		}
+	}
+}
+.tos-desktop .tos-wrapper.tos-fixed
+{
+	background-color: rgba( 0, 0, 0, 0.85 );
+	
+	&.tos-fit .tos-slide
+	{
+		padding: $uiPadding;
+	}
+}

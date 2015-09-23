@@ -1,0 +1,40 @@
+
+/*   -=========== Carousels ===========-   */
+
+.jcarousel-container {
+  position: relative;
+  overflow: hidden;
+}
+
+.jcarousel,
+.jcarousel > li {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.jcarousel {
+  position: absolute;
+  width: 20000em;
+
+  li {
+    float: left;
+  }
+}
+
+.jcarousel-controls {
+  @include user-select(none);
+
+  &.is-hidden {
+    visibility: hidden;
+  }
+}
+
+.jcarousel-prev,
+.jcarousel-next {
+  cursor: pointer;
+
+  &.is-disabled {
+    cursor: default;
+  }
+}

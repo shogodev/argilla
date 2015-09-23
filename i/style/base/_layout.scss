@@ -1,0 +1,86 @@
+
+/*   -=========== Layout ===========-   */
+
+// Floats
+
+.fl {
+  float: left;
+}
+
+.fr {
+  float: right;
+}
+
+.no-fl {
+  float: none;
+}
+
+.l-main {
+  float: left;
+  width: 49%;
+}
+
+.r-main {
+  float: right;
+  width: 49%;
+}
+
+
+// Containers
+
+.group, .nofloat {
+  @include clearfix;
+}
+
+.no-overflow {
+  overflow: hidden;
+}
+
+.wrapper {
+  width: $wrapper-width;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+
+// Margins
+
+.m3 {
+  margin-bottom: 3px;
+}
+
+.m7 {
+  margin-bottom: 7px;
+}
+
+@for $i from 0 through 10 {
+  .m#{$i * 5} {
+    margin-bottom: 5px * $i;
+  }
+}
+
+
+// Position
+
+.relative {
+  position: relative;
+}
+
+.static {
+  position: static !important;
+}
+
+
+// Display
+
+.inline {
+  display: inline;
+}
+
+.inline-block {
+  display: inline-block;
+}
+
+.block {
+  display: block;
+}

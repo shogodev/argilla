@@ -1,0 +1,207 @@
+/*
+	jQuery Touch Optimized Sliders "R"Us
+	Buttons addon
+*/
+
+
+@import '../variables';
+
+
+$btnSize: 40px !default;
+$btnIconStrokeWidth: 3px !default;
+$btnIconSize: 12px !default;
+
+
+.tos-prev,
+.tos-next,
+.tos-close
+{
+	background: $uiBgColor;
+	border-radius: $uiBorderRadius;
+	opacity: 0;
+	display: block;
+	width: $btnSize;
+	position: absolute;
+	z-index: 1;
+
+	@include vendor-prefix-property( 'transition', opacity 0.4s ease );
+}
+
+.tos-prev,
+.tos-next
+{
+	height: $btnSize * 2;
+	margin-top: -$btnSize;
+	top: 50%;
+
+	&.tos-disabled
+	{
+		cursor: default;
+	}
+}
+
+.tos-prev
+{
+	left: $uiPadding;
+}
+.tos-next
+{
+	right: $uiPadding;
+}
+.tos-close
+{
+	height: $btnSize;
+	top: $uiPadding;
+	right: $uiPadding;
+}
+
+//	Opacity
+.tos-desktop .tos-wrapper:hover,
+.tos-touch .tos-wrapper.tos-hover
+{
+	.tos-prev,
+	.tos-next,
+	.tos-close
+	{
+		opacity: $uiOpacity;
+
+		&:hover
+		{
+			opacity: $uiActiveOpacity;
+		}
+		&.tos-disabled
+		{
+			opacity: $uiDisabledOpacity;
+		}
+	}
+}
+
+//	Icons
+.tos-prev span,
+.tos-next span,
+.tos-close span:before,
+.tos-close span:after
+{
+	content: '';
+	display: block;
+	width: $btnIconSize;
+	height: $btnIconSize;
+	margin: -( $btnIconStrokeWidth + 2 );
+
+	position: absolute;
+	top: 50%;
+	@include vendor-prefix-property( 'transform', rotate( 45deg ) );
+}
+.tos-close span:before,
+.tos-close span:after
+{
+	width: $btnIconSize / 2;
+	height: $btnIconSize / 2;
+	margin-top: -( $btnIconStrokeWidth + 1 );
+	margin-left: 0;
+	margin-right: 0;
+}
+.tos-prev span,
+.tos-close span:before
+{
+	border-bottom: $btnIconStrokeWidth solid $uiTextColor;
+	border-left: $btnIconStrokeWidth solid $uiTextColor;
+	left: 50%;
+}
+.tos-next span,
+.tos-close span:after
+{
+	border-top: $btnIconStrokeWidth solid $uiTextColor;
+	border-right: $btnIconStrokeWidth solid $uiTextColor;
+	right: 50%;
+}
+
+//	Padding for desktop
+.tos-desktop .tos-wrapper.tos-fixed.tos-fit
+{
+	&.tos-has-prev,
+	&.tos-has-next,
+	&.tos-has-close
+	{
+		.tos-slide
+		{
+			padding-left: $btnSize + ( $uiPadding * 2 );
+			padding-right: $btnSize + ( $uiPadding * 2 );
+		}
+	}
+}
+
+//	Inline buttons
+.tos-inline
+{
+	opacity: 0;
+	@include vendor-prefix-property( 'transition', opacity $transitionDuration $transitionFunction );
+
+	display: inline-block;
+	margin: 0;
+	position: relative;
+	top: auto;
+	left: auto;
+	right: auto;
+
+	&.tos-prev
+	{
+		margin-right: -( $btnSize + $uiPadding );
+	}
+	&.tos-next
+	{
+		margin-left: -( $btnSize + $uiPadding );
+	}
+}
+.tos-loading .tos-inline
+{
+	opacity: 0 !important;
+}
+
+//	Sizing
+.tos-touch
+{
+	&.tos-scale-2
+	{
+		.tos-wrapper.tos-fixed
+		{
+			.tos-prev,
+			.tos-next,
+			.tos-close
+			{
+				@include vendor-prefix-property( 'transform', scale( 2 ) )
+			}
+		}
+	}
+	&.tos-scale-3
+	{
+		.tos-wrapper.tos-fixed
+		{
+			.tos-prev,
+			.tos-next,
+			.tos-close
+			{
+				@include vendor-prefix-property( 'transform', scale( 3 ) )
+			}
+		}
+	}
+	&.tos-scale-2,
+	&.tos-scale-3
+	{
+		.tos-wrapper.tos-fixed
+		{
+			.tos-prev
+			{
+				@include vendor-prefix-property( 'transform-origin', left center );
+			}
+			.tos-next
+			{
+				@include vendor-prefix-property( 'transform-origin', right center );
+			}
+			.tos-close
+			{
+				@include vendor-prefix-property( 'transform-origin', right top );
+			}
+		}
+	}
+}

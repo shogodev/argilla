@@ -1,83 +1,122 @@
-@mixin box-shadow($shadow-1, $shadow-2:0) {
-  @if $shadow-2 == 0 {
-    -moz-box-shadow: $shadow-1;
-    -webkit-box-shadow: $shadow-1;
-    box-shadow: $shadow-1;
-  } @else {
-    -moz-box-shadow: $shadow-1, $shadow-2;
-    -webkit-box-shadow: $shadow-1, $shadow-2;
-    box-shadow: $shadow-1, $shadow-2;
-  }
-}
-@mixin transition($transition-params) {
-  -moz-transition: $transition-params;
-  -o-transition: $transition-params;
-  -webkit-transition: $transition-params;
-  transition: $transition-params; }
-@mixin transition-property($transition-prop-1,
-                           $transition-prop-2:0,
-                           $transition-prop-3:0) {
-  @if $transition-prop-3 == 0 {
-    @if $transition-prop-2 == 0 {
-      -moz-transition-property: $transition-prop-1;
-      -o-transition-property: $transition-prop-1;
-      -webkit-transition-property: $transition-prop-1;
-      transition-property: $transition-prop-1;
-      } @else {
-        -moz-transition-property: $transition-prop-1, $transition-prop-2;
-        -o-transition-property: $transition-prop-1, $transition-prop-2;
-        -webkit-transition-property: $transition-prop-1, $transition-prop-2;
-        transition-property: $transition-prop-1, $transition-prop-2;
-      }
-  } @else {
-    -moz-transition-property: $transition-prop-1, $transition-prop-2, $transition-prop-3;
-    -o-transition-property: $transition-prop-1, $transition-prop-2, $transition-prop-3;
-    -webkit-transition-property: $transition-prop-1, $transition-prop-2, $transition-prop-3;
-    transition-property: $transition-prop-1, $transition-prop-2, $transition-prop-3;
-  }
-}
-@mixin transform($transform-params) {
-  -moz-transform: $transform-params;
-  -ms-transform: $transform-params;
-  -o-transform: $transform-params;
-  -webkit-transform: $transform-params;
-  transform: $transform-params; }
-@mixin triangle($size, $color, $direction) {
-  height: 0;
-  width: 0;
-  border-color: transparent;
-  border-style: solid;
-  border-width: $size / 2;
 
-  @if $direction == up {
-    border-bottom-color: $color; }
-  @else if $direction == right {
-    border-left-color:   $color; }
-  @else if $direction == down {
-    border-top-color:    $color; }
-  @else if $direction == left {
-    border-right-color:  $color; }
+/*   -=========== Utils ===========-   */
+
+@mixin size($value) {
+
+  @if length($value) > 1 {
+    width: nth($value, 1);
+    height: nth($value, 2);
+  }
+
+  @else {
+    width: $value;
+    height: $value;
+  }
 }
-@mixin background-image($gradient) {
-  background-image: -moz-#{$gradient};
-  background-image: -webkit-#{$gradient};
-  background-image: -o-#{$gradient};
-  background-image: $gradient; }
-@mixin filter-gradient($start-color, $end-color, $direction) {
-  @if $direction == vertical {
-    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=0, startColorstr='#{$start-color}', endColorstr='#{$end-color}'); }
-  @else if $direction == horizontal {
-    filter: progid:DXImageTransform.Microsoft.gradient(GradientType=1, startColorstr='#{$start-color}', endColorstr='#{$end-color}'); }
-  .lt-ie8 & {
-    filter: none; }
+
+@mixin position($position, $coords) {
+  $coords: (
+    top: nth($coords, 1),
+    right: nth($coords, 2),
+    bottom: nth($coords, 3),
+    left: nth($coords, 4)
+  );
+
+  position: $position;
+
+  @each $coord, $value in $coords {
+    @if is-length($value) {
+      #{$coord}: $value;
+    }
+  }
 }
-@mixin noselect {
-  -moz-user-select: none;
-  -ms-user-select: none;
-  -o-user-select: none;
-  -webkit-user-select: none;
-  user-select: none; }
-@mixin borderbox {
-  -webkit-box-sizing: border-box;
-  -moz-box-sizing: border-box;
-  box-sizing: border-box; }
+
+@mixin clearfix() {
+  &:before, &:after {
+    content: '';
+    display: table;
+    clear: both;
+  }
+}
+
+@mixin hide-text {
+  text-indent: -9999em;
+  overflow: hidden;
+}
+
+@mixin triangle($width, $height, $color, $direction) {
+  width: 0;
+  height: 0;
+  border-style: solid;
+
+  @if $direction == 'top' {
+    border-width: 0 ($width / 2) $height ($width / 2);
+    border-color: transparent transparent $color transparent;
+  }
+
+  @if $direction == 'right' {
+    border-width: ($height / 2) 0 ($height / 2) $width;
+    border-color: transparent transparent transparent $color;
+  }
+
+  @if $direction == 'bottom' {
+    border-width: $height ($width / 2) 0 ($width / 2);
+    border-color: $color transparent transparent transparent;
+  }
+
+  @if $direction == 'left' {
+    border-width: ($height / 2) $width ($height / 2) 0;
+    border-color: transparent $color transparent transparent;
+  }
+}
+
+
+/*   -=========== Prefixes ===========-   */
+
+@mixin transform($value) {
+  -webkit-transform: $value;
+  -ms-transform: $value;
+  transform: $value;
+}
+
+@mixin transform-origin($value) {
+  -webkit-transform-origin: $value;
+  -ms-transform-origin: $value;
+  transform-origin: $value;
+}
+
+@mixin user-select($value) {
+  -webkit-user-select: $value;
+  -moz-user-select: $value;
+  -ms-user-select: $value;
+  user-select: $value;
+}
+
+@mixin box-sizing($value) {
+  -webkit-box-sizing: $value;
+  -moz-box-sizing: $value;
+  box-sizing: $value;
+}
+
+@mixin animation($value) {
+  -webkit-animation: $value;
+  animation: $value;
+}
+
+@mixin keyframes($name) {
+  @-webkit-keyframes #{$name} {
+    @content;
+  }
+
+  @keyframes #{$name} {
+    @content;
+  }
+}
+
+@mixin noselect() {
+  @include user-select(none);
+}
+
+@mixin borderbox() {
+  @include box-sizing(border-box);
+}

@@ -1,0 +1,105 @@
+/*
+	jQuery Touch Optimized Sliders "R"Us
+	Caption addon
+*/
+
+
+@import '../variables';
+
+
+@mixin sizing_caption( $scale: 1 )
+{
+	$padding: $uiPadding * $scale;
+
+	//	Sizing
+	.tos-caption
+	{
+		line-height: $captLineHeight * $scale;
+		font-size: $captFontSize * $scale;
+		text-shadow: 0 ( 1px * $scale ) ( 2px * $scale ) rgba( 0, 0, 0, 0.8 );
+		height: ( $captLineHeight * $scale ) + $padding;
+	}
+	&.tos-has-caption .tos-uibg
+	{
+		height: ( $padding * 4 ) + ( $captLineHeight * $scale );
+	}
+}
+@mixin sizing_caption_slide_padding( $scale: 1 )
+{
+	$padding: $uiPadding * $scale;
+
+	.tos-slide
+	{
+		padding-bottom:( $padding * 2 ) + ( $captLineHeight * $scale );
+	}
+}
+
+.tos-caption
+{
+	color: $uiTextColor;
+	text-align: center;
+
+	opacity: 0;
+	@include vendor-prefix-property( 'transition', opacity $transitionDuration $transitionFunction );
+
+	width: 100%;
+	position: absolute;
+	left: 0;
+	bottom: 0;
+	z-index: 1;
+
+	&:after
+	{
+		content: '';
+		display: block;
+		clear: both;
+	}
+	> div
+	{
+		white-space: nowrap;
+		text-overflow: ellipsis;
+		overflow: hidden;
+		width: 100%;
+
+		box-sizing: border-box;
+		padding: 0 $uiPadding;
+		float: left;
+
+		&:last-child
+		{
+			float: right;
+			margin-right: -2px;
+		}
+	}
+}
+
+//	Opacity
+.tos-desktop .tos-wrapper:hover,
+.tos-touch .tos-wrapper.tos-hover
+{
+	.tos-caption
+	{
+		opacity: 1;
+	}
+}
+
+//	Sizing
+.tos-wrapper
+{
+	@include sizing_caption;
+}
+.tos-desktop .tos-wrapper.tos-fixed.tos-fit.tos-has-caption
+{
+	@include sizing_caption_slide_padding;
+}
+.tos-touch
+{
+	&.tos-scale-2 .tos-wrapper.tos-fixed
+	{
+		@include sizing_caption( 2 );
+	}
+	&.tos-scale-3 .tos-wrapper.tos-fixed
+	{
+		@include sizing_caption( 3 );
+	}
+}

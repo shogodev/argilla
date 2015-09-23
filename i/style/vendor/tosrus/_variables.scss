@@ -1,0 +1,74 @@
+//	jQuery Touch Optimized Sliders "R"Us
+//	Variables
+
+
+$transitionDuration: 0.4s !default;
+$transitionFunction: ease !default;
+
+$uiPadding: 20px;
+
+$uiBgColor: #000 !default;
+$uiBgOpacity: 0.5 !default;
+$uiTextColor: #fff !default;
+$uiBorderRadius: 3px !default;
+
+$uiOpacity: 0.5 !default;
+$uiDisabledOpacity: 0.2 !default;
+$uiActiveOpacity: 0.9 !default;
+
+$htmlBgColor: #fff;
+$htmlTextColor: #333;
+
+$captFontSize: 15px !default;
+$captLineHeight: 20px !default;
+
+$loadingSize: 30px;
+
+
+@mixin vendor-prefix-property( $prop, $val )
+{
+	-webkit-#{$prop}: $val;
+	-moz-#{$prop}: $val;
+	-ms-#{$prop}: $val;
+	-o-#{$prop}: $val;
+	#{$prop}: $val;
+}
+@mixin vendor-prefix-both( $prop, $val )
+{
+	-webkit-#{$prop}: -webkit-#{$val};
+	-moz-#{$prop}: -moz-#{$val};
+	-ms-#{$prop}: -ms-#{$val};
+	-o-#{$prop}: -o-#{$val};
+	#{$prop}: $val;
+}
+@mixin vendor-prefix-value( $prop, $val )
+{
+	#{$prop}: -webkit-#{$val};
+	#{$prop}: -moz-#{$val};
+	#{$prop}: -ms-#{$val};
+	#{$prop}: -o-#{$val};
+	#{$prop}: $val;
+}
+@mixin vendor-prefix-keyframes( $name, $prop, $from, $to )
+{
+	@-webkit-keyframes $name {
+		from { -webkit-#{$prop}: $from; }
+		to { -webkit-#{$prop}: $to; }
+	}
+	@-moz-keyframes $name {
+		from { -moz-#{$prop}: $from; }
+		to { -moz-#{$prop}: $to; }
+	}
+	@-ms-keyframes $name {
+		from { -ms-#{$prop}: $from; }
+		to { -ms-#{$prop}: $to; }
+	}
+	@-o-keyframes $name {
+		from { -o-#{$prop}: $from; }
+		to { -o-#{$prop}: $to; }
+	}
+	@keyframes $name {
+		from { #{$prop}: $from; }
+		to { #{$prop}: $to; }
+	}
+}

@@ -1,0 +1,99 @@
+
+/*   -=========== Forms ===========-   */
+
+// Base
+
+input,
+textarea {
+  font: inherit;
+}
+
+.form {
+  .required {
+    color: $warning-color;
+  }
+}
+
+.inp,
+.textarea {
+  width: 100%;
+  padding: .3125em;
+  line-height: 1.25em;
+  color: lighten($text-color, 5);
+  border: 1px solid lighten($black, 5);
+  transition: all .25s ease;
+
+  &:focus {
+    color: $text-color;
+    border-color: $black;
+  }
+
+  .form-field.error > & {
+    border-color: $warning-color;
+    color: $warning-color;
+  }
+}
+
+.form-row {
+  @include clearfix;
+
+  + .form-row {
+    .one-column-form & {
+      margin-top: .5em;
+    }
+
+    .two-columns-form & {
+      margin-top: 1.25em;
+    }
+  }
+}
+
+.form-label {
+  .one-column-form & {
+    margin-bottom: .15em;
+  }
+
+  .two-columns-form & {
+    float: left;
+  }
+}
+
+.form-field {
+  position: relative;
+
+  .two-columns-form & {
+    float: right;
+  }
+
+  .errorMessage {
+    display: none;
+    font-size: 12px;
+    line-height: 1em;
+    padding: 1px 0 3px;
+    text-align: center;
+    background: $warning-color;
+    color: $white;
+
+    .two-columns-form & {
+      @include position(absolute, null null 0 0);
+      @include transform(translateY(100%));
+      width: 100%;
+    }
+  }
+
+  &.error {
+    margin-bottom: .25em;
+
+    .errorMessage {
+      display: block;
+    }
+  }
+}
+
+.form-submit {
+  text-align: center;
+
+  .two-columns-form & {
+    float: right;
+  }
+}

@@ -1,0 +1,254 @@
+
+/*   -=========== Typography ===========-   */
+
+body {
+  font: #{$font-size}/#{$line-height} $font-family;
+  background: white;
+  color: $text-color;
+}
+
+::-moz-selection {
+  background: $black;
+  color: $white;
+}
+
+::selection {
+  background: $black;
+  color: $white;
+}
+
+
+// Headings
+
+.h1, .h2, .h3, .h4 {
+  font-weight: bold;
+  text-transform: uppercase;
+}
+
+.h1 {
+  font-size: 1.875em;
+}
+
+.h2 {
+  font-size: 1.515em;
+}
+
+.h3 {
+  font-size: 1.125em;
+}
+
+.h4 {
+  font-size: 1em;
+}
+
+
+// Sub, sup
+
+sub, sup {
+  position: relative;
+  font-size: .6em;
+  line-height: 0;
+  vertical-align: baseline;
+}
+
+sup {
+  top: -0.5em;
+}
+
+sub {
+  bottom: -0.25em;
+}
+
+
+// Links
+
+a {
+  color: $link-color;
+
+  &:hover {
+    color: $hovered-link-color;
+  }
+}
+
+a.hova, .hova a {
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: underline;
+  }
+}
+
+a.unhova, .unhova a {
+  text-decoration: underline;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+a.nova, .nova a {
+  text-decoration: none;
+
+  &:hover {
+    text-decoration: none;
+  }
+}
+
+.is-desktop {
+  a[href^="tel:"] {
+    cursor: text;
+    pointer-events: none;
+  }
+}
+
+
+// Sizes
+
+@for $i from 11 through 36 {
+  .s#{$i} {
+    font-size: 1px * $i;
+    line-height: $line-height;
+  }
+}
+
+
+// Font weight
+
+.normal, .nn {
+  font-weight: normal;
+}
+
+.bold, .bb {
+  font-weight: bold;
+}
+
+.lighter, .ll {
+  font-weight: lighter;
+}
+
+
+// Font style
+
+.style-normal {
+  font-style: normal;
+}
+
+.italic, .ii {
+  font-style: italic;
+}
+
+
+// Text case
+
+.uppercase, .upcase {
+  text-transform: uppercase;
+}
+
+.nocase {
+  text-transform: none !important;
+}
+
+
+// Text decoration
+
+.underline {
+  text-decoration: underline;
+}
+
+
+// Colors
+
+.black, a.black {
+  color: $black;
+}
+
+.white, a.white {
+  color: $white;
+}
+
+
+// Text align
+
+.text-center {
+  text-align: center;
+}
+
+.text-left {
+  text-align: left;
+}
+
+.text-right {
+  text-align: right;
+}
+
+
+// Word wrap
+
+.nowrap {
+  white-space: nowrap;
+}
+
+
+// Text container
+
+.text-container {
+  @include clearfix;
+
+  .h1, .h2, .h3,
+  .h4, p, ul, ol, hr {
+    + .h1, + .h2, + .h3,
+    + .h4, + p, + ul, + ol + hr {
+      margin-top: 1em;
+    }
+  }
+
+  ol {
+    margin-left: 1em;
+    list-style-position: outside;
+  }
+
+  ul > li {
+    list-style: none;
+
+    &:before {
+      content: '●';
+      font-size: .75em;
+      display: inline-block;
+      margin-right: .5em;
+    }
+  }
+
+  li {
+    margin: .25em 0;
+
+    > ul, ol {
+      margin-left: 1em;
+    }
+  }
+}
+
+// HR
+
+hr {
+  height: 1px;
+  margin: .5em 0;
+  background: $black;
+}
+
+// Icons
+
+.icon {
+  display: inline-block;
+}
+
+// Video
+
+.video {
+  position: relative;
+  padding: 25px 0 56.25%;
+
+  > iframe {
+    @include size(100%);
+    @include position(absolute, 0 null null 0);
+  }
+}
