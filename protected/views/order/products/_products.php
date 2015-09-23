@@ -4,7 +4,7 @@
  * @var array $_data_
  */
 ?>
-<table class="zero basket-table m10">
+<table>
   <tr>
     <th>Наименование</th>
     <th>Цена, руб.</th>
@@ -17,13 +17,13 @@
 
 </table>
 
-<table class="zero basket-total-table m10">
+<table>
   <tr>
     <td>
-      <span class="s24 bb uppercase">Стоимость выбранных товаров:</span>
+      Стоимость выбранных товаров:
     </td>
-    <td class="s13 grey">
-      <span class="s26 bb red"><?php echo PriceHelper::price($this->basket->getSumTotal(), ' руб.')?></span>
+    <td>
+      <?php echo PriceHelper::price($this->basket->getSumTotal(), ' руб.')?>
     </td>
   </tr>
 </table>

@@ -6,7 +6,7 @@
  * @var ProductParameterName $item
  */
 ?>
-<table class="zero">
+<table>
   <?php if( $data->articul ) {?>
     <tr>
       <td>Артикул:</td>

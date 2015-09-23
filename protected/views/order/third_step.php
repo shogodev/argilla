@@ -31,9 +31,3 @@
   '{mainUrl}' => $this->createUrl('index/index'),
   '{phones}' => count($phonesText) > 0 ? '<p class="s17">Вы можете задать вопрос по '.Utils::plural(count($phonesText), 'телефону|телефонам').':</p>'.implode('', $phonesText) : '',
 ))?>
-
-<script>
-  // <![CDATA[
-  $('#structure').css('background', 'url(/i/basket-3.jpg) 50% 160px no-repeat');
-  // ]]>
-</script>

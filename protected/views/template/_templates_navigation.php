@@ -114,6 +114,8 @@
     text-decoration: none; }
   .templates-navigation-close:hover {
     text-decoration: none; }
+  #templates-navigation .ps-scrollbar-y-rail {
+    right: 15px !important; }
   @media print {
     #templates-navigation {
       display: none; }
@@ -219,14 +221,14 @@
     var scrollHeight = $(window).height() - $('.template-description-block').position().top - 10;
     $('.template-description-block').css( 'height', scrollHeight );
     $('.templates-map').css( 'height', $('.templates-map-container').height() );
-    $('.scroll-pane').jScrollPane();
+    $('.scroll-pane').perfectScrollbar();
   })
 
   $(window).resize(function(){
     var scrollHeight = $(window).height() - $('.template-description-block').position().top - 10;
     $('.template-description-block').css( 'height', scrollHeight );
     $('.templates-map').css( 'height', $('.templates-map-container').height() );
-    $('.scroll-pane').jScrollPane();
+    $('.scroll-pane').perfectScrollbar();
   });
 //]]>
 </script>
