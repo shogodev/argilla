@@ -92,10 +92,9 @@ class BContactController extends BController
   }
 
   /**
-   * @param array $models
-   * @param bool $extendedSave
+   * @inheritdoc
    */
-  protected function saveModels($models, $extendedSave = true)
+  protected function saveModels($models, $extendedSave = true, $redirectToUpdate = true)
   {
     $model = Arr::reset($models);
 
@@ -115,12 +114,15 @@ class BContactController extends BController
 
         $this->saveTextblock($model);
 
-        Yii::app()->user->setFlash('success', 'Запись успешно '.($model->isNewRecord ? 'создана' : 'сохранена').'.');
+        if( $redirectToUpdate )
+        {
+          Yii::app()->user->setFlash('success', 'Запись успешно '.($model->isNewRecord ? 'создана' : 'сохранена').'.');
 
-        if( Yii::app()->request->getParam('action') )
-          $this->redirect($this->getBackUrl());
-        else
-          $this->redirect(array('update', 'id' => $model->id));
+          if( Yii::app()->request->getParam('action') )
+            $this->redirect($this->getBackUrl());
+          else
+            $this->redirect(array('update', 'id' => $model->id));
+        }
       }
     }
   }

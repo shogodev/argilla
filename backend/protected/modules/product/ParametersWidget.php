@@ -72,7 +72,13 @@ class ParametersWidget extends CWidget
   {
     if( $this->model->asa('productColorBehavior') && $this->model->getColorParameterId() == $param->id )
     {
-      $this->renderColorParameter($param);
+      $this->renderColorParameter($param, true);
+      return;
+    }
+
+    if( $this->model->asa('updateParameterColorGroupBehavior') && $this->model->colorGroupParameterId == $param->id )
+    {
+      $this->renderColorParameter($param, false);
       return;
     }
 
@@ -103,20 +109,24 @@ class ParametersWidget extends CWidget
 
   /**
    * @param BProductParam $param
+   * @param boolean $image
    */
-  private function renderColorParameter($param)
+  private function renderColorParameter($param, $image)
   {
     $variants = array();
 
     foreach($param->variants as $i => $variant)
     {
-      $variants[$variant->id] = CHtml::image($variant->getImage(), $variant->alt, array('style' => 'height: 25px; background: '.$variant->notice , 'title' => $variant->name, ));
+      if($image )
+        $variants[$variant->id] = CHtml::image($variant->getImage(), $variant->alt, array('style' => 'height: 25px; background: '.$variant->notice , 'title' => $variant->name, ));
+      else
+        $variants[$variant->id] = CHtml::tag('span', array('style' => 'display: block; height: 25px; width: 25px; background-color: '.$variant->notice , 'title' => $variant->name, ));
 
       if( is_array($param->value) && in_array($variant->id, $param->value) )
       {
-        echo CHtml::label(
+        echo CHtml::tag('span', array('class' => 'checkbox'),
           CHtml::label($variants[$variant->id], null).
-          CHtml::hiddenField("BProductParamName[$param->id][value][]", $variant->id), null, array('class' => 'checkbox')
+          CHtml::hiddenField("BProductParamName[$param->id][value][]", $variant->id)
         );
       }
     }

@@ -279,12 +279,14 @@ abstract class BController extends CController
    * Проводим валидацию и сохраняем несколько связанных моделей
    * Все модели должны быть связаны по первичному ключу
    *
-   * @param $models
+   * @param BActiveRecord[] $models
    * @param bool $extendedSave пытаемся сохранить все данные post, вызывая соответствующие методы контроллера
+   * @param bool $redirectToUpdate перенаправление на action update
    *
+   * @throws CDbException
    * @throws CHttpException
    */
-  protected function saveModels($models, $extendedSave = true)
+  protected function saveModels($models, $extendedSave = true, $redirectToUpdate = true)
   {
     $this->performAjaxValidationForSeveralModels($models);
 
@@ -320,7 +322,9 @@ abstract class BController extends CController
       }
 
       Yii::app()->db->currentTransaction->commit();
-      $this->redirectAfterSave($primaryModel);
+
+      if( $redirectToUpdate )
+        $this->redirectAfterSave($primaryModel);
     }
   }
 
