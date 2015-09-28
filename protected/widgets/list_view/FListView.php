@@ -24,7 +24,7 @@ class FListView extends CListView
 
   public $cssFile = false;
 
-  public $afterAjaxUpdate = '$.fn.yiiListView.afterAjaxHandler';
+  public $afterAjaxUpdate = 'function(id, data){$.fn.yiiListView.afterAjaxHandler(id, data);}';
 
   public $columnsCount;
 

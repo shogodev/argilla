@@ -54,7 +54,7 @@
      * @param data
      */
     $.fn.yiiListView.afterAjaxHandler = function (id, data) {
-      $('body').trigger('yiiListViewUpdated', id, data);
+      $('body').trigger('yiiListViewUpdated', [id, data]);
     };
   }
 })(jQuery);

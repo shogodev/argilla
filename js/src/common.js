@@ -10,7 +10,7 @@ function initCommonScripts() {
   'use strict';
 
   $(document.body)
-    .on('yiiListViewUpdated', function(){
+    .on('yiiListViewUpdated', function(event, id, data) {
       var $catalog = $('.catalog');
       var scrollSpeed = Math.abs( $(window).scrollTop() ) * 0.3;
       $(window).scrollTo( $catalog, {
