@@ -10,13 +10,24 @@
  * @property string $param_id
  * @property string $name
  * @property string $position
+ * @property string $url
+ * @property string $notice
  *
- * @property ProductParameterName $param
+ * @property ProductParameterName $parameterName
  *
  * @method static ProductParameterVariant model(string $class = __CLASS__)
  */
 class ProductParameterVariant extends FActiveRecord
 {
+  const BASE_UPLOAD_PATH = 'f/upload/images/color/';
+
+  public function relations()
+  {
+    return array(
+      'parameterName' => array(self::BELONGS_TO, 'ProductParameterName', 'param_id')
+    );
+  }
+
   public function tableName()
   {
     return '{{product_param_variant}}';
@@ -36,9 +47,9 @@ class ProductParameterVariant extends FActiveRecord
     return $this->name;
   }
 
-  public function getImage()
+  public function getImage($imageAttribute = 'notice')
   {
-    return 'f/upload/images/'.$this->id.'.png';
+    return !empty($this->{$imageAttribute}) ? Yii::app()->request->hostInfo.'/'.self::BASE_UPLOAD_PATH.$this->{$imageAttribute} : '/i/sp.gif';
   }
 
   /**

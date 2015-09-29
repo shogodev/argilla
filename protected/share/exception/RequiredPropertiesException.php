@@ -21,6 +21,6 @@ class RequiredPropertiesException extends CException
     $this->code = 500;
 
     $properties = is_array($properties) ? $properties : array($properties);
-    $this->message = 'Ошибка! Не '.(count($properties) == 1 ? 'заданно свойство' : 'заданны свойства '.implode(', ', $properties)).' класса '.$className;
+    $this->message = 'Ошибка! Не '.(count($properties) == 1 ? 'заданно свойство '.reset($properties) : 'заданны свойства '.implode(', ', $properties)).' класса '.$className;
   }
 }

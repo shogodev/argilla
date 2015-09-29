@@ -15,6 +15,11 @@ class ParametersWidget extends CWidget
 
   public $form;
 
+  /**
+   * @var array $hideParameters - масив id параметров которые нужно скрыть
+   */
+  public $hideParameters = array();
+
   public function init()
   {
     if( is_null($this->model) )
@@ -54,7 +59,10 @@ class ParametersWidget extends CWidget
       }
       else
       {
-        echo '<tr>';
+        if( in_array($parameter->id, $this->hideParameters) )
+          echo '<tr style="display: none">';
+        else
+          echo '<tr>';
         echo '<th>';
         echo CHtml::label($parameter->name, null);
         echo '</th>';

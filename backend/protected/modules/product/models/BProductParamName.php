@@ -159,6 +159,36 @@ class BProductParamName extends BActiveRecord
     return $this->buildParams($criteria);
   }
 
+  public function getRelatedItems()
+  {
+    switch($this->key)
+    {
+      case 'color':
+        $config = array(
+          'position' => array('class' => 'span1'),
+          'name',
+          'notice' => array('tag' => 'image', 'label' => 'Изображение'),
+        );
+        break;
+
+      case 'url':
+        $config = array(
+          'position' => array('class' => 'span1'),
+          'name',
+          'notice' => array('label' => 'Url'),
+        );
+        break;
+
+      default:
+        $config = array(
+          'position' => array('class' => 'span1'),
+          'name'
+        );
+    }
+
+    return $config;
+  }
+
   /**
    * @param CDbCriteria $criteria
    *

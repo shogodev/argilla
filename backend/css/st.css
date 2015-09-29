@@ -166,6 +166,17 @@ td.button-column a:hover {
 .s-buttons-additional,
 .s-buttons-top {
   margin-bottom: 10px; }
+.related-item-textarea {
+  position: relative;
+  height: 15px;
+  overflow:hidden; }
+.related-item-textarea:focus {
+  z-index: 999;
+  position: absolute;
+  height: 120px; }
+.input-color {
+  padding: 0px !important;
+  max-width: 40px; }
 
 
 /*   -=========== Login form ===========-   */

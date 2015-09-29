@@ -12,7 +12,11 @@
  *   'position' => array('class' => 'span1'),
  *   'content' => array('class' => 'span8', 'label' => 'Текст'),
  *   'visible' => array('type' => 'checkbox'),
- *   'image' =>  array('tag' => 'image')
+ *   'image' =>  array('tag' => 'image'),
+ *   'coating_id' =>  array('tag' => 'dropdownlist', 'items' => CHtml::listData(BProductParamVariant::model()->findAllByAttributes(array('param_id' => self::COATING_ID)), 'id', 'name')),
+ *   'value' =>  array('tag' => 'dropdownlist', 'defaultItem' => false, 'items' => array(1 => 'value 1', 2 => 'value 2'),
+ *   'description' => array('type' => 'textarea'),
+ *   'color' => array('tag' => 'color')
  * ));
  *
  * echo $form->relatedItemsRow($model, 'steps', array(
@@ -143,6 +147,23 @@ class RelatedItemsWidget extends CWidget
             echo CHtml::fileField($options['name'], $options['value']);
             echo CHtml::closeTag('span');
           break;
+
+          case 'dropdownlist':
+            $defaultItem = Arr::cut($attributeOptions, 'defaultItem', array('' => 'Не задано'));
+            $items = !empty($defaultItem) ? $defaultItem : array();
+            $items = CMap::mergeArray($items, Arr::cut($attributeOptions, 'items', array()));
+            echo CHtml::dropDownList($options['name'], $options['value'], $items, $options);
+          break;
+
+          case 'textarea':
+            $options['class'] = isset($options['class']) ? $options['class'].' related-item-textarea' : '';
+            echo CHtml::textArea($options['name'], $options['value'], $options);
+          break;
+
+          case 'color':
+            $options['type'] = 'color';
+            $tag = 'input';
+            $options['class'] = isset($options['class']) ? $options['class'].' input-color' : '';
 
           case 'input':
             $options['type'] = Arr::get($options, 'type', $type);

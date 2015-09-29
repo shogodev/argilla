@@ -12,11 +12,7 @@
 <?php echo $form->dropDownListRow($model, 'type', $model->types); ?>
 
 <?php if( !in_array($model->type, array('text', 'slider')) ) { ?>
-  <?php echo $form->relatedItemsRow($model, 'variants', array(
-    'position' => array('class' => 'span1'),
-    'name',
-    'notice' => $model->key == 'color' ? array('label'=> 'Цвет') : null
-  )) ?>
+  <?php echo $form->relatedItemsRow($model, 'variants', $model->getRelatedItems() ) ?>
 <?php } ?>
 
 <?php echo $form->textFieldRow($model, 'key', array('class' => 'span4'));?>

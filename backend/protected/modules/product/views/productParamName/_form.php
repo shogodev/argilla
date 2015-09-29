@@ -9,7 +9,7 @@
 
 <?php
 /* @var $form BActiveForm */
-$form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId()));
+$form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId(), 'htmlOptions' => array('enctype' => 'multipart/form-data')));
 ?>
 
 <?php $this->renderPartial('//_form_buttons', array('model' => $model));?>
