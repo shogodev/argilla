@@ -25,6 +25,8 @@ class UserProfileControllerTest extends CDbTestCase
 
   public function setUp()
   {
+    parent::setUp();
+
     $this->controller = Arr::get(Yii::app()->createController('userProfile'), 0);
     Yii::app()->setController($this->controller);
 
@@ -110,9 +112,8 @@ class UserProfileControllerTest extends CDbTestCase
     $this->setOutputCallback(function($data) {
       $validateErrors = json_decode(Arr::get(json_decode($data, true), 'validateErrors'), true);
       $this->assertEquals(array(
-        'UserProfile_name' => array('Необходимо заполнить поле «Имя».'),
-        'User_email' => array('Необходимо заполнить поле «E-mail».'),
         'User_login' => array('Необходимо заполнить поле «Логин».'),
+        'User_email' => array('Необходимо заполнить поле «E-mail».'),
         'User_password' => array('Необходимо заполнить поле «Пароль».'),
         'User_confirmPassword' => array('Необходимо заполнить поле «Подтверждение пароля».'),
       ), $validateErrors);
@@ -157,6 +158,7 @@ class UserProfileControllerTest extends CDbTestCase
     ob_start();
     $this->controller->run('changePassword');
     $html = ob_get_clean();
+
     $this->assertContains('User[oldPassword]', $html);
     $this->assertContains('User[confirmPassword]', $html);
     $this->assertContains('User[password]', $html);
@@ -182,9 +184,9 @@ class UserProfileControllerTest extends CDbTestCase
    */
   public function testChangePasswordSuccess()
   {
-    $this->login();
+    $this->login('change_password', 'old_password');
 
-    Yii::app()->request->setAjax(array('User' => array('oldPassword' => '123', 'confirmPassword' => '12345', 'password' => '12345')));
+    Yii::app()->request->setAjax(array('User' => array('oldPassword' => 'old_password', 'confirmPassword' => '12345', 'password' => '12345')));
     $this->setOutputCallback(function($data) {
       return Arr::get(CJSON::decode($data), 'messageForm') == "Изменения сохранены" ? 'Changes save success' : 'failed';
     });
@@ -192,10 +194,10 @@ class UserProfileControllerTest extends CDbTestCase
     $this->controller->run('changePassword');
   }
 
-  private function login()
+  private function login($login = 'user', $password = '123')
   {
     $loginModel = new Login();
-    $loginModel->setAttributes(array('login' => 'user', 'password' => '123'));
+    $loginModel->setAttributes(array('login' => $login, 'password' => $password));
     $loginModel->authenticate(array(), array());
   }
 }
