@@ -1,0 +1,106 @@
+
+/*   -=========== Menus ===========-   */
+
+// Base
+
+.menu {
+  ul, ol, li {
+    @include user-select(none);
+    margin: 0;
+    list-style: none;
+  }
+
+  a {
+    text-decoration: none;
+  }
+
+  .active > a {
+    cursor: default;
+  }
+
+  li, a {
+    @include user-select(none);
+  }
+
+  a:not([href]) {
+    cursor: default;
+  }
+}
+
+.inline-menu {
+  li {
+    display: inline-block;
+  }
+}
+
+.horizontal-menu {
+  ul {
+    @include clearfix;
+  }
+
+  li {
+    float: left;
+  }
+}
+
+.vertical-menu {
+  li {
+    display: block;
+  }
+}
+
+.justify-menu {
+  > ul, > ol {
+    line-height: 0;
+    text-align: justify;
+
+    &:after {
+      @include size(100% 0);
+      content: "";
+      font-size: 0;
+      line-height: 0;
+      display: inline-block;
+      visibility: hidden;
+      overflow: hidden;
+    }
+
+    > li {
+      display: inline-block;
+    }
+  }
+}
+
+.table-menu {
+  ul {
+    display: table;
+    table-layout: fixed;
+    width: 100%;
+  }
+
+  li {
+    display: table-cell;
+  }
+}
+
+
+// Breadcrumbs
+
+.breadcrumbs {
+
+  li {
+    display: inline-block;
+    vertical-align: middle;
+  }
+
+  a, span {
+    color: $black;
+  }
+
+  a {
+    text-decoration: none;
+
+    &:hover {
+      color: $black;
+    }
+  }
+}

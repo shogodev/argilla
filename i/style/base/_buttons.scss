@@ -1,0 +1,21 @@
+
+/*   -=========== Buttons ===========-   */
+
+.btn {
+  @include user-select(none);
+  display: inline-block;
+  text-decoration: none;
+  text-align: center;
+  cursor: pointer;
+}
+
+// Sizes
+
+.wide-btn {
+  width: 100%;
+}
+
+
+.ias-trigger-prev {
+
+}

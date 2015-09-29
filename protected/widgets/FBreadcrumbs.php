@@ -11,12 +11,15 @@ Yii::import('zii.widgets.CBreadcrumbs');
 
 class FBreadcrumbs extends CBreadcrumbs
 {
-  public $separator = ' / ';
+  public $separator = '';
 
   public $homeLink;
 
   public function init()
   {
-    $this->homeLink = CHtml::link('Главная', Yii::app()->homeUrl);
+    $this->tagName = 'ul';
+    $this->activeLinkTemplate = '<li><a href="{url}">{label}</a></li>';
+    $this->inactiveLinkTemplate = '<li>{label}</li>';
+    $this->homeLink = '<li><a href=" '. Yii::app()->homeUrl . '">Главная</a></li>';
   }
 }

@@ -1,0 +1,17 @@
+
+/*   -=========== Popups ===========-   */
+
+// Base
+
+.popup {
+  display: none;
+  position: absolute;
+  background: $body-bg;
+  z-index: 333;
+}
+
+.popup--close {
+  @include size(40px);
+  @include position(absolute, 0 0 null null);
+  cursor: pointer;
+}

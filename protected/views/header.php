@@ -3,57 +3,72 @@
  * @var FController $this
  */
 ?>
-<header id="header" class="no-print">
-  <div class="container nofloat">
-    <div class="header--logo fl">
-      <a href="<?php echo $this->createUrl('index/index')?>" rel="home">Argilla</a>
-    </div>
-    <div class="header--top-row m7 fl">
-      <nav id="top-menu" class="menu top-menu inline-menu s12">
-        <?php ViewHelper::menu($this->getMenuBuilder()->getMenu('top'))?>
-      </nav>
-      <div class="header--note fl">
-        <span class="s18 blue upcase">Интернет-магазин</span>
-      </div>
-      <?php if( ViewHelper::contact() ) {?>
-        <div class="header--phone center fl">
-          <?php foreach(ViewHelper::phones() as $phone) {?>
-            <a class="nova s24 black m3" href="tel:<?php echo $phone->getClearPhone();?>"><?php echo $phone->value.$phone->description;?></a>
-          <?php }?>
-          <?php if( $workTime = ViewHelper::contact()->notice ) {?>
-            <span class="s12"><?php echo $workTime;?></span>
-          <?php }?>
-        </div>
-      <?php }?>
-      <div class="header--links center fl">
-        <a class="green js-overlay" href="#callback-popup">
-          Заказать звонок
-        </a>
-      </div>
-      <?php $this->renderPartial('/_basket_header');?>
-    </div>
-    <div class="header--bottom-row">
-      <form action="/search/" method="get" class="header--search fl">
-        <?php
-          $this->widget('SearchWidget', array(
-            'htmlOptions' => array(
-              'class' => 'inp',
-              'placeholder' => 'Поиск...'
-            )
-          ));
-        ?>
-        <input type="submit" value="Найти">
-      </form>
-    </div>
+
+<header class="header">
+
+  <!-- logo -->
+  <div class="header--logo">
+    <a href="<?php echo $this->createUrl('index/index')?>" rel="home">
+      Argilla
+    </a>
   </div>
 
-  <div class="fr">
+  <!-- top menu -->
+  <nav class="menu">
+    <?php ViewHelper::menu($this->getMenuBuilder()->getMenu('top'))?>
+  </nav>
+
+  <?php if( ViewHelper::contact() ) {?>
+
+   <div class="header--phones">
+    <!-- phones -->
+    <?php foreach(ViewHelper::phones() as $phone) {?>
+       <a href="tel:<?php echo $phone->getClearPhone();?>">
+         <?php echo $phone->value.$phone->description;?>
+       </a>
+    <?php }?>
+   </div>
+
+    <!-- worktime -->
+    <?php if( $workTime = ViewHelper::contact()->notice ) {?>
+      <?php echo $workTime;?>
+    <?php }?>
+  <?php }?>
+
+  <!-- basket -->
+  <?php $this->renderPartial('/_basket_header');?>
+
+  <!-- search -->
+  <div class="header--search">
+    <form action="/search/" method="get" class="header--search fl">
+      <?php
+        $this->widget('SearchWidget', array(
+          'htmlOptions' => array(
+            'class' => 'inp',
+            'placeholder' => 'Поиск...'
+          )
+        ));
+      ?>
+      <input type="submit" value="Найти">
+    </form>
+  </div>
+
+  <!-- login/signup -->
+  <div class="header--auth">
     <?php if( Yii::app()->user->isGuest ) { ?>
-      <a href="<?php echo $this->createUrl('user/login'); ?>" class="auth-link"><span>Вход</span></a>
-      <a href="<?php echo $this->createUrl('user/registration') ?>"><span>Регистрация</span></a>
+      <a href="<?php echo $this->createUrl('user/login'); ?>">
+        Вход
+      </a>
+      <a href="<?php echo $this->createUrl('user/registration') ?>">
+        Регистрация
+      </a>
     <?php } else { ?>
-      <a href="<?php echo $this->createUrl('user/data'); ?>"><span><?php echo Yii::app()->user->name?></span></a>
-      <a href="<?php echo $this->createUrl('user/logout') ?>"><span>Выйти</span></a>
-    <?php } ?>
+      <a href="<?php echo $this->createUrl('user/data'); ?>">
+        <?php echo Yii::app()->user->name?>
+      </a>
+      <a href="<?php echo $this->createUrl('user/logout') ?>">
+        Выйти
+      </a>
+    <?php }?>
   </div>
 </header>

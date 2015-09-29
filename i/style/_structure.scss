@@ -1,0 +1,52 @@
+
+/*   -=========== Structure ===========-   */
+
+.svg-sprite {
+  display: none;
+}
+
+// Base
+
+#structure {
+  margin: auto;
+  position: relative;
+  min-height: 100%;
+  overflow-x: hidden;
+}
+
+#content {
+  padding-bottom: $footer-height;
+}
+
+.footer {
+  position: relative;
+  margin-top: -$footer-height;
+  height: $footer-height;
+}
+
+
+// Header
+
+.header {
+  position: relative;
+  height: $header-height;
+}
+
+.header--logo {
+
+}
+
+.header--phones {
+
+}
+
+.header--search {
+
+}
+
+
+// Footer
+
+.footer--phones {
+
+}

@@ -1,152 +1,57 @@
-/*
-Project:   Template
-CSS Type:  Semantic
-Version:   1.2.0 (17.04.2014)
-Authors:   Grigory Zarubin, Alexander Rubanov, Alexey Efimov (Shogo.RU)
-*/
 
-//@import "jquery.fancybox";
-@import "alertify";
+/*   -=========== Const ===========-   */
+
+// Colors
+
+$white: #fff;
+$black: #000;
+$red: #ef8c8c;
+
+$body-bg: $white;
+$text-color: $black;
+$warning-color: $red;
+$link-color: $black;
+$hovered-link-color: $black;
+
+
+// Fonts
+
+$font-family: sans-serif;
+$font-size: 14px;
+$line-height: 1.2em;
+
+
+// Structure
+
+$wrapper-width: 1250px;
+$header-height: 150px;
+$footer-height: 200px;
+
+
+/*   -=========== Imports ===========-   */
+
 @import "mixins";
-@import "const";
-@import "resets";
-@import "common_styles";
-@import "print";
-@import "popups";
 
-/*   -=========== HTML5 structure ===========-   */
-#structure {
-  position: relative;
-  min-height: 100%; }
-.wrapper {
-  width: $wrapper-width;
-  margin-left: auto;
-  margin-right: auto;
-  position: relative; }
-header {}
-#content {
-  padding-bottom: $footer-height + 40px; }
-aside#left {
-  float: left;
-  width: 230px; }
-section#main {
-  float: left;
-  width: 730px;
-  padding-left: 30px; }
-footer {
-  clear: both;
-  position: relative;
-  margin-top: -$footer-height;
-  height: $footer-height; }
+@import "vendor/alertify";
+@import "vendor/selectric";
+@import "vendor/perfect-scrollbar";
+@import "vendor/tosrus/jquery.tosrus.all";
 
-/*   -=========== Blocks ===========-   */
-.breadcrumbs {
-  * {
-    display: inline-block;
-    color: #000000;
-    padding-right: 5px; }
-  span {
-    color: #FFFFFF; }
-}
-.breadcrumbs-separator {}
+@import "overrides"; // override vendor styles
 
-.pager {
-  ul {
-    overflow: hidden;
-    margin: 0;
-    padding: 0;
-    li {
-      display: inline-block;
-      margin: 0;
-      padding: 0;
-      list-style: none;
-      a {
-        color: $black;
-        text-decoration: none;
-        &:hover {
-          text-decoration: underline; }
-      }
-      &.page {
-        &.selected {
-          a {
-            color: $white; }
-        }
-      }
-      &.previous, &.next {
-        a {}
-      }
-      &.previous {
-        //background: url(/i/backward.png) no-repeat 0 0;
-      }
-      &.next {
-        //background: url(/i/forward.png) no-repeat 0 0;
-      }
-    }
-  }
-}
-.pager-header {}
-.pager-footer {}
+@import "base/resets";
+@import "base/typography";
+@import "base/buttons";
+@import "base/layout";
+@import "base/print";
 
-footer {
-  .counters {
-    float: left;
-    width: 200px;
-    padding: 0 85px 0 0;
-    img {
-      float: left;
-      margin-right: 10px; }
-  }
-  .copyright {
-    float: left;
-    font-size: 10px;
-    line-height: 120%;
-    color: #788A91; }
-}
+@import "components/forms";
+@import "components/menus";
+@import "components/popups";
+@import "components/carousels";
 
-/*   -=========== Menu classes ===========-   */
-.menu {
-  ul {
-    li {
-      list-style: none;
-      a {
-        text-decoration: none; }
-    }
-  }
-}
+@import "pages/homepage";
+@import "pages/contacts";
+@import "pages/errors";
 
-/*   -=========== Popup classes ===========-   */
-.popup {
-  display: none;
-  position: absolute;
-  z-index: 9999;
-  .close {
-    display: block;
-    position: absolute;
-    top: 0;
-    right: 0; }
-}
-
-.movin-to-basket {
-  @include transition(all .75s ease);
-  z-index: 10000;
-}
-
-/*   -=========== Buttons ===========-   */
-.btn {
-  display: inline-block;
-  vertical-align: middle;
-  border: none;
-  text-decoration: none;
-  text-align: center; }
-
-/*   -=========== Specific mobile styles ===========-   */
-.mobile {
-  body {
-    min-width: $wrapper-width + 30px; }
-}
-.phone-number {
-  pointer-events: none;
-  cursor: default;
-  .mobile & {
-    pointer-events: auto; }
-}
+@import "structure";

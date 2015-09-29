@@ -1,0 +1,88 @@
+/*
+	jQuery Touch Optimized Sliders "R"Us
+	Youtube media
+*/
+
+
+@import '../variables';
+
+
+$circleSize: 80px !default;
+
+@mixin sizing_youtube( $scale: 1 )
+{
+	$size: $circleSize * $scale;
+	$iconHeight: $circleSize * $scale / 4;
+	$iconWidth: $iconHeight * 1.5;
+
+	.tos-play
+	{
+		border-radius: $size;
+		width: $size;
+		height: $size;
+		margin: -( $size / 2 );
+		
+		&:after
+		{
+			border: $iconHeight solid transparent;
+			border-left-color: $uiTextColor;
+			border-left-width: $iconWidth;
+			margin-top: -$iconHeight;
+			margin-left: -( ( $iconWidth / 2 ) * 0.7 );
+		}
+	}
+}
+
+
+.tos-play
+{
+	background: $uiBgColor;
+	opacity: 0;
+	display: block;
+	position: absolute;
+	top:  50%;
+	left: 50%;
+
+	@include vendor-prefix-property( 'transition', opacity $transitionDuration $transitionFunction );
+	
+	&:after
+	{
+		content: '';
+		display: block;
+		position: absolute;
+		top: 50%;
+		left: 50%;
+	}
+}
+
+//	Opacity
+.tos-desktop .tos-wrapper:hover,
+.tos-touch .tos-wrapper.tos-hover
+{
+	.tos-play
+	{
+		opacity: $uiOpacity;
+
+		&:hover
+		{
+			opacity: $uiActiveOpacity;
+		}
+	}
+}
+
+//	Scaling
+.tos-wrapper
+{
+	@include sizing_youtube;
+}
+.tos-touch
+{
+	&.tos-scale-2 .tos-wrapper.tos-fixed
+	{
+		@include sizing_youtube( 2 );
+	}
+	&.tos-scale-3 .tos-wrapper.tos-fixed
+	{
+		@include sizing_youtube( 3 );
+	}
+}

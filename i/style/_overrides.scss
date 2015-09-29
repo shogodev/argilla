@@ -1,0 +1,61 @@
+
+/*   -=========== Override vendor styles ===========-   */
+
+.ui-autocomplete {
+  z-index: 1010;
+  width: 240px !important;
+  max-height: 431px;
+  overflow: auto;
+  background: $white;
+  list-style: none;
+  word-wrap: break-word;
+}
+.ui-menu {
+  .ui-menu-item {
+    padding: 0;
+    > a {
+      display: block;
+      color: $black;
+    }
+    &:hover {
+      z-index: 10;
+    }
+    + .ui-menu-item {
+      margin-top: -1px;
+    }
+  }
+}
+.autocomplete-item {
+  padding: 5px;
+  background: white;
+  border: 1px solid $black;
+  &:hover {
+    border-color: $black;
+    z-index: 10;
+  }
+  span {
+    display: inline-block;
+    max-width: 100%;
+  }
+}
+.autocomplete-pic {
+  float: left;
+  width: 75px;
+  height: 75px;
+  text-align: center;
+  > img {
+    max-width: 100%;
+    max-height: 100%;
+  }
+}
+.autocomplete-content {
+  display: block;
+  font-size: 12px;
+  line-height: 120%;
+  .autocomplete-pic + & {
+    margin-left: 85px;
+  }
+}
+.autocomplete-price {
+  padding-top: 10px;
+}
