@@ -40,10 +40,12 @@ class BProductParam extends BActiveRecord
   {
     // устанавливаем привязку параметров
     $paramNames = new BProductParamName();
-    $paramNames->section_id = $product->section_id;
+
+    $criteria = new CDbCriteria();
+    $criteria->addInCondition('assignment.section_id', is_array($product->section_id) ? $product->section_id : array($product->section_id));
 
     $parameters = array();
-    $names      = $paramNames->search();
+    $names = $paramNames->search($criteria);
 
     foreach($names->data as $name)
     {
