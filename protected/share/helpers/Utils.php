@@ -257,7 +257,7 @@ class Utils
 
   /**
    * Возвращает домен
-   * @param integer $level если узан уровень, то домен обрезается до указанного уровня
+   * @param integer $level если указан уровень, то домен обрезается до указанного уровня
    * @return mixed|string
    */
   public static function getDomain($level = null)

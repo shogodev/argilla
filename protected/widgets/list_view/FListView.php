@@ -121,6 +121,9 @@ class FListView extends CListView
 
   public function renderKeys()
   {
+    //не выводим клюячи если не нужен ajax
+    if( !$this->ajaxUpdate && !$this->enableHistory )
+      return;
     echo '<!--noindex-->';
     parent::renderKeys();
     echo '<!--/noindex-->';

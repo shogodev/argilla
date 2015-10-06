@@ -147,4 +147,15 @@ class PriceHelper
 
     return $array;
   }
+
+  /**
+   * Удалает из цены все символы кроме 0-9 и "."
+   * @param $price
+   *
+   * @return mixed
+   */
+  public static function clear($price)
+  {
+    return str_replace(',', '.', preg_replace('/[^0-9,.]/', '', $price));
+  }
 }
