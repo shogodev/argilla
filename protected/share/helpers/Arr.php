@@ -409,6 +409,47 @@ class Arr
     return $result;
   }
 
+  /**
+   * Следующий после $current элемент массива
+   * @param $array
+   * @param $current
+   *
+   * @return mixed|null
+   */
+  public static function next($array, $current)
+  {
+    if( empty($array) )
+      return null;
+
+    $element = reset($array);
+
+    while( $element )
+    {
+      if( Utils::compareObjects($element, $current) )
+      {
+        return next($array);
+      }
+
+      $element = next($array);
+    }
+
+    return null;
+  }
+
+  /**
+   * Предыдущий перед $current элемент массива
+   * @param $array
+   * @param $current
+   *
+   * @return mixed|null
+   */
+  public static function prev($array, $current)
+  {
+    $revers = array_reverse($array);
+
+    return self::next($revers, $current);
+  }
+
   private static function createMatrix($countColumns, $array)
   {
     $matrix = array();

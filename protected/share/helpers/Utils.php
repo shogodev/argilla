@@ -318,4 +318,22 @@ class Utils
   {
     return self::toSnakeCase(get_class($class));
   }
+
+  /**
+   * Результат сравнения 2-x объектов или массивов
+   * @param $a
+   * @param $b
+   *
+   * @return bool
+   */
+  public static function compareObjects($a, $b)
+  {
+    if( (is_array($a) && is_array($b)) || (is_scalar($a) && is_scalar($b)) )
+      return $a == $b;
+
+    if( is_object($a) && is_object($b) )
+      return serialize($a) == serialize($b);
+
+    return false;
+  }
 }
