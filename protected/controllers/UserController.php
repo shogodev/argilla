@@ -81,6 +81,7 @@ class UserController extends FController
             'model' => $registrationForm->model,
             'profile' => $registrationForm['profile']->model
           ),
+          null,
           'backend'
         );
 

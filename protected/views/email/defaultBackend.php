@@ -12,7 +12,7 @@
   {
     foreach($model->attributeLabels() as $attribute => $label)
     {
-      if( isset($exceptedAttributes) && !in_array($attribute, $exceptedAttributes ) )
+      if( isset($exceptedAttributes) && in_array($attribute, $exceptedAttributes ) )
         continue;
 
       if( !empty($model->$attribute) && !isset($modelFields[$label])  )

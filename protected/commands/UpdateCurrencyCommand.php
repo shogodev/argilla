@@ -10,6 +10,7 @@ Yii::import('backend.components.*');
 Yii::import('backend.components.db.*');
 Yii::import('backend.components.interfaces.*');
 Yii::import('backend.modules.product.models.*');
+Yii::import('frontend.share.*');
 Yii::import('frontend.share.helpers.*');
 Yii::import('frontend.share.formatters.*');
 Yii::import('frontend.share.validators.*');

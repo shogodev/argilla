@@ -29,7 +29,7 @@
 <?php echo Yii::app()->controller->renderPartial('frontend.views.email._order_products', $_data_); ?>
 
 <div style="font-size:14px;">
-  Если Вам необходима помощь или у Вас возникли вопросы по Вашему заказу, напишите нам на <?php if($email) echo '<a href="'.$email.'" style="color: #949494">'.$email.'</a>'?> <br>
+  Если Вам необходима помощь или у Вас возникли вопросы по Вашему заказу, напишите нам на <?php if($email) echo '<a href="mailto:'.$email.'" style="color: #949494">'.$email.'</a>'?> <br>
   или позвоните по телефону
   <?php foreach($phones as $phone) {?>
     <span style="font-weight: bold"><span style="color: #c92128"><?php echo $phone->value?></span> <?php echo $phone->description?></span><br />
