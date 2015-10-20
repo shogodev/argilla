@@ -35,7 +35,7 @@ class Menu extends FActiveRecord implements IMenuItem
   public function relations()
   {
     return array(
-      'items' => array(self::HAS_MANY, 'MenuItem', 'menu_id'),
+      'items' => array(self::HAS_MANY, 'MenuItem', 'menu_id', 'order' => 'items.position, items.id'),
     );
   }
 
@@ -54,6 +54,7 @@ class Menu extends FActiveRecord implements IMenuItem
     /**
      * @var Menu $menu
      */
+
     $menu = $this->findByAttributes(array('sysname' => $sysname));
 
     if( $menu )
