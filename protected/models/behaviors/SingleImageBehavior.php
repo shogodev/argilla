@@ -1,6 +1,6 @@
 <?php
 /**
- * @author Artyom Panin <panin@shogo.ru>
+ * @author Artyom Panin <panin@shogo.ru>, Alexey Tatarinov <tatarinov@shogo.ru>
  * @link https://github.com/shogodev/argilla/
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSEs
@@ -10,12 +10,19 @@
  * Бехейвор для привязки FSingleImage к моделям FActiveRecord
  *
  * <pre>
- * public function behaviors()
- * {
- *   return array(
- *     'imageBehavior' => array('class' => 'SingleImageBehavior', 'path' => 'product'),
- *   );
- * }
+ *  ...
+ *    'imageBehavior' => array('class' => 'SingleImageBehavior', 'path' => 'product'),
+ *  ...
+ *
+ *  ...
+ *   'imageBehavior' => array(
+ *     'class' => 'SingleImageBehavior',
+ *     'path' => 'product',
+ *     'types' => array('pre', 'big'),
+ *     'defaultImage' => '/i/contest/default-dish.jpg',
+ *     'useDefaultImage' => true
+ *   ),
+ *  ...
  * </pre>
  *
  * @property FActiveRecord $owner
@@ -41,6 +48,14 @@ class SingleImageBehavior extends SActiveRecordBehavior
    */
   public $imageNameProperty = 'img';
 
+  public $defaultImage = '/i/sp.gif';
+
+  /**
+   * @var bool
+   * Если изображение не найдено выводить заглушку
+   */
+  public $useDefaultImage = false;
+
   /**
    * @var array Типы изображений
    */
@@ -65,6 +80,6 @@ class SingleImageBehavior extends SActiveRecordBehavior
   public function afterFind($event)
   {
     $imageNameProperty = $this->owner->{$this->imageNameProperty};
-    $this->{$this->imagePathProperty} = $imageNameProperty ? new FSingleImage($imageNameProperty, $this->path, $this->types) : null;
+    $this->{$this->imagePathProperty} = $this->useDefaultImage || !empty($imageNameProperty) ? new FSingleImage($imageNameProperty, $this->path, $this->types, $this->defaultImage) : null;
   }
 }
