@@ -56,7 +56,7 @@ class ViewHelper
   /**
    * Заменяет содержащиеся в $template выражения вида {выражение} на своиства или заначения $data
    * @param string $template шаблон
-   * @param array|CComponent $data иточник данных для замены объект или массив
+   * @param array|CComponent $data источник данных для замены объект или массив
    * @param bool $clearNotReplaced очистить не замененные выражения default false
    *
    * @return string
