@@ -8,6 +8,12 @@
  */
 class PriceHelper
 {
+  const LONG_DASH = '&mdash;';
+
+  const ZERO = '0';
+
+  const EMPTY_SPACE = '';
+
   /**
    * Проверяет пустое занчение
    * Поддерживает тип decimal
@@ -52,13 +58,15 @@ class PriceHelper
 
   /**
    * Возвращает форматированое по правлам SFormatter число
+   *
    * @param string|integer $number
+   * @param string $defaultEmpty
    *
    * @return string
    */
-  public static function number($number)
+  public static function number($number, $defaultEmpty = self::ZERO)
   {
-    return Yii::app()->format->formatNumber($number);
+    return  self::isNotEmpty($number) ? Yii::app()->format->formatNumber($number) : $defaultEmpty;
   }
 
   /**
