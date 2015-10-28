@@ -5,7 +5,6 @@
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
  * @package frontend.share
- *
  * @property integer $id
  * @property string $index
  * @property string $name
@@ -47,7 +46,7 @@ class SNotification extends CActiveRecord
   {
     parent::afterFind();
 
-    $this->email   = $this->trimEmails($this->email);
+    $this->email = $this->trimEmails($this->email);
     $this->subject = $this->replaceProjectName($this->subject);
   }
 
@@ -94,19 +93,19 @@ class SNotification extends CActiveRecord
   private function prepareEmail($vars, $data)
   {
     $this->emailComponent->viewsPath = 'frontend.views.email.';
-    $this->emailComponent->from      = $this->from;
-    $this->emailComponent->layout    = $data->layout;
-    $this->emailComponent->subject   = $data->subject;
-    $this->emailComponent->view      = null;
+    $this->emailComponent->from = $this->from;
+    $this->emailComponent->layout = $data->layout;
+    $this->emailComponent->subject = ViewHelper::replace($data->subject, $vars, true);
+    $this->emailComponent->view = null;
 
     if( !empty($data->view) )
     {
-      $this->emailComponent->view     = $data->view;
-      $this->emailComponent->viewVars = CMap::mergeArray($vars, array('subject' => $data->subject));
+      $this->emailComponent->view = $data->view;
+      $this->emailComponent->viewVars = CMap::mergeArray($vars, array('subject' => $this->emailComponent->subject));
     }
     else
     {
-      $this->emailComponent->message = $data->message;
+      $this->emailComponent->message = ViewHelper::replace($data->message, $vars, true);
     }
   }
 
@@ -143,6 +142,7 @@ class SNotification extends CActiveRecord
   private function replaceProjectName($data)
   {
     $projectName = isset(Yii::app()->params->project) ? Yii::app()->params->project : '';
+
     return strtr($data, array('{projectName}' => $projectName));
   }
 
@@ -163,7 +163,7 @@ class SNotification extends CActiveRecord
    */
   private function trimEmails($emails)
   {
-    $emails  = !empty($emails) ? explode(',', $emails) : array();
+    $emails = !empty($emails) ? explode(',', $emails) : array();
     $trimmed = Arr::trim($emails);
 
     return implode(',', $trimmed);
@@ -176,8 +176,8 @@ class SNotification extends CActiveRecord
   {
     if( !$this->findByAttributes(array('index' => $index)) )
     {
-      $model          = new self;
-      $model->index   = $index;
+      $model = new self;
+      $model->index = $index;
       $model->subject = $this->defaultSubject;
       $model->visible = 0;
       $model->save(false);
