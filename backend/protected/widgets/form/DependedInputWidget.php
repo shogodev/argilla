@@ -77,16 +77,7 @@ class DependedInputWidget extends CWidget
 
   protected function setInputs()
   {
-    $inputs = $this->data['inputs'];
-
-    foreach($inputs as $key => $input)
-    {
-      $depended = is_array($input) ? $key : $input;
-
-      $this->inputs[$depended] = array(
-        'type' => Arr::get($input, 'type', 'dropdown'),
-      );
-    }
+    $this->inputs = array_combine($this->data['inputs'], $this->data['inputs']);
   }
 
   protected function setPostData()

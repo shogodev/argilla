@@ -38,18 +38,19 @@ class BActiveForm extends TbActiveForm
   }
 
   /**
-   * Renders require form caption
+   * Выводит производний контент в табличном виде
+   * @param $model
+   * @param $attribute
+   * @param $content - html код
+   *
+   * @return string
+   *
+   * пример:
+   *  echo $form->contentRow($model, 'user_id', CHtml::link($model->user->info, $this->createUrl('/user/frontendUser/update', array('id' => $model->user->id))));
    */
-  public function renderRequire()
+  public function contentRow($model, $attribute, $content)
   {
-    ob_start();
-    echo CHtml::tag('p', array('class' => 'alert alert-info'));
-    echo 'Поля, отмеченные знаком ';
-    echo CHtml::tag('span', array('class' => 'required')).'*'.CHtml::closeTag('span');
-    echo ', обязательны к заполнению.';
-    echo CHtml::closeTag('p');
-
-    return ob_get_clean();
+    return $this->inputRow('content', $model, $attribute, $content);
   }
 
   /**
@@ -186,9 +187,9 @@ class BActiveForm extends TbActiveForm
   }
 
   /**
-   * Строит цепочку зависимых dropDown листов
+   * Строит цепочку зависимых dropDown и checkBox листов (что именно выводить зависит от типа релейшена)
    *
-   * @param $model
+   * @param BActiveRecord $model
    * @param $chain array
    * @param $htmlOptionsArray array
    *
@@ -324,9 +325,24 @@ class BActiveForm extends TbActiveForm
   }
 
   /**
-   * @param $model
-   * @param $attribute
-   * @param $inputs
+   * Renders require form caption
+   */
+  public function renderRequire()
+  {
+    ob_start();
+    echo CHtml::tag('p', array('class' => 'alert alert-info'));
+    echo 'Поля, отмеченные знаком ';
+    echo CHtml::tag('span', array('class' => 'required')).'*'.CHtml::closeTag('span');
+    echo ', обязательны к заполнению.';
+    echo CHtml::closeTag('p');
+
+    return ob_get_clean();
+  }
+
+  /**
+   * @param BActiveRecord $model
+   * @param string $attribute
+   * @param array|string $inputs
    *
    * @return string
    */
@@ -334,10 +350,15 @@ class BActiveForm extends TbActiveForm
   {
     $dependedRows = '';
 
+    $inputs = is_array($inputs) ? $inputs : array($inputs);
+
     foreach($inputs as $key => $input)
     {
-      $dependedAttribute = is_array($input) ? $key : $input;
-      $type = Arr::get($input, 'type', 'dropdown');
+      // опледеление по релашену
+      $dependedAttribute = $input;
+      $relationName = BProductStructure::getRelationName(BProductStructure::getModelName($dependedAttribute));
+      $relation = $model->getActiveRelation($relationName);
+      $type = $relation instanceof CHasManyRelation ? 'checkboxlist' : 'dropdown';
 
       switch($type)
       {

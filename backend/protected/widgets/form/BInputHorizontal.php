@@ -400,4 +400,12 @@ class BInputHorizontal extends BInput
     echo $this->widget('BAssociationButton', $this->data, true);
     echo '</td>';
   }
+
+  protected function content()
+  {
+    echo $this->getLabel();
+    echo '<td>';
+    echo $this->data;
+    echo '</td>';
+  }
 }

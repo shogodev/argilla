@@ -44,7 +44,7 @@ class BProductController extends BController
     {
       $assignModel = $model->assignment ? Arr::reduce($model->assignment) : new BProductAssignment;
       $assignModel->setAttribute($data['attribute'], $data['value']);
-      $response[$key] = $assignModel->renderAjaxHtml($model, $input['type'], $data['attribute'], $key);
+      $response[$key] = $assignModel->renderAjaxHtml($model, $data['attribute'], $key);
     }
 
     echo CJavaScript::jsonEncode($response);

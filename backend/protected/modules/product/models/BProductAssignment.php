@@ -69,9 +69,13 @@ class BProductAssignment extends BActiveRecord
     return $form->checkBoxList($model, $attribute, $data);
   }
 
-  public function renderAjaxHtml($model, $type, $attribute, $depended)
+  public function renderAjaxHtml($model, $attribute, $depended)
   {
     $data = $this->getDepends($attribute, $depended);
+
+    $relationName = BProductStructure::getRelationName(BProductStructure::getModelName($depended));
+    $relation = $model->getActiveRelation($relationName);
+    $type = $relation instanceof CHasManyRelation ? 'checkboxlist' : 'dropdown';
 
     switch($type)
     {
