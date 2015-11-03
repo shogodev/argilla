@@ -10,9 +10,4 @@
 
   <title><?php echo CHtml::encode($this->pageTitle); ?></title>
 
-  <script>
-  //<![CDATA[
-    $('html').removeClass('no-js');
-  //]]>
-  </script>
 </head>

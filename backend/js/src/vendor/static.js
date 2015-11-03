@@ -46,3 +46,12 @@ function fixLayout() {
     }
   }();
 }
+
+$(function () {
+  fixLayout();
+  $(window).on('throttledresize', function(e) { fixLayout() })
+    .on('scroll', fixLayout);
+  $('input[rel="extender"]').extender();
+
+  $('label > span[rel="tooltip"]').tooltip();
+});

@@ -297,7 +297,7 @@ class UploadWidget extends CJuiInputWidget
           }, 100);
         }, 0);
       });
-      ", CClientScript::POS_HEAD);
+      ", Yii::app()->clientScript->coreScriptPosition);
   }
 
   private function registerCropImageScript()

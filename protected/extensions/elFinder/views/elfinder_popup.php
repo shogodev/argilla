@@ -4,6 +4,9 @@
 		<title><?php echo $title; ?></title>
 	</head>
 	<body>
+		<div id="elfinder"></div>
+	</body>
+
   <script type="text/javascript">
     // Helper function to get parameters from the query string.
     function getUrlParam(paramName) {
@@ -26,6 +29,4 @@
       var elf = $('#elfinder').elfinder(settings).elfinder('instance');
     });
   </script>
-		<div id="elfinder"></div>
-	</body>
 </html>

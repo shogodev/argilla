@@ -8,6 +8,10 @@
  */
 class SClientScript extends CClientScript
 {
+  public $coreScriptPosition = self::POS_END;
+
+  public $defaultScriptFilePosition = self::POS_END;
+
   /**
    * @param string $output
    *
@@ -84,11 +88,11 @@ class SClientScript extends CClientScript
    */
   private function restoreScripts($totalScripts)
   {
-    foreach( $totalScripts as $scriptList )
+    foreach( $totalScripts as $position => $scriptList )
     {
       foreach( $scriptList as $script )
       {
-        $this->registerScriptFile($script);
+        $this->registerScriptFile($script, $position);
       }
     }
   }
