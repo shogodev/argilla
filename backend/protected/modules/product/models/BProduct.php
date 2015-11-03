@@ -13,6 +13,7 @@ Yii::import('backend.modules.product.models.behaviors.*');
  * @method static BProduct model(string $class = __CLASS__)
  *
  * @property string $id
+ * @property integer $parent
  * @property integer $position
  * @property string $url
  * @property string $name

@@ -411,14 +411,16 @@ class Arr
 
   /**
    * Следующий после $current элемент массива
+   *
    * @param $array
    * @param $current
+   * @param bool $cycle - по кругу
    *
    * @return mixed|null
    */
-  public static function next($array, $current)
+  public static function next($array, $current, $cycle = false)
   {
-    if( empty($array) )
+    if( empty($array) || count($array) == 1 )
       return null;
 
     $element = reset($array);
@@ -427,7 +429,8 @@ class Arr
     {
       if( Utils::compareObjects($element, $current) )
       {
-        return next($array);
+        $next = next($array);
+        return $cycle && !$next ? reset($array) : $next;
       }
 
       $element = next($array);
@@ -440,14 +443,15 @@ class Arr
    * Предыдущий перед $current элемент массива
    * @param $array
    * @param $current
+   * @param bool $cycle - по кругу
    *
    * @return mixed|null
    */
-  public static function prev($array, $current)
+  public static function prev($array, $current, $cycle = false)
   {
     $revers = array_reverse($array);
 
-    return self::next($revers, $current);
+    return self::next($revers, $current, $cycle);
   }
 
   private static function createMatrix($countColumns, $array)
