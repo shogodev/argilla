@@ -45,7 +45,6 @@ class BGridView extends TbGridView
     parent::init();
   }
 
-
   public function renderFilters()
   {
     if( $this->filter !== null && $this->filterPosition === self::FILTER_POS_SEPARATE )
@@ -103,6 +102,28 @@ class BGridView extends TbGridView
     }");
 
     $this->addObservers();
+  }
+
+  public function renderTableRow($row)
+  {
+    parent::renderTableRow($row);
+
+    /**
+     * @var BActiveRecord $model
+     */
+    $model = $this->dataProvider->data[$row];
+
+    foreach($model->behaviors()  as $behaviorName => $array)
+    {
+      /**
+       * @var CBehavior $behavior
+       */
+      if( !$behavior = $model->asa($behaviorName) )
+        continue;
+
+      if( $behavior->hasEvent('onAfterRenderTableRow') )
+        $behavior->raiseEvent('onAfterRenderTableRow', new CEvent($this, array('model' => $model)));
+    }
   }
 
   protected function addObservers()

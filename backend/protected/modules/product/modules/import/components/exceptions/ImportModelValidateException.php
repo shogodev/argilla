@@ -5,7 +5,7 @@
  * @copyright Copyright &copy; 2003-2015 Shogo
  * @license http://argilla.ru/LICENSE
  */
-class ModelValidateException extends CException
+class ImportModelValidateException extends WarningException
 {
   public function __construct(CModel $model, $message = '')
   {

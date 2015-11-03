@@ -12,6 +12,11 @@ $config = array(
     'frontend' => $frontend,
   ),
 
+  'import' => array(
+    'frontend.components.cli.*',
+    'frontend.commands.components.*'
+  ),
+
   'components' => array(
     'db' => CMap::mergeArray(require($frontend.'/config/db.php'),
       array()

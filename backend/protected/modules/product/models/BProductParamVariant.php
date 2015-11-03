@@ -24,9 +24,9 @@ class BProductParamVariant extends BActiveRecord
   {
     return array(
       array('param_id, name', 'required'),
-      array('url', 'SUriValidator'),
+      //array('url', 'SUriValidator'),
       array('param_id, position', 'length', 'max' => 10),
-      array('notice, url', 'length', 'max' => 255),
+      array('notice', 'length', 'max' => 255),
     );
   }
 

@@ -21,7 +21,7 @@ class BProductController extends BController
   {
     if( Yii::app()->request->isPostRequest )
     {
-      $copier    = new BProductCopier(Yii::app()->request->getPost('id'));
+      $copier = new BProductCopier(Yii::app()->request->getPost('id'));
       $productId = $copier->copy(Yii::app()->request->getPost('withImages', false));
 
       if( !$productId )
@@ -37,8 +37,8 @@ class BProductController extends BController
   public function actionUpdateAssignment($id = 0)
   {
     $response = array();
-    $model    = $id ? $this->loadModel($id) : new BProduct();
-    $data     = Yii::app()->request->getPost('BProduct');
+    $model = $id ? $this->loadModel($id) : new BProduct();
+    $data = Yii::app()->request->getPost('BProduct');
 
     foreach($data['inputs'] as $key => $input)
     {
@@ -66,7 +66,9 @@ class BProductController extends BController
 
     $this->saveModels(array($model));
 
-    $this->render('_form', array(
+    $view = empty($model->parent) ? '_form' : 'product.views.product.modification._modification_form';
+
+    $this->render($view, array(
       'model' => $model,
       'assignmentModel' => $assignmentModel,
     ));
@@ -74,9 +76,9 @@ class BProductController extends BController
 
   protected function saveProductAssignment(CEvent $event)
   {
-    $data        = Yii::app()->request->getPost('BProduct');
-    $model       = BProductAssignment::model();
-    $fields      = $model->getFields();
+    $data = Yii::app()->request->getPost('BProduct');
+    $model = BProductAssignment::model();
+    $fields = $model->getFields();
     $assignments = Arr::extract($data, array_keys($fields));
 
     if( !empty($assignments) )

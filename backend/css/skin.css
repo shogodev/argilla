@@ -223,6 +223,9 @@ td.button-column a.print:before,
 .table-striped tbody tr:nth-child(2n+1) td {
   background-color: #DBE2E8; }
 
+.table-striped tbody tr.modification td {
+  background-color: #F5F5F5; }
+
 .table .table {
   background-color: transparent; }
 .table .table thead:first-child tr:first-child th {

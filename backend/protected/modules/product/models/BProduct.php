@@ -107,7 +107,7 @@ class BProduct extends BActiveRecord
       array('name, url, articul', 'filter', 'filter' => array(Yii::app()->format, 'trim')),
       array('url', 'filter', 'filter' => array(Yii::app()->format, 'toLower')),
 
-      array('section_id', 'required'),
+      array('section_id', 'required', 'except' => BModificationBehavior::SCENARIO_MODIFICATION),
       array(implode(", ", array_keys(BProductAssignment::model()->getFields())), 'safe'),
     );
   }

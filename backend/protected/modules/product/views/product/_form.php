@@ -43,6 +43,8 @@ $form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId()));
 
   <?php echo $form->ckeditorRow($model, 'content');?>
 
+  <?php if( $model->asa('modificationBehavior') ) $this->renderPartial('product.views.product.modification._modification_grid', $_data_)?>
+
   <?php echo $form->checkBoxRow($model, 'main');?>
 
   <?php echo $form->checkBoxRow($model, 'novelty');?>

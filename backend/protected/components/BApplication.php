@@ -7,6 +7,7 @@
  * @package backend.components
  *
  * @property BMenu $menu
+ * @property BBreadcrumbsManager $breadcrumbs
  */
 class BApplication extends CWebApplication
 {

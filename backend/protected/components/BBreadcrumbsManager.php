@@ -166,8 +166,18 @@ class BBreadcrumbsManager
     $this->breadcrumbs = array(
       $this->defaultModuleController->name => $this->defaultControllerLink,
       $this->controller->name => array(self::$indexName),
-      $this->prepareItemName(),
+
     );
+
+    if( $this->model instanceof BProduct && !empty($this->model->parent) )
+    {
+      $this->breadcrumbs['Родительский продукт'] = Yii::app()->createUrl('/product/product/update', array('id' => $this->model->parent));
+      $this->breadcrumbs[] = '[Модификация] '.$this->prepareItemName();
+    }
+    else
+    {
+      $this->breadcrumbs[] = $this->prepareItemName();
+    }
   }
 
   /**
