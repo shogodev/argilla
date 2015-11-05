@@ -16,7 +16,7 @@ class ProductsImportCommand extends AbstractImportCommand
   {
     try
     {
-      $productWriter = new AbstractImportProductWriter($this->logger);
+      $productWriter = new ImportProductWriter($this->logger);
       $productWriter->clear = true;
       $productWriter->dstTables = array(
         '{{product}}',
@@ -28,6 +28,7 @@ class ProductsImportCommand extends AbstractImportCommand
         '{{product_type}}',
         '{{product_category}}',
         '{{product_collection}}',
+        '{{product_img}}'
       );
 
       $productWriter->assignmentTree = array('type_id' => 'section_id');

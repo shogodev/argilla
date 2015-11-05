@@ -7,8 +7,6 @@
  */
 abstract class AbstractAggregator
 {
-  protected $useModification = false;
-
   /**
    * @var array
    */

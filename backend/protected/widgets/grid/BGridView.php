@@ -111,7 +111,11 @@ class BGridView extends TbGridView
     /**
      * @var BActiveRecord $model
      */
+
     $model = $this->dataProvider->data[$row];
+
+    if( is_array($model) )
+      return;
 
     foreach($model->behaviors()  as $behaviorName => $array)
     {

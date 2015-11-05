@@ -21,7 +21,7 @@ Yii::import('frontend.extensions.upload.components.*');
 Yii::import('backend.modules.product.modules.import.components.exceptions.*');
 Yii::import('backend.modules.product.modules.import.components.abstracts.AbstractImportWriter');
 
-class AbstractImportProductWriter extends  AbstractImportWriter
+class ImportProductWriter extends AbstractImportWriter
 {
   public $assignmentTree = array();
 
@@ -102,6 +102,7 @@ class AbstractImportProductWriter extends  AbstractImportWriter
     if( $product = BProduct::model()->findByAttributes(array($item['uniqueAttribute'] => $item['uniqueIndex'])) )
     {
       $this->skipProductsAmount++;
+
       //$product->save();
       return;
     }
@@ -109,6 +110,7 @@ class AbstractImportProductWriter extends  AbstractImportWriter
     $product = new BProduct('convert');
     $product->setAttributes($item['product'], false);
     $product->url = $this->createUniqueUrl($product->url);
+    $product->visible = 1;
 
     foreach($item['assignment'] as $attribute => $value)
     {
@@ -139,6 +141,7 @@ class AbstractImportProductWriter extends  AbstractImportWriter
       $product->setAttributes($item['product'], false);
       $product->url = $this->createUniqueUrl($product->url);
       $product->parent = $parentProduct->id;
+      $product->visible = 1;
 
       if( !$product->save() )
         throw new ImportModelValidateException($product, 'Не удалось создать модификацию product_id='.$parentProduct->id);
@@ -176,7 +179,7 @@ class AbstractImportProductWriter extends  AbstractImportWriter
 
       if( !$model->save() )
       {
-        throw new ImportModelValidateException($model, 'Ошибка при создании модели '.$modelName.' - '.$name );
+        throw new ImportModelValidateException($model, 'Ошибка при создании модели '.$modelName.' - '.$name);
       }
 
       $this->modelsCache[$modelName.$name] = $model;
@@ -193,7 +196,6 @@ class AbstractImportProductWriter extends  AbstractImportWriter
     }
     catch(CException $e)
     {
-
     }
   }
 
@@ -219,7 +221,6 @@ class AbstractImportProductWriter extends  AbstractImportWriter
         {
           $this->logger->warning($e->getMessage());
         }
-
       }
     }
   }
@@ -332,12 +333,13 @@ class AbstractImportProductWriter extends  AbstractImportWriter
 
     $uniqueUrl = Utils::translite(trim($url));
     $suffix = 1;
-    while( isset($this->urlCache[$uniqueUrl]) )
+    while(isset($this->urlCache[$uniqueUrl]))
     {
       $uniqueUrl = $url.'_'.$suffix++;
     }
 
     $this->urlCache[$uniqueUrl] = $uniqueUrl;
+
     return $uniqueUrl;
   }
 }
