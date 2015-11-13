@@ -319,4 +319,12 @@ class ProductParameterName extends FActiveRecord
   {
     return 'f/upload/images/param_'.$this->id.'.png';
   }
+
+  /**
+   * @return ProductParameter|null
+   */
+  public function getParameter()
+  {
+    return Arr::reset($this->getParameters());
+  }
 }

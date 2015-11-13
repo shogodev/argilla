@@ -53,13 +53,7 @@ class ProductsImportCommand extends AbstractImportCommand
         //'collection_id' => 'ad'
       );
 
-      $productAggregator->parameter = array(
-        'ae', //длинна
-        'af', //тест
-        'fg', //строй
-        'ah', //транспортная длина:
-        'ao'  //передаточное число:
-      );
+      $productAggregator->parameter = $productAggregator->parameter = ImportHelper::getLettersRange('ae-ef');
 
       $csvReader = new ImportCsvReader($this->logger, $productAggregator);
       $csvReader->csvDelimiter = ';';
@@ -74,7 +68,6 @@ class ProductsImportCommand extends AbstractImportCommand
       $this->logger->error($e->getMessage());
     }
   }
-
 
   private function reindex()
   {

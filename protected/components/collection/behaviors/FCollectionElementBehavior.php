@@ -26,6 +26,9 @@ class FCollectionElementBehavior extends CBehavior
    */
   public function getCollectionItems($index = null)
   {
+    if( is_null($this->collectionElement) )
+      return null;
+
     if( is_null($index) )
       return $this->collectionElement->items;
     else

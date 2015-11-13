@@ -164,6 +164,6 @@ class PriceHelper
    */
   public static function clear($price)
   {
-    return str_replace(',', '.', preg_replace('/[^0-9,.]/', '', $price));
+    return floatval(str_replace(',', '.', preg_replace('/[^0-9,.]/', '', $price)));
   }
 }

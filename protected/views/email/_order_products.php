@@ -12,7 +12,8 @@
  * @var ContactField $phone
  *
  * @var Order $model
-  */
+ */
+Yii::import('frontend.models.order.delivery.OrderDeliveryType');
 ?>
 <?php if( !empty($model->products) ) { ?>
   <table style="border-collapse: collapse; width: 100%; margin-bottom: 20px">

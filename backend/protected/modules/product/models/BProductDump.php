@@ -11,6 +11,12 @@
  */
 class BProductDump extends BActiveRecord
 {
+  const AVAILABLE = 1;
+
+  const AVAILABLE_ORDER = 2;
+
+  const NOT_AVAILABLE = 0;
+
   static private $list;
 
   public static function listData($key = 'id', $value = 'name', CDbCriteria $criteria = null)

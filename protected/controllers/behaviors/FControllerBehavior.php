@@ -95,7 +95,7 @@ class FControllerBehavior extends CBehavior
   {
     if( !isset($this->compare) )
     {
-      $this->compare = new FCompare('compare', array(), array('Product', 'ProductSection'));
+      $this->compare = new FCompare('compare');
       $this->compare->ajaxUrl = Yii::app()->createUrl('compare/index');
       $this->compare->addButtonAjaxUrl = Yii::app()->createUrl('compare/add');
     }

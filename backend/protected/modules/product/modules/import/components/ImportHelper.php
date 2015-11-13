@@ -118,4 +118,19 @@ class ImportHelper
 
     return $array;
   }
+
+  public static function getModelWithoutBehaviors($className, $scenario = null)
+  {
+    /**
+     * @var CActiveRecord $model
+     */
+    $model = new $className(null);
+    if( $scenario )
+      $model->setScenario($scenario);
+
+    $model->setIsNewRecord(true);
+    $model->init();
+
+    return $model;
+  }
 }

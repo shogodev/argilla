@@ -16,8 +16,8 @@
   <?php if( $items = $data->getCollectionItems() ) {?>
     <?php foreach($items as $item) {?>
       <tr>
-        <td><?php echo $item->name?>:</td>
-        <td><?php echo $item->value?></td>
+        <td><?php echo $item->parameterName->name?>:</td>
+        <td><?php echo $item->variant->name?></td>
       </tr>
     <?php }?>
   <?php }?>

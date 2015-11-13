@@ -30,11 +30,12 @@ class ProductList extends BaseList
    */
   public $parametersCriteria;
 
+  public $autoloadModifications = false;
+
   public function init()
   {
-    parent::init();
-
     $this->criteria->compare('t.visible', 1);
+    $this->criteria->addCondition('t.parent IS NULL');
     ProductAssignment::model()->addAssignmentCondition($this->criteria);
 
     $prefix = $this->getTablePrefix();
@@ -47,18 +48,30 @@ class ProductList extends BaseList
     $this->setImages();
     $this->setParameters();
     $this->setAssignments();
+    if( $this->autoloadModifications )
+      $this->setModifications();
   }
 
   protected function setParameters()
   {
-    /**
-     * @var $products Product[]
-     */
-    $products = $this->dataProvider->getData();
+    $criteria = new CDbCriteria();
+    $criteria->select = 'param_id';
+    $criteria->distinct = true;
+    $criteria->addInCondition('product_id', $this->dataProvider->getKeys());
+
+    $command = Yii::app()->db->commandBuilder->createFindCommand(ProductParameter::model()->tableName(), $criteria);
+    $usedProductParameterIds = $command->queryColumn();
+
+    $this->parametersCriteria->addInCondition('t.id', $usedProductParameterIds);
+
     $modelName = $this->parameterNameModel;
     $names = $modelName::model()->search($this->parametersCriteria);
     $parameters = array();
 
+    /**
+     * @var $products Product[]
+     */
+    $products = $this->getDataProvider()->getData();
     foreach($products as $product)
     {
       $product->setParameters();
@@ -102,5 +115,27 @@ class ProductList extends BaseList
     }
 
     $this->setRecords($modelName, $models);
+  }
+
+  protected function setModifications()
+  {
+    /**
+     * @var Product[] $productLinks
+     */
+    $productLinks = array();
+
+    foreach($this->dataProvider->getData() as $product)
+    {
+      $productLinks[$product->id] = $product;
+    }
+
+    $criteria = new CDbCriteria();
+    $criteria->addInCondition('t.parent', $this->dataProvider->getKeys());
+    $modificationList = new ProductModificationList($criteria, null, false);
+
+    foreach($modificationList->getDataProvider()->getData() as $modification)
+    {
+      $productLinks[$modification->parent]->addRelatedRecord('modifications', $modification, true);
+    }
   }
 }

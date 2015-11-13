@@ -9,7 +9,7 @@ Yii::import('frontend.share.*');
 Yii::import('frontend.share.behaviors.*');
 Yii::import('frontend.share.helpers.*');
 Yii::import('frontend.share.validators.*');
-Yii::import('backend.components.BApplication');
+Yii::import('backend.components.*');
 Yii::import('backend.components.db.*');
 Yii::import('backend.components.interfaces.*');
 Yii::import('backend.models.behaviors.*');
@@ -43,6 +43,10 @@ class ImportProductWriter extends AbstractImportWriter
   );
 
   public $parameterVariantsDelimiter = ',';
+
+  public $importScenario = 'import';
+
+  public $importModificationScenario = BModificationBehavior::SCENARIO_MODIFICATION;
 
   private $allProductsAmount = 0;
 
@@ -99,15 +103,21 @@ class ImportProductWriter extends AbstractImportWriter
     /**
      * @var BProduct $product
      */
-    if( $product = BProduct::model()->findByAttributes(array($item['uniqueAttribute'] => $item['uniqueIndex'])) )
+    $product = ImportHelper::getModelWithoutBehaviors('BProduct', $this->importScenario);
+
+    /**
+     * @var BProduct $product
+     */
+    if( $foundProduct = $product->findByAttributes(array($item['uniqueAttribute'] => $item['uniqueIndex'])) )
     {
+      $foundProduct->scenario = !empty($product->parent) ? $this->importModificationScenario : $this->importScenario;
+
       $this->skipProductsAmount++;
 
-      //$product->save();
+      //$foundProduct->save();
       return;
     }
 
-    $product = new BProduct('convert');
     $product->setAttributes($item['product'], false);
     $product->url = $this->createUniqueUrl($product->url);
     $product->visible = 1;
@@ -137,7 +147,10 @@ class ImportProductWriter extends AbstractImportWriter
   {
     foreach($modifications as $item)
     {
-      $product = new BProduct('modification');
+      /**
+       * @var BProduct $product
+       */
+      $product = ImportHelper::getModelWithoutBehaviors('BProduct', $this->importModificationScenario);
       $product->setAttributes($item['product'], false);
       $product->url = $this->createUniqueUrl($product->url);
       $product->parent = $parentProduct->id;
@@ -203,12 +216,15 @@ class ImportProductWriter extends AbstractImportWriter
   {
     foreach($data as $name => $value)
     {
-      if( $value == '' )
+      if( $value == '' || (is_array($value) && empty($value)) )
         continue;
 
       $parameterName = $this->getParameterName($name);
 
-      $value = strpos($value, $this->parameterVariantsDelimiter) !== false ? explode($this->parameterVariantsDelimiter, $value) : array($value);
+      if( !is_array($value) )
+      {
+        $value = strpos($value, $this->parameterVariantsDelimiter) !== false ? explode($this->parameterVariantsDelimiter, $value) : array($value);
+      }
       $value = Arr::trim($value);
 
       foreach($value as $variantName)
@@ -325,7 +341,7 @@ class ImportProductWriter extends AbstractImportWriter
 
       $criteria = new CDbCriteria();
       $criteria->select = 'url';
-      $command = Yii::app()->db->schema->commandBuilder->createFindCommand(BProduct::model()->tableName(), $criteria);
+      $command = Yii::app()->db->schema->commandBuilder->createFindCommand('{{product}}', $criteria);
 
       foreach($command->queryColumn() as $itemUrl)
         $this->urlCache[$itemUrl] = $itemUrl;

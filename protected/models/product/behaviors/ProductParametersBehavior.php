@@ -20,6 +20,8 @@ class ProductParametersBehavior extends CModelBehavior
    */
   protected $parameters;
 
+  protected $basketParameter;
+
   /**
    * @param null $key
    * @param CDbCriteria $groupCriteria критерия группы параметров
@@ -35,7 +37,8 @@ class ProductParametersBehavior extends CModelBehavior
       if( !is_null($groupCriteria) )
         $productParamNames->setGroupCriteria($groupCriteria);
 
-      $productParamNames->addAssignmentCondition(array('section_id' => $this->owner->section->id));
+      if( empty($this->owner->parent) )
+        $productParamNames->addAssignmentCondition(array('section_id' => $this->owner->section->id));
 
       if( $criteria === null )
       {
@@ -43,6 +46,7 @@ class ProductParametersBehavior extends CModelBehavior
         $criteria->compare('t.product', '1');
         $criteria->compare('t.key', ProductParameter::BASKET_KEY, false, 'OR');
       }
+      $criteria->addInCondition('t.id', $this->getCurrentProductParameterNameIds());
 
       $this->parameters = $productParamNames->search($criteria);
 
@@ -102,6 +106,18 @@ class ProductParametersBehavior extends CModelBehavior
   }
 
   /**
+   * @return ProductParameterName|null
+   */
+  public function getBasketParameter()
+  {
+    if( is_null($this->basketParameter) )
+    {
+      $this->basketParameter = $this->getParameterByKey(ProductParameter::BASKET_KEY);
+    }
+    return $this->basketParameter;
+  }
+
+  /**
    * @param string|array $key
    * @param bool $notEmptyOnly
    *
@@ -145,6 +161,18 @@ class ProductParametersBehavior extends CModelBehavior
     }
 
     return null;
+  }
+
+
+
+  private function getCurrentProductParameterNameIds()
+  {
+    $criteria = new CDbCriteria();
+    $criteria->compare('product_id', $this->owner->primaryKey);
+
+    $command = Yii::app()->db->commandBuilder->createFindCommand(ProductParameter::model()->tableName(), $criteria);
+
+    return $command->queryColumn();
   }
 
   /**

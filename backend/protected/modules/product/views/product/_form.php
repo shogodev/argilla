@@ -33,6 +33,8 @@ $form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId()));
 
   <?php echo $form->dependedInputsChainRow($model, array('section_id', 'type_id')); ?>
 
+  <?php echo $form->dropDownListDefaultRow($model, 'category_id', BProductCategory::listData()); ?>
+
   <?php echo $form->textFieldRow($model, 'price', array('class' => 'span4')); ?>
 
   <?php echo $form->textFieldRow($model, 'price_old', array('class' => 'span4')); ?>
@@ -44,6 +46,8 @@ $form = $this->beginWidget('BActiveForm', array('id' => $model->getFormId()));
   <?php echo $form->ckeditorRow($model, 'content');?>
 
   <?php if( $model->asa('modificationBehavior') ) $this->renderPartial('product.views.product.modification._modification_grid', $_data_)?>
+
+  <?php  if( $model->asa('parameterGridBehavior') ) $form->widget('parameterGrid.ParameterGridWidget', array('model' => $model));?>
 
   <?php echo $form->checkBoxRow($model, 'main');?>
 

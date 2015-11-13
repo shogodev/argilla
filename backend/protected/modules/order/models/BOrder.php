@@ -155,6 +155,15 @@ class BOrder extends BActiveRecord
     return $this->delivery ? $this->delivery->delivery_price + $this->sum : $this->sum;
   }
 
+  public function getDeliveryPrice()
+  {
+    if( !$this->delivery )
+      return 0;
+
+    return $this->delivery->delivery_price;
+  }
+
+
   /**
    * @param CDbCriteria $criteria
    */

@@ -35,6 +35,9 @@ class FListViewSkin extends CWidget
 
   public function init()
   {
+    if( !Yii::app()->controller->asa('tableListToggleBehavior') )
+      throw new CHttpException(500, 'Ошибка! Для корректной работы виджета FListViewSkin контроллер '.get_class(Yii::app()->controller).' должен иметь поведение tableListToggleBehavior');
+
     $this->links = array(
       array(
         'id' => 'line',

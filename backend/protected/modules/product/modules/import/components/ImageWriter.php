@@ -16,6 +16,8 @@ class ImageWriter extends AbstractImportWriter
 
   public $defaultJpegQuality = 85;
 
+  public $uniqueAttribute = 'articul';
+
   /**
    * @var EPhpThumb
    */
@@ -62,11 +64,11 @@ class ImageWriter extends AbstractImportWriter
     $progress = new ConsoleProgressBar($itemsAmount);
     $this->logger->log('Начало обработки файлов');
     $progress->start();
-    foreach($data as $articul => $images)
+    foreach($data as $uniqueAttributeValue => $images)
     {
       try
       {
-        $this->writeItem($articul, $images);
+        $this->writeItem($uniqueAttributeValue, $images);
       }
       catch(WarningException $e)
       {
@@ -80,10 +82,10 @@ class ImageWriter extends AbstractImportWriter
     $this->logger->log('Обработка файлов завершена');
   }
 
-  protected function writeItem($articul, array $images)
+  protected function writeItem($uniqueAttributeValue, array $images)
   {
-    if( !($productId = $this->getProductIdByAttribute('articul', $articul)) )
-      throw new WarningException('Неудалсь найти product_id по артикулу '.$articul);
+    if( !($productId = $this->getProductIdByAttribute($this->uniqueAttribute, $uniqueAttributeValue)) )
+      throw new WarningException('Неудалсь найти product_id по атрибуту '.$this->uniqueAttribute.' '.$uniqueAttributeValue);
 
     foreach($images as $image)
     {
