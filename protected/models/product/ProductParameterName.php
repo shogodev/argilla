@@ -90,7 +90,7 @@ class ProductParameterName extends FActiveRecord
    */
   public function getRootId()
   {
-    return $this->findBySql("SELECT * FROM ".$this->dbConnection->schema->quoteTableName($this->tableName())." WHERE parent = id")->id;
+    return $this->find('parent = id')->id;
   }
 
   /**
