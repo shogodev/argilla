@@ -82,31 +82,20 @@ class OnFlyEditField extends BDataColumn
   public function init()
   {
     parent::init();
-    $this->renderScript();
-  }
 
-  /**
-   * Вывод необходимого скрипта для работы onfly
-   *
-   * @return void
-   */
-  protected function renderScript()
-  {
     if( empty($this->ajaxUrl) )
       $this->ajaxUrl = Yii::app()->controller->createUrl(Yii::app()->controller->id."/$this->action");
 
-    $scriptUrl = Yii::app()->assetManager->publish(dirname(__FILE__).'/js');
-
-    Yii::app()->clientScript->registerScriptFile($scriptUrl.'/jquery.onFlyEdit.js', CClientScript::POS_END);
-    Yii::app()->clientScript->registerScriptFile($scriptUrl.'/onFlyModule.js', CClientScript::POS_END);
-
-    Yii::app()->clientScript->registerScript('initOnFly'.$this->grid->id,
+    Yii::app()->clientScript->registerScript(
+      'initOnFly'.$this->grid->id,
       '$(function() {
         Backend("onFly", function(box) {
           box.init(jQuery);
           jQuery.fn.yiiGridView.addObserver("'.$this->grid->id.'", function(id) { box.reinstall(jQuery); });
         });
-      });', CClientScript::POS_END);
+      });',
+      CClientScript::POS_END
+    );
   }
 
   /**
@@ -121,8 +110,23 @@ class OnFlyEditField extends BDataColumn
    */
   protected function renderDataCellContent($row, $data)
   {
-    $field = $this->name;
-    echo $this->prepareFieldData($data instanceof BActiveRecord ? $data->getPrimaryKey() : $data['id'], $data[$field]);
+    $htmlOptions = CMap::mergeArray(
+      array(
+        'data-grid-id' => $this->gridId,
+        'data-grid-update' => $this->gridUpdate
+      ),
+      $this->elementOptions
+    );
+
+    $primaryKey = $data instanceof BActiveRecord ? $data->getPrimaryKey() : $data['id'];
+
+    Yii::app()->controller->widget('OnFlyWidget', array(
+      'ajaxUrl' => $this->ajaxUrl,
+      'attribute' => $this->name,
+      'primaryKey' => $primaryKey,
+      'value' => $data[$this->name],
+      'htmlOptions' => $htmlOptions
+    ));
   }
 
   /**
