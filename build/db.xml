@@ -100,9 +100,18 @@
   </target>
 
   <target name="applyDump" depends="getDbSettings" description="Apply DB dump">
-    <input propertyName="confirm" defaultValue="n" validArgs="y,n" message="All data will be deleted. Are you sure?"/>
     <if>
-    <equals arg1="${confirm}" arg2="y"/>
+      <isset property="force"></isset>
+      <then>
+        <property name="confirm" value="y"/>
+      </then>
+      <else>
+        <input propertyName="confirm" defaultValue="n" validArgs="y,n" message="All data will be deleted. Are you sure?"/>
+      </else>
+    </if>
+
+    <if>
+      <equals arg1="${confirm}" arg2="y"/>
       <then>
         <phingcall target="createDb"/>
         <phingcall target="dropTablesAll"/>
@@ -111,12 +120,28 @@
 
         <php expression="str_replace('.sql/', '', implode('  ', glob('.sql/*')))" returnProperty="fileList"/>
         <echo message="${fileList}"/>
-        <input message="Enter dump filename" defaultValue="${db.dbname}.sql" propertyName="dumpFileName"/>
+
+        <if>
+          <not><isset property="dumpFileName"></isset></not>
+          <then>
+            <input message="Enter dump filename" defaultValue="${db.dbname}.sql" propertyName="dumpFileName"/>
+          </then>
+        </if>
 
         <available file="${sqlFolder}/${dumpFileName}" property="dump_exists" value="1"/>
         <fail unless="dump_exists" message="Dump file does not exists in specified location (${sqlFolder}/${dumpFileName})"/>
         <echo message="Dealing with dump '${sqlFolder}/${dumpFileName}', database '${db.dbname}'..."/>
-        <input propertyName="applySure" defaultValue="y" message="Are you sure?"/>
+
+        <if>
+          <isset property="force"></isset>
+          <then>
+            <property name="applySure" value="y"/>
+          </then>
+          <else>
+            <input propertyName="applySure" defaultValue="y" message="Are you sure?"/>
+          </else>
+        </if>
+
         <if>
           <equals arg1="${applySure}" arg2="y"/>
           <then>
@@ -138,7 +163,14 @@
   </target>
 
   <target name="createDump" depends="getDbSettings" description="Create DB dump">
-    <input message="Enter dump filename" propertyName="dumpFileName" defaultValue="${db.dbname}.sql"/>
+
+    <if>
+      <not><isset property="dumpFileName"/></not>
+      <then>
+        <input message="Enter dump filename" propertyName="dumpFileName" defaultValue="${db.dbname}.sql"/>
+      </then>
+    </if>
+
     <if>
       <available file="${sqlFolder}/${dumpFileName}"/>
       <then>
@@ -146,6 +178,7 @@
         <input message="File '${dumpFileName}' already exists. Overwrite?" propertyName="overwrite" defaultValue="y"/>
       </then>
     </if>
+
     <if>
       <or>
         <not>

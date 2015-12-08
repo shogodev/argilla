@@ -163,12 +163,11 @@ class ProductParametersBehavior extends CModelBehavior
     return null;
   }
 
-
-
   private function getCurrentProductParameterNameIds()
   {
     $criteria = new CDbCriteria();
     $criteria->compare('product_id', $this->owner->primaryKey);
+    $criteria->select = 'param_id';
 
     $command = Yii::app()->db->commandBuilder->createFindCommand(ProductParameter::model()->tableName(), $criteria);
 

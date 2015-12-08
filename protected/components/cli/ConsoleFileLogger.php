@@ -18,7 +18,7 @@ class ConsoleFileLogger extends CFileLogRoute
   {
     $this->logger = new CLogger();
     $this->logger->autoFlush = 20;
-    $this->logger->attachEventHandler('onFlush', array($this, 'saveLogs'));
+    $this->logger->attachEventHandler('onFlush', array($this, 'onFlush'));
 
     $this->setLogFile($fileName);
     $this->init();
@@ -52,18 +52,30 @@ class ConsoleFileLogger extends CFileLogRoute
   public function error($message)
   {
     $this->logger->log($message, 'error', 'console');
+    $this->logger->flush();
 
     if( $this->showLog )
       echo $message.PHP_EOL;
   }
 
-  public function saveLogs()
+  /**
+   * Сохраняет лог в файл с очисткой сообщений из памяти
+   */
+  public function flush()
   {
-    $this->collectLogs($this->logger, true);
+    $this->logger->flush();
   }
 
   public function __destruct()
   {
-    $this->saveLogs();
+    $this->logger->flush();
+  }
+
+  /**
+   * Сохраняет лог в файл, сообщения остаются в памяти при прямом вызове метода
+   */
+  public function onFlush()
+  {
+    $this->collectLogs($this->logger, true);
   }
 }
