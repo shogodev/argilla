@@ -589,8 +589,8 @@ CREATE TABLE `argilla_order_delivery` (
   `address` varchar(255) NOT NULL,
   PRIMARY KEY (`order_id`),
   KEY `delivery_type_id` (`delivery_type_id`),
-  CONSTRAINT `argilla_order_delivery_ibfk_3` FOREIGN KEY (`delivery_type_id`) REFERENCES `argilla_order_delivery_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `argilla_order_delivery_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `argilla_order` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `argilla_order_delivery_ibfk_1` FOREIGN KEY (`order_id`) REFERENCES `argilla_order` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `argilla_order_delivery_ibfk_3` FOREIGN KEY (`delivery_type_id`) REFERENCES `argilla_order_delivery_type` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -606,7 +606,10 @@ CREATE TABLE `argilla_order_delivery_type` (
   `name` varchar(128) NOT NULL,
   `position` int(11) DEFAULT '0',
   `notice` text,
+  `minimal_price` decimal(10,2) NOT NULL,
   `price` decimal(10,2) NOT NULL,
+  `free_delivery_price_limit` decimal(10,2) NOT NULL,
+  `always_free_delivery` tinyint(1) NOT NULL,
   `visible` tinyint(1) NOT NULL DEFAULT '0',
   PRIMARY KEY (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;

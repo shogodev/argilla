@@ -18,6 +18,9 @@
  * @property integer $captured_status
  *
  * @property Order $order
+ * @property OrderPaymentType $paymentType
+ * @property PlatronPaymentType $systemPaymentType
+ *
  * @mixin PlatronPaymentBehavior
  */
 class OrderPayment extends FActiveRecord
@@ -34,6 +37,14 @@ class OrderPayment extends FActiveRecord
     return array(
       array('payment_type_id', 'required'),
       array('payment_type_id, system_payment_type_id', 'safe'),
+    );
+  }
+
+  public function relations()
+  {
+    return array(
+      'paymentType' => array(self::BELONGS_TO, 'OrderPaymentType', 'payment_type_id'),
+      'systemPaymentType' => array(self::BELONGS_TO, 'PlatronPaymentType', 'system_payment_type_id'),
     );
   }
 

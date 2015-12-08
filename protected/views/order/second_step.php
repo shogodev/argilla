@@ -49,16 +49,21 @@
         </div>
       </div>
 
-    <div class="order-form-total">
+    <div class="order-form-total m10">
+      <div class="s13 grey" id="js-minimal-price-block" style="display: none" >
+        <span class="s18 bb uppercase black label">Минимальная сумма заказа:</span>
+        <span class="s30 bb black" id="js-minimal-price"></span>
+      </div>
       <div class="s13 grey" id="js-delivery-block" style="display: none">
-        <span class="s19 bb uppercase black">Стоимость доставки:</span>
-        <span class="s22 red bb" id="js-delivery-price"></span>
+        <span class="s18 bb uppercase black label">Стоимость доставки:</span>
+        <span class="s30 bb black" id="js-delivery-price"></span>
       </div>
       <div class="s13 grey">
-        <span class="s19 bb uppercase black">Стоимость вашей покупки:</span>
-        <span class="s22 red bb" id="js-total-sum" data-sum="<?php echo floatval($this->basket->getSumTotal());?>"><?php echo PriceHelper::price($this->basket->getSumTotal(), ' руб.')?></span>
+        <span class="s18 bb uppercase black label">Стоимость вашей покупки:</span>
+        <span class="s30 bb black" id="js-total-price" data-price="<?php echo floatval($this->basket->getSumTotal());?>"><?php echo PriceHelper::price($this->basket->getSumTotal(), ' <span class="s16 grey">руб.</span>')?></span>
       </div>
     </div>
+
 
     <div class="selfdelivery-block" style="display: none"><!--Карта проезда--></div>
 
@@ -83,9 +88,9 @@
         OrderDeliveryType::DELIVERY_MOSCOW_REGION,
         OrderDeliveryType::DELIVERY_REGION
       ))?>;
-    var deliveryPriceList = <?php echo CJSON::encode(PriceHelper::decimalToFloat(CHtml::listData(OrderDeliveryType::model()->findAll(), 'id', 'price')));?>;
-    var freeDeliveryLimit = <?php echo OrderDeliveryType::FREE_DELIVERY_LIMIT?>;
-    var currencySuffix = ' руб.';
+
+    var deliveryData = <?php echo OrderDeliveryType::getJsonDeliveryData();?>;
+    var currencySuffix = ' <span class="s16 grey">руб.</span>';
 
     var paymentEPay = <?php echo OrderPaymentType::E_PAY?>;
     var paymentCash = <?php echo OrderPaymentType::CASH?>;
@@ -96,7 +101,7 @@
     paymentMethodBlock.find('input:radio[value=' + paymentEPay + ']').closest(radioBlockContainer).hide();
 
     form.relatedFields({rules : [
-      {'action' : 'show', 'dest' : 'Order[address]', 'src': 'OrderDelivery[delivery_type_id]', 'srcValues' : delivery},
+      {'action' : 'show', 'dest' : 'OrderDelivery[address]', 'src': 'OrderDelivery[delivery_type_id]', 'srcValues' : delivery},
       {'action' : 'call', 'src': 'OrderDelivery[delivery_type_id]', 'callback' : function(element, value) {
         if( value == deliverySelf )
         {
@@ -108,6 +113,7 @@
           $('.selfdelivery-block').stop(true, true).fadeOut();
           element.closest('fieldset').removeClass('with-map');
         }
+
         if( value == deliveryRegion )
         {
           var paymentCashElement = paymentMethodBlock.find('input:radio[value=' + paymentCash + ']');
@@ -120,33 +126,46 @@
         }
 
         var setTotalPrice = function(price) {
-          price = Number(price)
+          price = Number(price);
           if( price > 0 )
-            $('#js-total-sum').text(number_format(price) + currencySuffix);
+            $('#js-total-price').html(number_format(price) + currencySuffix);
           else
-            $('#js-total-sum').text('Звоните');
+            $('#js-total-price').html('Звоните');
         };
 
-        if( deliveryPriceList[value] && deliveryPriceList[value] > 0 )
+        if( deliveryData[value] && ( deliveryData[value].price > 0 || deliveryData[value].freeDeliveryPrice == 'free' ) )
         {
-          if( freeDeliveryLimit == -1 || freeDeliveryLimit > $('#js-total-sum').data('sum') )
+          if( deliveryData[value].freeDeliveryPrice == 'free' )
           {
-            $('#js-delivery-price').text(number_format(deliveryPriceList[value]) + currencySuffix);
-            setTotalPrice(deliveryPriceList[value] + $('#js-total-sum').data('sum'));
+            $('#js-delivery-price').html('Бесплатно');
+            setTotalPrice($('#js-total-price').data('price'));
           }
           else
           {
-            $('#js-delivery-price').text('Бесплатно');
-            setTotalPrice($('#js-total-sum').data('sum'));
+            $('#js-delivery-price').html(number_format(deliveryData[value].price) + currencySuffix);
+            setTotalPrice(deliveryData[value].price + $('#js-total-price').data('price'));
           }
 
           $('#js-delivery-block').show();
         }
         else {
-          setTotalPrice($('#js-total-sum').data('sum'));
+          setTotalPrice($('#js-total-price').data('price'));
           $('#js-delivery-block').hide();
         }
 
+        if( deliveryData[value] ) {
+          if( $('#js-total-price').data('price') < Number(deliveryData[value].minimalPrice) )
+          {
+            $('#js-minimal-price').html(number_format(deliveryData[value].minimalPrice) + currencySuffix)
+            $('#js-minimal-price-block').show();
+            $('.js-order-submit-button').prop('disabled', true);
+          }
+          else
+          {
+            $('#js-minimal-price-block').hide();
+            $('.js-order-submit-button').prop('disabled', false);
+          }
+        }
       }},
       {'action' : 'call', 'src' : 'OrderPayment[payment_type_id]', 'callback' : function(element, value) {
         if( value != paymentEPay )

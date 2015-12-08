@@ -29,6 +29,6 @@ return array(
   'buttons' => array('submit' => array(
     'type' => 'htmlButton',
     'label' => 'Оформить заказ',
-    'class' => 'fr btn red-btn btn-order-icon h45btn second-step-btn r11 s23 light uppercase',
+    'class' => 'js-order-submit-button fr btn red-btn btn-order-icon h45btn second-step-btn r11 s23 light uppercase',
   ))
 );

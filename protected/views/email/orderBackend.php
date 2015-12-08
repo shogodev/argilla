@@ -17,10 +17,18 @@
 ?>
 <?php
 $fields = array('Номер заказа' => $model->id);
-if( isset($model->paymentType) )
-  $fields['Методы оплаты'] = $model->paymentType->name;
-if( isset($model->deliveryType) )
-  $fields['Способ доставки'] = $model->deliveryType->name;
+if( isset($model->payment, $model->payment->paymentType) )
+{
+  $fields['Методы оплаты'] = $model->payment->paymentType->name;
+  if( isset($model->payment->systemPaymentType) )
+    $fields['Тип оплаты'] = $model->payment->systemPaymentType->name;
+}
+if( isset($model->delivery, $model->delivery->deliveryType) )
+{
+  $fields['Способ доставки'] = $model->delivery->deliveryType->name;
+}
+if( isset($model->delivery, $model->delivery->address) )
+  $fields['Адрес'] = $model->delivery->address;
 ?>
 
 <?php $this->renderPartial('frontend.views.email.defaultBackend', CMap::mergeArray($_data_, array('fields' => $fields))); ?>

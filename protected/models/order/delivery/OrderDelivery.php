@@ -20,6 +20,7 @@ class OrderDelivery extends FActiveRecord
   public function rules()
   {
     return array(
+      array('address', 'ExRequiredValidator', 'dependedAttribute' => 'delivery_type_id', 'dependedValue' => OrderDeliveryType::SELF_DELIVERY, 'not' => true),
       array('delivery_type_id, address, delivery_price', 'safe')
     );
   }

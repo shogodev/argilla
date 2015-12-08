@@ -12,7 +12,8 @@ return array(
     ),
 
     'address' => array(
-      'type' => 'text'
+      'type' => 'text',
+      'required' => true
     ),
 
 /*    'rememberAddress' => array(

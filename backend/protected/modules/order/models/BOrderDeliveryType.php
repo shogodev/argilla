@@ -10,8 +10,11 @@
  * @property string $id
  * @property string $name
  * @property integer $position
- * @property string $price
  * @property string $notice
+ * @property string $minimal_price
+ * @property string $price
+ * @property string $free_delivery_price_limit
+ * @property bool $always_free_delivery
  * @property integer $visible
  *
  * @property BOrder[] $orders
@@ -22,9 +25,9 @@ class BOrderDeliveryType extends BActiveRecord
   {
     return array(
       array('name, price', 'required'),
-      array('position, visible', 'numerical', 'integerOnly' => true),
+      array('position, visible, always_free_delivery', 'numerical', 'integerOnly' => true),
       array('name', 'length', 'max' => 128),
-      array('price', 'length', 'max' => 10),
+      array('price, free_delivery_price_limit, minimal_price', 'length', 'max' => 10),
       array('notice', 'safe'),
       array('id, name, position, price, notice, visible', 'safe', 'on' => 'search'),
     );

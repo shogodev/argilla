@@ -5,15 +5,22 @@
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
  * @package frontend.models.order
+ */
+
+/**
+ * Class OrderDeliveryType
  *
  * @method static OrderDeliveryType model(string $className = __CLASS__)
  *
- * @property int    $id
+ * @property int $id
  * @property string $name
- * @property int    $position
+ * @property int $position
  * @property string $notice
+ * @property string $minimal_price
  * @property string $price
- * @property bool   $visible
+ * @property string $free_delivery_price_limit
+ * @property bool $always_free_delivery
+ * @property bool $visible
  */
 class OrderDeliveryType extends FActiveRecord
 {
@@ -24,10 +31,6 @@ class OrderDeliveryType extends FActiveRecord
   const DELIVERY_MOSCOW_REGION = 3;
 
   const DELIVERY_REGION = 4;
-
-  const FREE_DELIVERY_LIMIT = -1;
-
-  const FREE_DELIVERY = null; // бесплатная доставка
 
   public function defaultScope()
   {
@@ -47,21 +50,39 @@ class OrderDeliveryType extends FActiveRecord
     if( is_null($this->id) )
       return 0;
 
-    if( $this->id == self::SELF_DELIVERY )
-      return 0;
-    else
-    {
-      if( $this->isFreeDelivery($orderSum) )
-        return self::FREE_DELIVERY;
-      else
-        return floatval($this->price);
-    }
+    if( !$this->isFreeDelivery($orderSum) )
+      return floatval($this->price);
 
     return 0;
   }
 
-  public static function isFreeDelivery($orderSum)
+  public function isFreeDelivery($orderSum)
   {
-    return self::FREE_DELIVERY_LIMIT > 0 && $orderSum > self::FREE_DELIVERY_LIMIT;
+    if( $this->always_free_delivery )
+      return true;
+
+    if( PriceHelper::isEmpty($this->free_delivery_price_limit) )
+      return false;
+
+    if( floatval($this->free_delivery_price_limit) <= $orderSum )
+      return true;
+
+    return false;
+  }
+
+  /**
+   * @return string
+   */
+  public static function getJsonDeliveryData()
+  {
+    $orderPrice = Yii::app()->controller->basket->getSum();
+
+    return CJSON::encode(CHtml::listData(self::model()->findAll(), 'id', function(OrderDeliveryType $deliveryType) use($orderPrice) {
+      return array(
+        'price' => floatval($deliveryType->price),
+        'minimalPrice' => floatval($deliveryType->minimal_price),
+        'freeDeliveryPrice' => $deliveryType->isFreeDelivery($orderPrice) ? 'free' : floatval($deliveryType->free_delivery_price_limit),
+      );
+    }));
   }
 }
