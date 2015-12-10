@@ -19,10 +19,15 @@ $this->widget('BGridView', array(
 
     array(
       'name' => 'section_id',
-      'filter' => CHtml::listData(BProductSection::model()->findAll(), 'id', 'name'),
-      'hideColumn' => true,
+      'filter' => CMap::mergeArray(array(
+        'common' => '[Общие]',
+      ),
+        BProductSection::listData()
+      ),
+      'htmlOptions' => array('prompt' => '[Все]'),
+      'header' => 'Раздел',
+      'value' => '$data->sectionName'
     ),
-
     array('name' => 'type', 'header' => 'Тип', 'filter' => false, 'value' => '$data->isGroup() ? "" : $data->types[$data->type]'),
     array('name' => 'key', 'htmlOptions' => array('class' => 'span3'), 'class' => 'OnFlyEditField', 'header' => 'Ключ'),
     array('class' => 'ParamToggleColumn', 'name' => 'visible', 'header' => 'Вид'),

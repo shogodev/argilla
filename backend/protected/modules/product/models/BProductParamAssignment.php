@@ -5,6 +5,9 @@
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.product.models
+ */
+/**
+ * Class BProductParamAssignment
  *
  * @method static BProductParamAssignment model(string $class = __CLASS__)
  *
@@ -12,8 +15,7 @@
  * @property string $section_id
  * @property string $type_id
  * @property string $collection_id
- *
- * @property BProductParamName $param
+ * @property BProductSection $section
  */
 class BProductParamAssignment extends BActiveRecord
 {
@@ -27,7 +29,7 @@ class BProductParamAssignment extends BActiveRecord
   public function relations()
   {
     return array(
-      'param' => array(self::BELONGS_TO, 'ProductParamNames', 'param_id'),
+      'section' => array(self::BELONGS_TO, 'BProductSection', 'section_id')
     );
   }
 

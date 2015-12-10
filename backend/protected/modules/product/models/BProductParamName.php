@@ -22,6 +22,7 @@
  * @property BProductParamVariant[] $variants
  *
  * @method BProductParamName groups()
+ * @property BProductParamAssignment $assignment
  */
 class BProductParamName extends BActiveRecord
 {
@@ -129,6 +130,7 @@ class BProductParamName extends BActiveRecord
 
   /**
    * @param CDbCriteria $criteria
+   *
    * @return BActiveDataProvider|CArrayDataProvider
    */
   public function search(CDbCriteria $criteria = null)
@@ -138,25 +140,47 @@ class BProductParamName extends BActiveRecord
 
     $this->onBeforeSearch(new CEvent($this, array('criteria' => $criteria)));
 
-    $criteria           = new CDbCriteria;
+    $criteria = new CDbCriteria;
     $criteria->together = true;
-    $criteria->with     = array('assignment', 'variants');
+    $criteria->with = array('assignment', 'variants');
+    $criteria->order = 't.position';
+
+    $assignmentCondition = '';
+    switch($this->section_id)
+    {
+      case '':
+      break;
+
+      case 'common':
+        $assignmentCondition .= '(assignment.section_id IS NULL OR assignment.section_id = 0)';
+      break;
+
+      default:
+        $assignmentCondition .= ' assignment.section_id = :section_id';
+        $criteria->params[':section_id'] = $this->section_id;
+      break;
+    }
 
     $criteria->compare('t.id', '<>'.self::ROOT_ID);
     $criteria->compare('parent', '='.self::ROOT_ID);
-    $criteria->order = 't.position';
-
-    $condition = '(assignment.section_id IS NULL OR assignment.section_id = 0)';
-
-    if( $this->section_id )
-    {
-      $condition .= ' OR assignment.section_id = :section_id';
-      $criteria->params[':section_id'] = $this->section_id;
-    }
-
-    $criteria->addCondition($condition);
+    if( !empty($assignmentCondition) )
+      $criteria->addCondition($assignmentCondition);
 
     return $this->buildParams($criteria);
+  }
+
+  public function getSectionName()
+  {
+    if( $this->isGroup() )
+    {
+      if( isset($this->assignment) && isset($this->assignment->section) )
+        return $this->assignment->section->name;
+
+      if( empty($this->assignment) )
+        return '[Общий]';
+    }
+
+    return '';
   }
 
   public function getRelatedItems()
@@ -194,7 +218,7 @@ class BProductParamName extends BActiveRecord
    *
    * @return CArrayDataProvider
    */
-  protected function buildParams(CDbCriteria $criteria)
+  public function buildParams(CDbCriteria $criteria)
   {
     $params = array();
     $groups = $this->findAll($criteria);

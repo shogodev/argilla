@@ -27,6 +27,12 @@ class ParametersWidget extends CWidget
 
     if( is_null($this->form) )
       throw new CHttpException(500, 'Укажите свойство form для виджета '.__CLASS__);
+
+    if( $this->model->asa('modificationBehavior') && $this->model->isModification())
+    {
+      $parent = $this->model->getParentModel();
+      $this->model->section_id = $parent->section_id;
+    }
   }
 
   public function run()

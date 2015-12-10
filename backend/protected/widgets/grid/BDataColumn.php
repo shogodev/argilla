@@ -56,9 +56,28 @@ class BDataColumn extends TbDataColumn
       echo CHtml::activeLabel($this->grid->filter, $this->name, array('id' => false, 'label' => $this->header));
 
       if( is_array($this->filter) )
-        echo CHtml::activeDropDownList($this->grid->filter, $this->name, $this->filter, array('id' => false, 'prompt' => ''));
+      {
+        $htmlOptions = CMap::mergeArray(
+          array(
+            'id' => false,
+            'prompt' => ''
+          ),
+          $this->htmlOptions
+        );
+
+        echo CHtml::activeDropDownList($this->grid->filter, $this->name, $this->filter, $htmlOptions);
+      }
       else if( $this->filter === null )
-        echo CHtml::activeTextField($this->grid->filter, $this->name, array('id' => false));
+      {
+        $htmlOptions = CMap::mergeArray(
+          array(
+            'id' => false,
+          ),
+          $this->htmlOptions
+        );
+
+        echo CHtml::activeTextField($this->grid->filter, $this->name, $htmlOptions);
+      }
     }
   }
 }

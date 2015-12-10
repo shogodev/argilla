@@ -38,16 +38,17 @@ class BProductParam extends BActiveRecord
 
   public function getParameters(BProduct $product)
   {
-    // устанавливаем привязку параметров
-    $paramNames = new BProductParamName();
-
+    $paramName = new BProductParamName();
     $criteria = new CDbCriteria();
+    $criteria->order = 't.position';
+    $criteria->with = array('assignment', 'variants');
     $criteria->addInCondition('assignment.section_id', is_array($product->section_id) ? $product->section_id : array($product->section_id));
+    $criteria->addCondition('(assignment.section_id IS NULL OR assignment.section_id = 0)', 'OR');
+    $criteria->compare('t.id', '<>'.BProductParamName::ROOT_ID);
+    $criteria->compare('parent', BProductParamName::ROOT_ID);
 
     $parameters = array();
-    $names = $paramNames->search($criteria);
-
-    foreach($names->data as $name)
+    foreach($paramName->buildParams($criteria)->getData() as $name)
     {
       // todo: переписать на dao и вынести из цикла
       $params = self::model()->findAllByAttributes(array('param_id' => $name->id, 'product_id' => $product->id));

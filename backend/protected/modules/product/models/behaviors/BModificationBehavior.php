@@ -12,7 +12,8 @@
  * Class BModificationBehavior
  *
  * @property BProduct $owner
- * @property BProduct[] modifications
+ * @property BProduct[] $modifications
+ * @property BProduct|null $parentModel
  */
 class BModificationBehavior extends SActiveRecordBehavior
 {
@@ -31,6 +32,15 @@ class BModificationBehavior extends SActiveRecordBehavior
 
     $this->owner->attachEventHandler('onBeforeSearch', array($this, 'beforeSearch'));
     $this->attachEventHandler('onAfterRenderTableRow', array($this, 'onAfterRenderTableRow'));
+
+    //to do: добавить параметр блокирующей отключение одного значения
+    $this->owner->attachBehavior('radioToggleBehavior', array(
+      'class' => 'RadioToggleBehavior',
+      'conditionAttribute' => 'parent',
+      'toggleAttribute' => 'default_modification'
+    ));
+
+    $this->owner->enableBehavior('radioToggleBehavior');
   }
 
   public function beforeSearch(CEvent $event)
@@ -47,16 +57,36 @@ class BModificationBehavior extends SActiveRecordBehavior
 
   public function beforeValidate($event)
   {
-    if( !empty($this->owner->parent) )
+    if( $this->isModification() )
       $this->owner->scenario = self::SCENARIO_MODIFICATION;
 
     return parent::beforeValidate($event);
+  }
+
+  /**
+   * @return BProduct
+   */
+  public function getParentModel()
+  {
+    return $this->owner->parentModel;
+  }
+
+  /**
+   * @return bool
+   */
+  public function isModification()
+  {
+    return !empty($this->owner->parent);
   }
 
   private function attachRelations()
   {
     $this->owner->getMetaData()->addRelation('modifications', array(
       BActiveRecord::HAS_MANY, 'BProduct', array('parent' => 'id'),
+    ));
+
+    $this->owner->getMetaData()->addRelation('parentModel', array(
+      BActiveRecord::HAS_ONE, 'BProduct', array('id' => 'parent'),
     ));
   }
 
