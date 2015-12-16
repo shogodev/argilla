@@ -49,7 +49,7 @@ class ActiveImageBehavior extends SBehavior
     if( $image = Arr::reset($this->getImages($type)) )
       return $image;
 
-    return new ProductImage;
+    return Yii::createComponent(['class' => $this->imageClass]);
   }
 
   /**
