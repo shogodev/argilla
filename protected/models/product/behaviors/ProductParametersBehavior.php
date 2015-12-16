@@ -62,9 +62,6 @@ class ProductParametersBehavior extends CModelBehavior
    */
   public function setParameters($parameters = array())
   {
-    if( !isset($this->parameters) )
-      $this->parameters = array();
-
     $this->parameters = $parameters;
     return $this;
   }
