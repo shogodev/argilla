@@ -17,14 +17,11 @@ services:
 
 install:
   - cd .. && git clone https://github.com/yiisoft/yii.git yii
-  - cd yii && git checkout 2e702fa83a64b6417addebf485ab6af9dabc1dfe
+  - cd yii && git checkout 1.1.17
   - cd ../argilla
   - wget http://www.phing.info/get/phing-latest.phar
   - chmod +x phing-latest.phar
   - sudo mv phing-latest.phar phing.phar
-#  - wget https://phar.phpunit.de/phpunit-3.7.38.phar
-#  - chmod +x phpunit-3.7.38.phar
-#  - sudo mv phpunit-3.7.38.phar phpunit.phar
 
 before_script:
   - mysql -e "GRANT ALL PRIVILEGES ON *.* TO 'prog'@'localhost' IDENTIFIED BY '123' WITH GRANT OPTION;" -uroot
