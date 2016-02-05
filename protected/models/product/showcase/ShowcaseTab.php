@@ -117,4 +117,10 @@ class ShowcaseTab extends CComponent
   {
     return $this->customData;
   }
+
+  public function __sleep()
+  {
+    unset($this->dataProvider);
+    return array_keys((array)$this);
+  }
 }

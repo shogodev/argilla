@@ -223,6 +223,8 @@ class TreeviewActionsWidget extends CWidget
         var dropId = target.attr('id').match(/node_(\d+)/)[1];
         var parentDragId = parentSelector.attr('id').match(/node_(\d+)/)[1];
 
+        draggableItem.height('auto');
+
         if( parentDragId == dropId )
           return false;
 
