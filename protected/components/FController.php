@@ -18,6 +18,7 @@
  *
  * @property FBasket|FCollectionElement[] $basket
  * @property FFavorite|FCollectionElement[] $favorite
+ * @property FCompare|FCollectionElement[] $compare
  * @property FForm $fastOrderForm
  * @property FForm $callbackForm
  * @property FForm $loginPopupForm
@@ -35,6 +36,8 @@ class FController extends CController
    * @var bool
    */
   protected $rememberThisPage;
+
+  protected $canonicalUrl;
 
   public function behaviors()
   {
@@ -144,24 +147,34 @@ class FController extends CController
    */
   public function getCanonicalUrl()
   {
-    $request = Yii::app()->request;
-    $path = Utils::normalizeUrl('/'.CHtml::encode($request->getPathInfo()));
+    if( is_null($this->canonicalUrl) )
+    {
+      $request = Yii::app()->request;
+      $path = Utils::normalizeUrl('/'.CHtml::encode($request->getPathInfo()));
 
-     if( !Yii::app()->errorHandler->error && $path )
-       $path = Yii::app()->urlManager->createPath($path);
+       if( !Yii::app()->errorHandler->error && $path )
+         $path = Yii::app()->urlManager->createPath($path);
 
-    $url = array(
-      'host' => $request->getHostInfo(),
-      'path' => $path,
-      'query' => array(),
-    );
+      $url = array(
+        'host' => $request->getHostInfo(),
+        'path' => $path,
+        'query' => array(),
+      );
 
-    if( Yii::app()->urlManager->rule )
-      foreach(Yii::app()->urlManager->rule->canonicalParams as $param)
-        if( $value = $request->getParam($param) )
-          $url['query'][$param] = $value;
+      if( Yii::app()->urlManager->rule )
+        foreach(Yii::app()->urlManager->rule->canonicalParams as $param)
+          if( $value = $request->getParam($param) )
+            $url['query'][$param] = $value;
 
-    return Utils::buildUrl($url);
+      $this->canonicalUrl = Utils::buildUrl($url);
+    }
+
+    return $this->canonicalUrl;
+  }
+
+  public function setCanonicalUrl($canonicalUrl)
+  {
+    $this->canonicalUrl = $canonicalUrl;
   }
 
   /**

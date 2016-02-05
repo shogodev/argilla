@@ -135,6 +135,8 @@ class ProductController extends FController
 
   private function renderPage(array $models, CDbCriteria $criteria)
   {
+    Yii::app()->meta->addModels($models);
+
     $productList = new ProductList($criteria, $this->getSorting(), true, $this->getFilter());
     $dataProvider = $productList->getDataProvider();
 

@@ -69,10 +69,12 @@ class ProductTextBehavior extends SBehavior
     {
       return $text;
     }
-    else
+    else if( $model->canGetProperty($attribute) )
     {
       return $model->$attribute;
     }
+
+    return '';
   }
 }
 

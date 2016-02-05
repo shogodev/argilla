@@ -182,7 +182,7 @@ class FBasket extends FCollectionUI
     $this->registerScript("$('body').on('click', '.{$this->classFastOrderShowButton}', function(e){
       e.preventDefault();
       var templates = ".CJSON::encode($this->templates).";
-      var element = $(this).clone();
+      var element = $(this).clone().data($(this).data());
       var data = element.data();
 
       if( data != undefined && data['formData'] != undefined )

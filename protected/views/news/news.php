@@ -12,10 +12,6 @@
   </div>
 
   <article>
-    <?php if( $model->image ) { ?>
-      <img src="<?php echo $model->image?>" alt="" width="110" class="img-polaroid text-left"/>
-    <?php } ?>
-
     <?php if( $model->section_id == NewsSection::ID_NEWS ) {?>
       <time datetime="<?php echo $model->getFormatDate('Y-m-d')?>"><?php echo $model->getFormatDate()?></time>
     <?php }?>

@@ -31,7 +31,7 @@ class ProductTest extends CDbTestCase
     $parameters2 = $product2->getParameters(null, $groupCriteria);
 
     $this->assertCount(2, $parameters1);
-    $this->assertCount(1, $parameters2);
+    $this->assertCount(0, $parameters2);
 
     $this->assertEquals('value17', $parameters1[0]->value);
     $this->assertEquals('variant 14, variant 15', $parameters1[1]->value);

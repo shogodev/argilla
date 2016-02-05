@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * Команда миграции:
+ * protected/yiic migrate up --migrationPath=backend.modules.product.modules.color.migrations
+ */
 class m141216_085329_color_tables extends CDbMigration
 {
 	public function up()

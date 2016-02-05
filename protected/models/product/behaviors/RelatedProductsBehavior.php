@@ -41,7 +41,8 @@ class RelatedProductsBehavior extends AssociationBehavior
     }
 
     $criteria = new CDbCriteria();
-    $criteria->addInCondition('t.id', array_slice($relatedProductIds, 0, $limit));
+    $criteria->addInCondition('t.id', $relatedProductIds);
+    $criteria->limit = $limit;
 
     return $this->getProductList($criteria)->getDataProvider();
   }
@@ -81,6 +82,7 @@ class RelatedProductsBehavior extends AssociationBehavior
   {
     $criteria->compare('t.dump', '>'.ProductDump::NOT_AVAILABLE);
     $criteria->compare('t.id', '<>'.$this->owner->id);
+    $criteria->order = 't.dump DESC';
 
     return new ProductList($criteria, null, false);
   }
@@ -105,6 +107,7 @@ class RelatedProductsBehavior extends AssociationBehavior
     }
     catch(CException $exception)
     {
+
     }
 
     return $relatedProducts;

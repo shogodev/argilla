@@ -1,5 +1,8 @@
 <?php
-
+/**
+ * Команда миграции:
+ * protected/yiic migrate up --migrationPath=backend.modules.product.modules.feature.migrations
+ */
 class m141106_085729_create_product_feature_table extends CDbMigration
 {
 	public function up()

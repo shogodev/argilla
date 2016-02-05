@@ -60,6 +60,11 @@ class Filter extends CComponent
   private $defaultSelectedItems = array();
 
   /**
+   * @var array
+   */
+  private $hideElements = array();
+
+  /**
    * @param string $filterKey - уникальный ключ фильтра
    * @param bool $useSession - сохраняет состояние в сессию, также считывает оттуда
    */
@@ -241,6 +246,14 @@ class Filter extends CComponent
   }
 
   /**
+   * @param array $hideElements ключи или идентификаторы фильтра которые не будут возвращатся getElements
+   */
+  public function setHideElements(array $hideElements)
+  {
+    $this->hideElements = $hideElements;
+  }
+
+  /**
    * @param boolean $onlyMultiItems default true
    * @param array $excludeIds
    *
@@ -248,6 +261,8 @@ class Filter extends CComponent
    */
   public function getElements($onlyMultiItems = false, array $excludeIds = array())
   {
+    $excludeIds = CMap::mergeArray($excludeIds, $this->hideElements);
+
     return array_filter($this->elements, function(FilterElement $element) use ($excludeIds, $onlyMultiItems) {
       return !(in_array($element->id, $excludeIds) || in_array($element->key, $excludeIds)) && count($element->getItems()) > ($onlyMultiItems ? 1 : 0);
     });
@@ -257,7 +272,7 @@ class Filter extends CComponent
   {
     foreach($this->elements as $element)
     {
-      if( $element->key == $key )
+      if( $element->key == $key && count($element->getItems()) > 1 )
         return $element;
     }
 

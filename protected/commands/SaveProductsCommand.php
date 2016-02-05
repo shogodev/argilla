@@ -1,7 +1,4 @@
 <?php
-mb_internal_encoding("UTF-8");
-mb_http_output("UTF-8" );
-
 Yii::import('backend.modules.product.models.*');
 Yii::import('backend.models.behaviors.*');
 Yii::import('backend.components.*');
@@ -21,12 +18,18 @@ class SaveProductsCommand extends CConsoleCommand
     $criteria = new CDbCriteria();
     $criteria->select = 'id';
     $command = Yii::app()->db->schema->commandBuilder->createFindCommand(BProduct::model()->tableName(), $criteria);
+    $productIds = $command->queryColumn();
 
-    foreach($command->queryColumn() as $productId)
+    $progress = new ConsoleProgressBar(count($productIds));
+
+    $progress->start();
+    foreach($productIds as $productId)
     {
       $product = BProduct::model()->findByPk($productId);
       $product->save();
       $product->detachBehaviors();
+      $progress->advance();
     }
+    $progress->finish();
   }
 }
