@@ -16,21 +16,13 @@ class ImageAggregator extends AbstractAggregator
 
   public $replace = array();
 
-  public function init()
-  {
-    if( !is_numeric($this->groupByColumn) )
-      $this->groupByColumn = ImportHelper::lettersToNumber($this->groupByColumn);
-
-    $this->convertColumnIndexes($this->imagesColumns);
-  }
-
-  public function process($data, $rowIndex, $file)
+  public function process($data, $rowIndex, $file, $groupIndex)
   {
     foreach($this->imagesColumns as $column)
     {
       if( !empty($data[$column]) )
       {
-        $this->data[$data[$this->groupByColumn]][$column] = strtr($data[$column], $this->replace);
+        $this->data[$groupIndex][$column] = strtr($data[$column], $this->replace);
       }
     }
   }

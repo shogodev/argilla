@@ -18,7 +18,7 @@ class ProductsImportCommand extends AbstractImportCommand
     {
       $productWriter = new ImportProductWriter($this->logger);
       $productWriter->clear = true;
-      $productWriter->dstTables = array(
+      $productWriter->clearTables = array(
         '{{product}}',
         '{{product_assignment}}',
         '{{product_param}}',
@@ -28,35 +28,45 @@ class ProductsImportCommand extends AbstractImportCommand
         '{{product_type}}',
         '{{product_category}}',
         '{{product_collection}}',
-        '{{product_img}}'
+        '{{product_param_name}}',
       );
-
-      $productWriter->assignmentTree = array('type_id' => 'section_id');
-      $productWriter->assignment = array('section_id', 'type_id', 'category_id');
+      $productWriter->uniqueAttribute = 'external_id';
+      $productWriter->assignmentTree = array('type_id' => 'section_id', 'collection_id' => 'type_id');
+      $productWriter->assignment = array('section_id', 'type_id', 'collection_id', 'category_id');
 
       $productAggregator = new ProductAggregator($productWriter);
-      $productAggregator->groupByColumn = 'u'; // url
-      $productAggregator->product = array(
-        'name' => 'a',
-        'articul' => 'c',
-        'price' => 'e',
-        'url' => 'u',
-        'notice' => 'k',
-        'content' => 'l',
-        'visible' => '',
-        'dump' => '',
-      );
-      $productAggregator->assignment = array(
-        'section_id' => 'o',
-        'type_id' => 'ad',
-        'category_id' => 'x',
-        //'collection_id' => 'ad'
-      );
 
-      $productAggregator->parameter = $productAggregator->parameter = ImportHelper::getLettersRange('ae-ef');
+      $productAggregator->assignmentDelimiter = '@';
+      $productAggregator->parameterVariantsDelimiter = '@';
+      $productAggregator->collectItemBufferSize = null;
+
+      $productAggregator->groupByColumn = ImportHelper::lettersToNumber('f');
+      $productAggregator->product = ImportHelper::convertColumnIndexes(array(
+        'name' => 'g',
+        'articul' => 'i',
+        'price' => 'k',
+        'url' => 'w',
+        'notice' => 'q',
+        'content' => 'r',
+        'visible' => 't',
+        'dump' => 'l',
+        'external_id' => 'p',
+        'model' => 'f'
+      ));
+      $productAggregator->basketParameter = array(ImportHelper::lettersToNumber('h'));
+      $productAggregator->assignment = ImportHelper::convertColumnIndexes(array(
+        'section_id' => 'b',
+        'type_id' => 'c',
+        'collection_id' => 'd',
+        'category_id' => 'e',
+      ));
+      $productAggregator->parameter = ImportHelper::convertColumnIndexes(ImportHelper::getLettersRange('z-en'));
+      $productAggregator->parameterCommon = ImportHelper::convertColumnIndexes(ImportHelper::getLettersRange('z-ac'));
 
       $csvReader = new ImportCsvReader($this->logger, $productAggregator);
-      $csvReader->csvDelimiter = ';';
+      $csvReader->csvDelimiter = ',';
+      $csvReader->headerRowIndex = 2;
+      $csvReader->skipTopRowAmount = 2;
       $csvReader->start();
       $csvReader->processFiles(ImportHelper::getFiles('f/prices'));
       $csvReader->finish();

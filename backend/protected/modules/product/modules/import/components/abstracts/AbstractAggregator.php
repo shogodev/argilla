@@ -7,6 +7,13 @@
  */
 abstract class AbstractAggregator
 {
+  public $groupByColumn;
+
+  /**
+   * @var integer|null $collectItemBufferSize чилсо строк обработанных перет записью, если null то сначало все соберается, потом пишется
+   */
+  public $collectItemBufferSize;
+
   /**
    * @var array
    */
@@ -19,26 +26,62 @@ abstract class AbstractAggregator
 
   protected $header;
 
+  private $lastGroupIndex;
+
+  private $innerIndexCounter;
+
+  private $itemBufferCounter;
+
   public function __construct(AbstractImportWriter $writer)
   {
     $this->writer = $writer;
   }
 
-  abstract public function process($data, $rowIndex, $file);
+  abstract public function process($data, $rowIndex, $file, $groupIndex);
 
   public function init()
   {
-
+    $this->clearData();
+    $this->writer->init();
   }
 
   public function collect($data, $rowIndex, $file)
   {
-    $this->process($data, $rowIndex, $file);
+    $groupIndex = !empty($this->groupByColumn) || $this->groupByColumn === 0 ? $data[$this->groupByColumn] : $this->innerIndexCounter++;
+
+    $this->itemBufferCounter++;
+
+    if( $this->collectItemBufferSize )
+    {
+      if( $this->lastGroupIndex != $groupIndex && $this->itemBufferCounter >= $this->collectItemBufferSize )
+      {
+        $this->writer->writePartial($this->data);
+        $this->clearData();
+        $this->itemBufferCounter = 0;
+      }
+
+      if( !empty($this->groupByColumn) )
+      {
+        $this->lastGroupIndex = $groupIndex;
+      }
+    }
+
+    $this->process($data, $rowIndex, $file, $groupIndex);
   }
 
   public function end()
   {
-    $this->writer->write($this->data);
+    if( is_null($this->collectItemBufferSize) )
+    {
+      $this->writer->writeAll($this->data);
+    }
+    else
+    {
+      $this->writer->writePartial($this->data);
+    }
+
+    $this->clearData();
+    $this->writer->showStatistics();
   }
 
   public function setHeader($header)
@@ -46,14 +89,8 @@ abstract class AbstractAggregator
     $this->header = $header;
   }
 
-  protected function convertColumnIndexes(&$array)
+  protected function clearData()
   {
-    foreach($array as $key => $columnIndex)
-    {
-      if( !empty($columnIndex) && !is_numeric($columnIndex) )
-        $array[$key] = ImportHelper::lettersToNumber($columnIndex);
-      else
-        unset($array[$key]);
-    }
+    $this->data = array();
   }
 }

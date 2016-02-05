@@ -15,7 +15,7 @@ class ImportCsvReader
   public $headerRowIndex = 1;
 
   /**
-   * @var int $skipTopRowAmount - количество попушенних строк с насала файла
+   * @var int $skipTopRowAmount - количество попушенних строк с начала файла
    */
   public $skipTopRowAmount = 1;
 
@@ -37,6 +37,15 @@ class ImportCsvReader
    */
   private $importAggregator;
 
+  private $timeBegin;
+
+  private $currentFile;
+
+  /**
+   * @var FileBackup $fileBackup
+   */
+  private $fileBackup;
+
   public function __construct(ConsoleFileLogger $logger, AbstractAggregator $importAggregator)
   {
     $this->logger = $logger;
@@ -46,6 +55,7 @@ class ImportCsvReader
 
   public function start()
   {
+    $this->timeBegin = microtime(true);
     $this->logger->log('Начало импорта');
   }
 
@@ -69,7 +79,13 @@ class ImportCsvReader
 
   public function finish()
   {
-    $this->logger->log('Импорт завершен');
+    $time = microtime(true) - $this->timeBegin;
+    $this->logger->log('Импорт завершен. Время выполнения '.sprintf("%.1f", $time).' с.');
+  }
+
+  public function setBackupConfig($newPath)
+  {
+    $this->fileBackup = new FileBackup(ImportHelper::wrapInSlashEnd($newPath));
   }
 
   protected function processFile($file)
@@ -77,11 +93,11 @@ class ImportCsvReader
     if( !($handle = @fopen($file, 'r')) )
       throw new WarningException('Не удальсь открыть файл '.$file);
 
+    $this->currentFile = $file;
+
     $this->currentFileName = basename($file);
     $progress = new ConsoleProgressBar($this->countFileLines($file));
     $this->processData($handle, $progress);
-
-    fclose($handle);
   }
 
   protected function processData($handle, ConsoleProgressBar $progress)
@@ -96,7 +112,7 @@ class ImportCsvReader
       $progress->setValueMap('memory', Yii::app()->format->formatSize(memory_get_usage()));
       $progress->advance();
 
-      if( $this->currentRow == $this->headerRowIndex )
+      if( !is_null($this->headerRowIndex) && $this->currentRow == $this->headerRowIndex )
       {
         $this->header = $this->formatItem($item);
         $this->importAggregator->setHeader($this->header);
@@ -108,6 +124,9 @@ class ImportCsvReader
       $this->importAggregator->collect($this->formatItem($item), $this->currentRow, $this->currentFileName);
     }
     $progress->finish();
+
+    $this->onEndReadFile($handle);
+
     $this->importAggregator->end();
   }
 
@@ -129,5 +148,14 @@ class ImportCsvReader
     $result = trim(exec("wc -l '$file'"));
 
     return intval(substr($result, 0, strpos($result, ' ')));
+  }
+
+  protected function onEndReadFile($handle)
+  {
+    if( $handle )
+      fclose($handle);
+
+    if( $this->fileBackup )
+      $this->fileBackup->makeBackup($this->currentFile);
   }
 }

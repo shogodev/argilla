@@ -27,9 +27,7 @@ class ImportProductWriter extends AbstractImportWriter
 
   public $assignment = array();
 
-  public $clear = false;
-
-  public $dstTables = array(
+  public $clearTables = array(
     '{{product}}',
     '{{product_assignment}}',
     '{{product_param}}',
@@ -42,7 +40,10 @@ class ImportProductWriter extends AbstractImportWriter
     '{{product_collection}}',
   );
 
-  public $parameterVariantsDelimiter = ',';
+  /**
+   * @var int $defaultCommonParameterGroup - id группы общих параметров
+   */
+  public $defaultCommonParameterGroup = 2;
 
   public $importScenario = 'import';
 
@@ -62,43 +63,75 @@ class ImportProductWriter extends AbstractImportWriter
 
   private $urlCache;
 
-  public function write(array $data, $uniqueIndex = null)
+  private $parameterGroupCache = array();
+
+  public function init()
   {
-    $itemsAmount = count($data);
-    if( $itemsAmount == 0 )
+    parent::init();
+
+    $this->allProductsAmount = 0;
+
+    $this->successWriteProductsAmount = 0;
+
+    $this->skipProductsAmount = 0;
+  }
+
+  public function writeAll(array $data)
+  {
+    if( empty($data) )
       return;
 
+    $itemsAmount = count($data);
     $this->allProductsAmount = $itemsAmount;
-
-    if( $this->clear && !empty($this->dstTables) )
-    {
-      $this->logger->log('Очистка БД');
-      $this->clearAll();
-      $this->clear = false;
-    }
 
     $progress = new ConsoleProgressBar($itemsAmount);
     $this->logger->log('Начало записи в БД');
     $progress->start();
     foreach($data as $item)
     {
-      try
-      {
-        $this->writeItem($item);
-      }
-      catch(WarningException $e)
-      {
-        $this->logger->warning($e->getMessage());
-      }
+      $this->safeWriteItem($item);
       $progress->setValueMap('memory', Yii::app()->format->formatSize(memory_get_usage()));
       $progress->advance();
     }
     $progress->finish();
+  }
+
+  public function writePartial(array $data)
+  {
+    if( empty($data) )
+      return;
+
+    foreach($data as $item)
+    {
+      $this->allProductsAmount++;
+      $this->safeWriteItem($item);
+    }
+  }
+
+  public function showStatistics()
+  {
     $this->logger->log('Записано '.$this->successWriteProductsAmount.' продуктов из '.$this->allProductsAmount.' (пропущено '.$this->skipProductsAmount.')');
     $this->logger->log('Записи в БД завершена');
   }
 
-  private function writeItem(array $item)
+  protected function safeWriteItem($item)
+  {
+    try
+    {
+      $this->write($item);
+    }
+    catch(WarningException $e)
+    {
+      $itemId = '';
+
+      if( !empty($item['uniqueIndex']) && !empty($item['uniqueAttribute']) )
+        $itemId = ' '.$item['uniqueAttribute'].'='.$item['uniqueIndex'];
+
+      $this->logger->warning($e->getMessage().$itemId);
+    }
+  }
+
+  protected function write(array $item)
   {
     /**
      * @var BProduct $product
@@ -111,6 +144,7 @@ class ImportProductWriter extends AbstractImportWriter
     if( $foundProduct = $product->findByAttributes(array($item['uniqueAttribute'] => $item['uniqueIndex'])) )
     {
       $foundProduct->scenario = !empty($product->parent) ? $this->importModificationScenario : $this->importScenario;
+      $foundProduct->detachBehaviors(); // детачим поведения подключенные в populateRecord
 
       $this->skipProductsAmount++;
 
@@ -122,28 +156,63 @@ class ImportProductWriter extends AbstractImportWriter
     $product->url = $this->createUniqueUrl($product->url);
     $product->visible = 1;
 
-    foreach($item['assignment'] as $attribute => $value)
-    {
-      $modelName = BProductStructure::getModelName($attribute);
-      $setAttributes = isset($this->assignmentTree[$attribute]) ? array('parent_id' => $product->{$this->assignmentTree[$attribute]}) : array();
-      $associationId = $this->getModel($modelName, $value, $setAttributes);
-      $this->setAttribute($product, $attribute, $associationId);
-    }
+    $sectionModel = $this->prepareAssignmentAndGetSectionModel($product, $item);
 
     if( !$product->save() )
       throw new ImportModelValidateException($product, 'Не удалось создать продукт (строка '.$item['rowIndex'].' файл '.$item['file'].')');
 
-    $this->successWriteProductsAmount++;
-
-    $this->saveModifications($product, $item['modification']);
+    $this->saveModifications($product, $item['modification'], $sectionModel);
 
     if( !empty($this->assignment) )
-      BProductAssignment::model()->saveAssignments($product, Arr::extract($product, $this->assignment));
+    {
+      BProductAssignment::model()->saveAssignments($product, Arr::extract($product, $this->assignment, array()));
+    }
 
-    $this->saveParameters($product, $item['parameter']);
+    $this->saveParameters($product, $item['parameter'], $sectionModel);
+
+    if( !empty($item['basketParameter']) )
+      $this->saveParameters($product, $item['basketParameter'], $sectionModel);
+
+    $this->successWriteProductsAmount++;
   }
 
-  protected function saveModifications($parentProduct, $modifications = array())
+  protected function prepareAssignmentAndGetSectionModel(&$product, array $item)
+  {
+    $sectionModel = null;
+    foreach($item['assignment'] as $attribute => $assignment)
+    {
+      $modelName = BProductStructure::getModelName($attribute);
+      $setAttributes = isset($this->assignmentTree[$attribute]) ? array('parent_id' => $product->{$this->assignmentTree[$attribute]}) : array();
+
+      $values = !is_array($assignment) ? array($assignment) : $assignment;
+
+      $associationModels = array();
+      foreach($values as $value)
+      {
+        if( $associationModel = $this->getModel($modelName, $value, $setAttributes) )
+        {
+          $associationModels[$value] = $associationModel;
+          if( $associationModel instanceof BProductSection )
+            $sectionModel = $associationModel;
+        }
+      }
+
+      if( count($associationModels) == 0 )
+        $attributeValue = null;
+      else if( count($associationModels) == 1 )
+        $attributeValue = reset($associationModels)->id;
+      else
+      {
+        $attributeValue = array_keys(CHtml::listData($associationModels, 'id', 'id'));
+      }
+
+      $this->setAttribute($product, $attribute, $attributeValue);
+    }
+
+    return $sectionModel;
+  }
+
+  protected function saveModifications($parentProduct, $modifications = array(), $sectionModel)
   {
     foreach($modifications as $item)
     {
@@ -158,6 +227,8 @@ class ImportProductWriter extends AbstractImportWriter
 
       if( !$product->save() )
         throw new ImportModelValidateException($product, 'Не удалось создать модификацию product_id='.$parentProduct->id);
+
+      $this->saveParameters($product, $item['parameter'], $sectionModel);
     }
   }
 
@@ -166,13 +237,13 @@ class ImportProductWriter extends AbstractImportWriter
    * @param string $name
    * @param array $attributes
    *
-   * @return int
+   * @return BActiveRecord
    * @throws ImportModelValidateException
    */
   private function getModel($modelName, $name, array $attributes = array())
   {
     if( empty($name) )
-      return 0;
+      return null;
 
     /**
      * @var BActiveRecord $model
@@ -198,7 +269,7 @@ class ImportProductWriter extends AbstractImportWriter
       $this->modelsCache[$modelName.$name] = $model;
     }
 
-    return $model->id;
+    return $model;
   }
 
   private function setAttribute(BActiveRecord $model, $attribute, $value)
@@ -212,72 +283,64 @@ class ImportProductWriter extends AbstractImportWriter
     }
   }
 
-  private function saveParameters(BProduct $product, $data)
+  private function saveParameters(BProduct $product, $data, $sectionModel = null)
   {
-    foreach($data as $name => $value)
+    foreach($data as $attributes)
     {
-      if( $value == '' || (is_array($value) && empty($value)) )
+      if( empty($attributes['name']) || empty($attributes['value']) )
         continue;
 
-      $parameterName = $this->getParameterName($name);
-
-      if( !is_array($value) )
+      try
       {
-        $value = strpos($value, $this->parameterVariantsDelimiter) !== false ? explode($this->parameterVariantsDelimiter, $value) : array($value);
+        $parameterGroupId = $this->getParameterGroupId($sectionModel, Arr::cut($attributes, 'common'));
+        $parameterName = $this->getParameterName(Arr::cut($attributes, 'name'), Arr::cut($attributes, 'type'), $parameterGroupId, Arr::cut($attributes, 'key'));
       }
-      $value = Arr::trim($value);
+      catch(WarningException $e)
+      {
+        throw new WarningException($e->getMessage().' product_id = '.$product->id);
+      }
 
-      foreach($value as $variantName)
+      foreach($this->prepareVariantValues(Arr::cut($attributes, 'value')) as $variant)
       {
         try
         {
-          $this->saveVariant($variantName, $parameterName, $product);
+          $this->saveProductParameter($variant, $attributes, $parameterName, $product);
         }
         catch(WarningException $e)
         {
-          $this->logger->warning($e->getMessage());
+          $this->logger->warning($e->getMessage().' product_id = '.$product->id);
         }
       }
     }
   }
 
-  private function getParameterName($name)
+  private function prepareVariantValues($data)
   {
-    if( !$parameter = Arr::get($this->parameterNamesCache, $name, BProductParamName::model()->findByAttributes(array('name' => $name))) )
+    if( $data == '' || (is_array($data) && empty($data)) )
+      return array();
+
+    if( !is_array($data) )
     {
-      $parameter = new BProductParamName();
-      $parameter->parent = 2;
-      $parameter->name = $name;
-      $parameter->type = 'checkbox';
-
-      if( !$parameter->save($parameter) )
-      {
-        throw new WarningException('Ошибка при создании параметра '.$name);
-      }
-
-      $this->parameterNamesCache[$name] = $parameter;
+      $values = array($data);
+    }
+    else
+    {
+      $values = $data;
     }
 
-    return $parameter;
+    return Arr::trim($values);
   }
 
-  /**
-   * @param $variantName
-   * @param BProductParamName $parameterName
-   * @param BProduct $product
-   *
-   * @throws ImportModelValidateException
-   * @throws WarningException
-   */
-  private function saveVariant($variantName, BProductParamName $parameterName, BProduct $product)
+  private function saveProductParameter($variantName, $attributes, BProductParamName $parameterName, BProduct $product)
   {
     $parameter = new BProductParam();
+    $parameter->setAttributes($attributes, false);
     $parameter->param_id = $parameterName->id;
     $parameter->product_id = $product->id;
 
     if( $parameterName->type === 'checkbox' )
     {
-      $parameter->variant_id = $this->getVariantId($parameterName->id, $variantName, $product->id);
+      $parameter->variant_id = $this->getVariantId($parameterName->id, $variantName);
     }
     else
     {
@@ -288,16 +351,105 @@ class ImportProductWriter extends AbstractImportWriter
     {
       if( !$parameter->save() )
       {
-        throw new ImportModelValidateException($parameter, 'Ошибка при создании параметра продукта id = '.$product->id);
+        throw new ImportModelValidateException($parameter, 'Ошибка при создании параметра продукта');
       }
     }
     catch(CDbException $e)
     {
-      throw new WarningException('Ошибка при создании параметра продукта id = '.$product->id.' '.$e->getMessage(), $e->getCode());
+      throw new WarningException('Ошибка при создании параметра parameter_id = '.$parameterName->id.' '.$e->getMessage(), $e->getCode());
     }
   }
 
-  private function getVariantId($paramId, $name, $productId)
+  /**
+   * @param $name
+   * @param string $type
+   * @param integer $parameterGroupId
+   * @param string $key
+   *
+   * @return mixed
+   * @throws WarningException
+   */
+  private function getParameterName($name, $type = 'checkbox', $parameterGroupId, $key = '')
+  {
+    $cashKey = mb_strtolower($name).$parameterGroupId;
+    $parameter = Arr::get($this->parameterNamesCache, $cashKey);
+    if( !$parameter )
+    {
+      $criteria = new CDbCriteria();
+      $criteria->compare('name', $name);
+      $criteria->compare('parent', '>'.BProductParamName::ROOT_ID);
+      $criteria->compare('parent', $parameterGroupId);
+      $parameter = BProductParamName::model()->find($criteria);
+    }
+
+    if( !$parameter )
+    {
+      $parameterName = new BProductParamName();
+      $parameterName->parent = $parameterGroupId;
+      $parameterName->name = $name;
+      $parameterName->type = $type;
+      $parameterName->key = $key;
+
+      if( !$parameterName->save() )
+      {
+        throw new WarningException('Ошибка при создании параметра '.$name);
+      }
+
+      $this->parameterNamesCache[$cashKey] = $parameterName;
+    }
+
+    return $this->parameterNamesCache[$cashKey];
+  }
+
+  /**
+   * @param BProductSection|null $sectionModel
+   * @param bool $common
+   *
+   * @return BProductParamName
+   * @throws WarningException
+   */
+  private function getParameterGroupId($sectionModel = null, $common = false)
+  {
+    if( $common )
+      return $this->defaultCommonParameterGroup;
+
+    if(  !($sectionModel instanceof BProductSection) )
+      return $this->defaultCommonParameterGroup;
+
+    if( !isset($this->parameterGroupCache[$sectionModel->id]) )
+    {
+      $parameterName = new BProductParamName();
+      $parameterName->parent = 1;
+      $parameterName->name = $sectionModel->name;
+
+      if( !$parameterName->save() )
+      {
+        throw new WarningException('Ошибка при создании группы параметров '.$parameterName->name);
+      }
+      $this->saveParameterAssignment($parameterName, array('section_id' => $sectionModel->id));
+
+      $this->parameterGroupCache[$sectionModel->id] = $parameterName;
+    }
+
+    return $this->parameterGroupCache[$sectionModel->id]->id;
+  }
+
+  private function saveParameterAssignment(BProductParamName $parameterName, array $attributes)
+  {
+    if( empty($attributes['section_id']) )
+      return;
+
+    $parameterAssignment = new BProductParamAssignment();
+    $parameterAssignment->setAttributes($attributes);
+    $parameterAssignment->param_id = $parameterName->id;
+
+    if( !$parameterAssignment->save() )
+    {
+      throw new WarningException('Ошибка при создании ParameterAssignment для парамера '.$parameterName->name);
+    }
+  }
+
+  private function getVariantId($paramId, $name)
   {
     if( !$variant = Arr::get($this->parameterVariantsCache, $paramId.$name, BProductParamVariant::model()->findByAttributes(array('param_id' => $paramId, 'name' => $name))) )
     {
@@ -305,32 +457,27 @@ class ImportProductWriter extends AbstractImportWriter
       $variant->param_id = $paramId;
       $variant->name = $name;
 
-      if( !$variant->save() )
-        throw new ImportModelValidateException($variant, 'Ошибка при создании варианта для параметра '.$name.' id = '.$paramId.' продукт id = '.$productId);
+      try
+      {
+        if( !$variant->save() )
+          throw new ImportModelValidateException($variant, 'Ошибка при создании варианта для параметра '.$name.' id = '.$paramId);
+      }
+      catch(CDbException $e)
+      {
+        if( strpos($e->getMessage(), 'CDbCommand failed to execute the SQL statement: SQLSTATE[23000]: Integrity constraint violation: 1062 Duplicate entry') !== false )
+        {
+          throw new WarningException('Дублирование варианта "'.$name.'"');
+        }
+        else
+        {
+          throw $e;
+        }
+      }
 
       $this->parameterVariantsCache[$paramId.$name] = $variant;
     }
 
     return $variant->id;
-  }
-
-  protected function clearAll()
-  {
-    foreach($this->dstTables as $table)
-    {
-      $command = Yii::app()->db->createCommand(Yii::app()->db->schema->truncateTable($table));
-      if( $command->execute() )
-        throw new WarningException("Не удаллсь очистить таблицу ".$table);
-
-      $this->logger->log('Таблица '.$table.' очищена');
-    }
-  }
-
-  protected function clearParameterNames()
-  {
-    $builder = new CDbCommandBuilder(Yii::app()->db->getSchema());
-    $builder->createSqlCommand("DELETE FROM `{{product_param_name}}` WHERE id > 2")->execute();
-    $builder->createSqlCommand("ALTER TABLE `{{product_param_name}}` AUTO_INCREMENT = 3")->execute();
   }
 
   protected function createUniqueUrl($url)

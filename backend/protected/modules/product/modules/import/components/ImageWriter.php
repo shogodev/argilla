@@ -10,13 +10,16 @@ Yii::import('frontend.share.helpers.*');
 Yii::import('backend.modules.product.modules.import.components.exceptions.*');
 Yii::import('backend.modules.product.modules.import.components.abstracts.AbstractImportWriter');
 
+/**
+ * Class ImageWriter
+ * @property string $sourcePath
+ * @property bool $replaceFile default false
+ */
 class ImageWriter extends AbstractImportWriter
 {
   public $previews = array();
 
-  public $defaultJpegQuality = 85;
-
-  public $uniqueAttribute = 'articul';
+  public $defaultJpegQuality = 90;
 
   /**
    * @var EPhpThumb
@@ -32,6 +35,10 @@ class ImageWriter extends AbstractImportWriter
 
   protected $basePath = 'f/product';
 
+  protected $sourcePath = 'src';
+
+  protected $replaceFile = false;
+
   /**
    * @var CDbCommandBuilder $commandBuilder
    */
@@ -41,7 +48,9 @@ class ImageWriter extends AbstractImportWriter
   {
     parent::__construct($logger);
 
-    $this->basePath = realpath(Yii::getPathOfAlias('frontend').'/../'.$this->basePath).'/';
+    $this->basePath = realpath(Yii::getPathOfAlias('frontend').'/..').ImportHelper::wrapInSlash($this->basePath);
+
+    $this->sourcePath = $this->basePath.ImportHelper::wrapInSlashEnd($this->sourcePath);
 
     $this->commandBuilder = Yii::app()->db->schema->commandBuilder;
 
@@ -55,7 +64,7 @@ class ImageWriter extends AbstractImportWriter
     $this->phpThumb->init();
   }
 
-  public function write(array $data)
+  public function writeAll(array $data)
   {
     $itemsAmount = count($data);
     if( $itemsAmount == 0 )
@@ -66,30 +75,57 @@ class ImageWriter extends AbstractImportWriter
     $progress->start();
     foreach($data as $uniqueAttributeValue => $images)
     {
-      try
-      {
-        $this->writeItem($uniqueAttributeValue, $images);
-      }
-      catch(WarningException $e)
-      {
-        $this->logger->warning($e->getMessage());
-      }
+      $this->safeWriteItem($uniqueAttributeValue, $images);
       $progress->setValueMap('memory', Yii::app()->format->formatSize(memory_get_usage()));
       $progress->advance();
     }
     $progress->finish();
-    //$this->logger->log('Записано '.$this->successWriteProductsAmount.' продуктов из '.$this->allProductsAmount.' (пропущено '.$this->skipProductsAmount.')');
     $this->logger->log('Обработка файлов завершена');
   }
 
-  protected function writeItem($uniqueAttributeValue, array $images)
+  public function writePartial(array $data)
+  {
+    foreach($data as $uniqueAttributeValue => $images)
+    {
+      $this->safeWriteItem($uniqueAttributeValue, $images);
+    }
+  }
+
+  public function showStatistics()
+  {
+
+  }
+
+  protected function setSourcePath($path)
+  {
+    $this->sourcePath = $this->basePath.ImportHelper::wrapInSlashEnd($path);
+  }
+
+  protected function setReplaceFile($replace)
+  {
+    $this->replaceFile = $replace;
+  }
+
+  protected function safeWriteItem($uniqueAttributeValue, $images)
+  {
+    try
+    {
+      $this->write($uniqueAttributeValue, $images);
+    }
+    catch(WarningException $e)
+    {
+      $this->logger->warning($e->getMessage());
+    }
+  }
+
+  protected function write($uniqueAttributeValue, array $images)
   {
     if( !($productId = $this->getProductIdByAttribute($this->uniqueAttribute, $uniqueAttributeValue)) )
-      throw new WarningException('Неудалсь найти product_id по атрибуту '.$this->uniqueAttribute.' '.$uniqueAttributeValue);
+      throw new WarningException('Не удалсь найти продукт по атрибуту '.$this->uniqueAttribute.' = '.$uniqueAttributeValue);
 
     foreach($images as $image)
     {
-      $file = $this->basePath.$image;
+      $file = $this->sourcePath.$image;
 
       if( !file_exists($file) )
         throw new WarningException('Файл '.$file.' не найден');
@@ -117,7 +153,7 @@ class ImageWriter extends AbstractImportWriter
     {
       $newPath = $this->basePath.($preview === 'origin' ? "" : $preview.'_').$newFileName;
 
-      if( file_exists($newPath) )
+      if( !$this->replaceFile && file_exists($newPath) )
         throw new WarningException('Файл '.$newPath.' существует (старое имя '.$file.')');
 
       $thumb = $this->phpThumb->create($file);

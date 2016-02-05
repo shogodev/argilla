@@ -72,6 +72,7 @@ class ImportHelper
 
   /**
    * Преобразует индекс колонки exсel в номер столбца в 1 - A, 2 - B
+   *
    * @param $number
    *
    * @return string
@@ -79,7 +80,7 @@ class ImportHelper
   public static function numberToLetters($number)
   {
     $letter = "";
-    if ($number <= 0)
+    if( $number <= 0 )
       return '';
 
     while($number != 0)
@@ -95,6 +96,7 @@ class ImportHelper
   /**
    * Преобразует дивпазон индексов колонок exсel в массив
    * например 'a-c' в array('A', 'B', 'C');
+   *
    * @param $string
    *
    * @return array
@@ -112,8 +114,8 @@ class ImportHelper
     {
       $array[] = self::numberToLetters(($current++) + 1);
 
-       if( $current > $end )
-         break;
+      if( $current > $end )
+        break;
     }
 
     return $array;
@@ -132,5 +134,73 @@ class ImportHelper
     $model->init();
 
     return $model;
+  }
+
+  /**
+   * @param $array
+   *
+   * @return mixed
+   */
+  public static function convertColumnIndexes($array)
+  {
+    foreach($array as $key => $columnIndex)
+    {
+      if( !empty($columnIndex) && !is_numeric($columnIndex) )
+        $array[$key] = self::lettersToNumber($columnIndex);
+      else
+        unset($array[$key]);
+    }
+
+    return $array;
+  }
+
+  /**
+   * Оборачивает путь в слеши, исключаея дублирование
+   *
+   * @param $path
+   * @param string $wrapper
+   *
+   * @return string
+   */
+  public static function wrapInSlash($path, $wrapper = DIRECTORY_SEPARATOR)
+  {
+    return self::wrapInSlashBegin(self::wrapInSlashEnd($path, $wrapper, false), $wrapper);
+  }
+
+  /**
+   * Оборачивает начало путь в слеш, исключаея дублирование
+   *
+   * @param $path
+   * @param string $wrapper
+   * @param bool $clearEnd
+   *
+   * @return string
+   */
+  public static function wrapInSlashBegin($path, $wrapper = DIRECTORY_SEPARATOR, $clearEnd = true)
+  {
+    $path = preg_replace("/(^\\{$wrapper})/", '', $path);
+
+    if( $clearEnd )
+      preg_replace("/(\\{$wrapper})$/", '', $path);
+
+    return $wrapper.$path;
+  }
+
+  /**
+   * Оборачивает конец путь в слеш, исключаея дублирование
+   * @param $path
+   * @param string $wrapper
+   * @param bool $clearBegin
+   *
+   * @return string
+   */
+  public static function wrapInSlashEnd($path, $wrapper = DIRECTORY_SEPARATOR, $clearBegin = true)
+  {
+    $path = preg_replace("/(\\{$wrapper}$)/", '', $path);
+
+    if( $clearBegin )
+      preg_replace("/(^\\{$wrapper})/", '', $path);
+
+    return $path.$wrapper;
   }
 }

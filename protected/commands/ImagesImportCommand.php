@@ -18,7 +18,6 @@ class ImagesImportCommand extends AbstractImagesImportCommand
       $this->actionImportFromCsv();
       //$this->updateProducts();
     }
-
     catch(Exception $e)
     {
       $this->logger->error($e->getMessage());
@@ -33,16 +32,24 @@ class ImagesImportCommand extends AbstractImagesImportCommand
       'big' => array(600, 460),
       'pre' => array(250, 190),
     );
+    $imageWriter->uniqueAttribute = 'external_id';
+    $imageWriter->clear = true;
+    $imageWriter->clearTables = array('{{product_img}}');
+    $imageWriter->defaultJpegQuality = 95;
 
     $imageAggregator = new ImageAggregator($imageWriter);
-    $imageAggregator->groupByColumn = 'c'; // articul
-    $imageAggregator->imagesColumns = ImportHelper::getLettersRange('ez-fz');
+    $imageAggregator->groupByColumn = ImportHelper::lettersToNumber('p');
+    $imageAggregator->imagesColumns = ImportHelper::convertColumnIndexes(ImportHelper::getLettersRange('eo-fo'));
     $imageAggregator->replace = array(
-      'http://openfish.ru/wa-data/public/shop/products/' => '/src/'
+      'http://openfish.ru/wa-data/public/shop/products/' => ''
     );
 
+    $imageAggregator->collectItemBufferSize = 10;
+
     $csvReader = new ImportCsvReader($this->logger, $imageAggregator);
-    $csvReader->csvDelimiter = ';';
+    $csvReader->csvDelimiter = ',';
+    $csvReader->headerRowIndex = 2;
+    $csvReader->skipTopRowAmount = 2;
     $csvReader->start();
     $csvReader->processFiles(ImportHelper::getFiles('f/prices'));
     $csvReader->finish();
