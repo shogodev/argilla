@@ -90,7 +90,7 @@ class BProductCopier extends BAbstractModelCopier
 
     while( 1 )
     {
-      $newFileName = UploadHelper::doCustomFilename($fileName);
+      $newFileName = UploadHelper::doUniqueFilename($fileName);
       if( !file_exists($path.$newFileName) )
       {
         foreach($imageThumbsPrefixList as $prefix)

@@ -10,17 +10,16 @@ class UploadHelper
   /**
    * Добавляет случайное число после имени файла
    *
-   * @param string $filename
+   * @param string $fileName
    *
    * @return string
    */
-  public static function doCustomFilename($filename)
+  public static function doUniqueFilename($fileName)
   {
-    $ext = pathinfo($filename, PATHINFO_EXTENSION);
-    $filename = str_replace('.'.$ext, '', $filename);
-    $filename = $filename . '_' . rand(1, 1000) . '.' . $ext;
+    $ext = pathinfo($fileName, PATHINFO_EXTENSION);
+    $name = pathinfo($fileName, PATHINFO_FILENAME);
 
-    return $filename;
+    return $name . '_' . rand(1, 1000) . '.' . $ext;
   }
 
   /**
@@ -33,10 +32,16 @@ class UploadHelper
    */
   public static function prepareFileName($path, $fileName)
   {
-    $fileName = Utils::translite($fileName, false);
+    $ext = pathinfo($fileName, PATHINFO_EXTENSION);
+    $name = pathinfo($fileName, PATHINFO_FILENAME);
+
+    $name = Utils::translite($name, true);
+    $ext = Utils::translite($ext, true);
+
+    $fileName = $name.'.'.$ext;
 
     while( file_exists($path . $fileName) )
-      $fileName = self::doCustomFilename($fileName);
+      $fileName = self::doUniqueFilename($fileName);
 
     return $fileName;
   }
