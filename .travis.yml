@@ -30,3 +30,15 @@ before_script:
 script:
   - phpunit -c backend/protected/tests/phpunit.xml backend/protected/tests/unit/
   - phpunit -c protected/tests/phpunit.xml protected/tests/unit/
+
+  - if [ $(phpenv version-name) = "5.4" ]; then
+      phpunit -c backend/protected/tests/coverage.xml --coverage-clover=build/coverage/backend.xml backend/protected/tests/unit/;
+      phpunit -c protected/tests/coverage.xml --coverage-clover=build/coverage/frontend.xml protected/tests/unit/;
+    fi
+
+after_script:
+  - if [ $(phpenv version-name) = "5.4" ]; then
+     wget https://scrutinizer-ci.com/ocular.phar;
+     php ocular.phar code-coverage:upload --format=php-clover build/coverage/backend.xml;
+     php ocular.phar code-coverage:upload --format=php-clover build/coverage/frontend.xml;
+    fi

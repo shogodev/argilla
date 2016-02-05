@@ -4,7 +4,7 @@
         <mkdir dir="build/coverage/frontend"/>
     </target>
     <target name="run" depends="mkdir">
-        <exec dir="protected/tests/" command="phpunit --coverage-html=../../build/coverage/frontend unit/" passthru = "true"/>
-        <exec dir="backend/protected/tests" command="phpunit --coverage-html=../../../build/coverage/backend unit/" passthru = "true"/>
+        <exec dir="protected/tests/" command="phpunit --coverage-html=../../build/coverage/frontend -c coverage.xml unit/" passthru = "true"/>
+        <exec dir="backend/protected/tests" command="phpunit --coverage-html=../../../build/coverage/backend -c coverage.xml unit/" passthru = "true"/>
     </target>
 </project>

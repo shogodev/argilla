@@ -1,0 +1,14 @@
+<phpunit bootstrap="coverage.php"
+    colors="true"
+    convertErrorsToExceptions="true"
+    convertNoticesToExceptions="true"
+    convertWarningsToExceptions="true"
+    stopOnFailure="false">
+
+  <php>
+    <server name="SCRIPT_NAME" value="/index.php"/>
+    <server name="SERVER_NAME" value="argilla.ru"/>
+    <server name="REQUEST_URI" value="/"/>
+  </php>
+
+</phpunit>
