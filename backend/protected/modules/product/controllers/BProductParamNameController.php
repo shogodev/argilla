@@ -30,8 +30,8 @@ class BProductParamNameController extends BController
   {
     if( Yii::app()->request->isAjaxRequest )
     {
-      $id     = Yii::app()->request->getPost('id');
-      $model  = BProductParamVariant::model()->findByPk($id);
+      $id = Yii::app()->request->getPost('id');
+      $model = BProductParamVariant::model()->findByPk($id);
       $result = $model->delete();
 
       if( !$result )
@@ -41,11 +41,17 @@ class BProductParamNameController extends BController
       throw new CHttpException(500, 'Некорректный запрос.');
   }
 
+  /**
+   * @param BProductParamName $model
+   *
+   * @throws CHttpException
+   */
   protected function actionSave($model)
   {
-    if( $model->parent == BProductParamName::ROOT_ID )
+    if( $model->isGroup() )
     {
       $this->saveGroup($model);
+
       return;
     }
 

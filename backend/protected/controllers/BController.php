@@ -358,7 +358,10 @@ abstract class BController extends CController
 
     foreach($this->getModelsAllowedForSave() as $relationName => $modelName)
     {
-      $models = $model->prepareModels($relationName, Yii::app()->request->getPost($modelName, array()));
+      if( !($postData = Yii::app()->request->getPost($modelName, null)) )
+        continue;
+
+      $models = $model->prepareModels($relationName, $postData);
       $success = $model->validateRelatedModels($models);
 
       if( !$success )
