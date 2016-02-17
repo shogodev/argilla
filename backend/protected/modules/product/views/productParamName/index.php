@@ -14,6 +14,7 @@ $this->widget('BGridView', array(
   'buttonsTemplate' => '_form_button_create',
   'rowCssClassExpression' => '$data->isGroup() ? "group" : ($row % 2 ? "odd" : "even" )',
   'columns' => array(
+    array('name' => 'id', 'class' => 'BPkColumn'),
     array('name' => 'position', 'htmlOptions' => array('class' => 'span1'), 'class' => 'OnFlyEditField', 'header' => 'Позиция'),
     array('name' => 'name', 'header' => 'Название', 'filter' => false),
 

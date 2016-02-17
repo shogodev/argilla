@@ -5,9 +5,7 @@
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.product.models
- *
  * @method static BProductParamName model(string $class = __CLASS__)
- *
  * @property string $id
  * @property integer $parent
  * @property integer $position
@@ -18,9 +16,7 @@
  * @property integer $product
  * @property integer $section
  * @property integer $selection
- *
  * @property BProductParamVariant[] $variants
- *
  * @method BProductParamName groups()
  * @property BProductParamAssignment $assignment
  */
@@ -41,11 +37,11 @@ class BProductParamName extends BActiveRecord
   public static function getTypes()
   {
     return array(
-      'text'     => 'Текст (text)',
-      'slider'   => 'Диапазон (slider)',
+      'text' => 'Текст (text)',
+      'slider' => 'Диапазон (slider)',
       'checkbox' => 'Набор (checkbox)',
-      'select'   => 'Селектор (select)',
-      'radio'    => 'Радио кнопка (radio)',
+      'select' => 'Селектор (select)',
+      'radio' => 'Радио кнопка (radio)',
     );
   }
 
@@ -73,8 +69,8 @@ class BProductParamName extends BActiveRecord
   {
     return array(
       'assignment' => array(self::HAS_ONE, 'BProductParamAssignment', 'param_id'),
-      'children'   => array(self::HAS_MANY, 'BProductParamName', 'parent', 'order' => 'position'),
-      'variants'   => array(self::HAS_MANY, 'BProductParamVariant', 'param_id', 'order' => 'p.position', 'alias' => 'p'),
+      'children' => array(self::HAS_MANY, 'BProductParamName', 'parent', 'order' => 'position'),
+      'variants' => array(self::HAS_MANY, 'BProductParamVariant', 'param_id', 'order' => 'p.position', 'alias' => 'p'),
     );
   }
 
@@ -116,7 +112,7 @@ class BProductParamName extends BActiveRecord
    */
   public function getParameterTypes(array $param_ids)
   {
-    $types    = array();
+    $types = array();
     $criteria = new CDbCriteria();
     $criteria->addInCondition('id', $param_ids);
 
@@ -149,16 +145,16 @@ class BProductParamName extends BActiveRecord
     switch($this->section_id)
     {
       case '':
-      break;
+        break;
 
       case 'common':
         $assignmentCondition .= '(assignment.section_id IS NULL OR assignment.section_id = 0)';
-      break;
+        break;
 
       default:
         $assignmentCondition .= ' assignment.section_id = :section_id';
         $criteria->params[':section_id'] = $this->section_id;
-      break;
+        break;
     }
 
     $criteria->compare('t.id', '<>'.self::ROOT_ID);

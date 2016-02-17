@@ -20,7 +20,10 @@ class ProductParametersBehavior extends CModelBehavior
    */
   protected $parameters;
 
-  protected $basketParameter;
+  /**
+   * @var array
+   */
+  private $cache;
 
   /**
    * @param null $key
@@ -79,39 +82,25 @@ class ProductParametersBehavior extends CModelBehavior
   }
 
   /**
-   * @return ProductParameterName[]
+   * @param $id
+   * @param bool $notEmptyOnly
+   *
+   * @return null|ProductParameterName
    */
-  public function getProductOneParameters()
+  public function getParameterById($id, $notEmptyOnly = true)
   {
-    return $this->getParametersByAttributes(array('product' => 1), true);
+    return $this->getParametersByAttributes(array('id' => $id), true, $notEmptyOnly);
   }
 
   /**
-   * @return ProductParameterName[]
+   * @param array $idList
+   * @param bool|true $notEmptyOnly
+   *
+   * @return null|ProductParameterName[]
    */
-  public function getProductLineParameters()
+  public function getParametersByIdList(array $idList, $notEmptyOnly = true)
   {
-    return $this->getParametersByAttributes(array('section_list' => 1), true);
-  }
-
-  /**
-   * @return ProductParameterName[]
-   */
-  public function getProductTabletParameters()
-  {
-    return $this->getParametersByAttributes(array('section' => 1), true);
-  }
-
-  /**
-   * @return ProductParameterName|null
-   */
-  public function getBasketParameter()
-  {
-    if( is_null($this->basketParameter) )
-    {
-      $this->basketParameter = $this->getParameterByKey(ProductParameter::BASKET_KEY);
-    }
-    return $this->basketParameter;
+    return $this->getParametersByAttributes(array('id' => $idList), false, $notEmptyOnly);
   }
 
   /**
@@ -120,44 +109,52 @@ class ProductParametersBehavior extends CModelBehavior
    *
    * @return null|ProductParameterName
    */
-  public function getParameterByKey($key, $notEmptyOnly = true)
+  public function getParameterByKey($key, $notEmptyOnly = true )
   {
-    $parameters = array();
-
-    foreach($this->getParameters() as $parameter)
-    {
-      if( (is_array($key) && in_array($parameter->key, $key)) || ($parameter->key == $key) )
-      {
-        if( $notEmptyOnly && empty($parameter->value) )
-          continue;
-
-        $parameters[] = $parameter;
-      }
-    }
-
-    return is_array($key) ? $parameters : Arr::reset($parameters);
+    return $this->getParametersByAttributes(array('key' => $key), true, $notEmptyOnly);
   }
 
   /**
-   * @param $id
-   * @param bool $noEmpty
+   * @param string|array $keys
+   * @param bool $notEmptyOnly
    *
-   * @return null|ProductParameterName
+   * @return null|ProductParameterName[]
    */
-  public function getParameterById($id, $noEmpty = true)
+  public function getParametersByKeys(array $keys, $notEmptyOnly = true)
   {
-    foreach($this->getParameters() as $parameter)
-    {
-      if( $parameter->id == $id )
-      {
-        if( $noEmpty && empty($parameter->value) )
-          break;
+    return $this->getParametersByAttributes(array('key' => $keys), false, $notEmptyOnly);
+  }
 
-        return $parameter;
-      }
-    }
+  /**
+   * @return ProductParameterName[]
+   */
+  public function getParametersCard()
+  {
+    return $this->getParametersByAttributes(array('product' => 1));
+  }
 
-    return null;
+  /**
+   * @return ProductParameterName[]
+   */
+  public function getParametersLine()
+  {
+    return $this->getParametersByAttributes(array('section_list' => 1));
+  }
+
+  /**
+   * @return ProductParameterName[]
+   */
+  public function getParametersTablet()
+  {
+    return $this->getParametersByAttributes(array('section' => 1));
+  }
+
+  /**
+   * @return ProductParameterName|null
+   */
+  public function getParametersBasket()
+  {
+    return $this->getParametersByKeys(array(ProductParameter::BASKET_KEY));
   }
 
   private function getCurrentProductParameterNameIds()
@@ -189,38 +186,67 @@ class ProductParametersBehavior extends CModelBehavior
     return $parameter;
   }
 
-  private function getParametersByAttributes(array $attributes, $notEmptyValue = true, $exceptionKeys = array())
+  /**
+   * Выбирает параметры по заданным атрибутам
+   * Пример:
+   * $this->getParametersByAttributes(array('section_list' => 1));
+   * $this->getParametersByAttributes(array('key' => array('test', 'test2')));
+   * $this->getParametersByAttributes(array('id' => 'test'), true);
+   *
+   * @param array $attributes
+   * @param bool $onlyOne только один параметр
+   * @param bool|true $notEmptyValue
+   * @param array $exceptionKeys
+   *
+   * @return array
+   * @throws CHttpException
+   */
+  private function getParametersByAttributes(array $attributes, $onlyOne = false, $notEmptyValue = true, $exceptionKeys = array())
   {
-    $parameters = array();
+    $cacheKey = serialize(func_get_args());
 
-    foreach($this->getParameters() as $parameter)
+    if( !isset($this->cache[$cacheKey]) )
     {
-      if( $notEmptyValue && empty($parameter->value) )
-        continue;
+      $parameters = array();
 
-      if( in_array($parameter->key, $exceptionKeys) || in_array($parameter->getGroupKey(), $exceptionKeys)  )
-        continue;
-
-      if( !empty($attributes) )
+      foreach($this->getParameters() as $parameter)
       {
-        $attributesSuccess = false;
-        foreach($attributes as $attribute => $value)
+        if( $notEmptyValue && empty($parameter->value) )
+          continue;
+
+        if( !empty($exceptionKeys) && (in_array($parameter->key, $exceptionKeys) || in_array($parameter->getGroupKey(), $exceptionKeys)) )
+          continue;
+
+        if( !empty($attributes) )
         {
-          if( isset($parameter->{$attribute}) && $parameter->{$attribute} == $value )
-            $attributesSuccess = true;
-          else
+          $attributesSuccess = false;
+
+          foreach($attributes as $attribute => $value)
           {
-            $attributesSuccess = false;
-            break;
+            if( property_exists($parameter, $attribute) )
+              throw new CHttpException(500, "Свойство ".$attribute." не доступно в классе ".get_class($parameter));
+
+            if( (is_array($value) && in_array($parameter->{$attribute}, $value)) || $parameter->{$attribute} == $value )
+            {
+              $attributesSuccess = true;
+            }
+            else
+            {
+              $attributesSuccess = false;
+              break;
+            }
           }
+
+          if( $attributesSuccess )
+            $parameters[] = $parameter;
         }
-        if( $attributesSuccess )
+        else
           $parameters[] = $parameter;
       }
-      else
-        $parameters[] = $parameter;
+
+      $this->cache[$cacheKey] = $onlyOne ? Arr::reset($parameters) : $parameters;
     }
 
-    return $parameters;
+    return $this->cache[$cacheKey];
   }
 }
