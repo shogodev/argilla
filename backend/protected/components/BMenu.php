@@ -206,6 +206,9 @@ class BMenu extends CComponent
 
   /**
    * @param BModule $module
+   *
+   * @return bool
+   * @throws CHttpException
    */
   private function createModulesMenu($module)
   {
