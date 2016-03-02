@@ -2,7 +2,7 @@
 
   <?php
   $this->widget('bootstrap.widgets.TbButton', array('buttonType'  => 'link',
-    'type'        => 'primary',
+    'type'        => 'clear',
     'label'       => 'Очистить',
     'url'         => $this->createUrl('create'),
   ));

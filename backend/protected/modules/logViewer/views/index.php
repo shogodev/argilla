@@ -1,13 +1,12 @@
 <?php
 /**
  * @var BProductImportCronLogController $this
- *
  */
+Yii::app()->breadcrumbs->show();?>
 
-Yii::app()->breadcrumbs->show();
-
-echo $dataLog;?>
-
+<div style="line-height: 1px;">
+  <?php echo $dataLog;?>
+</div>
 <script type="text/javascript">
   //<![CDATA[
   $(function() {

@@ -70,7 +70,7 @@ class BGridView extends TbGridView
         $column->renderFilterCell();
         echo '</div>';
       }
-      echo "<a href=\"".'?'.(!empty($this->owner->popup) ? 'popup=1' : '')."\" rel=\"tooltip\" class=\"btn btn-alone update\" title=\"Очистить\"></a>";
+      echo "<a href=\"".'?'.(!empty($this->owner->popup) ? 'popup=1' : '')."\" rel=\"tooltip\" class=\"btn btn-clear update\" title=\"Очистить\">Очистить</a>";
       echo "</div>\n";
     }
   }
