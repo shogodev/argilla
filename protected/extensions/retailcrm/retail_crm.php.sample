@@ -1,0 +1,12 @@
+<?php
+return array(
+  'url' => 'https://demo.retailcrm.ru',
+
+  'apiKey' => 'T9DMPvuNt7FQJMszHUdG8Fkt6xHsqngH',
+
+  'idPrefix' => 'project-',
+
+  'enabled' => true,
+
+  'log' => true
+);
