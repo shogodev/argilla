@@ -77,8 +77,10 @@ class BBaseLogViewController extends BController
 
   protected function formatHeader($text)
   {
-    if( !preg_match('/\[error\]/', $text) )
+    if( preg_match('/\[error\]/', $text) )
       $color = 'ffa799';
+    else if( preg_match('/\[info\]/', $text) )
+      $color = 'f5f5ff';
     else
       $color = 'fcfbc0';
 
