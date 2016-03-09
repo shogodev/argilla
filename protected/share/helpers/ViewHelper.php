@@ -133,13 +133,7 @@ class ViewHelper
   public static function getClearPhone($phone)
   {
     $clearPhone = preg_replace('/[^\d\+]/', '', $phone);
-
-    if( $clearPhone == 10 )
-    {
-      if( $clearPhone[0] == 8 )
-        $clearPhone = ltrim($clearPhone, '8');
-      $clearPhone = '+'.$clearPhone;
-    }
+    $clearPhone = preg_replace('/^8(\d\d\d\d\d\d\d\d\d\d)$/', '+7$1', $clearPhone);
 
     return $clearPhone;
   }
