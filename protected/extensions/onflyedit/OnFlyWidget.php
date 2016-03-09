@@ -29,10 +29,7 @@ class OnFlyWidget extends CWidget
     if( !isset($this->ajaxUrl, $this->attribute, $this->primaryKey) )
       throw new RequiredPropertiesException(__CLASS__, array('ajaxUrl', 'attribute', 'primaryKey'));
 
-    $scriptUrl = Yii::app()->assetManager->publish(dirname(__FILE__).'/js');
-
-    Yii::app()->clientScript->registerScriptFile($scriptUrl.'/jquery.onFlyEdit.js', CClientScript::POS_END);
-    Yii::app()->clientScript->registerScriptFile($scriptUrl.'/onFlyModule.js', CClientScript::POS_END);
+      self::registerOnFlyScripts();
   }
 
   public function run()
@@ -57,5 +54,12 @@ class OnFlyWidget extends CWidget
     }
 
     echo $result;
+  }
+
+  public static function registerOnFlyScripts()
+  {
+    $scriptUrl = Yii::app()->assetManager->publish(dirname(__FILE__).'/js');
+    Yii::app()->clientScript->registerScriptFile($scriptUrl.'/jquery.onFlyEdit.js', CClientScript::POS_END);
+    Yii::app()->clientScript->registerScriptFile($scriptUrl.'/onFlyModule.js', CClientScript::POS_END);
   }
 }

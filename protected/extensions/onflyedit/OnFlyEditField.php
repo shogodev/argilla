@@ -86,6 +86,8 @@ class OnFlyEditField extends BDataColumn
     if( empty($this->ajaxUrl) )
       $this->ajaxUrl = Yii::app()->controller->createUrl(Yii::app()->controller->id."/$this->action");
 
+    OnFlyWidget::registerOnFlyScripts();
+
     Yii::app()->clientScript->registerScript(
       'initOnFly'.$this->grid->id,
       '$(function() {
