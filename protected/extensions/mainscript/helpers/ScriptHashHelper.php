@@ -6,7 +6,15 @@
  * @license http://argilla.ru/LICENSE
  * @package ext.mainscript
  */
-class ScriptHashHelper
+
+/**
+ * Class ScriptHashHelper
+ *
+ * @property string $version
+ * @property string $hash
+ * @property string $isUpdated
+ */
+class ScriptHashHelper extends CComponent
 {
   /**
    * Относительный путь к файлу с версией файлов
@@ -20,28 +28,28 @@ class ScriptHashHelper
    *
    * @var string
    */
-  public $hash;
+  protected $hash;
 
   /**
    * Версия файлов
    *
    * @var string
    */
-  public $version;
+  protected $version;
 
   /**
-   * Массив в количеством файлов и их датой изменения
+   * Массив с количеством файлов и их датой изменения
    *
    * @var array
    */
-  public $data = array();
+  protected $data = array();
 
   /**
    * Флаг изменения контрольной суммы
    *
    * @var boolean
    */
-  public $isUpdated;
+  protected $isUpdated;
 
   /**
    * @var ScriptHashHelper
@@ -74,9 +82,9 @@ class ScriptHashHelper
    */
   public function init()
   {
-    $this->getHash();
-    $this->getVersion();
-    $this->isUpdated();
+    $this->setHash();
+    $this->setVersion();
+    $this->setUpdateFlag();
 
     if( $this->isUpdated )
       $this->saveVersion();
@@ -89,7 +97,7 @@ class ScriptHashHelper
    *
    * @return string
    */
-  protected function getHash()
+  protected function setHash()
   {
     $this->data[] = count(ScriptsFileFinder::getInstance()->getFiles());
 
@@ -105,7 +113,7 @@ class ScriptHashHelper
   /**
    * Инициализация флага обновления контрольной суммы
    */
-  protected function isUpdated()
+  protected function setUpdateFlag()
   {
     $this->isUpdated = $this->hash !== $this->version;
   }
@@ -115,9 +123,9 @@ class ScriptHashHelper
    *
    * @return string
    */
-  protected function getVersion()
+  protected function setVersion()
   {
-    $path = ScriptsFileFinder::getInstance()->getRoot() . $this->versionFile;
+    $path = ScriptsFileFinder::getInstance()->getRoot().$this->versionFile;
 
     if( file_exists($path) )
       $this->version = file_get_contents($path);
@@ -149,5 +157,20 @@ class ScriptHashHelper
       fclose($versionFile);
       chmod($path, 0664);
     }
+  }
+
+  protected function getHash()
+  {
+    return $this->hash;
+  }
+
+  protected function getVersion()
+  {
+    return $this->version;
+  }
+
+  protected function getIsUpdated()
+  {
+    return $this->isUpdated;
   }
 }
