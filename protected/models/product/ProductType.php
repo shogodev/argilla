@@ -24,6 +24,7 @@ class ProductType extends FActiveRecord
     $alias = $this->getTableAlias(false, false);
 
     return array(
+      'condition' => $alias.'.visible=1',
       'order' => "IF($alias.position=0, 99999, $alias.position), $alias.name",
     );
   }
