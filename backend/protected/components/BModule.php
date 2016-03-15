@@ -32,7 +32,7 @@ class BModule extends CWebModule
   public $moduleDependencies = [];
 
   /**
-   * Поддериктории подуля для загрузки
+   * Подкаталоги модуля для загрузки
    *
    * @var array
    */

@@ -46,6 +46,7 @@ class BMenu extends CComponent
   {
     $this->controller = Yii::app()->controller;
     $this->currentModule = $this->controller->module;
+
     if( $this->currentModule && !empty($this->currentModule->group) )
       $this->currentGroup = $this->currentModule->group;
 
@@ -86,13 +87,16 @@ class BMenu extends CComponent
   }
 
   /**
-   * @param array $modules
-   * @param BModule $parent|null
+   * @param array $filteredModules
+   * @param $parent
+   *
+   * @return BModule[]
    * @throws CException
+   * @throws ClassNotFoundException
    */
-  private function buildStructure(array $modules, $parent = null)
+  private function getAllowedModules(array $filteredModules, $parent)
   {
-    $filteredModules = AccessHelper::filterModulesByAccess($modules);
+    $modules = array();
 
     foreach($filteredModules as $moduleId => $moduleConfig)
     {
@@ -107,11 +111,30 @@ class BMenu extends CComponent
         throw new ClassNotFoundException($moduleClassName, $moduleConfig['class']);
       }
 
-      /**
-       * @var BModule $module
-       */
-      $module = new $moduleClassName($moduleId, $parent);
+      $modules[$moduleId] = new $moduleClassName($moduleId, $parent);
 
+      if( !empty($moduleConfig['modules']) )
+      {
+        $modules[$moduleId]->setModules($moduleConfig['modules']);
+      }
+    }
+
+    return $modules;
+  }
+
+  /**
+   * @param array $modules
+   * @param BModule $parent|null
+   * @throws CException
+   */
+  private function buildStructure(array $modules, $parent = null)
+  {
+    $filteredModules = AccessHelper::filterModulesByAccess($modules);
+
+    $allowedModules = $this->getAllowedModules($filteredModules, $parent);
+
+    foreach($allowedModules as $moduleId => $module)
+    {
       if( !$this->allowedModule($module) )
         continue;
 
@@ -129,9 +152,8 @@ class BMenu extends CComponent
         }
       }
 
-      if( !empty($moduleConfig['modules']) )
+      if( $module->getModules() )
       {
-        $module->setModules($moduleConfig['modules']);
         $this->buildStructure($module->getModules(), $module);
       }
     }
@@ -343,6 +365,7 @@ class BMenu extends CComponent
   {
     if( empty($this->modules) )
       return;
+
     foreach($this->modules as $key => $data)
     {
       uasort($this->modules[$key], function($a, $b) {
