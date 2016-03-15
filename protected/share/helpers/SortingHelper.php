@@ -79,7 +79,10 @@ class SortingHelper
           $sortingType = $value;
         }
 
-        $result = self::cmp($a[$key], $b[$key], $sortingType);
+        $aValue = is_object($a) ? $a->{$key} : $a[$key];
+        $bValue = is_object($b) ? $b->{$key} : $b[$key];
+
+        $result = self::cmp($aValue, $bValue, $sortingType);
 
         if( $result !== 0 )
           return $result;
