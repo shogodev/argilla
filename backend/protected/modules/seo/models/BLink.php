@@ -38,7 +38,7 @@ class BLink extends BActiveRecord
   {
     return array(
       array('url, content, title, section_id, page', 'required'),
-      array('url, email', 'unique'),
+      array('url', 'unique'),
       array('email', 'email'),
       array('section_id, position, visible, page', 'numerical', 'integerOnly' => true),
       array('url', 'length', 'max' => 255),
