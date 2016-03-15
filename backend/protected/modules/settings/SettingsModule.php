@@ -9,6 +9,8 @@
 class SettingsModule extends BModule
 {
   public $defaultController = 'BSettings';
+
   public $name = 'Настройки';
+
   public $group = 'settings';
 }

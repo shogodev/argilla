@@ -8,7 +8,7 @@
  */
 class SeoModule extends BModule
 {
-  public $defaultController = 'BMetaRoute';
+  public $defaultController = 'BSitemap';
 
   public $group = 'seo';
 

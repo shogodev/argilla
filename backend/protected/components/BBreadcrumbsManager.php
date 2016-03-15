@@ -22,11 +22,6 @@ class BBreadcrumbsManager
   public static $indexName = 'index';
 
   /**
-   * @var BActiveRecord
-   */
-  private $model;
-
-  /**
    * @var BModule
    */
   private $module;
@@ -40,11 +35,6 @@ class BBreadcrumbsManager
    * @var BController
    */
   private $defaultModuleController;
-
-  /**
-   * @var string
-   */
-  private $defaultControllerLink;
 
   /**
    * @var array
@@ -64,15 +54,13 @@ class BBreadcrumbsManager
   {
     try
     {
-      $this->controller = Yii::app()->controller;
-      $this->module     = Yii::app()->controller->module;
-
-      if( !($this->module instanceof BModule) )
+      if( !(Yii::app()->controller->module instanceof BModule) )
         return;
+
+      $this->controller = Yii::app()->controller;
 
       $this->initModel();
       $this->initDefaultController();
-
       $this->initBreadcrumbs();
     }
     catch( Exception $e )
@@ -109,19 +97,14 @@ class BBreadcrumbsManager
    */
   protected function initDefaultController()
   {
-    $controllerName  = $this->module->defaultController;
+    $controllerName  = Yii::app()->controller->module->defaultController;
     $controllerClass = ucfirst($controllerName).'Controller';
-
-    if( class_exists($controllerClass, false) === false )
-      throw new BBreadcrumbsManagerException('Невозможно найти класс '.$controllerClass);
 
     $this->defaultModuleController = new $controllerClass($controllerName);
   }
 
   protected function initBreadcrumbs()
   {
-    $this->defaultControllerLink = Yii::app()->createUrl($this->module->id.'/'.$this->defaultModuleController->id);
-
     if( empty($this->model) )
       $this->initBreadcumbsWithotModel();
     elseif( empty($this->model->id) )
@@ -130,7 +113,7 @@ class BBreadcrumbsManager
       $this->initBreadcrumbsWithExistingModel();
 
     if( !$this->checkControllersNameDiff() && $this->canCutDefaultControllerLink )
-      $this->cutModulelink();
+      unset($this->breadcrumbs[$this->controller->name]);
   }
 
   /**
@@ -140,10 +123,7 @@ class BBreadcrumbsManager
   {
     $this->canCutDefaultControllerLink = true;
 
-    $this->breadcrumbs = array(
-      $this->defaultModuleController->name => $this->defaultControllerLink,
-      $this->controller->name,
-    );
+    $this->breadcrumbs[] = $this->controller->name;
   }
 
   /**
@@ -151,11 +131,8 @@ class BBreadcrumbsManager
    */
   protected function initBreadcrumbsWithNewModel()
   {
-    $this->breadcrumbs = array(
-      $this->defaultModuleController->name => $this->defaultControllerLink,
-      $this->controller->name => array(self::$indexName),
-      'Создание'
-    );
+    $this->breadcrumbs[$this->controller->name] = self::$indexName;
+    $this->breadcrumbs[] = 'Создание';
   }
 
   /**
@@ -163,11 +140,7 @@ class BBreadcrumbsManager
    */
   protected function initBreadcrumbsWithExistingModel()
   {
-    $this->breadcrumbs = array(
-      $this->defaultModuleController->name => $this->defaultControllerLink,
-      $this->controller->name => array(self::$indexName),
-
-    );
+    $this->breadcrumbs[$this->controller->name] = self::$indexName;
 
     if( $this->model instanceof BProduct && !empty($this->model->parent) )
     {
@@ -187,15 +160,7 @@ class BBreadcrumbsManager
    */
   protected function checkControllersNameDiff()
   {
-    return $this->controller->name !== $this->defaultModuleController->name;
-  }
-
-  /**
-   * Удаление дублирующей записи контроллера. см. $this->canCutDefaultControllerLink
-   */
-  protected function cutModulelink()
-  {
-    unset($this->breadcrumbs[$this->controller->name]);
+    return $this->controller->id !== $this->defaultModuleController->id;
   }
 
   /**
