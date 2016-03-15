@@ -44,7 +44,7 @@ class BActiveDataProvider extends CActiveDataProvider
    *
    * @var array
    */
-  protected $pageSizeFormElements = array(10 => 10, 25 => 25, 50 => 50, 100 => 100, 'all' => 'Все');
+  protected $pageSizeFormElements = array(10 => 10, 50 => 50, 100 => 100, 500 => 500, 1000 => 1000, 5000 => 5000, 'all' => 'Все');
 
   /**
    * Имя переменной для передачи и перехвата в $_GET запросе
@@ -145,7 +145,7 @@ class BActiveDataProvider extends CActiveDataProvider
     if( window.History.enabled )
     {
       var url = $(this).parents('form').attr('action').split('?');
-      var params = $.deparam.querystring('?'+url[1]);
+      var params = url[1] === undefined ? [] : $.deparam.querystring('?'+url[1]);
       params[$(this).attr('id')] = $(this).val();
       window.History.pushState(null, document.title, decodeURIComponent($.param.querystring(url[0], params)));
     }
