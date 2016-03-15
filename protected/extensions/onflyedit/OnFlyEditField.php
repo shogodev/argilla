@@ -16,10 +16,10 @@ Yii::import('zii.widgets.grid.CGridColumn');
  * <code>
  *
  * $onFlyEdit = array(
- *  'name'        => 'notice',
+ *  'name' => 'notice',
  *  'htmlOptions' => array(),
- *  'class'       => 'OnFlyEditField',
- *  'header'      => 'FieldHeader',
+ *  'class' => 'OnFlyEditField',
+ *  'header' => 'FieldHeader',
  * );
  *
  * $this->widget('bootstrap.widgets.TbGridView', array(
@@ -84,7 +84,7 @@ class OnFlyEditField extends BDataColumn
     parent::init();
 
     if( empty($this->ajaxUrl) )
-      $this->ajaxUrl = Yii::app()->controller->createUrl(Yii::app()->controller->id."/$this->action");
+      $this->ajaxUrl = Yii::app()->controller->createUrl(Yii::app()->controller->id."/".$this->action);
 
     OnFlyWidget::registerOnFlyScripts();
 
@@ -123,46 +123,13 @@ class OnFlyEditField extends BDataColumn
     $primaryKey = $data instanceof BActiveRecord ? $data->getPrimaryKey() : $data['id'];
 
     Yii::app()->controller->widget('OnFlyWidget', array(
+      'type' => empty($this->dropDown) ? OnFlyWidget::TYPE_INPUT : OnFlyWidget::TYPE_DROPDOWN,
       'ajaxUrl' => $this->ajaxUrl,
       'attribute' => $this->name,
       'primaryKey' => $primaryKey,
       'value' => $data[$this->name],
+      'items' => $this->dropDown,
       'htmlOptions' => $htmlOptions
     ));
-  }
-
-  /**
-   * Возвращает сгенерированную строку, содержащее значение свойства в теге <span>
-   * с нужными параметрами для работы скрипта
-   *
-   * @param $fieldID
-   * @param $value
-   * @param null|string $name
-   *
-   * @return string
-   */
-  protected function prepareFieldData($fieldID, $value, $name = null)
-  {
-    if( $name === null )
-    {
-      $name = $this->name;
-    }
-
-    $commonAttributes = [
-      'data-onflyedit' => $name.'-'.$fieldID,
-      'data-ajax-url' => $this->ajaxUrl,
-      'data-grid-id' => $this->gridId,
-      'data-grid-update' => $this->gridUpdate
-    ];
-
-    if( empty($this->dropDown) )
-    {
-      return CHtml::tag('span', array_merge($commonAttributes, ['class' => 'onfly-edit'], $this->elementOptions), $value);
-    }
-    else
-    {
-      return CHtml::dropDownList('', $value, $this->dropDown,
-        array_merge($commonAttributes, ['class' => 'onfly-edit-dropdown', 'style' => 'margin-bottom: 0px; width: auto;'], $this->elementOptions));
-    }
   }
 }

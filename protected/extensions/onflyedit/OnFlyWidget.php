@@ -7,6 +7,10 @@
  */
 class OnFlyWidget extends CWidget
 {
+  const TYPE_INPUT = 'input';
+
+  const TYPE_DROPDOWN = 'dropDown';
+
   /**
    * URL для AJAX запроса.
    *
@@ -14,7 +18,12 @@ class OnFlyWidget extends CWidget
    */
   public $ajaxUrl;
 
-  public $items;
+  /**
+   * @var string $type тип (OnFlyWidget::TYPE_INPUT, OnFlyWidget::TYPE_DROPDOWN)
+   */
+  public $type;
+
+  public $items = array();
 
   public $attribute;
 
@@ -27,7 +36,7 @@ class OnFlyWidget extends CWidget
   public function init()
   {
     if( !isset($this->ajaxUrl, $this->attribute, $this->primaryKey) )
-      throw new RequiredPropertiesException(__CLASS__, array('ajaxUrl', 'attribute', 'primaryKey'));
+      throw new RequiredPropertiesException(__CLASS__, array('ajaxUrl', 'attribute', 'primaryKey', 'type'));
 
       self::registerOnFlyScripts();
   }
@@ -39,21 +48,22 @@ class OnFlyWidget extends CWidget
       'data-ajax-url' => $this->ajaxUrl,
     ));
 
-    if( empty($this->dropDown) )
+    switch($this->type)
     {
-      $htmlOptions['class'] = 'onfly-edit';
+      case self::TYPE_INPUT;
+        $htmlOptions['class'] = 'onfly-edit';
+        $html = CHtml::tag('span', $htmlOptions, $this->value);
+      break;
 
-      $result = CHtml::tag('span', $htmlOptions, $this->value);
+      case self::TYPE_DROPDOWN;
+        $htmlOptions['class'] = 'onfly-edit-dropdown';
+        $htmlOptions['style'] = 'margin-bottom: 0px; width: auto;';
+
+        $html = CHtml::dropDownList('', $this->value, $this->items, $htmlOptions);
+      break;
     }
-    else
-    {
-      $htmlOptions['class'] = 'onfly-edit-dropdown';
-      $htmlOptions['style'] = 'margin-bottom: 0px; width: auto;';
 
-      $result = CHtml::dropDownList('', $this->value, $this->items, $htmlOptions);
-    }
-
-    echo $result;
+    echo $html;
   }
 
   public static function registerOnFlyScripts()
