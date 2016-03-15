@@ -292,7 +292,8 @@ td.button-column a:hover {
   font-weight: bold; }
 .detail-view th label,
 .detail-view label label,
-.param-table .checkbox label {
+.param-table .checkbox label,
+.param-table .radio label {
   display: inline-block !important;
   margin-bottom: 0; }
 .detail-view td input {

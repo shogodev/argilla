@@ -115,7 +115,7 @@ class ParametersWidget extends CWidget
 
       case 'radio':
         echo CHtml::tag('div', array('style' => 'float: left'), false, false);
-        echo $this->form->radioButtonList($param, "[$param->id]value", CHtml::listData($param->variants, 'id', 'name'));
+        echo $this->form->radioButtonList($param, "[$param->id]value", CHtml::listData($param->variants, 'id', 'name'), array('template' => '<span class="{labelCssClass}">{input}{label}</span>'));
         echo CHtml::closeTag('div');
       break;
     }
