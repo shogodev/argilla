@@ -121,9 +121,9 @@ class UploadWidget extends CJuiInputWidget
     if( !isset($this->htmlOptions['gridOptions']) )
       $this->htmlOptions['gridOptions'] = array();
 
-    $this->options['url']              = $this->url;
-    $this->options['autoUpload']       = $this->autoUpload;
-    $this->options['previewMaxWidth']  = $this->previewMaxWidth;
+    $this->options['url'] = $this->url;
+    $this->options['autoUpload'] = $this->autoUpload;
+    $this->options['previewMaxWidth'] = $this->previewMaxWidth;
     $this->options['previewMaxHeight'] = $this->previewMaxWidth;
 
     if( !isset($this->gridOptions['class']) )
@@ -142,8 +142,8 @@ class UploadWidget extends CJuiInputWidget
     else
     {
       $this->model->attachBehavior('uploadBehavior', array(
-        'class' => 'UploadBehavior',
-        'attribute' => $this->attribute)
+          'class' => 'UploadBehavior',
+          'attribute' => $this->attribute)
       );
     }
   }
@@ -209,7 +209,7 @@ class UploadWidget extends CJuiInputWidget
         {
           $.fn.yiiGridView.update(gridId);
           if( !multiply )
-            files.hide().find('tbody').empty();
+            files.find('tbody').empty();
         });
         fileUploader.bind('fileuploaddestroy', function(e, data)
         {
@@ -229,7 +229,7 @@ class UploadWidget extends CJuiInputWidget
 
   private function publishAssets()
   {
-    $assets  = dirname(__FILE__).'/assets';
+    $assets = dirname(__FILE__).'/assets';
     $baseUrl = Yii::app()->assetManager->publish($assets);
 
     if( is_dir($assets) )

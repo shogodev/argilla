@@ -56,6 +56,7 @@ abstract class ImageGrid extends BGridView
           'attr' => $this->attribute,
           'method' => 'delete'));
       },
+      'afterDelete' => "function(link, success, data) { if(success) $(link).closest('#".$this->getId()."').parent().find('.fileupload-buttonbar').show(); }"
     );
   }
 }
