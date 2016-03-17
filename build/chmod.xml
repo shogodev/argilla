@@ -1,60 +1,75 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="argilla_fixAccessRights" basedir="." default="fixAccessRights">
-  <target name="fixAccessRights" description="Set access rights to files and directories">
-    <chmod mode="0664" verbose="true">
-      <fileset dir=".">
-        <include name="**/*.php"/>
-        <include name="**/*.xml"/>
-        <include name="**/*.txt"/>
-        <include name="**/*.js"/>
-        <include name="**/*.html"/>
-        <include name="**/*.htm"/>
-        <include name="**/*.css"/>
-        <include name="favicon.ico"/>
-      </fileset>
-    </chmod>
-    <!-- chmod for backend images -->
-    <chmod mode="0664" verbose="true">
-      <fileset dir="backend/i">
+<project name="argilla_chmod" basedir="." default="chmod">
+  <target name="chmod">
+    <chmod mode="0775" verbose="true" file="./index.php" failonerror="false"/>
+    <chmod mode="0775" verbose="true" file="backend/index.php"  failonerror="false"/>
+
+    <chmod mode="0664" verbose="true" failonerror="false">
+      <fileset dir="." defaultexcludes="false">
         <type type="file"/>
+        <exclude name="./f/**"/>
+        <exclude name=".git/**"/>
+        <exclude name=".git/**/.*"/>
+        <exclude name="./build/node_modules/**"/>
+        <exclude name="./build/node_modules/**/.*"/>
+        <include name="./protected/**/.gitignore" />
+        <include name="./backend/protected/**/.gitignore"/>
       </fileset>
     </chmod>
-    <!-- ckeditor -->
-    <chmod mode="0775" verbose="false">
-      <fileset dir=".">
+
+    <chmod mode="0775" verbose="true" failonerror="false">
+      <fileset dir="." defaultexcludes="false">
+        <type type="dir"/>
+        <exclude name="./f/**"/>
+        <exclude name=".git/**"/>
+        <exclude name=".git/**/.*"/>
+        <exclude name="./build/node_modules/**"/>
+        <exclude name="./build/node_modules/**/.*"/>
+      </fileset>
+    </chmod>
+
+    <!-- загружаемые картиночки  -->
+    <chmod mode="0777" verbose="true" failonerror="false">
+      <fileset dir="./f">
         <type type="dir"/>
       </fileset>
     </chmod>
-    <chmod mode="0664" verbose="false">
-      <fileset dir=".">
+    <chmod mode="0666" verbose="false" failonerror="false">
+      <fileset dir="./f">
         <type type="file"/>
       </fileset>
     </chmod>
-    <!-- protected должно быть 0002 -->
-    <chmod mode="0775" verbose="true">
-      <fileset dir=".">
-        <type type="dir"/>
-        <include name="protected/**/*"/>
-        <include name="backend/protected/**/*"/>
-      </fileset>
-    </chmod>
-    <chmod mode="0664" verbose="true">
-      <fileset dir=".">
+    <chmod mode="0664" verbose="true" failonerror="false">
+      <fileset dir="./f" defaultexcludes="false">
         <type type="file"/>
-        <include name="protected/**/*"/>
-        <include name="backend/protected/**/*"/>
+        <include name="**/*.gitignore"/>
+        <include name="**/*.htaccess"/>
       </fileset>
     </chmod>
-    <chmod mode="0775" verbose="true">
-      <fileset dir=".">
-        <include name="**/yiic*"/>
-      </fileset>
-    </chmod>
-    <chmod mode="0775" verbose="true">
-      <fileset dir=".">
+
+    <chmod mode="0777" verbose="true" failonerror="false">
+      <fileset dir="assets">
         <type type="dir"/>
       </fileset>
     </chmod>
+    <chmod mode="0666" verbose="true" failonerror="false">
+      <fileset dir="assets">
+        <type type="file"/>
+      </fileset>
+    </chmod>
+
+    <chmod mode="0777" verbose="true" failonerror="false">
+      <fileset dir="./protected/runtime">
+        <exclude name="**/.gitignore"></exclude>
+      </fileset>
+    </chmod>
+
+    <chmod mode="0777" verbose="true" failonerror="false">
+      <fileset dir="./backend/protected/runtime">
+        <exclude name="**/.gitignore"></exclude>
+      </fileset>
+    </chmod>
+
     <!-- git fix -->
     <chmod mode="0775" verbose="false" failonerror="false">
       <fileset dir=".git">
@@ -66,41 +81,11 @@
         <type type="file"/>
       </fileset>
     </chmod>
-    <!-- картиночки загружаемые -->
-    <chmod mode="0777" verbose="true">
-      <fileset dir="./f">
-        <type type="dir"/>
-      </fileset>
-    </chmod>
-    <chmod mode="0666" verbose="false">
-      <fileset dir="./f">
-        <type type="file"/>
-      </fileset>
-    </chmod>
-    <chmod mode="0777" verbose="true">
-      <fileset dir="assets">
-        <type type="dir"/>
-      </fileset>
-    </chmod>
-    <chmod mode="0666" verbose="true">
-      <fileset dir="assets">
-        <type type="file"/>
-      </fileset>
-    </chmod>
-    <chmod mode="0777" verbose="true" file="protected/runtime"/>
-    <chmod mode="0777" verbose="true" file="backend/protected/runtime"/>
-    <chown group="www" quiet="true" verbose="false">
-      <!-- ваще наверное это не получится, но где можно хотя бы пусть поправит -->
-      <fileset dir="."/>
-    </chown>
-    <!-- ну а напоследок фиксим всю служебную шелуху -->
-    <chmod mode="0664" verbose="true">
-      <fileset dir="." defaultexcludes="false">
-        <include name="**/*.gitignore"/>
-        <include name=".gitignore"/>
-        <include name="**/*.gitattributes"/>
-        <include name="**/*.htaccess"/>
-        <include name="**/*.gitattributes"/>
+
+    <chmod mode="0775" verbose="true" failonerror="false">
+      <fileset dir="protected">
+        <type type="file"></type>
+        <include name="yiic*"/>
       </fileset>
     </chmod>
   </target>

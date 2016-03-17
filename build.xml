@@ -145,7 +145,35 @@
   </target>
 
   <target name="fixAccessRights" description="Set access rights to files and directories">
-    <phing phingFile="build/chmod.xml"/>
+
+      <php expression="@posix_getpwuid(stat('.')['uid'])['name']" returnProperty="defaultUser"></php>
+      <php expression="@posix_getpwuid(stat('.')['gid'])['name']" returnProperty="defaultGroup"></php>
+
+      <echo message="${defaultUser}"/>
+      <echo message="${defaultGroup}"/>
+
+      <input message="Enter user name for change:" propertyName="user" defaultValue="${defaultUser}"/>
+      <input message="Enter group name for change:" propertyName="group" defaultValue="${defaultGroup}" />
+
+      <input propertyName="confirm" defaultValue="n" validArgs="y,n" message="Are you sure that want to change owner to ${user}:${group} ?"/>
+      <if>
+        <equals arg1="${confirm}" arg2="y"/>
+        <then>
+           <phing phingFile="build/chown.xml" >
+             <property name="user" value="${user}" />
+             <property name="group" value="${group}" />
+           </phing>
+        </then>
+      </if>
+
+      <input propertyName="confirm" defaultValue="n" validArgs="y,n" message="Do fix rights for project?"/>
+      <if>
+        <equals arg1="${confirm}" arg2="y"/>
+        <then>
+          <phing phingFile="build/chmod.xml" />
+        </then>
+      </if>
+
   </target>
 
   <target name="coverage" description="Build code-coverage report">

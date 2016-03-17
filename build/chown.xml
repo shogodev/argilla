@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="argilla_chown" basedir="." default="chown">
+  <target name="chown">
+    <chown user="${user}" group="${group}" verbose="true" failonerror="false" >
+      <fileset dir="." defaultexcludes="false">
+        <!--        <exclude name=".git/**"/>
+                <exclude name=".git/**/.*"/>-->
+        <exclude name="build/node_modules/**"/>
+        <exclude name="build/node_modules/**/.*"/>
+      </fileset>
+    </chown>
+  </target>
+ </project>
