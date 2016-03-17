@@ -8,19 +8,29 @@
   <?php echo CHtml::linkTag("canonical", null, Yii::app()->controller->getCanonicalUrl());?>
 
   <!--[if lt IE 9]>
-  <script src="js/html5msie/html5shiv-printshiv.js"></script>
-  <script src="js/html5msie/respond.js"></script>
+    <script src="js/html5msie/html5shiv-printshiv.js"></script>
+    <script src="js/html5msie/respond.js"></script>
   <![endif]-->
 
   <?php echo CHtml::linkTag("stylesheet", null, Yii::app()->assetManager->publish(Yii::getPathOfAlias('frontend').'/../i/style').'/css/st.css');?>
 
   <script>
-    //<![CDATA[
-    $('html').removeClass('no-js');
-    var isMobile = navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i) != null;
-    if (isMobile) {
-      $('html').addClass('mobile');
-    }
-    //]]>
+    (function() { "use strict";
+      window.IS_MOBILE = navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i) != null;
+      window.IS_DESKTOP = !IS_MOBILE;
+      window.IS_IOS = (navigator.userAgent.match(/(iPad|iPhone|iPod)/g) ? true : false);
+      window.IS_IE = navigator.appVersion.indexOf("MSIE") !== -1 || navigator.userAgent.match(/Trident.*rv[ :]*11\./);
+      window.IS_IE8 = navigator.appVersion.indexOf("MSIE 8") !== -1;
+
+      var HTML = document.documentElement;
+
+      HTML.classList.remove("no-js");
+
+      if (IS_MOBILE) HTML.classList.add("is-mobile");
+      if (IS_DESKTOP) HTML.classList.add("is-desktop");
+      if (IS_IOS) HTML.classList.add("is-ios");
+      if (IS_IE) HTML.classList.add("is-ie");
+      if (IS_IE8) HTML.classList.add("is-ie8");
+    })();
   </script>
 </head>
