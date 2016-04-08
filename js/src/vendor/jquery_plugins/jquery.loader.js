@@ -23,7 +23,7 @@ $.overlayLoader(bool, options); // необязательный хэш пара�
     return [$(window).width(), $(window).height(), $(document).width(), $(document).height()];
   }
 
-  var path   = 'i/ajax/';
+  var path   = '/i/ajax/';
   var isIE = navigator.userAgent.match(/msie/);
   var loaders = {'loader': path + 'loader.gif', 'ajax': path + 'ajax.' + (isIE ? 'gif' : 'png')};
   var x = 0,
