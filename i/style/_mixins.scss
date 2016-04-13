@@ -97,6 +97,11 @@
   box-sizing: $value;
 }
 
+@mixin filter($filter, $value) {
+  -webkit-filter: $filter#{unquote("("#{$value}")")};
+  filter: $filter#{unquote("("#{$value}")")};
+}
+
 @mixin animation($value) {
   -webkit-animation: $value;
   animation: $value;
