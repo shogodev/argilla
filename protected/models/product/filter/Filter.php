@@ -7,6 +7,7 @@
  * @package frontend.models.product.filter
  */
 Yii::import('frontend.models.product.filter.search.*');
+Yii::import('backend.modules.product.models.BFacetedSearch');
 
 
 /**
@@ -35,7 +36,7 @@ class Filter extends CComponent
   /**
    * @var string
    */
-  public $facetedModelClass = 'FacetedSearch';
+  public $facetedModelClass = 'BFacetedSearch';
 
   /**
    * @var FilterElement[]

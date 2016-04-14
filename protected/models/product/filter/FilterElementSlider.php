@@ -19,6 +19,11 @@ class FilterElementSlider extends FilterElementRange implements JsonSerializable
 
   public $step = 100;
 
+  /**
+   * @var bool $roundEndLabel - добвить 1 к значению не кратному 100 (пример: 9999 - 10000)
+   */
+  public $roundEndLabel = true;
+
   protected $minValue;
 
   protected $maxValue;

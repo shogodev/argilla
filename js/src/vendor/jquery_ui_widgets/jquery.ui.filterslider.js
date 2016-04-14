@@ -15,7 +15,7 @@ $.widget('argilla.filterSlider', {
     },
     keyPressDelay : 600,
     tooltipDelay : 3000,
-    timers : {}
+    timers : {},
   },
 
   submit : function() {
@@ -27,7 +27,6 @@ $.widget('argilla.filterSlider', {
   },
 
   _create: function() {
-
     var options = this.options;
     var widget = this;
 
@@ -97,7 +96,7 @@ $.widget('argilla.filterSlider', {
       hiddenInput = widget.element.siblings('input:hidden'),
       form = hiddenInput.closest('form');
 
-    var value = parseInt(minInput.val()) + '-' + parseInt(maxInput.val());
+    var value = this._normalizeValue(minInput.val()) + '-' + this._normalizeValue(maxInput.val());
     var data = form.serializeArray();
     var ajaxUrl = this.options.ajaxUrl ? this.options.ajaxUrl : form.attr('action');
 
@@ -126,7 +125,7 @@ $.widget('argilla.filterSlider', {
       return;
 
     if ( !isNaN(minInput.val()) && !isNaN(maxInput.val()) ) {
-      if ( parseInt(minInput.val()) > parseInt(maxInput.val()) ) return;
+      if ( this._normalizeValue(minInput.val()) > this._normalizeValue(maxInput.val()) ) return;
       this.element.slider('values', 0, minInput.val() );
       this.element.slider('values', 1, maxInput.val() );
       this._stopSlide();
@@ -170,6 +169,10 @@ $.widget('argilla.filterSlider', {
       clearTimeout(this.options.timers[timerIndex]);
       delete this.options.timers[timerIndex];
     }
+  },
+
+  _normalizeValue : function(value) {
+    return parseFloat(value)
   },
 
   destroy: function() {

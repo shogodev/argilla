@@ -6,13 +6,27 @@
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.product
  *
- * @method static BFacetedParameter model(string $class = __CLASS__)
- *
  * @property integer $id
  * @property string $parameter
  */
-class BFacetedParameter extends BActiveRecord
+class BFacetedParameter extends CActiveRecord
 {
+  public function tableName()
+  {
+    return '{{faceted_parameter}}';
+  }
+
+
+  /**
+   * @param string $className
+   *
+   * @return static BFacetedParameter
+   */
+  public static function model($className = __CLASS__)
+  {
+    return parent::model(get_called_class());
+  }
+
   /**
    * @return array
    */

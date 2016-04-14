@@ -42,6 +42,7 @@ class BFacetedParameterBehavior extends SActiveRecordBehavior
     if( $this->find() )
     {
       BFacetedParameter::model()->deleteAll($this->getCriteria());
+
       $this->reindex();
     }
   }
@@ -78,6 +79,10 @@ class BFacetedParameterBehavior extends SActiveRecordBehavior
    */
   private function reindex()
   {
+    //ViewHelper::showFlash('Индексация фильтра началсь и может занять несколько минут');
+    //Utils::finishRequest();
+    //$facetIndexer = new FacetIndexer();
+    //$facetIndexer->reindexAll();
     $runner = new CConsoleCommandRunner();
     $runner->commands = array(
       'indexer' => array(

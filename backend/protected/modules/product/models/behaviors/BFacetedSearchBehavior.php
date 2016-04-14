@@ -10,102 +10,35 @@
  */
 class BFacetedSearchBehavior extends SActiveRecordBehavior
 {
+  /**
+   * @var FacetIndexer $facetIndexer
+   */
+  protected $facetIndexer;
+
+  public function init()
+  {
+    parent::init();
+
+    $this->facetIndexer = new FacetIndexer();
+  }
+
   public function afterSave($event)
   {
-    $this->refreshAll($this->owner);
-  }
-
-  /**
-   * @param BProduct $product
-   *
-   * @return void
-   */
-  private function refreshAll(BProduct $product)
-  {
-    $this->remove($product);
-    $this->add($product);
-  }
-
-  /**
-   * @param BProduct $product
-   */
-  private function add(BProduct $product)
-  {
     /**
-     * @var BFacetedParameter $parameters
+     * BProduct $product
      */
-    $parameters = BFacetedParameter::model()->findAll();
+    $product = $this->owner;
 
-    foreach($parameters as $parameter)
+    if( $this->owner->asa('modificationBehavior') )
     {
-      foreach($this->getValues($product, $parameter->parameter) as $value)
-      {
-        if( empty($value) )
-          continue;
+      if( $parentId = $this->owner->getParentId() )
+        $this->facetIndexer->clearIndex(array($parentId));
 
-        $item = new BFacetedSearch();
-        $item->value = $value;
-        $item->param_id = $parameter->parameter;
-        $item->product_id = $product->id;
-        $item->save();
-      }
+      $productIdList = $this->owner->getFacetProductIdList();
     }
-  }
+    else
+      $productIdList = array($product->id);
 
-  /**
-   * @param BProduct $product
-   * @param $parameterId
-   *
-   * @return array
-   */
-  private function getValues(BProduct $product, $parameterId)
-  {
-    return is_numeric($parameterId) ? $this->getParameterValues($product, $parameterId) : $this->getPropertyValues($product, $parameterId);
-  }
-
-  /**
-   * @param $product
-   * @param $id
-   *
-   * @return array
-   */
-  private function getPropertyValues(BProduct $product, $id)
-  {
-    $value = isset($product->{$id}) ? $product->{$id} : null;
-    return is_array($value) ? $value : array($value);
-  }
-
-  /**
-   * @param BProduct $product
-   * @param integer $id
-   *
-   * @return array
-   */
-  private function getParameterValues(BProduct $product, $id)
-  {
-    /**
-     * @var BProductParam $parameter
-     */
-    $parameters = BProductParam::model()->findAllByAttributes(array('param_id' => $id, 'product_id' => $product->id));
-
-    $values = array_map(function(BProductParam $parameter){
-      $variant = $parameter->variant;
-      return $variant ? $parameter->variant_id : $parameter->value;
-    }, $parameters);
-
-    return $values;
-  }
-
-  /**
-   * @param BProduct $product
-   *
-   * @return integer
-   */
-  private function remove(BProduct $product)
-  {
-    $criteria = new CDbCriteria();
-    $criteria->compare('product_id', $product->id);
-
-    return BFacetedSearch::model()->deleteAll($criteria);
+    $this->facetIndexer->reindexProducts($productIdList);
   }
 }
