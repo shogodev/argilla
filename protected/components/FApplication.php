@@ -18,6 +18,7 @@
  * @property RequestRedirectComponent $requestRedirect
  * @property EPhpThumb $phpThumb
  * @property Meta $meta
+ * @property CAttributeCollection $params
  */
 class FApplication extends CWebApplication
 {

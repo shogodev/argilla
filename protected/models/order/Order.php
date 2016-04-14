@@ -80,8 +80,9 @@ class Order extends FActiveRecord
 
   public function beforeSave()
   {
+    // При update'е onBeforeSave в поведениях на вызывается
     if( !$this->isNewRecord )
-      return parent::beforeSave();
+      return true;
 
     $this->sum = $this->basket->getSumTotal();
     $this->ip = ip2long(Yii::app()->request->userHostAddress);
@@ -94,9 +95,11 @@ class Order extends FActiveRecord
 
   public function afterSave()
   {
+    // При update'е onAfterSave в поведениях на вызывается
     if( !$this->isNewRecord )
-      parent::afterSave();
+      return;
 
+    parent::afterSave();
     $this->saveProducts();
   }
 

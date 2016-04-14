@@ -62,8 +62,6 @@ class RetailCrm extends CApplicationComponent
 
   protected $exportProductCounter;
 
-  protected $beginExportTime;
-
   /**
    * @var RetailCrm\ApiClient $apiClient
    */
@@ -91,7 +89,7 @@ class RetailCrm extends CApplicationComponent
     if( !$this->enabled )
       return;
 
-    $this->flushContent();
+    Utils::finishRequest();
 
     try
     {
@@ -115,7 +113,7 @@ class RetailCrm extends CApplicationComponent
     if( !$this->enabled )
       return;
 
-    $this->flushContent();
+    Utils::finishRequest();
 
     try
     {
@@ -140,9 +138,8 @@ class RetailCrm extends CApplicationComponent
     if( Yii::app()->request->getParam('force') != 'force' )
       return;
 
-    $this->beginExportTime = microtime(true);
-    $this->logger->log('Начало экспорта icml');
-    $this->logger->flush();
+    $this->logger->startTimer(get_class($this));
+    $this->logger->log('Начало экспорта icml', true);
     Yii::app()->attachEventHandler('onEndRequest', array($this, 'onEndExport'));
     Yii::app()->attachEventHandler('onException', array($this, 'onError'));
     Yii::app()->attachEventHandler('onError', array($this, 'onError'));
@@ -151,13 +148,9 @@ class RetailCrm extends CApplicationComponent
 
   public function onEndExport($event)
   {
-    $time = microtime(true) - $this->beginExportTime;
-    $logMessage = 'Экспорт icml завершен за '.sprintf("%.1f", $time).' с.'.PHP_EOL;
+    $logMessage = 'Экспорт icml завершен за '.$this->logger->finishTimer(get_class($this)).PHP_EOL;
     $logMessage .= 'Обработано '.$this->exportProductCounter.' продуктов.'.PHP_EOL;
-    $logMessage .= 'Максимальное использовано памяти '.Yii::app()->format->formatSize(memory_get_peak_usage());
-
-    $this->logger->log($logMessage);
-    $this->logger->flush();
+    $this->logger->log($logMessage, true, true);
   }
 
   public function onError($event)
@@ -342,14 +335,5 @@ class RetailCrm extends CApplicationComponent
     }
 
     return null;
-  }
-
-  private function flushContent()
-  {
-    if( function_exists('fastcgi_finish_request') )
-    {
-      session_write_close();
-      fastcgi_finish_request();
-    }
   }
 }
