@@ -89,7 +89,7 @@ class OfferIterator extends CDataProviderIterator
       'quantity' => $product->dump == 1 ? 1000 : 0,
     );
 
-    $offer['params'] = $this->getParameters($product, $product->getProductOneParameters());
+    $offer['params'] = $this->getParameters($product, $product->getParametersCard());
 
     return $offer;
   }
