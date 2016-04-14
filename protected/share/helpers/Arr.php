@@ -515,4 +515,16 @@ class Arr
 
     return $outArray;
   }
+
+  /**
+   * Возвращает случайный элемент из массива $elements
+   * @param array $elements
+   *
+   * @return mixed
+   */
+  public static function random(array $elements)
+  {
+    shuffle($elements);
+    return current($elements);
+  }
 }

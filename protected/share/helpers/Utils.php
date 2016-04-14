@@ -336,4 +336,16 @@ class Utils
 
     return false;
   }
+
+  /**
+   * Отдает ответ клиенту с продолжением работы скрипта (работает тольео на php-fpm)
+   */
+  public static function finishRequest()
+  {
+    if( function_exists('fastcgi_finish_request') )
+    {
+      session_write_close();
+      fastcgi_finish_request();
+    }
+  }
 }
