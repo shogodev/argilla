@@ -3,14 +3,10 @@
  * @var ErrorController $this
  */
 ?>
-<section id="main">
+<div class="error-text">
+  <h1 class="error-code">Ошибка 404</h1>
 
-  <?php $this->renderPartial('/_breadcrumbs');?>
-
-  <h2 class="m7">Ошибка 404</h2>
-
-  <div class="error">
-    <p class="bb"><?php echo CHtml::encode($this->errorMessage); ?></p>
+  <div class="error-note">
+    <?php echo CHtml::encode($this->errorMessage); ?>
   </div>
-
-</section>
+</div>

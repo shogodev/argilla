@@ -11,6 +11,8 @@
  */
 class ErrorController extends FController
 {
+  public $layout = '404';
+
   /**
    * @var int
    */

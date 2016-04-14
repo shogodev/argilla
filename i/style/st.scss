@@ -18,7 +18,11 @@ $hovered-link-color: $black;
 
 $font-family: sans-serif;
 $font-size: 14px;
-$line-height: 1.2em;
+$mobile-font-size: 12px;
+$line-height: 1.2;
+
+$light: 300;
+$thin: 100;
 
 
 // Structure
@@ -26,6 +30,15 @@ $line-height: 1.2em;
 $wrapper-width: 1250px;
 $header-height: 150px;
 $footer-height: 200px;
+
+
+// Media queries
+
+$small-mobile-width: 480px;
+$mobile-width: 800px;
+$tablet-width: 950px;
+$small-notebook-width: 1200px;
+$notebook-width: 1400px;
 
 
 /*   -=========== Imports ===========-   */

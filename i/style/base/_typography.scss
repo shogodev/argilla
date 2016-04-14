@@ -1,9 +1,17 @@
 
 /*   -=========== Typography ===========-   */
 
-body {
+html {
   font: #{$font-size}/#{$line-height} $font-family;
-  background: white;
+  font-weight: $light;
+
+  @media only screen and (max-width: $mobile-width) {
+    font-size: $mobile-font-size;
+  }
+}
+
+body {
+  background: $body-bg;
   color: $text-color;
 }
 
@@ -23,22 +31,23 @@ body {
 .h1, .h2, .h3, .h4 {
   font-weight: bold;
   text-transform: uppercase;
+  line-height: 1.2;
 }
 
 .h1 {
-  font-size: 1.875em;
+  font-size: 1.875rem;
 }
 
 .h2 {
-  font-size: 1.515em;
+  font-size: 1.515rem;
 }
 
 .h3 {
-  font-size: 1.125em;
+  font-size: 1.125rem;
 }
 
 .h4 {
-  font-size: 1em;
+  font-size: 1rem;
 }
 
 
@@ -106,7 +115,7 @@ a.nova, .nova a {
 
 @for $i from 11 through 36 {
   .s#{$i} {
-    font-size: 1px * $i;
+    font-size: #{1px / $font-size * $i}rem;
     line-height: $line-height;
   }
 }

@@ -184,51 +184,51 @@
 <!-- End of navigation-panel -->
 
 <script>
-//<![CDATA[
-  // На маленьких мониторах сразу прячем панель
-  if ( $(window).width() < 1100 || $.cookie('templates_navigation') == 'false' ) {
-    $('#templates-navigation').toggleClass('collapsed');
-  }
-  // Скрытие панели
-  $('.templates-navigation-toggle').on('click', function() {
-    $('#templates-navigation').toggleClass('collapsed');
-    if ( $('#templates-navigation').hasClass('collapsed') ) {
-      $.cookie('templates_navigation', false, {'path' : '/'});
-    } else {
-      $.cookie('templates_navigation', true, {'path' : '/'});
+  document.addEventListener('DOMContentLoaded', function() {
+    // На маленьких мониторах сразу прячем панель
+    if ( $(window).width() < 1100 || $.cookie('templates_navigation') == 'false' ) {
+      $('#templates-navigation').toggleClass('collapsed');
     }
-  });
-  // Закрытие панели
-  $('.templates-navigation-close').on('click', function(e){
-    e.preventDefault();
-    $('#templates-navigation').hide();
-  });
-
-  var changeDescription = function() {
-    // Выводит описание открытой страницы из дата-атрибутов
-    var currentPage = window.location.pathname;
-    $('.templates-map li a').each(function() {
-      if ( $(this).attr('href') == currentPage ) {
-        $('.template-description').html( $(this).data('description') );
-        $(this).addClass('active');
+    // Скрытие панели
+    $('.templates-navigation-toggle').on('click', function() {
+      $('#templates-navigation').toggleClass('collapsed');
+      if ( $('#templates-navigation').hasClass('collapsed') ) {
+        $.cookie('templates_navigation', false, {'path' : '/'});
+      } else {
+        $.cookie('templates_navigation', true, {'path' : '/'});
       }
     });
-  }
+    // Закрытие панели
+    $('.templates-navigation-close').on('click', function(e){
+      e.preventDefault();
+      $('#templates-navigation').hide();
+    });
 
-  $(function(){
-    changeDescription();
+    var changeDescription = function() {
+      // Выводит описание открытой страницы из дата-атрибутов
+      var currentPage = window.location.pathname;
+      $('.templates-map li a').each(function() {
+        if ( $(this).attr('href') == currentPage ) {
+          $('.template-description').html( $(this).data('description') );
+          $(this).addClass('active');
+        }
+      });
+    }
 
-    var scrollHeight = $(window).height() - $('.template-description-block').position().top - 10;
-    $('.template-description-block').css( 'height', scrollHeight );
-    $('.templates-map').css( 'height', $('.templates-map-container').height() );
-    $('.scroll-pane').perfectScrollbar();
-  })
+    $(function(){
+      changeDescription();
 
-  $(window).resize(function(){
-    var scrollHeight = $(window).height() - $('.template-description-block').position().top - 10;
-    $('.template-description-block').css( 'height', scrollHeight );
-    $('.templates-map').css( 'height', $('.templates-map-container').height() );
-    $('.scroll-pane').perfectScrollbar();
+      var scrollHeight = $(window).height() - $('.template-description-block').position().top - 10;
+      $('.template-description-block').css( 'height', scrollHeight );
+      $('.templates-map').css( 'height', $('.templates-map-container').height() );
+      $('.scroll-pane').perfectScrollbar();
+    })
+
+    $(window).resize(function(){
+      var scrollHeight = $(window).height() - $('.template-description-block').position().top - 10;
+      $('.template-description-block').css( 'height', scrollHeight );
+      $('.templates-map').css( 'height', $('.templates-map-container').height() );
+      $('.scroll-pane').perfectScrollbar();
+    });
   });
-//]]>
 </script>
