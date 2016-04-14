@@ -10,7 +10,7 @@ abstract class AbstractAggregator
   public $groupByColumn;
 
   /**
-   * @var integer|null $collectItemBufferSize чилсо строк обработанных перет записью, если null то сначало все соберается, потом пишется
+   * @var integer|null $collectItemBufferSize чилсо строк обработанных перед записью, если null то сначало все собирается, потом пишется
    */
   public $collectItemBufferSize;
 
@@ -39,10 +39,10 @@ abstract class AbstractAggregator
 
   abstract public function process($data, $rowIndex, $file, $groupIndex);
 
-  public function init()
+  public function beforeProcessNewFile()
   {
     $this->clearData();
-    $this->writer->init();
+    $this->writer->beforeProcessNewFile();
   }
 
   public function collect($data, $rowIndex, $file)

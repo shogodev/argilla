@@ -7,6 +7,8 @@
  */
 class ImportHelper
 {
+  private static $urlCache;
+
   /**
    * @param $folder
    * @param array $extensions
@@ -145,8 +147,15 @@ class ImportHelper
   {
     foreach($array as $key => $columnIndex)
     {
-      if( !empty($columnIndex) && !is_numeric($columnIndex) )
+      if( !empty($columnIndex) && !is_numeric($columnIndex) && !is_array($columnIndex) )
+      {
         $array[$key] = self::lettersToNumber($columnIndex);
+      }
+      else if(is_array($columnIndex))
+      {
+        $columnIndex[0] = self::lettersToNumber(Arr::get($columnIndex, 0));
+        $array[$key] = $columnIndex;
+      }
       else
         unset($array[$key]);
     }
@@ -202,5 +211,74 @@ class ImportHelper
       preg_replace("/(^\\{$wrapper})/", '', $path);
 
     return $path.$wrapper;
+  }
+
+  /**
+   * @param string $table
+   * @param $url
+   * @param bool|false $warmUpCache - прогреть
+   *
+   * @return mixed|string
+   */
+  public static function createUniqueUrl($table, $url, $warmUpCache = false)
+  {
+    if( !isset(self::$urlCache[$table]) )
+    {
+      self::$urlCache[$table] = array();
+
+      if( $warmUpCache )
+      {
+        foreach(self::getUrls($table) as $itemUrl)
+          self::$urlCache[$table][$itemUrl] = $itemUrl;
+      }
+    }
+
+    if( !$warmUpCache )
+    {
+      if( $itemUrl = Arr::get(self::getUrls($table, $url), 0 ) )
+        self::$urlCache[$table][$itemUrl] = $itemUrl;
+    }
+
+    $uniqueUrl = Utils::translite(trim($url));
+    $suffix = 1;
+    while( isset(self::$urlCache[$table][$uniqueUrl]) )
+    {
+      $uniqueUrl = $url.'_'.$suffix++;
+
+      if( !$warmUpCache )
+      {
+        if( $checkUrl = Arr::get(self::getUrls($table, $uniqueUrl), 0 ) )
+          self::$urlCache[$table][$checkUrl] = $checkUrl;
+      }
+    }
+
+    if( $warmUpCache )
+      self::$urlCache[$table][$uniqueUrl] = $uniqueUrl;
+
+    return $uniqueUrl;
+  }
+
+  /**
+   * @param $table|null "null" clears all
+   */
+  public static function clearUrlCache($table)
+  {
+    if( is_null($table) )
+      self::$urlCache = null;
+    else
+      self::$urlCache[$table] = null;
+  }
+
+  private static function getUrls($table, $url = null)
+  {
+    $criteria = new CDbCriteria();
+    $criteria->select = 'url';
+
+    if( isset($url) )
+      $criteria->compare('url', $url);
+
+    $command = Yii::app()->db->schema->commandBuilder->createFindCommand($table, $criteria);
+
+    return $command->queryColumn();
   }
 }

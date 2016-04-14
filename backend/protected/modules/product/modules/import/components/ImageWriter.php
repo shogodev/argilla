@@ -13,13 +13,50 @@ Yii::import('backend.modules.product.modules.import.components.abstracts.Abstrac
 /**
  * Class ImageWriter
  * @property string $sourcePath
- * @property bool $replaceFile default false
  */
 class ImageWriter extends AbstractImportWriter
 {
+  /**
+   * Пропускаем с предупреждением
+   */
+  const FILE_ACTION_SKIP_WITH_WARNING = 1;
+
+  /**
+   * Пропускаем с без предупреждения(по тихому)
+   */
+  const FILE_ACTION_SKIP_SILENT = 2;
+
+  /**
+   * Заменяем существующий файл
+   */
+  const FILE_ACTION_REPLACE_OLD = 3;
+
+  /**
+   * Переименовывает новый файл в уникальное имя
+   */
+  const FILE_ACTION_RENAME_NEW_FILE = 4;
+
+  const DB_ACTION_EXISTING_RECORD_SKIP_WITH_WARNING = 1;
+
+  const DB_ACTION_EXISTING_RECORD_SKIP_SILENT = 2;
+
+  //const DB_ACTION_EXISTING_RECORD_REPLACE = 3;
+
+  /**
+   * @var int $actionWithSameFiles действия с одинаковыми файлами (FILE_ACTION_SKIP_WITH_WARNING, FILE_ACTION_SKIP_SILENT, FILE_ACTION_REPLACE_OLD)
+   */
+  public $actionWithSameFiles = self::FILE_ACTION_SKIP_WITH_WARNING;
+
+  public $actionWithExistingRecord = self::DB_ACTION_EXISTING_RECORD_SKIP_WITH_WARNING;
+
   public $previews = array();
 
   public $defaultJpegQuality = 90;
+
+  /***
+   * @var bool $phpThumbErrorExceptionToWarning - игнорировать phpThumb исключения
+   */
+  public $phpThumbErrorExceptionToWarning = true;
 
   /**
    * @var EPhpThumb
@@ -33,24 +70,23 @@ class ImageWriter extends AbstractImportWriter
     'productImage' => '{{product_img}}'
   );
 
-  protected $basePath = 'f/product';
+  protected $outputPath;
 
-  protected $sourcePath = 'src';
-
-  protected $replaceFile = false;
+  protected $sourcePath;
 
   /**
    * @var CDbCommandBuilder $commandBuilder
    */
   protected $commandBuilder;
 
-  public function __construct(ConsoleFileLogger $logger)
+  public function __construct(ConsoleFileLogger $logger, $sourcePath = 'f/product/src', $outputPath = 'f/product')
   {
     parent::__construct($logger);
 
-    $this->basePath = realpath(Yii::getPathOfAlias('frontend').'/..').ImportHelper::wrapInSlash($this->basePath);
+    $basePath = realpath(Yii::getPathOfAlias('frontend').'/..');
 
-    $this->sourcePath = $this->basePath.ImportHelper::wrapInSlashEnd($this->sourcePath);
+    $this->outputPath = $basePath.ImportHelper::wrapInSlashBegin($outputPath);
+    $this->sourcePath = $basePath.ImportHelper::wrapInSlashBegin($sourcePath);
 
     $this->commandBuilder = Yii::app()->db->schema->commandBuilder;
 
@@ -62,6 +98,10 @@ class ImageWriter extends AbstractImportWriter
     ));
 
     $this->phpThumb->init();
+  }
+
+  public function showStatistics()
+  {
   }
 
   public function writeAll(array $data)
@@ -91,26 +131,42 @@ class ImageWriter extends AbstractImportWriter
     }
   }
 
-  public function showStatistics()
-  {
-
-  }
-
-  protected function setSourcePath($path)
-  {
-    $this->sourcePath = $this->basePath.ImportHelper::wrapInSlashEnd($path);
-  }
-
-  protected function setReplaceFile($replace)
-  {
-    $this->replaceFile = $replace;
-  }
-
   protected function safeWriteItem($uniqueAttributeValue, $images)
   {
     try
     {
-      $this->write($uniqueAttributeValue, $images);
+      if( !($productId = $this->getProductIdByAttribute($this->uniqueAttribute, $uniqueAttributeValue)) )
+        throw new WarningException('Не удалсь найти продукт по атрибуту '.$this->uniqueAttribute.' = '.$uniqueAttributeValue);
+
+      foreach($images as $itemData)
+      {
+        $image = $itemData['file'];
+        $file = $this->sourcePath.ImportHelper::wrapInSlashBegin($image);
+
+        if( !file_exists($file) )
+          throw new WarningException('Файл '.$file.' не найден (строка '.$itemData['rowIndex'].')');
+
+        try
+        {
+          $this->beginTransaction();
+
+          $fileName = pathinfo($file, PATHINFO_BASENAME);
+          $fileName = $this->normalizeFileName($fileName);
+
+          $firstImage = reset($images)['file'];
+          $type = ($image == $firstImage ? 'main' : 'gallery');
+          $this->write($file, $fileName, $productId, $type);
+
+          $this->commitTransaction();
+        }
+        catch(Exception $e)
+        {
+          $this->rollbackTransaction();
+
+          if( !($e instanceof SilentException) )
+            throw $e;
+        }
+      }
     }
     catch(WarningException $e)
     {
@@ -118,53 +174,136 @@ class ImageWriter extends AbstractImportWriter
     }
   }
 
-  protected function write($uniqueAttributeValue, array $images)
+  protected function write($file, $fileName, $productId, $type)
   {
-    if( !($productId = $this->getProductIdByAttribute($this->uniqueAttribute, $uniqueAttributeValue)) )
-      throw new WarningException('Не удалсь найти продукт по атрибуту '.$this->uniqueAttribute.' = '.$uniqueAttributeValue);
+    $record = $this->findRecordByNameAndParent($fileName, $productId);
+    $fileExists = $this->checkExistFile($fileName);
 
-    foreach($images as $image)
+    if( $fileExists )
     {
-      $file = $this->sourcePath.$image;
-
-      if( !file_exists($file) )
-        throw new WarningException('Файл '.$file.' не найден');
-
-      $type = ($image == reset($images) ? 'main' : 'gallery');
-
-      try
+      switch( $this->actionWithSameFiles )
       {
-        $this->beginTransaction();
-        $newFileName = $this->createProductImageRecord($file, $productId, $type);
-        $this->createImages($file, $newFileName);
-        $this->commitTransaction();
-      }
-      catch(Exception $e)
-      {
-        $this->rollbackTransaction();
-        throw $e;
+        case self::FILE_ACTION_SKIP_WITH_WARNING:
+          throw new WarningException('Файл '.$fileName.' существует (старое имя '.$file.')');
+          break;
+
+        case self::FILE_ACTION_SKIP_SILENT:
+          throw new SilentException('Файл '.$fileName.' существует (старое имя '.$file.')');
+          break;
+
+        case self::FILE_ACTION_RENAME_NEW_FILE:
+          $fileName = $this->createUniqueFileName($fileName);
+          break;
+
+        case self::FILE_ACTION_REPLACE_OLD:
+          break;
       }
     }
+
+    if( $record )
+    {
+      switch( $this->actionWithExistingRecord )
+      {
+        case self::DB_ACTION_EXISTING_RECORD_SKIP_WITH_WARNING:
+          throw new WarningException('Запись c name = '.$fileName.' и parent = '.$record['parent'].' существует (id = '.$record['id'].')');
+          break;
+
+        case self::DB_ACTION_EXISTING_RECORD_SKIP_SILENT:
+          throw new SilentException('Запись c name = '.$fileName.' и parent = '.$record['parent'].' существует (id = '.$record['id'].')');
+          break;
+
+        /*        case self::DB_ACTION_EXISTING_RECORD_REPLACE:
+          //to-do: Стерать все записи продукта и файлы, и записать новые
+          if( $fileExists )
+            $this->deleteOldImages($record['name']);
+
+          if( $record['name'] != $fileName )
+            $this->updateImageRecord($record['id'], $productId);
+
+          $this->createImages($file, $fileName);
+          break;*/
+      }
+    }
+    else
+    {
+      $this->createImageRecord($fileName, $productId, $type);
+      $this->createImages($file, $fileName);
+    }
+  }
+
+  /**
+   * @param $fileName
+   * @param $productId
+   *
+   * @return mixed
+   */
+  protected function findRecordByNameAndParent($fileName, $productId)
+  {
+    $criteria = new CDbCriteria();
+    $criteria->compare('name', $fileName);
+    $criteria->compare('parent', $productId);
+
+    $command = $this->commandBuilder->createFindCommand($this->tables['productImage'], $criteria);
+
+    return $command->queryRow();
+  }
+
+  /**
+   * @param $fileName
+   *
+   * @return bool
+   */
+  protected function checkExistFile($fileName)
+  {
+    return file_exists($this->outputPath.ImportHelper::wrapInSlashBegin($fileName));
+  }
+
+  protected function deleteOldImages($fileName)
+  {
+    foreach($this->previews as $preview => $sizes)
+    {
+      $filePath = $this->outputPath.ImportHelper::wrapInSlashBegin(($preview === 'origin' ? "" : $preview.'_').$fileName);
+
+      if( !unlink($filePath) )
+        throw new WarningException("Ошибка, не удальсь удалить файл ".$filePath);
+    }
+  }
+
+  /**
+   * @param $fileName
+   *
+   * @return string $newFileName
+   */
+  protected function createUniqueFileName($fileName)
+  {
+    return UploadHelper::prepareFileName($this->outputPath, $fileName);
   }
 
   protected function createImages($file, $newFileName)
   {
     foreach($this->previews as $preview => $sizes)
     {
-      $newPath = $this->basePath.($preview === 'origin' ? "" : $preview.'_').$newFileName;
+      $newPath = $this->outputPath.ImportHelper::wrapInSlashBegin(($preview === 'origin' ? "" : $preview.'_').$newFileName);
 
-      if( !$this->replaceFile && file_exists($newPath) )
-        throw new WarningException('Файл '.$newPath.' существует (старое имя '.$file.')');
-
-      $thumb = $this->phpThumb->create($file);
-      $thumb->resize($sizes[0], $sizes[1]);
-      $thumb->save($newPath);
-      chmod($newPath, 0775);
+      try
+      {
+        $thumb = $this->phpThumb->create($file);
+        $thumb->resize($sizes[0], $sizes[1]);
+        $thumb->save($newPath);
+        chmod($newPath, 0775);
+      }
+      catch(Exception $e)
+      {
+        if( $this->phpThumbErrorExceptionToWarning )
+          throw new WarningException($e->getMessage());
+        else
+          throw $e;
+      }
     }
   }
 
   /**
-   * @param $file
+   * @param $fileName
    * @param $productId
    * @param $type
    *
@@ -174,31 +313,30 @@ class ImageWriter extends AbstractImportWriter
    * @internal param $filePath
    * @internal param string $file
    */
-  protected function createProductImageRecord($file, $productId, $type)
+  protected function createImageRecord($fileName, $productId, $type)
   {
-    $fileName = pathinfo($file, PATHINFO_BASENAME);
-    $fileName = $this->normalizeFileName($fileName);
+    $command = $this->commandBuilder->createInsertCommand($this->tables['productImage'], array(
+      'parent' => $productId,
+      'name' => $fileName,
+      'type' => $type
+    ));
 
-    $criteria = new CDbCriteria();
-    $criteria->compare('name', $fileName);
-    $command = $this->commandBuilder->createFindCommand($this->tables['productImage'], $criteria);
-    $result = $command->queryRow();
-
-    if( !$result )
+    if( !$command->execute() )
     {
-      $command = $this->commandBuilder->createInsertCommand($this->tables['productImage'], array(
-        'parent' => $productId,
-        'name' => $fileName,
-        'type' => $type
-      ));
-
-      if( !$command->execute() )
-      {
-        throw new WarningException('Ошибака записи файла '.$fileName.' в БД product_id = '.$productId);
-      }
+      throw new WarningException('Ошибака записи файла '.$fileName.' в БД product_id = '.$productId);
     }
+  }
 
-    return $fileName;
+  protected function updateImageRecord($id, $fileName)
+  {
+    $criteria = new CDbCriteria();
+    $criteria->compare('id', $id);
+    $command = $this->commandBuilder->createUpdateCommand($this->tables['productImage'], array('name' => $fileName), $criteria);
+
+    if( !$command->execute() )
+    {
+      throw new WarningException('Ошибака обновления записи в БД id = '.$id);
+    }
   }
 
   protected function getProductIdByAttribute($attribute, $value)

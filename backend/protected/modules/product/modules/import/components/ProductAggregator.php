@@ -17,6 +17,17 @@ class ProductAggregator extends AbstractAggregator
 {
   public $useModification = true;
 
+  /**
+   * @var array $product
+   * пример:
+   * ImportHelper::convertColumnIndexes(array(
+   *  'content' => 's',
+   *  'test' => array('t', 'defaultValue' => 1),
+   *  'price' => array('o', 'value' => 5000),
+   *  'visible' => array('q', 'value' => 1),
+   *  'dump' => array('p', 'callback' => function($value, $data) { return preg_match('/^A/', $data[10]) ? 1 : 0; }),
+   * ));
+   */
   public $product = array(
     'name' => '',
     'articul' => '',
@@ -45,14 +56,13 @@ class ProductAggregator extends AbstractAggregator
    */
   public $assignmentDelimiter = ',';
 
-
   /**
    * @var array
    */
   public $parameter = array();
 
   /**
-   * @var array
+   * @var array $parameterCommon общие параметры, также доэны быть указанны в $parameter
    */
   public $parameterCommon = array();
 
@@ -62,7 +72,14 @@ class ProductAggregator extends AbstractAggregator
 
   public $defaultBasketParameterKey = 'basket';
 
-  private $parameterAttributes = array();
+  private $parameterAttributesCache = array();
+
+  public function beforeProcessNewFile()
+  {
+    parent::beforeProcessNewFile();
+
+    $this->parameterAttributesCache = array();
+  }
 
   public function process($data, $rowIndex, $file, $groupIndex)
   {
@@ -81,9 +98,9 @@ class ProductAggregator extends AbstractAggregator
     }
     else
     {
-      $url = Utils::translite($data[$this->product['url']]);
+      $url = isset($this->product['url']) ? Utils::translite($data[$this->product['url']]) : null;
 
-      if( $this->useModification && $this->data[$groupIndex]['product']['url'] != $url )
+      if( $this->useModification && $url && $this->data[$groupIndex]['product']['url'] != $url )
       {
         if( empty($this->data[$groupIndex]['modification']) )
         {
@@ -135,23 +152,54 @@ class ProductAggregator extends AbstractAggregator
   {
     $productAttributes = array();
 
-    foreach($this->product as $attribute => $columnIndex)
-      $productAttributes[$attribute] = $this->dataFilterByAttribute($attribute, $data[$columnIndex]);
+    foreach($this->product as $attribute => $columnConfig)
+    {
+      $value = $this->preProcessValue($columnConfig, $data);
+      $productAttributes[$attribute] = $this->dataFilterByAttribute($attribute, $value);
+    }
+
+    if( isset($productAttributes['price'], $productAttributes['price_old']) && $productAttributes['price_old'] <= $productAttributes['price'] )
+      $productAttributes['price_old'] = 0;
 
     return $productAttributes;
+  }
+
+  protected function extractColumnIndex($columnConfig)
+  {
+    return is_array($columnConfig) ? Arr::get($columnConfig, 0) : $columnConfig;
+  }
+
+  protected function preProcessValue($columnConfig, $data)
+  {
+    if( !isset($data[$this->extractColumnIndex($columnConfig)]) )
+      return '';
+
+    $value = $data[$this->extractColumnIndex($columnConfig)];
+
+    if( empty($value) && isset($columnConfig['defaultValue']) )
+    {
+      $value = $columnConfig['defaultValue'];
+    }
+    if( isset($columnConfig['value']) )
+    {
+      $value = $columnConfig['value'];
+    }
+    if( isset($columnConfig['callback']) && is_callable($columnConfig['callback']) )
+    {
+      $value = $columnConfig['callback']($value, $data);
+    }
+
+    return $value;
   }
 
   protected function getAssignmentData($data)
   {
     $associationData = array();
 
-    foreach($this->assignment as $attribute => $columnIndex)
+    foreach($this->assignment as $attribute => $columnConfig)
     {
-      $value = $this->dataFilterByAttribute($attribute, $data[$columnIndex]);
-      if( strpos($value, $this->assignmentDelimiter) !== false )
-      {
-        $value = explode($this->assignmentDelimiter, $value);
-      }
+      $value = $this->preProcessValue($columnConfig, $data);
+      $value = $this->dataFilterByAttribute($attribute, $value);
 
       $associationData[$attribute] = $value;
     }
@@ -163,15 +211,15 @@ class ProductAggregator extends AbstractAggregator
   {
     $parametersData = array();
 
-    foreach($this->parameter as $columnIndex)
+    foreach($this->parameter as $columnConfig)
     {
-      $value = $this->prepareParameterValue($data[$columnIndex]);
-
+      $value = $this->preProcessValue($columnConfig, $data);
       if( empty($value) )
         continue;
 
+      $columnIndex = $this->extractColumnIndex($columnConfig);
       $parameterData = $this->getParameterAttributes($columnIndex);
-      $parameterData['value'] = $this->prepareParameterValue($data[$columnIndex], $parameterData['type']);
+      $parameterData['value'] = $this->prepareParameterValue($value, $parameterData['type']);
 
       $parametersData[] = $parameterData;
     }
@@ -181,18 +229,18 @@ class ProductAggregator extends AbstractAggregator
 
   protected function getParameterAttributes($columnIndex)
   {
-    if( !isset($this->parameterAttributes[$columnIndex]) )
+    if( !isset($this->parameterAttributesCache[$columnIndex]) )
     {
       if( preg_match('/(.*):(checkbox|text|select|radio)/ui', $this->header[$columnIndex], $matches) )
       {
-        $this->parameterAttributes[$columnIndex] = array(
+        $this->parameterAttributesCache[$columnIndex] = array(
           'name' => $matches[1],
           'type' => $matches[2]
         );
       }
       else
       {
-        $this->parameterAttributes[$columnIndex] = array(
+        $this->parameterAttributesCache[$columnIndex] = array(
           'name' => $this->header[$columnIndex],
           'type' => $this->defaultParameterType
         );
@@ -200,11 +248,11 @@ class ProductAggregator extends AbstractAggregator
 
       if( $index = array_search($columnIndex, $this->parameterCommon) )
       {
-        $this->parameterAttributes[$columnIndex]['common'] = true;
+        $this->parameterAttributesCache[$columnIndex]['common'] = true;
       }
     }
 
-    return $this->parameterAttributes[$columnIndex];
+    return $this->parameterAttributesCache[$columnIndex];
   }
 
   protected function dataFilterByAttribute($attribute, $value)
@@ -222,6 +270,10 @@ class ProductAggregator extends AbstractAggregator
 
       case 'section_id':
         $value = empty($value) ? '[не задано]' : $value;
+        break;
+
+      case 'dump':
+        $value = intval(intval($value) > 0);
         break;
     }
 
