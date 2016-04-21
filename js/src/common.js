@@ -59,6 +59,9 @@
   window.IS_MOBILE_WIDTH = function() {
     return WINDOW_WIDTH <= MOBILE_WIDTH;
   }
+  window.IS_SMALL_MOBILE_WIDTH = function() {
+    return WINDOW_WIDTH <= SMALL_MOBILE_WIDTH;
+  }
 
 
   // Masked input
@@ -89,19 +92,19 @@
   // --------------
 
   // open popup
-  $DOCUMENT.on('click.overlay-open', '.js-overlay', function(ev) {
-    ev.preventDefault();
+  $DOCUMENT.on('click.overlay-open', '.js-overlay', function(e) {
+    e.preventDefault();
     $.overlayLoader(true, $($(this).attr('href')));
   });
 
   // autofocus
-  $DOCUMENT.on('overlayLoaderShow', function(ev, $node) {
+  $DOCUMENT.on('overlayLoaderShow', function(e, $node) {
     $node.find('.js-autofocus-inp').focus();
   });
 
   // close popup
-  $DOCUMENT.on('click.overlay-close', '.js-popup-close', function(ev) {
-    ev.preventDefault();
+  $DOCUMENT.on('click.overlay-close', '.js-popup-close', function(e) {
+    e.preventDefault();
     $.overlayLoader(false, $(this).closest('.js-popup'));
   });
 
@@ -117,66 +120,11 @@
   }).trigger('initSelectric');
 
 
-  // Tosrus
-  // ------
-
-  // init tosrus static gallerry
-  $('.js-tosrus-static').each(function() {
-    $(this).find('.js-tosrus-lnk').tosrus(TOSRUS_DEFAULTS);
-  });
-
-
-  // JCarousel
-  // ---------
-
-  window.jCarousel = function(carousels) {
-    return $.each(carousels, function() {
-      if ($('.jcarousel li', this.container).length < this.size + 1) return;
-
-      var $carousel = $(this.container);
-
-      $carousel.find('.jcarousel-controls').removeClass('is-hidden');
-
-      $('.jcarousel-container', this.container).jcarousel({
-        'animation' : 'fast'
-      });
-
-      // Prev
-      $('.jcarousel-prev', this.container).on('jcarouselcontrol:active', function() {
-        $(this).removeClass('is-disabled');
-      }).on('jcarouselcontrol:inactive', function() {
-        $(this).addClass('is-disabled');
-      }).jcarouselControl({
-        target: '-=1'
-      });
-
-      // Next
-      $('.jcarousel-next', this.container).on('jcarouselcontrol:active', function() {
-        $(this).removeClass('is-disabled');
-      }).on('jcarouselcontrol:inactive', function() {
-        $(this).addClass('is-disabled');
-      }).jcarouselControl({
-        target: '+=1'
-      });
-
-      // Touch
-      if (IS_MOBILE) {
-        $carousel.hammer().on('swipeleft', function() {
-          $carousel.find('.jcarousel-next').trigger('click');
-        });
-        $carousel.on('swiperight', function() {
-          $carousel.hammer().find('.jcarousel-prev').trigger('click');
-        });
-      }
-    });
-  };
-
-
   // Scroll to
   // ---------
 
-  $DOCUMENT.on('click.scroll-to', '.js-scroll-to', function(ev) {
-    ev.preventDefault();
+  $DOCUMENT.on('click.scroll-to', '.js-scroll-to', function(e) {
+    e.preventDefault();
 
     var $lnk = $(this);
     var $elemToScroll = $($lnk.attr('href'));
@@ -197,29 +145,28 @@
       $menus.on('mouseenter.js-menu', 'li', function() {
         var self = $(this);
         clearTimeout(self.data('hoverTimeout'));
-        self.addClass('is-on-hover');
+        self.addClass('is-hovered');
       });
 
       $menus.on('mouseleave.js-menu', 'li', function() {
         var self = $(this);
         self.data('hoverTimeout', setTimeout(function() {
-          self.removeClass('is-on-hover');
+          self.removeClass('is-hovered');
         }, 200));
       });
     }
 
     if (IS_MOBILE) {
-      $menus.on('click.js-m-menu', 'a', function(ev) {
-        ev.preventDefault();
+      $menus.on('click.js-m-menu', 'a', function(e) {
+        e.preventDefault();
 
         var $anchor = $(this);
         var $parent = $anchor.parent();
-        // var $dropdowns = $('.with-dropdown');
 
         var isWithDropdown = $parent.hasClass('with-dropdown');
-        var isOnHover = $parent.hasClass('is-on-hover');
+        var isOnHover = $parent.hasClass('is-hovered');
 
-        $parent.siblings().removeClass('is-on-hover');
+        $parent.siblings().removeClass('is-hovered');
 
         if (!isWithDropdown) {
           location.href = $anchor.attr('href');
@@ -227,7 +174,7 @@
           if (isOnHover) {
             location.href = $anchor.attr('href');
           } else {
-            $parent.addClass('is-on-hover');
+            $parent.addClass('is-hovered');
           }
         }
       });
@@ -236,10 +183,10 @@
 
 
   // Tabs
-  // -----
+  // ----
 
-  $('.js-tabs .tabs-nav li a').click(function(ev) {
-    ev.preventDefault();
+  $('.js-tabs .tabs-nav li a').click(function(e) {
+    e.preventDefault();
 
     var $self = $(this);
     var $panel = $( $self.attr('href') );
@@ -248,4 +195,57 @@
     $panel.closest('.tabs').find('.tabs-panel').hide();
     $panel.fadeIn();
   });
+
+
+  // Galleries
+  // ---------
+
+  // init tosrus static gallery
+  $('.js-gallery').each(function() {
+    $(this).find('.js-gallery-item').tosrus(TOSRUS_DEFAULTS);
+  });
+
+
+  // Rotators
+  // --------
+
+  $('.js-slideshow').each(function() {
+    var $self = $(this);
+
+    var tos = $self.tosrus({
+      effect: 'slide',
+      slides: {
+        visible: 1
+      },
+      autoplay: {
+        play: true,
+        timeout: 7500
+      },
+      infinite: true,
+      pagination: {
+        add: true
+      }
+    });
+  });
+
+
+  // Scrolling to top
+  // ----------------
+
+  if ( !IS_MOBILE_WIDTH() ) {
+    var goTopBtn = $('<div class="go-top-btn"></div>');
+    goTopBtn.click(function() {
+      $WINDOW.scrollTo(0, 200);
+    });
+    $WINDOW.scroll(function() {
+      var scrollTop = $WINDOW.scrollTop();
+      if ( scrollTop > 0 ) {
+        goTopBtn.addClass('visible');
+      } else {
+        goTopBtn.removeClass('visible');
+      }
+    });
+    $BODY.append( goTopBtn );
+  }
+
 })();
