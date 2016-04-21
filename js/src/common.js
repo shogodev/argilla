@@ -37,10 +37,10 @@
   // Helpers
   // -------
 
-  window.WINDOW_WIDTH = $WINDOW.width();
+  window.WINDOW_WIDTH = window.innerWidth || $WINDOW.width();
   window.WINDOW_HEIGHT = $WINDOW.height();
   $WINDOW.resize(function() {
-    WINDOW_WIDTH = $WINDOW.width();
+    WINDOW_WIDTH = window.innerWidth || $WINDOW.width();
     WINDOW_HEIGHT = $WINDOW.height();
   });
 
