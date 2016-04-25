@@ -20,6 +20,13 @@ class BProductParamVariant extends BActiveRecord
 {
   const BASE_UPLOAD_PATH = 'f/upload/images/color/';
 
+  public function behaviors()
+  {
+    return array(
+      'facetedProductParamVariant' => array('class' => 'backend.modules.product.models.behaviors.BFacetedProductParamVariant'),
+    );
+  }
+
   public function rules()
   {
     return array(

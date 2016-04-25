@@ -63,6 +63,25 @@ class BModificationBehavior extends SActiveRecordBehavior
     return parent::beforeValidate($event);
   }
 
+  public function beforeSave($event)
+  {
+    if( $this->isModification() )
+    {
+      $this->owner->detachEventHandler('onAfterSave', array(Yii::app()->controller, 'saveProductAssignment'));
+
+      $model = BProductAssignment::model();
+
+      $assignments = array();
+      foreach($model->getFields() as $field)
+      {
+        $attribute = $field->name;
+        $assignments[$attribute] = $this->getParentModel()->{$attribute};
+      }
+
+      $model->saveAssignments($this->owner, $assignments);
+    }
+  }
+
   /**
    * @return BProduct
    */
@@ -141,7 +160,7 @@ class BModificationBehavior extends SActiveRecordBehavior
     $oldDataProvider = $grid->dataProvider;
     $oldRowCssClassExpression = $grid->rowCssClassExpression;
 
-    $dataProvider = new CArrayDataProvider($this->owner->modifications);
+    $dataProvider = new CArrayDataProvider($this->owner->modifications, array('pagination' => false));
     $grid->dataProvider = $dataProvider;
     $grid->rowCssClassExpression = '"modification"';
 

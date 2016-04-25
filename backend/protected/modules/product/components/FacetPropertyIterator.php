@@ -59,6 +59,7 @@ class FacetPropertyIterator extends SqlIterator
     $criteria->select = CMap::mergeArray(array('t.id'), $this->propertyList);
     $criteria->distinct = true;
     $criteria->join = 'JOIN '.Yii::app()->db->schema->quoteTableName($this->assignmentTable).' AS a ON a.product_id = t.id';
+    $criteria->addCondition('t.parent IS NULL');
 
     if( !is_null($productIdList) )
       $criteria->addInCondition('t.id', $productIdList);

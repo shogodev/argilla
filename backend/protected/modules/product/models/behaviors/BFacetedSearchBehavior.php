@@ -5,8 +5,12 @@
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.product.behaviors
+ */
+Yii::import('backend.modules.product.components.FacetIndexer');
+/**
+ * Class BFacetedSearchBehavior
  *
- * @property BProduct $owner
+ * * @property BProduct $owner
  */
 class BFacetedSearchBehavior extends SActiveRecordBehavior
 {
@@ -32,7 +36,7 @@ class BFacetedSearchBehavior extends SActiveRecordBehavior
     if( $this->owner->asa('modificationBehavior') )
     {
       if( $parentId = $this->owner->getParentId() )
-        $this->facetIndexer->clearIndex(array($parentId));
+        $this->facetIndexer->clearIndexByProductIdList(array($parentId));
 
       $productIdList = $this->owner->getFacetProductIdList();
     }

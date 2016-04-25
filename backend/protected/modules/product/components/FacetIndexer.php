@@ -7,6 +7,7 @@
  */
 Yii::import('frontend.share.components.ManyRecordInserter');
 Yii::import('backend.modules.product.components.FacetPropertyIterator');
+Yii::import('backend.modules.product.components.FacetModificationPropertyIterator');
 Yii::import('backend.modules.product.components.FacetParameterIterator');
 
 /**
@@ -53,10 +54,12 @@ class FacetIndexer extends CComponent
     try
     {
       $this->beginTransaction();
-      $this->clearIndex($productIdList);
+
+      $this->clearIndexByProductIdList($productIdList);
 
       $propertyList = BFacetedParameter::model()->getProperties();
       $this->indexIterator(new FacetPropertyIterator($propertyList, $this->chunkSize, $productIdList));
+      $this->indexIterator(new FacetModificationPropertyIterator($propertyList, $this->chunkSize, $productIdList));
 
       $parameterList = BFacetedParameter::model()->getParameters();
       $this->indexIterator(new FacetParameterIterator($parameterList, $this->chunkSize, $productIdList));
@@ -78,12 +81,27 @@ class FacetIndexer extends CComponent
     $this->reindexProducts();
   }
 
-  public function clearIndex(array $productIdList = null)
+  public function clearIndexByParameterNameIdList(array $parameterNameIdList)
+  {
+    $criteria = new CDbCriteria();
+    $criteria->addInCondition('param_id', $parameterNameIdList);
+
+    $this->clearIndex($criteria);
+  }
+
+  public function clearIndexByProductIdList(array $productIdList = null)
   {
     $criteria = new CDbCriteria();
 
-    if( !is_null($productIdList) )
+    if( !empty($productIdList) )
     $criteria->addInCondition('product_id', $productIdList);
+
+    $this->clearIndex($criteria);
+  }
+
+  public function clearIndex(CDbCriteria $criteria = null)
+  {
+    $criteria = is_null($criteria) ? new CDbCriteria() : $criteria;
 
     $this->builder->createDeleteCommand($this->indexTable, $criteria)->execute();
   }

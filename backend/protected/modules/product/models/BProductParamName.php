@@ -61,7 +61,7 @@ class BProductParamName extends BActiveRecord
   {
     return array(
       'uploadBehavior' => array('class' => 'UploadBehavior', 'validAttributes' => 'img'),
-      'facetedParameterBehavior' => array('class' => 'BFacetedParameterBehavior'),
+      'facetedParameterBehavior' => array('class' => 'backend.modules.product.models.behaviors.BFacetedParameterBehavior'),
     );
   }
 

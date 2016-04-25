@@ -5,8 +5,12 @@
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.product.behaviors
- *
+ */
+Yii::import('backend.modules.product.components.FacetIndexer');
+/**
+ * Class BFacetedParameterBehavior
  * @property BProductParamName $owner
+ * @mixin DaoParametersBehavior
  */
 class BFacetedParameterBehavior extends SActiveRecordBehavior
 {
@@ -14,6 +18,13 @@ class BFacetedParameterBehavior extends SActiveRecordBehavior
    * @var integer
    */
   private $selection;
+
+  public function init()
+  {
+    parent::init();
+
+    $this->attachBehavior('daoParametersBehavior', 'frontend.share.behaviors.DaoParametersBehavior');
+  }
 
   public function beforeSave($event)
   {
@@ -79,19 +90,28 @@ class BFacetedParameterBehavior extends SActiveRecordBehavior
    */
   private function reindex()
   {
-    //ViewHelper::showFlash('Индексация фильтра началсь и может занять несколько минут');
-    //Utils::finishRequest();
-    //$facetIndexer = new FacetIndexer();
-    //$facetIndexer->reindexAll();
-    $runner = new CConsoleCommandRunner();
-    $runner->commands = array(
-      'indexer' => array(
-        'class' => 'frontend.commands.IndexerCommand',
-      ),
-    );
+    $reindexProductIdList = $this->getReindexProductIdList($this->owner->id);
+    $removeParameterNameId = $this->owner->id;
+    Yii::app()->attachEventHandler('onEndRequest', function($event) use($reindexProductIdList, $removeParameterNameId) {
+      ViewHelper::showFlash('Индексация фильтра началсь и может занять несколько минут');
 
-    ob_start();
-    $runner->run(array('yiic', 'indexer', 'refresh'));
-    return ob_get_clean();
+      Utils::finishRequest();
+      Utils::longLife(60);
+
+      $facetIndexer = new FacetIndexer();
+
+      $facetIndexer->clearIndexByParameterNameIdList(array($removeParameterNameId));
+      $facetIndexer->reindexProducts($reindexProductIdList);
+    });
+  }
+
+  private function getReindexProductIdList($parameterNameId)
+  {
+    $criteria = new CDbCriteria();
+    $criteria->distinct = true;
+    $criteria->select = 'product_id';
+    $criteria->compare('param_id', $parameterNameId);
+
+    return CHtml::listData($this->getParametersByCriteria($criteria, false, 'product_id'), 'product_id', 'product_id');
   }
 }
