@@ -31,13 +31,16 @@ class BProductCopier extends BAbstractModelCopier
   }
 
   /**
-   * @param $withImages
+   * @param bool $withImages - копировать с изображениями
+   * @param bool $copyAsModification - копировать как модификации (c установленным parent)
    *
-   * @return integer copied product id
+   * @return int copied product id
    */
-  public function copy($withImages = false)
+  public function copy($withImages = false, $copyAsModification = false)
   {
-    $this->copy = $this->copyModel($this->origin, null, array('parent' => $this->origin->id));
+    $attributes = $copyAsModification ? array('parent' => $this->origin->id) : array();
+
+    $this->copy = $this->copyModel($this->origin, null, $attributes);
 
     $this->copyRelations($this->copy, $this->origin, 'assignment');
     $this->copyRelations($this->copy, $this->origin, 'associations');

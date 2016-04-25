@@ -66,7 +66,7 @@ class BProductController extends BController
 
     $this->saveModels(array($model));
 
-    $view = empty($model->parent) ? '_form' : 'product.views.product.modification._modification_form';
+    $view = $model->asa('modificationBehavior') && !empty($model->parent) ? 'product.views.product.modification._modification_form' : '_form';
 
     $this->render($view, array(
       'model' => $model,
