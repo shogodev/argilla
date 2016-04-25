@@ -46,8 +46,6 @@
               ?>
             </div>
           </div>
-          <a href="" class="carousel-controls carousel-prev"></a>
-          <a href="" class="carousel-controls carousel-next"></a>
         </div>
       </div>
     <?php }?>
@@ -87,30 +85,4 @@
     </div>
   </div>
   <?php }?>
-
-  <script>
-    $(function() {
-      $('.compare-header-wrapper .carousel-controls').click(function(e) {
-        e.preventDefault();
-        var elementWidth = $('.compare-content .product').outerWidth() + parseInt($('.compare-content .product').css('marginRight'), 10),
-          content = $('.compare-content-inner'),
-          direction = 1,
-          leftPos = parseInt(content.css('left'), 10) || 0;
-        if ( $(this).hasClass('carousel-next') ) {
-          direction = -1;
-          if ( leftPos == content.width() -$('.compare-table-body').width() + parseInt($('.compare-content .product').css('marginRight'), 10) ) return;
-        } else {
-          if ( leftPos == 0 ) return;
-        }
-
-        if ( !$('body').data('busy') ) {
-          content.css('left', leftPos + elementWidth * direction);
-          $('body').data('busy', true);
-          setTimeout(function() {
-            $('body').data('busy', false);
-          }, 300);
-        }
-      });
-    });
-  </script>
 </div>
