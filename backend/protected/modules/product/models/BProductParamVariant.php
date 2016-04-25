@@ -63,7 +63,7 @@ class BProductParamVariant extends BActiveRecord
 
       if( $file = CUploadedFile::getInstanceByName(get_class($this)."[{$this->id}][{$field}]") )
       {
-        $path = realpath(Yii::getPathOfAlias('frontend').'/..').'/'.self::BASE_UPLOAD_PATH;
+        $path = GlobalConfig::instance()->rootPath.'/'.self::BASE_UPLOAD_PATH;
         $fileName = $this->id.'.'.strtolower($file->getExtensionName());
 
         if( !file_exists($path) )

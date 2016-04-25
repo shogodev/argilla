@@ -4,7 +4,9 @@
   <property name="argilla.yiiStorage" value="/usr/local/yii"/>
   <php expression="dirName(getcwd())" returnProperty="projectDirectory"/>
   <taskdef name="useGulp" classname="build.tasks.CheckUseGulp"/>
+  <taskdef name="frameworkConfig" classname="build.tasks.FrameworkConfigTask"/>
   <import file="build/db.xml"/>
+  <frameworkConfig file="protected/config/framework.php"/>
 
   <target name="bootstrap" depends="symlinkYii, createDBConfig" >
     <phing phingfile="build/db.xml" target="applySchema" haltonfailure="true"/>
@@ -45,14 +47,14 @@
     </if>
   </target>
 
-  <target name="symlinkYii" depends="getYiiVersionArgilla">
+  <target name="symlinkYii">
     <if>
       <not><available property="checkSymlink"  file="${projectDirectory}/yii" followSymlinks="true"/></not>
       <then>
-        <input message="Symlink ${argilla.yiiStorage}/${argilla.yiiVersion} for yii was not created, do want to create it? (y/n)" defaultValue="y" propertyName="confirmCreateYiiSymlink"/>
+        <input message="Symlink ${argilla.yiiStorage}/${framework.version} for yii was not created, do want to create it? (y/n)" defaultValue="y" propertyName="confirmCreateYiiSymlink"/>
         <if>
           <equals arg1="${confirmCreateYiiSymlink}" arg2="y"/>
-          <then><exec checkreturn="true" passthru="true" command="ln -s ${argilla.yiiStorage}/${argilla.yiiVersion} ${projectDirectory}/yii"/></then>
+          <then><exec checkreturn="true" passthru="true" command="ln -s ${argilla.yiiStorage}/${framework.version} ${projectDirectory}/yii"/></then>
         </if>
       </then>
       <else><echo message="Symlink with name yii already exists"/></else>
@@ -61,23 +63,20 @@
     <phingcall target="checkYiiAvailability"/>
   </target>
 
-  <target name="checkYiiAvailability" depends="getYiiVersion, getYiiVersionArgilla">
+  <target name="checkYiiAvailability" depends="getYiiVersion">
     <if>
       <not>
-        <equals arg1="${argilla.yiiVersion}" arg2="${yiiVersion}" trim="true" casesensitive="false"/>
+        <equals arg1="${framework.version}" arg2="${yiiVersion}" trim="true" casesensitive="false"/>
       </not>
       <then>
-        <warn message="Requires Yii version '${argilla.yiiVersion}', used version is '${yiiVersion}'"/>
+        <warn message="Requires Yii version '${framework.version}', used version is '${yiiVersion}'"/>
       </then>
     </if>
   </target>
 
-  <target name="getYiiVersionArgilla">
-    <php expression="require('protected/config/version.php');" returnProperty="argilla.yiiVersion"/>
-  </target>
 
   <target name="getYiiVersion">
-    <php expression="require('../yii/framework/yii.php');"/>
+    <php expression="require('${framework.path}/yii.php');"/>
     <php expression=" Yii::getVersion();" returnProperty="yiiVersion"/>
   </target>
 

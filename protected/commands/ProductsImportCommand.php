@@ -8,7 +8,7 @@
 
 Yii::import('backend.modules.product.modules.import.components.*');
 
-chdir(Yii::getPathOfAlias('frontend').'/../');
+chdir(GlobalConfig::instance()->rootPath);
 
 class ProductsImportCommand extends AbstractImportCommand
 {

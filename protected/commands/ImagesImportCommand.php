@@ -7,7 +7,7 @@
  */
 
 Yii::import('backend.modules.product.modules.import.components.*');
-chdir(Yii::getPathOfAlias('frontend').'/../');
+chdir(GlobalConfig::instance()->rootPath);
 
 // Игнорируем  E_NOTICE и E_NOTICE прежде всего для phpThumb, чтобы не прерывить импорт
 error_reporting(E_ALL & ~E_NOTICE & ~E_NOTICE);

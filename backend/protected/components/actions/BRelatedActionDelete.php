@@ -42,18 +42,19 @@ class BRelatedActionDelete extends CAction
     {
       if( strpos($e->getMessage(), 'update a parent row: a foreign key constraint fails') )
       {
-        if( !$message = $this->parseError($e->getMessage(), $id) )
+        throw $e;
+        /*        if( !$message = $this->parseError($e->getMessage(), $id) )
           throw $e;
 
         echo $message;
-        Yii::app()->end();
+        Yii::app()->end();*/
       }
     }
 
     return $result;
   }
 
-  private function parseError($error, $pk)
+  /*  private function parseError($error, $pk)
   {
     if( !preg_match('/a foreign key constraint fails \((.+)\). The SQL/', $error, $matchesQuery) )
       return null;
@@ -102,5 +103,5 @@ class BRelatedActionDelete extends CAction
   {
     $normalShortName = trim($shortName, '{}');
     return Yii::app()->db->tablePrefix.$normalShortName;
-  }
+  }*/
 }

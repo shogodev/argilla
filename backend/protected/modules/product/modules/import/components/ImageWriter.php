@@ -83,7 +83,7 @@ class ImageWriter extends AbstractImportWriter
   {
     parent::__construct($logger);
 
-    $basePath = realpath(Yii::getPathOfAlias('frontend').'/..');
+    $basePath = GlobalConfig::instance()->rootPath;
 
     $this->outputPath = $basePath.ImportHelper::wrapInSlashBegin($outputPath);
     $this->sourcePath = $basePath.ImportHelper::wrapInSlashBegin($sourcePath);

@@ -1,6 +1,10 @@
 <?php
-$production = __DIR__.'/protected/config/production.php';
+/**
+ * @var GlobalConfig $globalConfig
+ */
+require_once __DIR__.'/protected/config/global_config.php';
 
+$production = $globalConfig->frontendPath.'/production.php';
 if( file_exists($production) )
 {
   error_reporting(0);
@@ -13,11 +17,11 @@ else
   error_reporting(E_ALL);
   ini_set('display_errors', 1);
   $yii = 'yii.php';
-  $config = require_once __DIR__.'/protected/config/frontend.php';
+  $config = $globalConfig->frontendConfigPath.'/frontend.php';
 }
 
-require_once(realpath(__DIR__.'/../yii/framework/'.$yii));
-require_once('protected/components/FApplication.php');
+require_once($globalConfig->frameworkPath.'/'.$yii);
+require_once($globalConfig->frontendPath.'/components/FApplication.php');
 
 $app = new FApplication($config);
 $app->run();

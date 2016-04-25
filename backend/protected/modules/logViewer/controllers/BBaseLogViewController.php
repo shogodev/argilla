@@ -101,6 +101,6 @@ class BBaseLogViewController extends BController
 
   protected function getBasePath()
   {
-    return realpath(Yii::getPathOfAlias('frontend').'/..');
+    return GlobalConfig::instance()->rootPath;
   }
 }

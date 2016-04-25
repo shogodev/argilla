@@ -21,7 +21,7 @@ class UploadHelperTest extends CTestCase
   public function testPrepareFileName()
   {
     $this->assertEquals("testovyjfajl_.jpg", UploadHelper::prepareFileName('f/test/', 'тестовыйФайл"\\.JPG'));
-    $this->assertNotEquals("test_upload_helper.jpg", UploadHelper::prepareFileName(realpath(Yii::getPathOfAlias('frontend').'/../f/product').'/', 'test_upload_helper.jpg'));
+    $this->assertNotEquals("test_upload_helper.jpg", UploadHelper::prepareFileName(realpath(GlobalConfig::instance()->rootPath.'/f/product').'/', 'test_upload_helper.jpg'));
   }
 
   public function tearDown()
@@ -31,6 +31,6 @@ class UploadHelperTest extends CTestCase
 
   private function getTestFileName()
   {
-    return Yii::getPathOfAlias('frontend').'/../f/product/test_upload_helper.jpg';
+    return GlobalConfig::instance()->rootPath.'/f/product/test_upload_helper.jpg';
   }
 }

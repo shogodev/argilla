@@ -14,7 +14,7 @@ return array(
   'searchPredictive' => array('search/predictive', 'pattern' => 'fast_search'),
 
   // xml
-  'xmlExport' => array('xmlExport/index', 'pattern' => '<id:\w+>_xml'),
+  'xmlExport' => array('xmlExport/index', 'pattern' => '<id:\w+>_xml', 'shouldRemember' => false),
 
   // info
   'info' => array('info/index', 'pattern' => 'info/<url:[\w\-]+>', 'urlSuffix' => '.html'),

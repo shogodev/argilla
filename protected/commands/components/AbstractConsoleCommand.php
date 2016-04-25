@@ -13,6 +13,6 @@ class AbstractConsoleCommand extends CConsoleCommand
   {
     parent::init();
 
-    $this->basePath = realpath(Yii::getPathOfAlias('frontend').'/..');
+    $this->basePath = GlobalConfig::instance()->rootPath;
   }
 }

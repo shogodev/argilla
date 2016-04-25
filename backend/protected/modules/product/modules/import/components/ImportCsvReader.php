@@ -48,7 +48,7 @@ class ImportCsvReader
   {
     $this->logger = $logger;
     $this->importAggregator = $importAggregator;
-    $this->basePath = realpath(Yii::getPathOfAlias('frontend').'/..');
+    $this->basePath = GlobalConfig::instance()->rootPath;
   }
 
   public function start()

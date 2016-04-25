@@ -1,7 +1,11 @@
 <?php
-// change the following paths if necessary
-$yiit=dirname(__FILE__).'/../../yii/framework/yiit.php';
-$config=dirname(__FILE__).'/config/test.php';
+/**
+ * @var GlobalConfig $globalConfig
+ */
+require_once __DIR__.'/../../../config/global_config.php';
+
+$yiit = $globalConfig->frameworkPath.'/yiit.php';
+$config = dirname(__FILE__).'/config/test.php';
 
 require_once($yiit);
 

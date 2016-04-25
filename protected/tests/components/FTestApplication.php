@@ -19,7 +19,7 @@ class FTestApplication extends FApplication
   {
     $_SERVER['SCRIPT_FILENAME'] = realpath(__DIR__.'/../../..'.$_SERVER['SCRIPT_NAME']);
     parent::init();
-    Yii::setPathOfAlias('webroot', realpath(Yii::getPathOfAlias('frontend').'/..'));
+    Yii::setPathOfAlias('webroot', GlobalConfig::instance()->rootPath);
   }
 
   /**

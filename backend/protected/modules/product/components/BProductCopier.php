@@ -68,7 +68,7 @@ class BProductCopier extends BAbstractModelCopier
     $images = BProductImg::model()->findAllByAttributes(array('parent' => $originModel->id));
     $imageThumbsPrefixList = $this->getThumbsPrefixList();
 
-    $path = realpath(Yii::getPathOfAlias('frontend').'/../f/product').'/';
+    $path = GlobalConfig::instance()->rootPath.'/f/product/';
     foreach($images as $image)
     {
       if( $fileName = $this->copyFiles($path, $image->name, $imageThumbsPrefixList) )

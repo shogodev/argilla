@@ -45,7 +45,7 @@ class ImageWriterTest extends CDbTestCase
 
     $currentDir = dirname(__FILE__);
 
-    $this->basePath = realpath(Yii::getPathOfAlias('frontend').'/..');
+    $this->basePath = GlobalConfig::instance()->rootPath;
     $this->testSourceDir = $this->basePath.'/f/product/testSrc';
     $this->testOutDir = $this->basePath.'/f/product/testOutput';
 
