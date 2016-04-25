@@ -35,8 +35,11 @@ $.widget('argilla.filterSlider', {
         options.controls[i] = $(options.controls[i]);
 
     this.element.slider({
-      range: true, step: (this.options.ranges[4] === undefined ? 1 : this.options.ranges[4]),
-      min: this.options.ranges[0], max: this.options.ranges[1], values: [this.options.ranges[2], this.options.ranges[3]],
+      range: true,
+      step: (this.options.ranges[4] === undefined ? 1 : this.options.ranges[4]),
+      min: this.options.ranges[0],
+      max: this.options.ranges[1],
+      values: [this.options.ranges[2], this.options.ranges[3]],
       slide: function(event, ui){$.proxy(widget._slide(ui), widget)},
       stop: function(event, ui){$.proxy(widget._stopSlide(ui), widget)}
     });
@@ -111,7 +114,22 @@ $.widget('argilla.filterSlider', {
     if( typeof widget.options.ajaxMethod === 'function' )
       widget.options.ajaxMethod(data);
     else
-      $.post(ajaxUrl, data, function(response){$.proxy(widget._slideCallback(response), widget)}, 'json');
+    {
+      $.mouseLoader(true);
+      $.ajax({
+        url: ajaxUrl,
+        data: data,
+        dataType: 'json',
+        success: function(response) {
+          $.mouseLoader(false);
+          $.proxy(widget._slideCallback(response), widget);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          alert("В работе фильтра водникла ошибка, поробуйте снова.");
+          $.mouseLoader(false);
+        }
+      });
+    }
   },
 
   _setSliderValue : function() {
