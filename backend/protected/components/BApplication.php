@@ -94,15 +94,8 @@ class BApplication extends CWebApplication
     $this->setModules($this->findModules(Yii::getPathOfAlias('backend')));
 
     $this->params->project = preg_replace("/^www./", '', Yii::app()->request->serverName);
-    $this->setMbEncoding();
 
     parent::init();
-  }
-
-  protected function setMbEncoding()
-  {
-    mb_internal_encoding("UTF-8");
-    mb_http_output("UTF-8");
   }
 
   /**
