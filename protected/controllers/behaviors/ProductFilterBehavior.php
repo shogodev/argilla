@@ -23,11 +23,13 @@ class ProductFilterBehavior extends SBehavior
   private $filter;
 
   /**
+   * @param bool $autoSetFilter
+   *
    * @return Filter
    */
-  public function getFilter()
+  public function getFilter($autoSetFilter = true)
   {
-    if( is_null($this->filter) )
+    if( is_null($this->filter) && $autoSetFilter )
       $this->setFilter();
 
     return $this->filter;
@@ -81,6 +83,7 @@ class ProductFilterBehavior extends SBehavior
         'id'          => $parameter->id,
         'key'         => $parameter->key,
         'label'       => $parameter->name,
+        'notice' => $parameter->notice,
         'type'        => 'parameter',
         'htmlOptions' => ['class' => ''],
         'variants'    => $parameter->variants,

@@ -24,6 +24,8 @@
  * Class ActiveImageBehavior
  *
  * @property FActiveRecord $owner
+ * @property FActiveImage image;
+ * @property FActiveImage images;
  */
 class ActiveImageBehavior extends SBehavior
 {
@@ -61,15 +63,13 @@ class ActiveImageBehavior extends SBehavior
   {
     if( !isset($this->images) )
     {
+      $criteria = $this->getColorCriteria();
+      $criteria->compare('parent', $this->owner->getPrimaryKey());
       /**
        * @var FActiveRecord $model
        */
-      $model = call_user_func(array($this->imageClass, 'model'));
-
-      $images = $model->findAllByAttributes(
-        array('parent' => $this->owner->getPrimaryKey()),
-        array('order' => 'IF(position, position, 999999999)')
-      );
+      $model = new $this->imageClass;
+      $images = $model->findAll($criteria);
 
       $this->setImages($images, $type);
     }
@@ -93,5 +93,58 @@ class ActiveImageBehavior extends SBehavior
 
     foreach($images as $image)
       $this->images[$image['type']][] = $image;
+  }
+
+  /**
+   * Возвращает галерею изображений
+   *
+   * @param FActiveImage|null $excludeImage - исключить изображение
+   * @param array $types - доступные типы
+   *
+   * @return FActiveImage[]
+   */
+  public function getImagesGallery(FActiveImage $excludeImage = null, $types = array('main', 'gallery'))
+  {
+    $galleryImages = array();
+
+    foreach($types as $type)
+    {
+      foreach($this->getImages($type) as $image)
+      {
+        if( $image->id != $excludeImage->id )
+          $galleryImages[] = $image;
+      }
+    }
+
+    return $galleryImages;
+  }
+
+  public function getColorCriteria()
+  {
+    $criteria = new CDbCriteria();
+    $criteria->order = 'IF(position = 0, 1, 0), position';
+
+    if( !Yii::app()->controller->asa('productFilterBehavior') )
+      return $criteria;
+
+    /**
+     * @var ProductFilterBehavior $controller
+     */
+    $controller = Yii::app()->controller;
+    if( $filter = $controller->getFilter(false) )
+    {
+      if( $color = $filter->getElementByKey(ProductFilterBehavior::FILTER_COLOR) )
+      {
+        /**
+         * @var FilterElementItem $selectedItem
+         */
+        if( $selectedItem = Arr::reset($color->getSelectedItems()) )
+        {
+          $criteria->order = 'IF(notice = '.intval($selectedItem->id).', 0, 1), IF(position = 0, 1, 0), position';
+        }
+      }
+    }
+
+    return $criteria;
   }
 }

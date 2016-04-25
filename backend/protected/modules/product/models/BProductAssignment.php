@@ -142,7 +142,10 @@ class BProductAssignment extends BActiveRecord
    */
   protected function calculateAttributes($assignments)
   {
+    $this->prepareAttributes($assignments);
+
     $arrays = $digits = array();
+
     foreach($assignments as $key => $item)
       is_array($item) ? $arrays[$key] = $item : $digits[$key] = $item;
 
@@ -169,6 +172,21 @@ class BProductAssignment extends BActiveRecord
     }
 
     return $attributes;
+  }
+
+  protected function prepareAttributes(&$assignments)
+  {
+    foreach($assignments as $field => $value)
+    {
+      if( empty($value) )
+      {
+        $assignments[$field] = null;
+      }
+      else if( is_array($value) )
+      {
+        $assignments[$field] = array_combine(range(0, count($value) - 1), $value);
+      }
+    }
   }
 
   /**
