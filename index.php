@@ -4,7 +4,7 @@
  */
 require_once __DIR__.'/protected/config/global_config.php';
 
-$production = $globalConfig->frontendPath.'/production.php';
+$production = $globalConfig->frontendConfigPath.'/production.php';
 if( file_exists($production) )
 {
   error_reporting(0);

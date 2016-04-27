@@ -15,7 +15,7 @@ $.widget('argilla.filterSlider', {
     },
     keyPressDelay : 600,
     tooltipDelay : 3000,
-    timers : {},
+    timers : {}
   },
 
   submit : function() {

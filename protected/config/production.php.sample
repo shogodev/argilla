@@ -16,7 +16,7 @@ return array_replace_recursive(
         'errorAction' => 'error/error',
       ),
       'cache' => array(
-        'class'=>'system.caching.CXCache',
+        'class'=>'system.caching.CFileCache',
         'keyPrefix' => crc32(__FILE__).filemtime(__FILE__),
       )
     )
