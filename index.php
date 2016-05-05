@@ -17,7 +17,7 @@ else
   error_reporting(E_ALL);
   ini_set('display_errors', 1);
   $yii = 'yii.php';
-  $config = $globalConfig->frontendConfigPath.'/frontend.php';
+  $config = require_once $globalConfig->frontendConfigPath.'/frontend.php';
 }
 
 require_once($globalConfig->frameworkPath.'/'.$yii);

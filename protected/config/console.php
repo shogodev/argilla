@@ -4,17 +4,14 @@
  */
 $globalConfig = GlobalConfig::instance();
 
-$frontend = realpath(__DIR__.'/..');
-$backend = realpath(__DIR__.'/../../backend/protected');
-
 $config = array(
-  'basePath' => $frontend,
+  'basePath' => $globalConfig->frontendPath,
   'name' => 'Console Application',
   'preload' => array('log'),
 
   'aliases' => array(
-    'backend' => $backend,
-    'frontend' => $frontend,
+    'backend' => $globalConfig->backendPath,
+    'frontend' => $globalConfig->frontendPath,
   ),
 
   'import' => array(
@@ -23,8 +20,7 @@ $config = array(
   ),
 
   'components' => array(
-    'db' => CMap::mergeArray(require($frontend.'/config/db.php'),
-      array()
+      'db' => require($globalConfig->frontendConfigPath.'/db.php'
     ),
     'log' => array(
       'class' => 'CLogRouter',
@@ -36,13 +32,13 @@ $config = array(
       ),
     ),
     'format' => array(
-      'class'          => 'SFormatter',
+      'class' => 'SFormatter',
       'datetimeFormat' => 'd.m.Y H:i:s',
-      'dateFormat'     => 'd.m.Y',
-      'timeFormat'     => 'H:i:s',
-      'numberFormat'   => array(
-        'decimals'          => 0,
-        'decimalSeparator'  => ',',
+      'dateFormat' => 'd.m.Y',
+      'timeFormat' => 'H:i:s',
+      'numberFormat' => array(
+        'decimals' => 0,
+        'decimalSeparator' => ',',
         'thousandSeparator' => ' '
       )
     ),

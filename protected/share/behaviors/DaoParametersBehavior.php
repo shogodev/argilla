@@ -123,6 +123,6 @@ class DaoParametersBehavior extends BaseDaoBehavior
     $criteria->condition = $condition;
     $criteria->params = $parameters;
 
-    return $this->getParametersByCriteriaByCondition($criteria, $refresh, $indexBy);
+    return $this->getParametersByCriteria($criteria, $refresh, $indexBy);
   }
 }
