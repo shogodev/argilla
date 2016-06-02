@@ -87,7 +87,7 @@ return array_merge_recursive(array(
     'mainscript' => array(
       'class' => 'ext.mainscript.ScriptsFactory',
       'debug' => YII_DEBUG,
-      'useGulp' => true
+      'useGulp' => !YII_DEBUG
     ),
 
     'user' => array(
