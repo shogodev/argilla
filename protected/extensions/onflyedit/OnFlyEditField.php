@@ -125,11 +125,24 @@ class OnFlyEditField extends BDataColumn
     Yii::app()->controller->widget('OnFlyWidget', array(
       'type' => empty($this->dropDown) ? OnFlyWidget::TYPE_INPUT : OnFlyWidget::TYPE_DROPDOWN,
       'ajaxUrl' => $this->ajaxUrl,
-      'attribute' => $this->name,
+      'attribute' => $this->prepareFieldData(),
       'primaryKey' => $primaryKey,
       'value' => $data[$this->name],
       'items' => $this->dropDown,
       'htmlOptions' => $htmlOptions
     ));
+  }
+
+  /**
+   * @param null|string $name
+   *
+   * @return string
+   */
+  protected function prepareFieldData($name = null)
+  {
+    if( $name === null )
+      $name = $this->name;
+
+    return $name;
   }
 }
