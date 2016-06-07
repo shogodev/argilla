@@ -129,8 +129,7 @@ class ProductController extends FController
 
   public function isFirstPage()
   {
-    $page = Yii::app()->request->getParam('page');
-    return $page === null || $page == 1;
+    return (int)Yii::app()->request->getParam('page', 1) === 1;
   }
 
   private function renderPage(array $models, CDbCriteria $criteria)
