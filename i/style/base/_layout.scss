@@ -93,3 +93,30 @@
 .block {
   display: block;
 }
+
+
+// Devices display
+
+@media only screen and (max-width: $tablet-width) {
+  .only-desktop {
+    display: none;
+  }
+}
+
+@media only screen and (min-width: $mobile-width + 1px) {
+  .only-mobile {
+    display: none;
+  }
+}
+
+@media only screen and (min-width: $tablet-width + 1px) { // mobile + tablet
+  .not-desktop {
+    display: none;
+  }
+}
+
+@media only screen and (max-width: $mobile-width) { // desktop + tablet
+  .not-mobile {
+    display: none;
+  }
+}
