@@ -32,16 +32,21 @@ class BOrderController extends BController
   public function actionDelete()
   {
     $id = Yii::app()->request->getQuery('id');
-    $data = BOrder::model()->findByPk($id);
+    /**
+     * @var BOrder $model
+     */
+    $model = BOrder::model()->findByPk($id);
 
-    $data->deleted = 1;
+    $model->deleted = 1;
 
-    if( $data->save() )
+    if( $model->save(false) )
     {
       Yii::app()->user->setFlash('success', 'Запись успешно удалена.');
     }
     else
+    {
       throw new CHttpException(404, 'Ошибка! Не могу удалить запись.');
+    }
   }
 
   public function actionOrderProducts($id)
