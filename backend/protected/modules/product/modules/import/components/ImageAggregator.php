@@ -22,7 +22,10 @@ class ImageAggregator extends AbstractAggregator
     {
       if( !empty($data[$column]) )
       {
-        $this->data[$groupIndex][$column] = strtr($data[$column], $this->replace);
+        $this->data[$groupIndex][$column] = array(
+          'file' => strtr($data[$column], $this->replace),
+          'rowIndex' => $rowIndex
+        );
       }
     }
   }

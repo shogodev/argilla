@@ -27,7 +27,6 @@ $.widget('argilla.filterSlider', {
   },
 
   _create: function() {
-
     var options = this.options;
     var widget = this;
 
@@ -36,8 +35,11 @@ $.widget('argilla.filterSlider', {
         options.controls[i] = $(options.controls[i]);
 
     this.element.slider({
-      range: true, step: (this.options.ranges[4] === undefined ? 1 : this.options.ranges[4]),
-      min: this.options.ranges[0], max: this.options.ranges[1], values: [this.options.ranges[2], this.options.ranges[3]],
+      range: true,
+      step: (this.options.ranges[4] === undefined ? 1 : this.options.ranges[4]),
+      min: this.options.ranges[0],
+      max: this.options.ranges[1],
+      values: [this.options.ranges[2], this.options.ranges[3]],
       slide: function(event, ui){$.proxy(widget._slide(ui), widget)},
       stop: function(event, ui){$.proxy(widget._stopSlide(ui), widget)}
     });
@@ -97,7 +99,7 @@ $.widget('argilla.filterSlider', {
       hiddenInput = widget.element.siblings('input:hidden'),
       form = hiddenInput.closest('form');
 
-    var value = parseInt(minInput.val()) + '-' + parseInt(maxInput.val());
+    var value = this._normalizeValue(minInput.val()) + '-' + this._normalizeValue(maxInput.val());
     var data = form.serializeArray();
     var ajaxUrl = this.options.ajaxUrl ? this.options.ajaxUrl : form.attr('action');
 
@@ -112,7 +114,22 @@ $.widget('argilla.filterSlider', {
     if( typeof widget.options.ajaxMethod === 'function' )
       widget.options.ajaxMethod(data);
     else
-      $.post(ajaxUrl, data, function(response){$.proxy(widget._slideCallback(response), widget)}, 'json');
+    {
+      $.mouseLoader(true);
+      $.ajax({
+        url: ajaxUrl,
+        data: data,
+        dataType: 'json',
+        success: function(response) {
+          $.mouseLoader(false);
+          $.proxy(widget._slideCallback(response), widget);
+        },
+        error: function(jqXHR, textStatus, errorThrown) {
+          alert("В работе фильтра водникла ошибка, поробуйте снова.");
+          $.mouseLoader(false);
+        }
+      });
+    }
   },
 
   _setSliderValue : function() {
@@ -126,7 +143,7 @@ $.widget('argilla.filterSlider', {
       return;
 
     if ( !isNaN(minInput.val()) && !isNaN(maxInput.val()) ) {
-      if ( parseInt(minInput.val()) > parseInt(maxInput.val()) ) return;
+      if ( this._normalizeValue(minInput.val()) > this._normalizeValue(maxInput.val()) ) return;
       this.element.slider('values', 0, minInput.val() );
       this.element.slider('values', 1, maxInput.val() );
       this._stopSlide();
@@ -170,6 +187,10 @@ $.widget('argilla.filterSlider', {
       clearTimeout(this.options.timers[timerIndex]);
       delete this.options.timers[timerIndex];
     }
+  },
+
+  _normalizeValue : function(value) {
+    return parseFloat(value)
   },
 
   destroy: function() {

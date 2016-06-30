@@ -580,7 +580,7 @@ td.button-column a:hover {
 
 /*   -=========== Alerts ===========-   */
 .flash {
-  position: absolute;
+  position: fixed;
   top: 87px;
   right: 10px;
   z-index: 10000;

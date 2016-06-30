@@ -257,9 +257,12 @@ class BaseList extends CComponent
 
   protected function setImages()
   {
+    /**
+     * @var ActiveImageBehavior $imagesBehavior
+     */
     if( $imagesBehavior = $this->getModel()->asa('imagesBehavior') )
     {
-      $modelImages = $this->findRecords('parent', $imagesBehavior->imageClass);
+      $modelImages = $this->findRecords('parent', $imagesBehavior->imageClass, null, $imagesBehavior->getColorCriteria());
 
       $images = array();
       foreach($modelImages as $image)

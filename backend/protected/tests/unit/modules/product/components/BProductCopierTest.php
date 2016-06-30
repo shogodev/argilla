@@ -21,7 +21,7 @@ class BProductCopierTest extends CDbTestCase
   {
     parent::setUp();
 
-    $this->path = realpath(Yii::getPathOfAlias('frontend').'/../f/product/');
+    $this->path = GlobalConfig::instance()->rootPath.'/f/product/';
 
     file_put_contents($this->path.'/test_copy_file.test', 'test_data1');
     file_put_contents($this->path.'/pre_test_copy_file.test', 'test_data2');

@@ -106,7 +106,7 @@ class FilterDataProvider
    */
   private function getFacetedData()
   {
-    $command = $this->builder->createFindCommand(FacetedSearch::model()->tableName(), $this->facetedCriteria);
+    $command = $this->builder->createFindCommand(BFacetedSearch::model()->tableName(), $this->facetedCriteria);
 
     return $command->queryAll();
   }

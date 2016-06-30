@@ -20,6 +20,13 @@ class BProductParamVariant extends BActiveRecord
 {
   const BASE_UPLOAD_PATH = 'f/upload/images/color/';
 
+  public function behaviors()
+  {
+    return array(
+      'facetedProductParamVariant' => array('class' => 'backend.modules.product.models.behaviors.BFacetedProductParamVariant'),
+    );
+  }
+
   public function rules()
   {
     return array(
@@ -56,7 +63,7 @@ class BProductParamVariant extends BActiveRecord
 
       if( $file = CUploadedFile::getInstanceByName(get_class($this)."[{$this->id}][{$field}]") )
       {
-        $path = realpath(Yii::getPathOfAlias('frontend').'/..').'/'.self::BASE_UPLOAD_PATH;
+        $path = GlobalConfig::instance()->rootPath.'/'.self::BASE_UPLOAD_PATH;
         $fileName = $this->id.'.'.strtolower($file->getExtensionName());
 
         if( !file_exists($path) )

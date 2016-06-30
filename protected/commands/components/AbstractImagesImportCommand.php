@@ -9,7 +9,7 @@
 Yii::import('frontend.extensions.phpthumb.*');
 Yii::import('frontend.extensions.upload.components.*');
 
-class AbstractImagesImportCommand extends AbstractImportCommand
+class AbstractImagesImportCommand extends LoggingCommand
 {
-  public $importLogFile = 'import_images.log';
+  public $logFileName = 'import_images.log';
 }

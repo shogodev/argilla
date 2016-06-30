@@ -37,8 +37,6 @@ class ImportCsvReader
    */
   private $importAggregator;
 
-  private $timeBegin;
-
   private $currentFile;
 
   /**
@@ -50,13 +48,13 @@ class ImportCsvReader
   {
     $this->logger = $logger;
     $this->importAggregator = $importAggregator;
-    $this->basePath = realpath(Yii::getPathOfAlias('frontend').'/..');
+    $this->basePath = GlobalConfig::instance()->rootPath;
   }
 
   public function start()
   {
-    $this->timeBegin = microtime(true);
-    $this->logger->log('Начало импорта');
+    $this->logger->startTimer(get_class($this));
+    $this->logger->log('Начало импорта', true);
   }
 
   public function processFiles($files = array())
@@ -79,8 +77,7 @@ class ImportCsvReader
 
   public function finish()
   {
-    $time = microtime(true) - $this->timeBegin;
-    $this->logger->log('Импорт завершен. Время выполнения '.sprintf("%.1f", $time).' с.');
+    $this->logger->log('Импорт завершен. Время выполнения '.$this->logger->finishTimer(get_class($this)), true);
   }
 
   public function setBackupConfig($newPath)
@@ -94,8 +91,8 @@ class ImportCsvReader
       throw new WarningException('Не удальсь открыть файл '.$file);
 
     $this->currentFile = $file;
-
     $this->currentFileName = basename($file);
+
     $progress = new ConsoleProgressBar($this->countFileLines($file));
     $this->processData($handle, $progress);
   }
@@ -103,8 +100,8 @@ class ImportCsvReader
   protected function processData($handle, ConsoleProgressBar $progress)
   {
     $this->currentRow = 0;
+    $this->importAggregator->beforeProcessNewFile();
 
-    $this->importAggregator->init();
     $progress->start();
     while(($item = fgetcsv($handle, null, $this->csvDelimiter)) !== false)
     {

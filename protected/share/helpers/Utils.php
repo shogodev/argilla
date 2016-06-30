@@ -336,4 +336,30 @@ class Utils
 
     return false;
   }
+
+  /**
+   * Отдает ответ клиенту с продолжением работы скрипта (работает тольео на php-fpm)
+   */
+  public static function finishRequest()
+  {
+    if( function_exists('fastcgi_finish_request') )
+    {
+      session_write_close();
+      if( !fastcgi_finish_request() )
+      {
+        throw new CException('Ошибка вызова fastcgi_finish_request!');
+      }
+    }
+  }
+
+  /**
+   * Увеличивает время жизни скрипта
+   * @param int $timeLimitMinutes
+   * @param bool $ignoreUserAbort
+   */
+  public static function longLife($timeLimitMinutes = 0, $ignoreUserAbort = true)
+  {
+    set_time_limit($timeLimitMinutes * 60);
+    ignore_user_abort($ignoreUserAbort);
+  }
 }

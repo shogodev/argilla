@@ -1,20 +1,22 @@
 <?php
+/**
+ * @var GlobalConfig $globalConfig
+ */
+$globalConfig = GlobalConfig::instance();
+
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL', 3);
 defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', true);
 
-$frontend = realpath(__DIR__.'/..');
-$backend = realpath(__DIR__.'/../../backend/protected');
-
 return array_merge_recursive(array(
-  'basePath' => $frontend,
+  'basePath' => $globalConfig->frontendPath,
   'name' => 'argilla.ru',
   'defaultController' => 'index',
-  'preload'  => array('requestRedirect'),
+  'preload' => array('requestRedirect'),
 
   'aliases' => array(
-    'backend' => $backend,
-    'frontend' => $frontend,
+    'backend' => $globalConfig->backendPath,
+    'frontend' => $globalConfig->frontendPath,
   ),
 
   'import' => array(
@@ -67,10 +69,9 @@ return array_merge_recursive(array(
   'modules' => array(),
 
   'components' => array(
-
-    'db' => array_replace_recursive(require(__DIR__.'/db.php'),
+    'db' => array_replace_recursive(require($globalConfig->frontendConfigPath.'/db.php'),
       array(
-        'enableProfiling'    => YII_DEBUG,
+        'enableProfiling' => YII_DEBUG,
         'enableParamLogging' => YII_DEBUG,
       )
     ),
@@ -90,16 +91,16 @@ return array_merge_recursive(array(
     ),
 
     'user' => array(
-      'class'          => 'FWebUser',
+      'class' => 'FWebUser',
       'allowAutoLogin' => true,
-      'loginUrl'       => '/user/login'
+      'loginUrl' => '/user/login'
     ),
 
     'urlManager' => array(
-      'class'            => 'FUrlManager',
-      'urlFormat'        => 'path',
+      'class' => 'FUrlManager',
+      'urlFormat' => 'path',
       'useStrictParsing' => true,
-      'showScriptName'   => false,
+      'showScriptName' => false,
     ),
 
     'requestRedirect' => array(
@@ -113,15 +114,15 @@ return array_merge_recursive(array(
     'log' => array(
       'class' => 'CLogRouter',
       'enabled' => true,
-      'routes'  => array(
+      'routes' => array(
         array(
-          'class'  => 'CFileLogRoute',
+          'class' => 'CFileLogRoute',
           'levels' => 'error, warning',
         ),
         array(
-          'class'     => 'ext.yii-debug-toolbar.YiiDebugToolbarRoute',
+          'class' => 'ext.yii-debug-toolbar.YiiDebugToolbarRoute',
           'ipFilters' => array('192.168.*'),
-          'enabled'   => YII_DEBUG && isset($_COOKIE['YII_DEBUG']),
+          'enabled' => YII_DEBUG && isset($_COOKIE['YII_DEBUG']),
         ),
       ),
     ),
@@ -139,4 +140,4 @@ return array_merge_recursive(array(
 
   'sourceLanguage' => 'ru_ru',
   'language' => 'ru',
-), require(__DIR__.'/share.php'));
+), require($globalConfig->frontendConfigPath.'/share.php'));

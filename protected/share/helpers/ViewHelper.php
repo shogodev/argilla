@@ -130,11 +130,26 @@ class ViewHelper
     return null;
   }
 
+  /**
+   * @param $phone
+   *
+   * @return mixed
+   */
   public static function getClearPhone($phone)
   {
     $clearPhone = preg_replace('/[^\d\+]/', '', $phone);
     $clearPhone = preg_replace('/^8(\d\d\d\d\d\d\d\d\d\d)$/', '+7$1', $clearPhone);
 
     return $clearPhone;
+  }
+
+  /**
+   * Показать flash сообщение
+   * @param $message
+   * @param string $key
+   */
+  public static function showFlash($message, $key = 'success')
+  {
+    Yii::app()->user->setFlash($key, $message);
   }
 }

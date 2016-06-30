@@ -22,7 +22,7 @@ class FilterElementItemSlider extends FilterElementItem
   {
     if( !isset($this->label) )
     {
-      $this->setLabel($this->parent->toString($this->id));
+      $this->setLabel($this->parent->toString($this->id, '', '', $this->parent->roundEndLabel));
     }
 
     return $this->label;

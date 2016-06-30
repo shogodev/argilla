@@ -26,6 +26,8 @@ abstract class FilterElement extends CComponent
 
   public $label;
 
+  public $notice;
+
   public $selected;
 
   public $disabled = array();

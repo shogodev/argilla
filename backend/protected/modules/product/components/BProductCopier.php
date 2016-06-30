@@ -31,13 +31,16 @@ class BProductCopier extends BAbstractModelCopier
   }
 
   /**
-   * @param $withImages
+   * @param bool $withImages - копировать с изображениями
+   * @param bool $copyAsModification - копировать как модификации (c установленным parent)
    *
-   * @return integer copied product id
+   * @return int copied product id
    */
-  public function copy($withImages = false)
+  public function copy($withImages = false, $copyAsModification = false)
   {
-    $this->copy = $this->copyModel($this->origin, null, array('parent' => $this->origin->id));
+    $attributes = $copyAsModification ? array('parent' => $this->origin->id) : array();
+
+    $this->copy = $this->copyModel($this->origin, null, $attributes);
 
     $this->copyRelations($this->copy, $this->origin, 'assignment');
     $this->copyRelations($this->copy, $this->origin, 'associations');
@@ -68,7 +71,7 @@ class BProductCopier extends BAbstractModelCopier
     $images = BProductImg::model()->findAllByAttributes(array('parent' => $originModel->id));
     $imageThumbsPrefixList = $this->getThumbsPrefixList();
 
-    $path = realpath(Yii::getPathOfAlias('frontend').'/../f/product').'/';
+    $path = GlobalConfig::instance()->rootPath.'/f/product/';
     foreach($images as $image)
     {
       if( $fileName = $this->copyFiles($path, $image->name, $imageThumbsPrefixList) )

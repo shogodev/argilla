@@ -49,31 +49,39 @@ class ImportProductWriter extends AbstractImportWriter
 
   public $importModificationScenario = BModificationBehavior::SCENARIO_MODIFICATION;
 
-  private $allProductsAmount = 0;
+  protected $successWriteProductsAmount = 0;
 
-  private $successWriteProductsAmount = 0;
+  protected $parameterNamesCache = array();
+
+  protected $parameterGroupCache = array();
+
+  private $allProductsAmount = 0;
 
   private $skipProductsAmount = 0;
 
   private $modelsCache = array();
 
-  private $parameterNamesCache = array();
-
   private $parameterVariantsCache = array();
 
-  private $urlCache;
-
-  private $parameterGroupCache = array();
-
-  public function init()
+  public function beforeProcessNewFile()
   {
-    parent::init();
+    parent::beforeProcessNewFile();
 
     $this->allProductsAmount = 0;
 
     $this->successWriteProductsAmount = 0;
 
     $this->skipProductsAmount = 0;
+
+    $this->parameterNamesCache = array();
+
+    $this->parameterGroupCache = array();
+
+    $this->modelsCache = array();
+
+    $this->parameterVariantsCache = array();
+
+    ImportHelper::clearUrlCache(null);
   }
 
   public function writeAll(array $data)
@@ -134,46 +142,54 @@ class ImportProductWriter extends AbstractImportWriter
   protected function write(array $item)
   {
     /**
+     * @var BProduct $newProductModel
      * @var BProduct $product
      */
-    $product = ImportHelper::getModelWithoutBehaviors('BProduct', $this->importScenario);
 
-    /**
-     * @var BProduct $product
-     */
-    if( $foundProduct = $product->findByAttributes(array($item['uniqueAttribute'] => $item['uniqueIndex'])) )
+    $newProductModel = ImportHelper::getModelWithoutBehaviors('BProduct', $this->importScenario);
+
+    if( $product = $newProductModel->findByAttributes(array($item['uniqueAttribute'] => $item['uniqueIndex'])) )
     {
-      $foundProduct->scenario = !empty($product->parent) ? $this->importModificationScenario : $this->importScenario;
-      $foundProduct->detachBehaviors(); // детачим поведения подключенные в populateRecord
-
-      $this->skipProductsAmount++;
-
-      //$foundProduct->save();
-      return;
+      $this->updateProduct($product, $item);
     }
+    else
+    {
+      $this->saveNewProduct($newProductModel, $item);
+    }
+  }
 
-    $product->setAttributes($item['product'], false);
-    $product->url = $this->createUniqueUrl($product->url);
-    $product->visible = 1;
+  protected function saveNewProduct(BProduct $newProductModel, array $item)
+  {
+    $newProductModel->setAttributes($item['product'], false);
+    $newProductModel->url = ImportHelper::createUniqueUrl($newProductModel->tableName(), $newProductModel->url, true);
 
-    $sectionModel = $this->prepareAssignmentAndGetSectionModel($product, $item);
+    $sectionModel = $this->prepareAssignmentAndGetSectionModel($newProductModel, $item);
 
-    if( !$product->save() )
-      throw new ImportModelValidateException($product, 'Не удалось создать продукт (строка '.$item['rowIndex'].' файл '.$item['file'].')');
+    if( !$newProductModel->save() )
+      throw new ImportModelValidateException($newProductModel, 'Не удалось создать продукт (строка '.$item['rowIndex'].' файл '.$item['file'].')');
 
-    $this->saveModifications($product, $item['modification'], $sectionModel);
+    $this->saveModifications($newProductModel, $item['modification'], $sectionModel);
 
     if( !empty($this->assignment) )
     {
-      BProductAssignment::model()->saveAssignments($product, Arr::extract($product, $this->assignment, array()));
+      BProductAssignment::model()->saveAssignments($newProductModel, Arr::extract($newProductModel, $this->assignment, array()));
     }
 
-    $this->saveParameters($product, $item['parameter'], $sectionModel);
+    $this->saveParameters($newProductModel, $item['parameter'], $sectionModel);
 
     if( !empty($item['basketParameter']) )
-      $this->saveParameters($product, $item['basketParameter'], $sectionModel);
+      $this->saveParameters($newProductModel, $item['basketParameter'], $sectionModel);
 
     $this->successWriteProductsAmount++;
+  }
+
+  protected function updateProduct(BProduct $product, array $item)
+  {
+    $product->scenario = !empty($product->parent) ? $this->importModificationScenario : $this->importScenario;
+    $product->detachBehaviors();
+
+    $this->skipProductsAmount++;
+    //$product->save();
   }
 
   protected function prepareAssignmentAndGetSectionModel(&$product, array $item)
@@ -189,7 +205,7 @@ class ImportProductWriter extends AbstractImportWriter
       $associationModels = array();
       foreach($values as $value)
       {
-        if( $associationModel = $this->getModel($modelName, $value, $setAttributes) )
+        if( $associationModel = $this->getProductAssignmentModel($modelName, $value, $setAttributes) )
         {
           $associationModels[$value] = $associationModel;
           if( $associationModel instanceof BProductSection )
@@ -221,9 +237,8 @@ class ImportProductWriter extends AbstractImportWriter
        */
       $product = ImportHelper::getModelWithoutBehaviors('BProduct', $this->importModificationScenario);
       $product->setAttributes($item['product'], false);
-      $product->url = $this->createUniqueUrl($product->url);
+      $product->url = ImportHelper::createUniqueUrl($product->tableName(), $product->url, true);
       $product->parent = $parentProduct->id;
-      $product->visible = 1;
 
       if( !$product->save() )
         throw new ImportModelValidateException($product, 'Не удалось создать модификацию product_id='.$parentProduct->id);
@@ -232,58 +247,7 @@ class ImportProductWriter extends AbstractImportWriter
     }
   }
 
-  /**
-   * @param string $modelName
-   * @param string $name
-   * @param array $attributes
-   *
-   * @return BActiveRecord
-   * @throws ImportModelValidateException
-   */
-  private function getModel($modelName, $name, array $attributes = array())
-  {
-    if( empty($name) )
-      return null;
-
-    /**
-     * @var BActiveRecord $model
-     */
-    if( !($model = Arr::get($this->modelsCache, $modelName.$name, $modelName::model()->findByAttributes(array('name' => $name)))) )
-    {
-      $model = new $modelName;
-      $model->name = $name;
-
-      $this->setAttribute($model, 'url', Utils::translite($name));
-      $this->setAttribute($model, 'visible', 1);
-
-      foreach($attributes as $attribute => $value)
-      {
-        $this->setAttribute($model, $attribute, $value);
-      }
-
-      if( !$model->save() )
-      {
-        throw new ImportModelValidateException($model, 'Ошибка при создании модели '.$modelName.' - '.$name);
-      }
-
-      $this->modelsCache[$modelName.$name] = $model;
-    }
-
-    return $model;
-  }
-
-  private function setAttribute(BActiveRecord $model, $attribute, $value)
-  {
-    try
-    {
-      $model->$attribute = $value;
-    }
-    catch(CException $e)
-    {
-    }
-  }
-
-  private function saveParameters(BProduct $product, $data, $sectionModel = null)
+  protected function saveParameters(BProduct $product, $data, $sectionModel = null)
   {
     foreach($data as $attributes)
     {
@@ -311,6 +275,166 @@ class ImportProductWriter extends AbstractImportWriter
           $this->logger->warning($e->getMessage().' product_id = '.$product->id);
         }
       }
+    }
+  }
+
+  /**
+   * @param $name
+   * @param string $type
+   * @param integer $parameterGroupId
+   * @param string $key
+   *
+   * @return mixed
+   * @throws WarningException
+   */
+  protected function getParameterName($name, $type = 'checkbox', $parameterGroupId, $key = '')
+  {
+    $cashKey = mb_strtolower($name).$parameterGroupId;
+    $parameterName = Arr::get($this->parameterNamesCache, $cashKey);
+    if( !$parameterName )
+    {
+      $criteria = new CDbCriteria();
+      $criteria->compare('name', $name);
+      $criteria->compare('parent', '>'.BProductParamName::ROOT_ID);
+      $criteria->compare('parent', $parameterGroupId);
+      $parameterName = BProductParamName::model()->find($criteria);
+    }
+
+    if( !$parameterName )
+    {
+      $parameterName = new BProductParamName();
+      $parameterName->parent = $parameterGroupId;
+      $parameterName->name = $name;
+      $parameterName->type = $type;
+      $parameterName->key = $key;
+
+      if( !$parameterName->save() )
+      {
+        throw new WarningException('Ошибка при создании параметра '.$name);
+      }
+    }
+
+    $this->parameterNamesCache[$cashKey] = $parameterName;
+
+    return $this->parameterNamesCache[$cashKey];
+  }
+
+  /**
+   * @param BProductSection|null $sectionModel
+   * @param bool $common
+   *
+   * @return BProductParamName
+   * @throws WarningException
+   */
+  protected function getParameterGroupId($sectionModel = null, $common = false)
+  {
+    if( $common )
+      return $this->defaultCommonParameterGroup;
+
+    if( !($sectionModel instanceof BProductSection) )
+      return $this->defaultCommonParameterGroup;
+
+    if( !isset($this->parameterGroupCache[$sectionModel->id]) )
+    {
+      $parameterName = BProductParamName::model()->findByAttributes(array('parent' => BProductParamName::ROOT_ID, 'name' => $sectionModel->name));
+
+      if( !$parameterName )
+      {
+        $parameterName = new BProductParamName();
+        $parameterName->parent = BProductParamName::ROOT_ID;
+        $parameterName->name = $sectionModel->name;
+
+        if( !$parameterName->save() )
+        {
+          throw new WarningException('Ошибка при создании группы параметров '.$parameterName->name);
+        }
+        $this->saveParameterAssignment($parameterName, array('section_id' => $sectionModel->id));
+      }
+
+      $this->parameterGroupCache[$sectionModel->id] = $parameterName;
+    }
+
+    return $this->parameterGroupCache[$sectionModel->id]->id;
+  }
+
+  /**
+   * @param string $modelName
+   * @param string $name
+   * @param array $attributes
+   *
+   * @return BActiveRecord
+   * @throws ImportModelValidateException
+   */
+  private function getProductAssignmentModel($modelName, $name, array $attributes = array())
+  {
+    if( empty($name) )
+      return null;
+
+    $cacheKey = $modelName.$name.serialize($attributes);
+
+    /**
+     * @var BActiveRecord $model
+     */
+    if( !($model = Arr::get($this->modelsCache, $cacheKey, $this->tryFindProductAssignmentModel($modelName, $name, $attributes))) )
+    {
+      $model = new $modelName;
+      $model->name = $name;
+
+      $this->setAttribute($model, 'url', ImportHelper::createUniqueUrl($model->tableName(), Utils::translite($name)));
+      $this->setAttribute($model, 'visible', 1);
+
+      foreach($attributes as $attribute => $value)
+      {
+        $this->setAttribute($model, $attribute, $value);
+      }
+
+      if( !$model->save() )
+      {
+        throw new ImportModelValidateException($model, 'Ошибка при создании модели '.$modelName.' - '.$name);
+      }
+
+      $this->modelsCache[$cacheKey] = $model;
+    }
+
+    return $model;
+  }
+
+  /**
+   * @param $modelName
+   * @param $name
+   * @param array $attributes
+   *
+   * @return BProductStructure|BTreeAssignmentBehavior|bool
+   */
+  private function tryFindProductAssignmentModel($modelName, $name, array $attributes = array())
+  {
+    /**
+     * @var BProductStructure|BTreeAssignmentBehavior $model
+     */
+    $model = new $modelName;
+
+    if( $model->asa('tree') && isset($attributes['parent_id']) )
+    {
+      $model->parent_id = $attributes['parent_id'];
+    }
+
+    $model->visible = null;
+
+    $criteria = new CDbCriteria();
+    $criteria->compare('t.name', $name);
+    $data = $model->search($criteria)->getData();
+
+    return Arr::reset($data);
+  }
+
+  private function setAttribute(BActiveRecord $model, $attribute, $value)
+  {
+    try
+    {
+      $model->$attribute = $value;
+    }
+    catch(CException $e)
+    {
     }
   }
 
@@ -360,80 +484,6 @@ class ImportProductWriter extends AbstractImportWriter
     }
   }
 
-  /**
-   * @param $name
-   * @param string $type
-   * @param integer $parameterGroupId
-   * @param string $key
-   *
-   * @return mixed
-   * @throws WarningException
-   */
-  private function getParameterName($name, $type = 'checkbox', $parameterGroupId, $key = '')
-  {
-    $cashKey = mb_strtolower($name).$parameterGroupId;
-    $parameter = Arr::get($this->parameterNamesCache, $cashKey);
-    if( !$parameter )
-    {
-      $criteria = new CDbCriteria();
-      $criteria->compare('name', $name);
-      $criteria->compare('parent', '>'.BProductParamName::ROOT_ID);
-      $criteria->compare('parent', $parameterGroupId);
-      $parameter = BProductParamName::model()->find($criteria);
-    }
-
-    if( !$parameter )
-    {
-      $parameterName = new BProductParamName();
-      $parameterName->parent = $parameterGroupId;
-      $parameterName->name = $name;
-      $parameterName->type = $type;
-      $parameterName->key = $key;
-
-      if( !$parameterName->save() )
-      {
-        throw new WarningException('Ошибка при создании параметра '.$name);
-      }
-
-      $this->parameterNamesCache[$cashKey] = $parameterName;
-    }
-
-    return $this->parameterNamesCache[$cashKey];
-  }
-
-  /**
-   * @param BProductSection|null $sectionModel
-   * @param bool $common
-   *
-   * @return BProductParamName
-   * @throws WarningException
-   */
-  private function getParameterGroupId($sectionModel = null, $common = false)
-  {
-    if( $common )
-      return $this->defaultCommonParameterGroup;
-
-    if(  !($sectionModel instanceof BProductSection) )
-      return $this->defaultCommonParameterGroup;
-
-    if( !isset($this->parameterGroupCache[$sectionModel->id]) )
-    {
-      $parameterName = new BProductParamName();
-      $parameterName->parent = 1;
-      $parameterName->name = $sectionModel->name;
-
-      if( !$parameterName->save() )
-      {
-        throw new WarningException('Ошибка при создании группы параметров '.$parameterName->name);
-      }
-      $this->saveParameterAssignment($parameterName, array('section_id' => $sectionModel->id));
-
-      $this->parameterGroupCache[$sectionModel->id] = $parameterName;
-    }
-
-    return $this->parameterGroupCache[$sectionModel->id]->id;
-  }
-
   private function saveParameterAssignment(BProductParamName $parameterName, array $attributes)
   {
     if( empty($attributes['section_id']) )
@@ -478,31 +528,5 @@ class ImportProductWriter extends AbstractImportWriter
     }
 
     return $variant->id;
-  }
-
-  protected function createUniqueUrl($url)
-  {
-    if( is_null($this->urlCache) )
-    {
-      $this->urlCache = array();
-
-      $criteria = new CDbCriteria();
-      $criteria->select = 'url';
-      $command = Yii::app()->db->schema->commandBuilder->createFindCommand('{{product}}', $criteria);
-
-      foreach($command->queryColumn() as $itemUrl)
-        $this->urlCache[$itemUrl] = $itemUrl;
-    }
-
-    $uniqueUrl = Utils::translite(trim($url));
-    $suffix = 1;
-    while(isset($this->urlCache[$uniqueUrl]))
-    {
-      $uniqueUrl = $url.'_'.$suffix++;
-    }
-
-    $this->urlCache[$uniqueUrl] = $uniqueUrl;
-
-    return $uniqueUrl;
   }
 }

@@ -45,7 +45,7 @@ abstract class AbstractPaymentSystem extends CComponent implements IPaymentSyste
     if( empty($config) )
     {
       $id = $this->getId();
-      $path = Yii::getPathOfAlias('frontend').'/config/'.$id.'.php';
+      $path = GlobalConfig::instance()->frontendConfigPath.'/'.$id.'.php';
 
       if( !file_exists($path) )
       {

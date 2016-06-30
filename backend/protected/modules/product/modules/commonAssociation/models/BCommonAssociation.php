@@ -119,6 +119,26 @@ class BCommonAssociation extends BActiveRecord
     return CHtml::listData(self::model()->findAllByAttributes($attributes), 'pk', 'pk');
   }
 
+  public function clear($associationGroup)
+  {
+    $criteria = new CDbCriteria();
+    $criteria->select = 'tag';
+    $criteria->group = 'tag';
+    $criteria->compare('association_group', $associationGroup);
+    $criteria->having = 'COUNT(tag) = 1';
+
+    $command = $this->commandBuilder->createFindCommand($this->tableName(), $criteria);
+    $tagList = $command->queryColumn();
+
+    if( !empty($tagList) )
+    {
+      $deleteCriteria = new CDbCriteria();
+      $deleteCriteria->addInCondition('tag', $tagList);
+      $deleteCriteria->compare('association_group', $associationGroup);
+      $this->commandBuilder->createDeleteCommand($this->tableName(), $deleteCriteria)->execute();
+    }
+  }
+
   private function createTag($primaryKey, $associationGroup)
   {
     while($tag = md5(microtime()))

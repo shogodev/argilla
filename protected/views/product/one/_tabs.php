@@ -13,7 +13,7 @@
     <?php if( !empty($model->notice) ) { ?>
       <li class="active"><a href="#description">Описание</a></li>
     <?php } ?>
-    <?php if( $parameters = $model->getProductOneParameters() ) { ?>
+    <?php if( $parameters = $model->getParametersCard() ) { ?>
       <li><a href="#params">Характеристики</a></li>
     <?php } ?>
     <?php if( $relatedDataProvider->totalItemCount > 0 ) { ?>

@@ -6,6 +6,7 @@
  * @license http://argilla.ru/LICENSE
  */
 Yii::import('frontend.models.product.filter.search.*');
+Yii::import('backend.modules.product.models.BFacetedSearch');
 
 /**
  * Class FilterTest
@@ -13,7 +14,7 @@ Yii::import('frontend.models.product.filter.search.*');
 class FilterTest extends CDbTestCase
 {
   protected $fixtures = array(
-    'faceted_search' => 'FacetedSearch',
+    'faceted_search' => 'BFacetedSearch',
   );
 
   /**
@@ -74,7 +75,7 @@ class FilterTest extends CDbTestCase
     $criteria->compare('value', 8);
 
     $amountByFilter = $this->filter->elements['category_id']->items[8]->amount;
-    $amountInBase = FacetedSearch::model()->count($criteria);
+    $amountInBase = BFacetedSearch::model()->count($criteria);
 
     $this->assertEquals($amountInBase, $amountByFilter);
   }

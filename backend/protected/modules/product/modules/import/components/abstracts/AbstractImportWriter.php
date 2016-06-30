@@ -25,7 +25,7 @@ abstract class AbstractImportWriter extends CComponent
     $this->logger = $logger;
   }
 
-  public function init()
+  public function beforeProcessNewFile()
   {
     $this->clear();
   }

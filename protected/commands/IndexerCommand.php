@@ -16,20 +16,19 @@ Yii::import('frontend.share.helpers.*');
 Yii::import('frontend.share.formatters.*');
 Yii::import('frontend.share.validators.*');
 Yii::import('frontend.extensions.upload.components.*');
+Yii::import('frontend.share.validators.*');
+
+Yii::import('backend.modules.product.components.FacetIndexer');
+Yii::import('frontend.commands.components.*');
 
 /**
  * Class IndexerCommand
  *
  * Комана для индексирования паарметров фасеточного поиска
  */
-class IndexerCommand extends CConsoleCommand
+class IndexerCommand extends LoggingCommand
 {
   const MAX_CHUNK_SIZE = 10000;
-
-  /**
-   * @var array
-   */
-  private $data = array();
 
   /**
    * @var CDbCommandBuilder
@@ -37,51 +36,51 @@ class IndexerCommand extends CConsoleCommand
   private $builder;
 
   /**
-   * @var string
+   * @var int
    */
-  private $searchTable;
+  private $insertedRecords = 0;
 
   /**
-   * @var array
+   * @var FacetIndexer $facetIndexer
    */
-  private $properties;
-
-  /**
-   * @var array
-   */
-  private $parameters;
+  private $facetIndexer;
 
   public function init()
   {
     parent::init();
 
     $this->builder = new CDbCommandBuilder(Yii::app()->db->getSchema());
-    $this->searchTable = BFacetedSearch::model()->tableName();
+    $this->facetIndexer = new FacetIndexer(self::MAX_CHUNK_SIZE);
+    $this->facetIndexer->attachEventHandler('onSaveRecords', array($this, 'onSaveRecords'));
 
-    $this->properties = BFacetedParameter::model()->getProperties();
-    $this->parameters = BFacetedParameter::model()->getParameters();
+    $this->logger->startTimer(get_class($this));
   }
 
   public function actionRefresh()
   {
-    if( !($transaction = Yii::app()->db->getCurrentTransaction()) )
-       Yii::app()->db->beginTransaction();
+    $this->logger->log('Начало индексеции фильтров');
 
-    $this->actionDelete();
-    $this->buildProperties();
-    $this->buildParameters();
-    $this->save();
+    $this->facetIndexer->reindexAll();
 
-    if( !$transaction )
-      Yii::app()->db->getCurrentTransaction()->commit();
+    $this->showSummary();
 
     $this->updateProduction();
+
+    $this->logger->log('Индексеция фильтров завершена', true, true);
   }
 
   public function actionDelete()
   {
-    $this->builder->createSqlCommand("TRUNCATE TABLE ".$this->builder->schema->quoteTableName($this->searchTable))->execute();
+    $this->facetIndexer->clearIndex();
     $this->updateProduction();
+  }
+
+  public function onSaveRecords(CEvent $event)
+  {
+    $count = $event->params['count'];
+
+    $this->logger->log('Обработано '.Yii::app()->format->formatNumber($count).' записей', true, true);
+    $this->insertedRecords += $count;
   }
 
   private function updateProduction()
@@ -91,58 +90,17 @@ class IndexerCommand extends CConsoleCommand
       touch($path);
   }
 
-  private function buildProperties()
+  private function showSummary()
   {
-    $criteria = new CDbCriteria();
-    $criteria->select = 't.id';
-    $criteria->join = 'JOIN '.$this->builder->schema->quoteTableName(BProductAssignment::model()->tableName()).' AS a ON a.product_id = t.id';
-
-    foreach($this->properties as $property)
-      $criteria->select .= ', '.Yii::app()->db->getSchema()->quoteColumnName($property);
-
-    $command = $this->builder->createFindCommand(BProduct::model()->tableName(), $criteria);
-
-    foreach($command->queryAll() as $row)
-      foreach($this->properties as $property)
-        if( !empty($row[$property]) )
-          $this->data[] = array('product_id' => $row['id'], 'param_id' => $property, 'value' => $row[$property]);
-  }
-
-  private function buildParameters()
-  {
-    $criteria = new CDbCriteria();
-    $criteria->distinct = true;
-    $criteria->select = 't.param_id, t.product_id, t.variant_id, t.value, v.name';
-    $criteria->join = 'LEFT OUTER JOIN '.$this->builder->schema->quoteTableName(BProductParamVariant::model()->tableName()).' AS v ON v.id = t.variant_id';
-    $criteria->addInCondition('t.param_id', $this->parameters);
-
-    $command = $this->builder->createFindCommand(BProductParam::model()->tableName(), $criteria);
-
-    foreach($command->queryAll() as $row)
-      if( $value = !empty($row['variant_id']) ? $row['variant_id'] : $row['value'] )
-        $this->data[] = array('product_id' => $row['product_id'], 'param_id' => $row['param_id'], 'value' => $value);
-  }
-
-  private function save()
-  {
-    if( !empty($this->data) )
+    if( $this->insertedRecords )
     {
-      $result = 0;
-
-      foreach(array_chunk($this->data, self::MAX_CHUNK_SIZE) as $chunk)
-      {
-        $command = $this->builder->createMultipleInsertCommand($this->searchTable, $chunk);
-        $count = $command->query()->count();
-        $result += $count;
-        echo 'Inserted '.$count.' record(s)'.PHP_EOL;
-      }
-
-      echo 'Total records: '.$result.'. Execution time: '.sprintf('%0.5f', Yii::getLogger()->getExecutionTime()).PHP_EOL;
-      echo 'Memory peak usage: '.Yii::app()->format->formatSize(memory_get_peak_usage()).PHP_EOL;
+      $message = 'Обработано записей: '.Yii::app()->format->formatNumber($this->insertedRecords).PHP_EOL;
+      $message .= $this->logger->finishTimer(get_class($this), 'Время выполнения: ');
+      $this->logger->log($message, true, true);
     }
     else
     {
-      throw new CException('Inserted 0 records', 500);
+      throw new CException('Обработано 0 записей', 500);
     }
   }
 }

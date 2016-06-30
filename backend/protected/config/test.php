@@ -1,9 +1,14 @@
 <?php
+/**
+ * @var GlobalConfig $globalConfig
+ */
+$globalConfig = GlobalConfig::instance();
+
 defined('YII_ENABLE_EXCEPTION_HANDLER') or define('YII_ENABLE_EXCEPTION_HANDLER', false);
 defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', false);
 
 $config = array_replace_recursive(
-  require(__DIR__.'/backend.php'),
+  require($globalConfig->backendConfigPath.'/backend.php'),
   array(
     'import' => array(
       'tests' => 'backend.tests.components.*',

@@ -39,27 +39,33 @@ class FilterElementRange extends FilterElement
   /**
    * @param mixed $value
    * @param string $prefix
-   * @param string $postfix
+   * @param string $suffix
+   * @param bool $roundEnd
    *
    * @return string
    */
-  public function toString($value, $prefix = '', $postfix = '')
+  public function toString($value, $prefix = '', $suffix = '', $roundEnd = true)
   {
     $range = is_array($value) ? $value : $this->getRange($value, Arr::end($this->getRanges()));
     $data = array($prefix);
 
     if( !empty($range[0]) )
     {
-      $data[] = 'от '.Yii::app()->format->formatNumber($range[0]).' '.$postfix;
+      $data[] = 'от '.PriceHelper::price($range[0], ' '.$suffix, '0');
     }
 
     if( $range[1] < self::MAX_RANGE )
     {
-      $data[] = 'до '.Yii::app()->format->formatNumber($range[1] + ($range[1] % 100 ? 1 : 0)).' '.$postfix;
+      $end = $range[1];
+
+        if( $roundEnd )
+      $end += ($range[1] % 100 ? 1 : 0);
+
+      $data[] = 'до '.PriceHelper::price($end, ' '.$suffix, '0');
     }
     else
     {
-      $data[1] = 'свыше '.Yii::app()->format->formatNumber($range[0]).' '.$postfix;
+      $data[1] = 'свыше '.PriceHelper::price($range[0], ' '.$suffix);
     }
 
     return Utils::ucfirst(trim(preg_replace('/\s+/', ' ', implode(' ', $data))));

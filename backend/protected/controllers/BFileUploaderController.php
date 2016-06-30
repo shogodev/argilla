@@ -31,7 +31,7 @@ class BFileUploaderController extends BController
           'roots' => array(
             array(
               'driver' => 'LocalFileSystem',
-              'path' => realpath(Yii::getPathOfAlias('frontend').'/..'.self::UPLOAD_PATH).'/',
+              'path' => GlobalConfig::instance()->rootPath.self::UPLOAD_PATH.'/',
               'URL' => self::UPLOAD_PATH,
               'alias' => self::UPLOAD_PATH,
               'acceptedName' => self::ALLOWED_FILE_NAME,
@@ -57,7 +57,7 @@ class BFileUploaderController extends BController
 
   public function actionQuickUpload()
   {
-    $uploadPath = realpath(Yii::getPathOfAlias('frontend').'/..'.self::UPLOAD_PATH).'/';
+    $uploadPath = GlobalConfig::instance()->rootPath.self::UPLOAD_PATH.'/';
     $file = CUploadedFile::getInstanceByName('upload');
 
     $fileName = UploadHelper::prepareFileName($uploadPath, $file->getName());

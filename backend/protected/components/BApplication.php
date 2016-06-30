@@ -5,6 +5,10 @@
  * @copyright Copyright &copy; 2003-2014 Shogo
  * @license http://argilla.ru/LICENSE
  * @package backend.components
+ */
+
+/**
+ * Class BApplication
  *
  * @property BMenu $menu
  * @property BBreadcrumbsManager $breadcrumbs
@@ -41,7 +45,7 @@ class BApplication extends CWebApplication
 
   public function getFrontendRoot()
   {
-    return realpath(Yii::getPathOfAlias('frontend').'/..').'/';
+    return GlobalConfig::instance()->rootPath.'/';
   }
 
   public function getFrontendUrl()
@@ -90,15 +94,8 @@ class BApplication extends CWebApplication
     $this->setModules($this->findModules(Yii::getPathOfAlias('backend')));
 
     $this->params->project = preg_replace("/^www./", '', Yii::app()->request->serverName);
-    $this->setMbEncoding();
 
     parent::init();
-  }
-
-  protected function setMbEncoding()
-  {
-    mb_internal_encoding("UTF-8");
-    mb_http_output("UTF-8");
   }
 
   /**

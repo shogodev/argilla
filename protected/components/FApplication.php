@@ -18,6 +18,7 @@
  * @property RequestRedirectComponent $requestRedirect
  * @property EPhpThumb $phpThumb
  * @property Meta $meta
+ * @property CAttributeCollection $params
  */
 class FApplication extends CWebApplication
 {
@@ -45,7 +46,6 @@ class FApplication extends CWebApplication
     parent::init();
 
     $this->setProjectName();
-    $this->setMbEncoding();
   }
 
   protected function setProjectName()
@@ -54,11 +54,5 @@ class FApplication extends CWebApplication
     {
       $this->params->project = preg_replace("/^www./", '', Yii::app()->request->getServerName());
     }
-  }
-
-  protected function setMbEncoding()
-  {
-    mb_internal_encoding("UTF-8");
-    mb_http_output("UTF-8" );
   }
 }

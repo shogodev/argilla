@@ -1,22 +1,24 @@
 <?php
+/**
+ * @var GlobalConfig $globalConfig
+ */
+$globalConfig = GlobalConfig::instance();
+
 defined('YII_DEBUG') or define('YII_DEBUG', true);
 defined('YII_TRACE_LEVEL') or define('YII_TRACE_LEVEL', 3);
 defined('YII_ENABLE_ERROR_HANDLER') or define('YII_ENABLE_ERROR_HANDLER', true);
 
-$backend = realpath(__DIR__.'/..');
-$frontend = realpath(__DIR__.'/../../../protected');
-
 return array_merge_recursive(array(
   'name' => 'backend',
-  'basePath' => $backend,
-  'controllerPath' => $backend.'/controllers',
-  'viewPath' => $backend.'/views',
-  'runtimePath' => $backend.'/runtime',
+  'basePath' => $globalConfig->backendPath,
+  'controllerPath' => $globalConfig->backendPath.'/controllers',
+  'viewPath' => $globalConfig->backendPath.'/views',
+  'runtimePath' => $globalConfig->backendPath.'/runtime',
   'defaultController' => 'base',
 
   'aliases' => array(
-    'backend' => $backend,
-    'frontend' => $frontend,
+    'backend' => $globalConfig->backendPath,
+    'frontend' => $globalConfig->frontendPath,
     'upload' => 'frontend.extensions.upload',
     'bootstrap' => 'frontend.extensions.bootstrap',
   ),
@@ -104,7 +106,8 @@ return array_merge_recursive(array(
       ),
     ),
 
-    'db' => array_replace_recursive(require($frontend.'/config/db.php'),
+    'db' => array_replace_recursive(
+      require($globalConfig->frontendConfigPath.'/db.php'),
       array(
         'enableProfiling'    => YII_DEBUG,
         'enableParamLogging' => YII_DEBUG,
@@ -154,5 +157,5 @@ return array_merge_recursive(array(
 
   'sourceLanguage' => 'ru_ru',
   'language' => 'ru',
-), require($frontend.'/config/share.php'));
+), require($globalConfig->frontendConfigPath.'/share.php'));
 ?>

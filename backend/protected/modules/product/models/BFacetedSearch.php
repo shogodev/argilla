@@ -6,14 +6,27 @@
  * @license http://argilla.ru/LICENSE
  * @package backend.modules.product
  *
- * @method static BFacetedSearch model(string $class = __CLASS__)
  *
  * @property integer $id
  * @property integer $product_id
  * @property string $param_id
  * @property string $value
  */
-class BFacetedSearch extends BActiveRecord
+class BFacetedSearch extends CActiveRecord
 {
+  public function tableName()
+  {
+    return '{{faceted_search}}';
+  }
+
+  /**
+   * @param string $className
+   *
+   * @return static BFacetedSearch
+   */
+  public static function model($className = __CLASS__)
+  {
+    return parent::model(get_called_class());
+  }
 
 }

@@ -4,7 +4,7 @@
  */
 Yii::app()->breadcrumbs->show();?>
 
-<div style="line-height: 1px;">
+<div>
   <?php echo $dataLog;?>
 </div>
 <script type="text/javascript">

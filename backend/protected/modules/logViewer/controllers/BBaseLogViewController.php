@@ -29,7 +29,7 @@ class BBaseLogViewController extends BController
 
       $log = array_slice(array_reverse($log), 0, $this->showBy);
 
-      $dataLog = implode('<br/>', $log);
+      $dataLog = implode('', $log);
     }
     else
     {
@@ -101,6 +101,6 @@ class BBaseLogViewController extends BController
 
   protected function getBasePath()
   {
-    return realpath(Yii::getPathOfAlias('frontend').'/..');
+    return GlobalConfig::instance()->rootPath;
   }
 }
