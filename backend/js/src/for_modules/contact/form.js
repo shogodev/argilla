@@ -98,10 +98,8 @@ $(function(){
     }
   });
 
-  // -----------------------------------------------------------------------------------------
-  // Сортировка группы полей и сохранение позиции
   function sortFields(item) {
-    var url      = "<?php echo Yii::app()->getController()->createUrl('sort', array())?>";
+    var url      = $(item).parents('table.detail-view').data('actionSortUrl');
     var list     = [];
     var position = 1;
     var hasError = false;
@@ -124,14 +122,13 @@ $(function(){
   // Сортировка текстовых блоков
   $('.textblock-container').sortable({
     update: function(event, ui) {
-      handle: "tr",
       sortTextBlocks(ui.item);
     }
   });
 
   function sortTextBlocks(item)
   {
-    var url      = "<?php echo Yii::app()->getController()->createUrl('sort', array())?>";
+    var url      = $(item).parents('table.detail-view').data('actionSortUrl');
     var list     = [];
     var position = 1;
     var hasError = false;
@@ -169,8 +166,8 @@ $(function(){
     if( id === undefined )
       return false;
 
-    var url      = "<?php echo Yii::app()->getController()->createUrl('delete', array())?>";
-    var self     = $(this);
+    var url  = $(this).parents('table.detail-view').data('actionDeleteUrl');
+    var self = $(this);
 
     var callback = function(resp){
       $(self).parents('li').fadeOut();
@@ -185,8 +182,8 @@ $(function(){
     if( !confirm("Вы уверены, что хотите удалить группу полей?") )
       return false;
 
-    var url  = "<?php echo Yii::app()->getController()->createUrl('delete', array())?>";
-    var id   = $(this).attr('data-group');
+    var url = $(this).parents('table.detail-view').data('actionDeleteUrl');
+    var id  = $(this).attr('data-group');
 
     var callback = function(resp){
       $('td.field-add-cell[data-group=' + id + ']').parents('tr').fadeOut();

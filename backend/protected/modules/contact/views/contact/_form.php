@@ -14,7 +14,7 @@ echo $form->errorSummary($model);
 echo $form->renderRequire();
 ?>
 
-<table class="detail-view table table-striped table-bordered">
+<table class="detail-view table table-striped table-bordered" data-action-sort-url="<?php echo Yii::app()->getController()->createUrl('sort', array())?>" data-action-delete-url="<?php echo Yii::app()->getController()->createUrl('delete', array())?>">
 <tbody>
 
   <?php echo $form->textFieldRow($model, 'name'); ?>
