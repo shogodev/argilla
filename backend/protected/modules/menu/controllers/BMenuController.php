@@ -17,20 +17,14 @@ class BMenuController extends BController
     BFrontendMenu::loadExtraModels();
 
     $gridId = Yii::app()->request->getPost('gridId');
-    $type = Yii::app()->request->getPost('field');
     $id = Yii::app()->request->getPost('id');
     $menuId = BFrontendMenuGridView::getIdFromGridViewId($gridId);
     $position = Yii::app()->request->getPost('value');
 
-    $criteria = new CDbCriteria();
-    $criteria->compare('menu_id', $menuId);
-    $criteria->compare('item_id', $id);
-    $criteria->compare('type', $type);
-
     /**
      * @var BFrontendMenuItem $item
      */
-    $item = BFrontendMenuItem::model()->find($criteria);
+    $item = BFrontendMenuItem::model()->findByAttributes(['menu_id' => $menuId, 'item_id' => $id]);
 
     if( $item !== null )
     {
