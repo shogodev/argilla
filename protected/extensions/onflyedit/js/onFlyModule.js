@@ -33,7 +33,7 @@ Backend.modules.onFly = function(box) {
     var wrappedElem = $(elem),
       gridId = wrappedElem.data('grid-id'),
       ajaxUrl = wrappedElem.data('ajax-url'),
-      matches = wrappedElem.data('onflyedit').match(/(\w+)-(\d+)/),
+      matches = wrappedElem.data('onflyedit').match(/(\w+)-([^\-]+)/),
       data = {};
 
     data.action = 'onflyedit';
