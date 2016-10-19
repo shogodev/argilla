@@ -54,10 +54,10 @@ $notebook-width: 1400px;
 
 @import "base/resets";
 @import "base/typography";
-@import "base/buttons";
 @import "base/layout";
 @import "base/print";
 
+@import "components/buttons";
 @import "components/forms";
 @import "components/menus";
 @import "components/popups";
