@@ -207,7 +207,7 @@ class BFrontendMenu extends BAbstractMenuEntry
   /**
    * @return CArrayDataProvider
    */
-  public function getGridData()
+  public function getDataProvider()
   {
     $data = array();
 
@@ -222,7 +222,9 @@ class BFrontendMenu extends BAbstractMenuEntry
       $data[] = new BFrontendMenuGridAdapter($entry, false);
     }
 
-    return new CArrayDataProvider($data);
+    $dataProvider = new CArrayDataProvider($data);
+    $dataProvider->getPagination()->pageSize = 30;
+    return $dataProvider;
   }
 
   /**

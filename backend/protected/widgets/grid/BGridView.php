@@ -90,7 +90,7 @@ class BGridView extends TbGridView
   {
     if( $this->dataProvider instanceof BActiveDataProvider )
     {
-      echo $this->dataProvider->getPageSizeForm();
+      echo $this->dataProvider->pagination->getPageSizeForm();
     }
   }
 
@@ -173,7 +173,7 @@ class BGridView extends TbGridView
     if( !preg_match('/^([\w\.]+)(:(\w*))?(:(.*))?$/', $text, $matches) )
       throw new CException(Yii::t('zii', 'The column must be specified in the format of "Name:Type:Label", where "Type" and "Label" are optional.'));
 
-    $column       = new BDataColumn($this);
+    $column = new BDataColumn($this);
     $column->name = $matches[1];
 
     if( isset($matches[3]) && $matches[3] !== '' )

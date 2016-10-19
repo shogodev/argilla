@@ -29,4 +29,20 @@ class BFrontendMenuGridView extends BGridView
   {
     return str_replace(self::$gridIdPrefix, '', $gridId);
   }
+
+  public static function encodeMenuItem(BFrontendMenuGridAdapter $adapter)
+  {
+    return implode('#', [$adapter->getPrimaryKey(), $adapter->getType()]);
+  }
+
+  /**
+   * Возвращает [0 => itemId, 1 => type]
+   * @param $string
+   *
+   * @return array
+   */
+  public static function decodeMenuItem($string)
+  {
+    return explode('#', $string);
+  }
 }

@@ -10,9 +10,9 @@ class CActiveDataProviderTest extends CTestCase
   public function testConstructor()
   {
     $dataProvider = new BActiveDataProvider('BNews', array());
-    $itemsPerPage = $dataProvider->getCurrentPageSize();
+    $itemsPerPage = $dataProvider->pagination->getPageSize();
 
-    $this->assertEquals($itemsPerPage, BActiveDataProvider::PAGINATION_PAGE_SIZE);
+    $this->assertEquals($itemsPerPage, BPagination::DEFAULT_PAGE_SIZE);
   }
 
   public function testCustomElements()
@@ -26,9 +26,9 @@ class CActiveDataProviderTest extends CTestCase
       50 => 50,
     );
 
-    $dataProvider->setPageSizeElements($elements);
+    $dataProvider->pagination->pageSizeList = $elements;
 
-    $this->assertEquals($dataProvider->getPageSizeFormElements(), $elements);
+    $this->assertEquals($dataProvider->pagination->pageSizeList, $elements);
   }
 
   public function testForm()
@@ -37,6 +37,6 @@ class CActiveDataProviderTest extends CTestCase
     Yii::app()->controller->action = new CInlineAction(Yii::app()->controller, 'index');
 
     $dataProvider = new BActiveDataProvider('BNews', array());
-    $dataProvider->getPageSizeForm();
+    $dataProvider->pagination->getPageSizeForm();
   }
 }

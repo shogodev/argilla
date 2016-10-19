@@ -16,28 +16,27 @@ class BMenuController extends BController
   {
     BFrontendMenu::loadExtraModels();
 
+    list($itemId, $type) = BFrontendMenuGridView::decodeMenuItem(Yii::app()->request->getPost('id'));
     $gridId = Yii::app()->request->getPost('gridId');
-    $type = Yii::app()->request->getPost('field');
-    $id = Yii::app()->request->getPost('id');
+    $field = Yii::app()->request->getPost('field');
     $menuId = BFrontendMenuGridView::getIdFromGridViewId($gridId);
-    $position = Yii::app()->request->getPost('value');
-
-    $criteria = new CDbCriteria();
-    $criteria->compare('menu_id', $menuId);
-    $criteria->compare('item_id', $id);
-    $criteria->compare('type', $type);
+    $value = Yii::app()->request->getPost('value');
 
     /**
      * @var BFrontendMenuItem $item
      */
-    $item = BFrontendMenuItem::model()->find($criteria);
+    $item = BFrontendMenuItem::model()->findByAttributes([
+        'menu_id' => $menuId,
+        'item_id' => $itemId,
+        'type' => $type]
+    );
 
     if( $item !== null )
     {
-      $item->position = $position;
+      $item->{$field} = $value;
       $item->save();
+      echo $item->{$field};
 
-      echo $item->position;
       Yii::app()->end();
     }
   }
@@ -51,7 +50,7 @@ class BMenuController extends BController
 
     if( class_exists($type) && BFrontendMenu::model()->exists('id = :id', array(':id' => $menu_id)) )
     {
-      $menu  = BFrontendMenu::model()->findByPk($menu_id);
+      $menu = BFrontendMenu::model()->findByPk($menu_id);
       $model = $type::model()->findByPk($item_id);
       $menu->switchMenuEntryStatus($model);
     }

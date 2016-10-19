@@ -106,7 +106,7 @@ class OnFlyEditField extends BDataColumn
    * @override
    *
    * @param int $row
-   * @param object $data
+   * @param BActiveRecord|array $data
    *
    * @return void
    */
@@ -120,16 +120,24 @@ class OnFlyEditField extends BDataColumn
       $this->elementOptions
     );
 
-    $primaryKey = $data instanceof BActiveRecord ? $data->getPrimaryKey() : $data['id'];
-
     Yii::app()->controller->widget('OnFlyWidget', array(
       'type' => empty($this->dropDown) ? OnFlyWidget::TYPE_INPUT : OnFlyWidget::TYPE_DROPDOWN,
       'ajaxUrl' => $this->ajaxUrl,
       'attribute' => $this->name,
-      'primaryKey' => $primaryKey,
+      'primaryKey' => $this->getPrimaryKey($data),
       'value' => $data[$this->name],
       'items' => $this->dropDown,
       'htmlOptions' => $htmlOptions
     ));
+  }
+
+  /**
+   * @param BActiveRecord|array $data
+   *
+   * @return mixed
+   */
+  protected function getPrimaryKey($data)
+  {
+    return $data instanceof BActiveRecord ? $data->getPrimaryKey() : $data['id'];
   }
 }

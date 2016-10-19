@@ -26,21 +26,13 @@ class BModificationBehavior extends SActiveRecordBehavior
     if( $this->owner->isNewRecord )
     {
       $this->owner->parent = Yii::app()->request->getParam('modificationParent');
+      $this->owner->parentModel = BProduct::model()->findByPk($this->owner->parent);
     }
 
     $this->attachRelations();
 
     $this->owner->attachEventHandler('onBeforeSearch', array($this, 'beforeSearch'));
     $this->attachEventHandler('onAfterRenderTableRow', array($this, 'onAfterRenderTableRow'));
-
-    //to do: добавить параметр блокирующей отключение одного значения
-    $this->owner->attachBehavior('radioToggleBehavior', array(
-      'class' => 'RadioToggleBehavior',
-      'conditionAttribute' => 'parent',
-      'toggleAttribute' => 'default_modification'
-    ));
-
-    $this->owner->enableBehavior('radioToggleBehavior');
   }
 
   public function beforeSearch(CEvent $event)

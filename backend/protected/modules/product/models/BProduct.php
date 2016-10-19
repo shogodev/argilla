@@ -125,6 +125,7 @@ class BProduct extends BActiveRecord
       'associatedFilter' => array(
         'class' => 'AssociatedFilterBehavior',
       ),
+      'modificationBehavior' => array('class' => 'BModificationBehavior')
     );
   }
 
