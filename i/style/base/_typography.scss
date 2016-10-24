@@ -2,7 +2,7 @@
 /*   -=========== Typography ===========-   */
 
 html {
-  font: #{$font-size}/#{$line-height} $font-family;
+  font: #{$root-font-size}/#{$line-height} $font-family;
   font-weight: $light;
 
   @media only screen and (max-width: $mobile-width) {
@@ -13,6 +13,7 @@ html {
 body {
   background: $body-bg;
   color: $text-color;
+  font-size: $font-size;
 }
 
 ::-moz-selection {
@@ -35,15 +36,15 @@ body {
 }
 
 .h1 {
-  font-size: 1.875rem;
+  font-size: 3.6rem;
 }
 
 .h2 {
-  font-size: 1.515rem;
+  font-size: 2.2rem;
 }
 
 .h3 {
-  font-size: 1.125rem;
+  font-size: 1.8rem;
 }
 
 .h4 {
@@ -115,7 +116,7 @@ a.nova, .nova a {
 
 @for $i from 11 through 36 {
   .s#{$i} {
-    font-size: #{1px / $font-size * $i}rem;
+    font-size: #{1px / $root-font-size * $i}rem;
     line-height: $line-height;
   }
 }
@@ -254,7 +255,7 @@ hr {
 
 .video {
   position: relative;
-  padding: 25px 0 56.25%;
+  padding: 0 0 42.5%;
 
   > iframe {
     @include size(100%);

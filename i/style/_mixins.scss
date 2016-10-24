@@ -148,3 +148,8 @@
   -webkit-flex-direction: $direction;
   flex-direction: $direction;
 }
+
+@mixin justifycontent($value) {
+  -webkit-justify-content: $value;
+  justify-content: $value;
+}

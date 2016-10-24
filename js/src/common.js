@@ -62,6 +62,7 @@
   window.IS_SMALL_MOBILE_WIDTH = function() {
     return WINDOW_WIDTH <= SMALL_MOBILE_WIDTH;
   }
+  window.IS_TOUCH_DEVICE = 'ontouchstart' in document;
 
 
   // Masked input

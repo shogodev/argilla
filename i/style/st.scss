@@ -17,7 +17,8 @@ $hovered-link-color: $black;
 // Fonts
 
 $font-family: sans-serif;
-$font-size: 14px;
+$root-font-size: 10px;
+$font-size: 1.6rem;
 $mobile-font-size: 12px;
 $line-height: 1.2;
 
@@ -54,10 +55,10 @@ $notebook-width: 1400px;
 
 @import "base/resets";
 @import "base/typography";
-@import "base/buttons";
 @import "base/layout";
 @import "base/print";
 
+@import "components/buttons";
 @import "components/forms";
 @import "components/menus";
 @import "components/popups";
