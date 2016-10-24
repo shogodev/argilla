@@ -26,6 +26,11 @@ class CheckUseGulp extends Task
   private function check()
   {
     $webroot = realpath(__DIR__.'/../..');
+
+    $globalConfigPath = $webroot.'/protected/config/global_config.php';
+    if( isset($globalConfigPath) )
+      require($globalConfigPath);
+
     $config = require($webroot.'/protected/config/frontend.php');
 
     if( isset($config['components']['mainscript']['useGulp']) && $config['components']['mainscript']['useGulp'] == true )
