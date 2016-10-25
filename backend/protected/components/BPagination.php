@@ -1,7 +1,6 @@
 <?php
 /**
  * @author Dmitriy Ostashev <ostashev@shogo.ru>
- *
  * @property string $actionUrl
  */
 class BPagination extends CPagination
@@ -11,7 +10,6 @@ class BPagination extends CPagination
   /**
    * Массив элементов, используемых для вывода
    * в форме вариантов отображения элементов страниц
-   *
    * @var array
    */
   public $pageSizeList = [10 => 10, 50 => 50, 100 => 100, 500 => 500, 1000 => 1000, 5000 => 5000, self::MAX_PAGE_SIZE => 'Все'];
@@ -20,9 +18,11 @@ class BPagination extends CPagination
   public $pageSizeVar;
 
   /** @var  string Url сабмита формы - выбора кол-ва элементов на странице */
-  private $_actionUrl;
+  protected $_actionUrl;
 
-  private $_pageSize = self::DEFAULT_PAGE_SIZE;
+  protected $_pageSize = self::DEFAULT_PAGE_SIZE;
+
+  protected $_itemCount = 0;
 
   public function getPageSize()
   {
@@ -52,12 +52,29 @@ class BPagination extends CPagination
       unset($params[$this->pageSizeVar], $params['ajax']);
       $this->_actionUrl = Yii::app()->createUrl($route, $params);
     }
+
     return $this->_actionUrl;
   }
 
   /**
+   * @return integer number of pages
+   */
+  public function getPageCount()
+  {
+    return (int)(($this->_itemCount + $this->_pageSize - 1) / $this->_pageSize);
+  }
+
+  /**
+   * @param integer $value total number of items.
+   */
+  public function setItemCount($value)
+  {
+    if( ($this->_itemCount = $value) < 0 )
+      $this->_itemCount = 0;
+  }
+
+  /**
    * Создание формы для отображения вариантов количества элементов
-   *
    * @return string of form
    */
   public function getPageSizeForm()

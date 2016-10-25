@@ -28,7 +28,12 @@
  *
  * @property BPagination $pagination
  */
-class BActiveDataProvider extends CActiveDataProvider
+Yii::import('frontend.share.components.SActiveDataProvider');
+/**
+ * Class BActiveDataProvider
+ * @property BPagination $pagination
+ */
+class BActiveDataProvider extends SActiveDataProvider
 {
   public function __construct($modelClass, $config = array())
   {
