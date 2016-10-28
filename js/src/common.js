@@ -4,7 +4,7 @@
   // -----
   window.SMALL_MOBILE_WIDTH = 480;
   window.MOBILE_WIDTH = 800;
-  window.TABLET_WIDTH = 950;
+  window.TABLET_WIDTH = 1024;
   window.SMALL_NOTEBOOK_WIDTH = 1200;
   window.NOTEBOOK_WIDTH = 1400;
   window.HEADER_HEIGHT = $('.header').height();
@@ -46,22 +46,22 @@
 
   window.IS_DESKTOP_WIDTH = function() {
     return WINDOW_WIDTH > NOTEBOOK_WIDTH;
-  }
+  };
   window.IS_NOTEBOOK_WIDTH = function() {
     return ( WINDOW_WIDTH > SMALL_NOTEBOOK_WIDTH && WINDOW_WIDTH <= NOTEBOOK_WIDTH );
-  }
+  };
   window.IS_SMALL_NOTEBOOK_WIDTH = function() {
     return ( WINDOW_WIDTH > TABLET_WIDTH && WINDOW_WIDTH <= SMALL_NOTEBOOK_WIDTH );
-  }
+  };
   window.IS_TABLET_WIDTH = function() {
     return ( WINDOW_WIDTH > MOBILE_WIDTH && WINDOW_WIDTH <= TABLET_WIDTH );
-  }
+  };
   window.IS_MOBILE_WIDTH = function() {
     return WINDOW_WIDTH <= MOBILE_WIDTH;
-  }
+  };
   window.IS_SMALL_MOBILE_WIDTH = function() {
     return WINDOW_WIDTH <= SMALL_MOBILE_WIDTH;
-  }
+  };
   window.IS_TOUCH_DEVICE = 'ontouchstart' in document;
 
 

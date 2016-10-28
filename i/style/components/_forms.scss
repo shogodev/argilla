@@ -76,7 +76,7 @@ textarea {
 
     .two-columns-form & {
       @include position(absolute, null null 0 0);
-      @include transform(translateY(100%));
+      transform: translateY(100%);
       width: 100%;
     }
   }

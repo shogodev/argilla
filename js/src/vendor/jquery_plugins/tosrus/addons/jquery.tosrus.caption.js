@@ -94,7 +94,7 @@
 							that.nodes.$capt
 								.children()
 								.eq( c )
-								.text( that.nodes.$sldr.children().eq( that.slides.index + c ).data( _d.caption ) || '' );
+								.html( that.nodes.$sldr.children().eq( that.slides.index + c ).data( _d.caption ) || '' );
 						}						
 					}
 				);

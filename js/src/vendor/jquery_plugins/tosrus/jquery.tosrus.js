@@ -1,6 +1,6 @@
 /*
- *	jQuery Touch Optimized Sliders "R"Us 2.4.1
- *	
+ *	jQuery Touch Optimized Sliders "R"Us 2.5.0
+ *
  *	Copyright (c) Fred Heusschen
  *	www.frebsite.nl
  *
@@ -17,7 +17,7 @@
 
 	var _PLUGIN_	= 'tosrus',
 		_ABBR_		= 'tos',
-		_VERSION_	= '2.4.1';
+		_VERSION_	= '2.5.0';
 
 
 	//	Plugin already excists
@@ -61,7 +61,7 @@
 			//	Add markup
 			this.nodes.$wrpr = $('<div class="' + _c.wrapper + '" />');
 			this.nodes.$sldr = $('<div class="' + _c.slider + '" />').appendTo( this.nodes.$wrpr );
-	
+
 			this.nodes.$wrpr
 				.addClass( this.vars.fixed ? _c.fixed : _c.inline )
 				.addClass( _c( 'fx-' + this.opts.effect ) )
@@ -75,15 +75,15 @@
 				.on( _e.open + ' ' + _e.close + ' ' + _e.prev + ' ' + _e.next + ' ' + _e.slideTo,
 					function( e )
 					{
-						arguments = Array.prototype.slice.call( arguments );
-						var e = arguments.shift(),
+						var args = Array.prototype.slice.call( arguments );
+						var e = args.shift(),
 							t = e.type;
-	
+
 						e.stopPropagation();
 
 						if ( typeof that[ t ] == 'function' )
 						{
-							that[ t ].apply( that, arguments );
+							that[ t ].apply( that, args );
 						}
 					}
 				)
@@ -107,7 +107,7 @@
 							case 'toggleUI':
 								that.nodes.$wrpr.toggleClass( _c.hover );
 								break;
-							
+
 							case 'close':
 								if ( !$(e.target).is( 'img' ) )
 								{
@@ -412,7 +412,7 @@
 						break;
 					}
 				}
-				
+
 				//	Callback event
 				this.nodes.$wrpr.trigger( _e.sliding, [ index, direct ] );
 			}
@@ -427,7 +427,7 @@
 			{
 				for ( var m in $[ _PLUGIN_ ].media )
 				{
-					$a = $a.add( 
+					$a = $a.add(
 						this.$node.filter(
 							function()
 							{
@@ -577,7 +577,7 @@
 								{
 									result = $[ _PLUGIN_ ].media[ m ].filterAnchors.call( that, $anchor );
 								}
-								
+
 								if ( result )
 								{
 									$[ _PLUGIN_ ].media[ m ].initAnchors.call( that, $slide, content );
@@ -607,7 +607,7 @@
 					this.opts.wrapper.target = $(this.opts.wrapper.target);
 				}
 			}
-	
+
 			//	Show
 			this.opts.show = _f.complBoolean(  this.opts.show, this.opts.wrapper.target != 'window' );
 
@@ -628,7 +628,7 @@
 			this.opts.slides.slide		=   _f.complNumber( this.opts.slides.slide, this.opts.slides.visible );
 			this.opts.slides.offset 	= ( _f.isPercentage( this.opts.slides.offset ) ) ? _f.getPercentage( this.opts.slides.offset ) : _f.complNumber( this.opts.slides.offset, 0 );
 		},
-		
+
 		_uniqueID: function()
 		{
 			if ( !this.__uniqueID )
@@ -700,7 +700,7 @@
 	$[ _PLUGIN_ ].configuration = {
 		transitionDuration: 400
 	};
-	
+
 	$[ _PLUGIN_ ].constants = {};
 
 
@@ -827,28 +827,31 @@
 				return parseInt( value.slice( 0, -1 ) );
 			},
 			resizeRatio: function( $i, $o, maxWidth, maxHeight, ratio )
-			{		
-				var _w = $o.width(),
-					_h = $o.height();
-		
-				if ( maxWidth && _w > maxWidth )
+			{
+				if ( $o.is( ':visible' ) )
 				{
-					_w = maxWidth;
+					var _w = $o.width(),
+						_h = $o.height();
+
+					if ( maxWidth && _w > maxWidth )
+					{
+						_w = maxWidth;
+					}
+					if ( maxHeight && _h > maxHeight )
+					{
+						_h = maxHeight;
+					}
+
+					if ( _w / _h < ratio )
+					{
+						_h = _w / ratio;
+					}
+					else
+					{
+						_w = _h * ratio;
+					}
+					$i.width( _w ).height( _h );
 				}
-				if ( maxHeight && _h > maxHeight )
-				{
-					_h = maxHeight;
-				}
-		
-				if ( _w / _h < ratio )
-				{
-					_h = _w / ratio;
-				}
-				else
-				{
-					_w = _h * ratio;
-				}
-				$i.width( _w ).height( _h );
 			},
 			transitionend: function( $e, fn, duration )
 	        {

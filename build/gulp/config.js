@@ -1,7 +1,11 @@
+var argv = require('yargs').argv;
+
 var path = require('path');
 
 var rootPath = path.join(__dirname, '../../');
 var sassTempDir = '~sasstemp_' + new Date().getTime();
+
+var es2015 = require('babel-preset-es2015-nostrict');
 
 module.exports = {
   rootPath: rootPath,
@@ -18,17 +22,33 @@ module.exports = {
     ]
   },
 
+  babel: {
+    presets: [es2015],
+    compact: false
+  },
+
   sass: {
     src: rootPath + '/i/style/**/*.scss',
     dest: rootPath + '/i/style/css/',
     tempDir: sassTempDir,
 
     options: {
-      style: 'compressed',
-      cacheLocation: '/tmp/.sass-cache',
-      container: sassTempDir,
-      sourcemap: true
+      style: argv.debug ? 'expanded' : 'compressed',
+      lineNumbers: argv.debug,
+      cacheLocation: rootPath + 'build/tmp/.sass-cache',
+      container: sassTempDir
+      // sourcemap: true
     }
+  },
+
+  imagemin: {
+    src: rootPath + '/i/',
+    dest: rootPath + '/i/'
+  },
+
+  autoprefixer: {
+    browsers: ['last 5 versions'],
+    cascade: false
   },
 
   base64: {
@@ -39,3 +59,5 @@ module.exports = {
     }
   }
 };
+
+console.log(rootPath);

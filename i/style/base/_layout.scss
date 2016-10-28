@@ -37,7 +37,7 @@
 }
 
 .wrapper {
-  @include borderbox;
+  box-sizing: border-box;
 
   @media only screen and (min-width: $wrapper-width + 20px) {
     max-width: $wrapper-width;

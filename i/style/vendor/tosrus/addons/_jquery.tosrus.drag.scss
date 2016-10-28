@@ -9,5 +9,5 @@
 
 .tos-wrapper.tos-fx-slide .tos-slider
 {
-	@include vendor-prefix-property( 'transition-property', ( left, margin ) );
+	transition-property: left, margin;
 }

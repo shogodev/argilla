@@ -20,7 +20,10 @@
       window.IS_DESKTOP = !IS_MOBILE;
       window.IS_IOS = (navigator.userAgent.match(/(iPad|iPhone|iPod)/g) ? true : false);
       window.IS_IE = navigator.appVersion.indexOf("MSIE") !== -1 || navigator.userAgent.match(/Trident.*rv[ :]*11\./);
-      window.IS_IE8 = navigator.appVersion.indexOf("MSIE 8") !== -1;
+      window.IS_TOUCH_DEVICE = false;
+      if ('ontouchend' in document || !!navigator.msMaxTouchPoints || !!navigator.maxTouchPoints) {
+        window.IS_TOUCH_DEVICE = true;
+      }
 
       var HTML = document.documentElement;
 
@@ -30,7 +33,7 @@
       if (IS_DESKTOP) HTML.classList.add("is-desktop");
       if (IS_IOS) HTML.classList.add("is-ios");
       if (IS_IE) HTML.classList.add("is-ie");
-      if (IS_IE8) HTML.classList.add("is-ie8");
+      if (IS_TOUCH_DEVICE) HTML.classList.add("is-touch-device");
     })();
   </script>
 </head>

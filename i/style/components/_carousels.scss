@@ -23,7 +23,7 @@
 }
 
 .jcarousel-controls {
-  @include user-select(none);
+  user-select: none;
 
   &.is-hidden {
     visibility: hidden;

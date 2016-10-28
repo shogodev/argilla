@@ -43,7 +43,7 @@ $circleSize: 80px !default;
 	top:  50%;
 	left: 50%;
 
-	@include vendor-prefix-property( 'transition', opacity $transitionDuration $transitionFunction );
+	transition: opacity $transitionDuration $transitionFunction;
 	
 	&:after
 	{

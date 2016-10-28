@@ -40,7 +40,7 @@
 	text-align: center;
 
 	opacity: 0;
-	@include vendor-prefix-property( 'transition', opacity $transitionDuration $transitionFunction );
+	transition: opacity $transitionDuration $transitionFunction;
 
 	width: 100%;
 	position: absolute;

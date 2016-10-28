@@ -9,19 +9,19 @@
 
 .tos-noanimation
 {
-	@include vendor-prefix-property( 'transition-property', none !important );
+	transition-property: none !important;
 }
 .tos-fastanimation
 {
-	@include vendor-prefix-property( 'transition-duration', ( $transitionDuration / 2 ) !important );
-	@include vendor-prefix-property( 'transition-timing-function', ease-out !important );
+	transition-duration: ( $transitionDuration / 2 ) !important;
+	transition-timing-function: ease-out !important;
 }
 
 //	Wrapper
 .tos-wrapper
 {
 	opacity: 0;
-	@include vendor-prefix-property( 'transition', opacity $transitionDuration $transitionFunction );
+	transition: opacity $transitionDuration $transitionFunction;
 
 	display: none;
 	width: 100%;
@@ -68,7 +68,7 @@
 	.tos-slider
 	{
 		left: 0;
-		@include vendor-prefix-property( 'transition', left $transitionDuration $transitionFunction );
+		transition: left $transitionDuration $transitionFunction;
 	}
 	&.tos-fixed .tos-slider
 	{
@@ -78,22 +78,25 @@
 .tos-wrapper.tos-fx-fade .tos-slider
 {
 	opacity: 1;
-	@include vendor-prefix-property( 'transition', opacity $transitionDuration $transitionFunction );
+	transition: opacity $transitionDuration $transitionFunction;
 }
 
 
 //	UI elements
 .tos-uibg
 {
-	@include vendor-prefix-value( 'background-image', linear-gradient( bottom, rgba( $uiBgColor, $uiBgOpacity ) 0%, rgba( $uiBgColor, 0 ) 100% ) );
-	@include vendor-prefix-property( 'transition', opacity $transitionDuration $transitionFunction );
 	opacity: 0;
+	transition: opacity $transitionDuration $transitionFunction;
 	
 	width: 100%;
 	position: absolute;
 	left: 0;
 	bottom: 0;
 	z-index: 1;
+}
+.tos-fill .tos-uibg
+{
+	background: linear-gradient( to top, rgba( $uiBgColor, $uiBgOpacity ), rgba( $uiBgColor, 0 ) );
 }
 .tos-desktop .tos-wrapper:hover,
 .tos-touch .tos-wrapper.tos-hover
@@ -137,7 +140,7 @@
 	> *
 	{
 		opacity: 1;
-		@include vendor-prefix-property( 'transition', opacity $transitionDuration $transitionFunction );
+		transition: opacity $transitionDuration $transitionFunction;
 	}
 }
 
@@ -163,7 +166,7 @@
 
 		*
 		{
-			@include vendor-prefix-property( 'text-size-adjust', none );
+			text-size-adjust: none;
 		}
 	}
 }

@@ -18,8 +18,8 @@ $hovered-link-color: $black;
 
 $font-family: sans-serif;
 $root-font-size: 10px;
+$root-mobile-font-size: $root-font-size;
 $font-size: 1.6rem;
-$mobile-font-size: 12px;
 $line-height: 1.2;
 
 $light: 300;
@@ -49,7 +49,7 @@ $notebook-width: 1400px;
 @import "vendor/alertify";
 @import "vendor/selectric";
 @import "vendor/perfect-scrollbar";
-@import "vendor/tosrus/jquery.tosrus.all";
+@import "vendor/tosrus/jquery.tosrus";
 
 @import "overrides"; // override vendor styles
 

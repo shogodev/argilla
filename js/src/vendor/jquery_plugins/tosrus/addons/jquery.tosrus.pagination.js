@@ -62,8 +62,8 @@
 				switch( pagr.type )
 				{
 					case 'thumbnails':
-						var pre 	= '<a href="#" style="background-image: url(',
-							post	= ');"></a>';
+						var pre 	= '<a href="#" style="background-image: url(\'',
+							post	= '\');"></a>';
 
 						if ( this.vars.fixed )
 						{

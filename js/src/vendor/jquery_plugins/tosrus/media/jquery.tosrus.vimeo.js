@@ -27,7 +27,7 @@
 		{
 			var id = this._uniqueID();
 			href = href.split( 'vimeo.com/' )[ 1 ].split( '?' )[ 0 ] + '?api=1&player_id=' + id;
-			$('<iframe id="' + id + '" src="http://player.vimeo.com/video/' + href + '" frameborder="0" allowfullscreen />')
+			$('<iframe id="' + id + '" src="https://player.vimeo.com/video/' + href + '" frameborder="0" allowfullscreen />')
 				.appendTo( $slide );
 
 			initVideo.call( this, $slide );
@@ -97,6 +97,12 @@
 					unloadVideo();
 				}
 			)
+			.on( _e.opening,
+			    function( e )
+			    {
+			        _f.resizeRatio( $v, $s, maxWidth, maxHeight, ratio );
+			    }
+			)
 			.on( _e.closing,
 				function( e )
 				{
@@ -104,6 +110,7 @@
 					unloadVideo();
 				}
 			);
+
 
 		_g.$wndw
 			.on( _e.resize,

@@ -24,7 +24,7 @@ $btnIconSize: 12px !default;
 	position: absolute;
 	z-index: 1;
 
-	@include vendor-prefix-property( 'transition', opacity 0.4s ease );
+	transition: opacity 0.4s ease;
 }
 
 .tos-prev,
@@ -90,7 +90,7 @@ $btnIconSize: 12px !default;
 
 	position: absolute;
 	top: 50%;
-	@include vendor-prefix-property( 'transform', rotate( 45deg ) );
+	transform: rotate( 45deg );
 }
 .tos-close span:before,
 .tos-close span:after
@@ -135,7 +135,7 @@ $btnIconSize: 12px !default;
 .tos-inline
 {
 	opacity: 0;
-	@include vendor-prefix-property( 'transition', opacity $transitionDuration $transitionFunction );
+	transition: opacity $transitionDuration $transitionFunction;
 
 	display: inline-block;
 	margin: 0;
@@ -169,7 +169,7 @@ $btnIconSize: 12px !default;
 			.tos-next,
 			.tos-close
 			{
-				@include vendor-prefix-property( 'transform', scale( 2 ) )
+				transform: scale( 2 );
 			}
 		}
 	}
@@ -181,7 +181,7 @@ $btnIconSize: 12px !default;
 			.tos-next,
 			.tos-close
 			{
-				@include vendor-prefix-property( 'transform', scale( 3 ) )
+				transform: scale( 3 );
 			}
 		}
 	}
@@ -192,15 +192,15 @@ $btnIconSize: 12px !default;
 		{
 			.tos-prev
 			{
-				@include vendor-prefix-property( 'transform-origin', left center );
+				transform-origin: left center;
 			}
 			.tos-next
 			{
-				@include vendor-prefix-property( 'transform-origin', right center );
+				transform-origin: right center;
 			}
 			.tos-close
 			{
-				@include vendor-prefix-property( 'transform-origin', right top );
+				transform-origin: right top;
 			}
 		}
 	}

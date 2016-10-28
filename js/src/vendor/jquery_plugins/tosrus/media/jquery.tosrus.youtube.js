@@ -30,7 +30,8 @@
 
 			if ( this.opts[ _MEDIA_ ].imageLink )
 			{
-				href = 'http://img.youtube.com/vi/' + href + '/0.jpg';
+				var proto = window.location.protocol === 'https:' ? 'https:' : 'http:';
+				href = proto + '//img.youtube.com/vi/' + href + '/0.jpg';
 				$('<a href="' + url + '" class="' + $[ _PLUGIN_ ]._c( 'play' ) + '" target="_blank" />')
 					.appendTo( $slide );
 
@@ -48,7 +49,7 @@
 			}
 			else
 			{
-				$('<iframe src="http://www.youtube.com/embed/' + href + '?enablejsapi=1" frameborder="0" allowfullscreen />')
+				$('<iframe src="https://www.youtube.com/embed/' + href + '?enablejsapi=1" frameborder="0" allowfullscreen />')
 					.appendTo( $slide );
 
 				initVideo.call( this, $slide );
@@ -115,6 +116,12 @@
 				{
 					commandVideo( 'pause' );
 				}
+			)
+			.on( _e.opening,
+			    function( e )
+			    {
+			        _f.resizeRatio( $v, $s, maxWidth, maxHeight, ratio );
+			    }
 			)
 			.on( _e.closing,
 				function( e )

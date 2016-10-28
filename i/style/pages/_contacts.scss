@@ -13,7 +13,7 @@
 
 .contacts--panel {
   @include position(absolute, 50% null null 50%);
-  @include transform(translateY(-50%));
+  transform: translateY(-50%);
   width: 345px;
   padding: 15px 0;
   margin-left: -625px;
@@ -34,17 +34,17 @@
     }
   }
 
-  .icon {
-    $icons: 'pin', 'phone', 'email', 'link';
+  // .icon {
+  //   $icons: 'pin', 'phone', 'email', 'link';
 
-    @include size(26px);
-    background-repeat: no-repeat;
-    background-position: 50%;
+  //   @include size(26px);
+  //   background-repeat: no-repeat;
+  //   background-position: 50%;
 
-    @each $icon in $icons {
-      &.#{$icon} {
-        background-image: url(/i/small-#{$icon}-white.png);
-      }
-    }
-  }
+  //   @each $icon in $icons {
+  //     &.#{$icon} {
+  //       background-image: url(/i/small-#{$icon}-white.png);
+  //     }
+  //   }
+  // }
 }

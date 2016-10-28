@@ -2,11 +2,11 @@
 /*   -=========== Buttons ===========-   */
 
 .btn {
-  @include user-select(none);
   display: inline-block;
   text-decoration: none;
   text-align: center;
   cursor: pointer;
+  user-select: none;
 }
 
 // Sizes

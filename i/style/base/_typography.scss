@@ -6,7 +6,7 @@ html {
   font-weight: $light;
 
   @media only screen and (max-width: $mobile-width) {
-    font-size: $mobile-font-size;
+    font-size: $root-mobile-font-size;
   }
 }
 

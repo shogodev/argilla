@@ -5,9 +5,9 @@
 
 .menu {
   ul, ol, li {
-    @include user-select(none);
     margin: 0;
     list-style: none;
+    user-select: none;
   }
 
   a {
@@ -19,7 +19,7 @@
   }
 
   li, a {
-    @include user-select(none);
+    user-select: none;
   }
 
   a:not([href]) {
