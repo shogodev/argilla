@@ -34,7 +34,7 @@
     </div>
 
     <script>
-      $(function(){
+      document.addEventListener('DOMContentLoaded', function() {
         $('#site-category').on('change', function(e){
           document.location.href = $(this).val();
         });

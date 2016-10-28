@@ -11,14 +11,14 @@ module.exports = {
   rootPath: rootPath,
 
   js: {
-    dest: rootPath + '/js',
+    dest: rootPath + 'js',
     src: [
-      rootPath + '/js/src/vendor/jquery.js',
-      rootPath + '/js/src/vendor/jquery-ui.js',
-      rootPath + '/js/src/vendor/jqury_plugins/*.js',
-      rootPath + '/js/src/vendor/jquery_ui_widgets/*.js',
-      rootPath + '/js/src/vendor/**/*.js',
-      rootPath + '/js/src/common.js'
+      rootPath + 'js/src/vendor/jquery.js',
+      rootPath + 'js/src/vendor/jquery-ui.js',
+      rootPath + 'js/src/vendor/jqury_plugins/*.js',
+      rootPath + 'js/src/vendor/jquery_ui_widgets/*.js',
+      rootPath + 'js/src/vendor/**/*.js',
+      rootPath + 'js/src/common.js'
     ]
   },
 
@@ -28,8 +28,8 @@ module.exports = {
   },
 
   sass: {
-    src: rootPath + '/i/style/**/*.scss',
-    dest: rootPath + '/i/style/css/',
+    src: rootPath + 'i/style/**/*.scss',
+    dest: rootPath + 'i/style/css/',
     tempDir: sassTempDir,
 
     options: {
@@ -42,8 +42,8 @@ module.exports = {
   },
 
   imagemin: {
-    src: rootPath + '/i/',
-    dest: rootPath + '/i/'
+    src: rootPath + 'i/',
+    dest: rootPath + 'i/'
   },
 
   autoprefixer: {
@@ -59,5 +59,3 @@ module.exports = {
     }
   }
 };
-
-console.log(rootPath);

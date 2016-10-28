@@ -20,18 +20,28 @@
     <div class="slider-tooltip" id="filter-price-tooltip">Выбрано товаров: <span id="filter-price-tooltip-counter"></span> <a href="#" id="filter-price-tooltip-button">Показать</a></div>
   </div>
   <script>
-    $(function() {
-      $('#filter-price-slider').filterSlider({
-        'ranges' :  <?php echo json_encode($element)?>,
-        'controls' : {
-          hiddenInput    : '#filter-price-input',
-          minInput       : '#filter-price-min',
-          maxInput       : '#filter-price-max',
-          tooltip        : '#filter-price-tooltip',
-          tooltipButton  : '#filter-price-tooltip-button',
-          tooltipCounter : '#filter-price-tooltip-counter',
+    var initFilter_<?php echo $element->key?> = function(){
+      var key = '<?php echo $element->key?>';
+      var easing = key === 'price';
+
+      $('#filter-' + key + '-slider').filterSlider({
+        easing: easing,
+        ranges :  <?php echo json_encode($element)?>,
+        controls : {
+          hiddenInput    : '#filter-'+key+'-input',
+          minInput       : '#filter-'+key+'-min',
+          maxInput       : '#filter-'+key+'-max',
+          tooltip        : '#filter-'+key+'-tooltip',
+          tooltipButton  : '#filter-'+key+'-tooltip-button',
+          tooltipCounter : '#filter-'+key+'-tooltip-counter',
           filterButton   : '#filter-submit'
         }
+      });
+    };
+
+    document.addEventListener('DOMContentLoaded', function() {
+      $DOCUMENT.on('ready yiiListViewUpdated', function() {
+        initFilter_<?php echo $element->key?>();
       });
     });
   </script>

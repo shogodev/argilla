@@ -25,15 +25,6 @@
     <li><a href="#responses">Отзывы</a></li>
   </ul>
 </div>
-<script>
-  $(function() {
-    $('.anchor-links a').click(function(e) {
-      e.preventDefault();
-      var target = $(this).attr('href');
-      $(window).scrollTo( target, { duration: 300, offset: -20 } );
-    });
-  });
-</script>
 
 <?php if( !empty($model->notice) ) { ?>
   <div id="description">

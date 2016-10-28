@@ -14,23 +14,4 @@
     </label>
     <?php } ?>
   </div>
-  <script>
-    $(function() {
-      $('.color-box input').each(function() {
-        var self = $(this);
-        if ( self.prop('checked') ) {
-          self.closest('.color-box').addClass('active');
-        }
-      });
-
-      $('.color-box input').change(function() {
-        var self = $(this);
-        if ( self.prop('checked') ) {
-          self.closest('.color-box').addClass('active');
-        } else {
-          self.closest('.color-box').removeClass('active');
-        }
-      });
-    });
-  </script>
 </div>

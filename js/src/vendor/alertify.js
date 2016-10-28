@@ -12,8 +12,8 @@
 (function (global, undefined) {
 	"use strict";
 
-	var document = global.document,
-	    Alertify;
+
+	var Alertify;
 
 	Alertify = function () {
 
@@ -633,4 +633,4 @@
 		global.alertify = new Alertify();
 	}
 
-}(this));
+}(window));

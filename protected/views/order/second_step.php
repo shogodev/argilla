@@ -79,7 +79,7 @@
 </div>
 
 <script>
-  $(function() {
+  document.addEventListener('DOMContentLoaded', function() {
     var form = $('#<?php echo $form->getActiveFormWidget()->id?>');
     var deliverySelf = <?php echo OrderDeliveryType::SELF_DELIVERY?>;
     var deliveryRegion = <?php echo OrderDeliveryType::DELIVERY_REGION?>;
