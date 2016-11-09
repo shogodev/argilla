@@ -35,7 +35,7 @@
 
 .horizontal-menu {
   ul {
-    @include clearfix;
+    clearfix();
   }
 
   li {
@@ -55,7 +55,8 @@
     text-align: justify;
 
     &:after {
-      @include size(100% 0);
+      width: 100%;
+      height: 0;
       content: "";
       font-size: 0;
       line-height: 0;

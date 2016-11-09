@@ -7,19 +7,20 @@ gulp.task('default', function () {
     color('   ДОСТУПНЫЕ КОМАНДЫ:', 'GREEN'),
     color('   ------------------', 'GREEN'),
     '',
-    '|  ' + color('gulp sass', 'YELLOW') + '   компилирует scss',
-    '|  ' + color('gulp js', 'YELLOW') + '     компилирует js',
-    '|  ' + color('gulp build', 'YELLOW') + '  компилирует все',
-    '|  ' + color('gulp watch', 'YELLOW') + '  запускает вотчер',
-    '|',
-    '|- для команд выше применим ключ ' + color('--debug', 'GREEN')
-    + ' для сборки без минификации',
+    color('|  ', 'WHITE') + color('gulp css', 'YELLOW') + color('    компилирует css', 'WHITE'),
+    color('|  ', 'WHITE') + color('gulp js', 'YELLOW') + color('     компилирует js', 'WHITE'),
+    color('|  ', 'WHITE') + color('gulp build', 'YELLOW') + color('  компилирует все', 'WHITE'),
+    color('|  ', 'WHITE') + color('gulp watch', 'YELLOW') + color('  запускает вотчер', 'WHITE'),
+    color('|', 'WHITE'),
+    color('|- для команд выше применим ключ ', 'WHITE') + color('--debug', 'GREEN')
+    + color(' для сборки без минификации', 'WHITE'),
     '',
-    '   ДОПОЛНИТЕЛЬНО:',
+    color('   ДОПОЛНИТЕЛЬНО:', 'WHITE'),
     '',
-    '|  ' + color('gulp jshint', 'YELLOW') + ' запускает jshint',
-    '|',
-    '|- с ключом ' + color('--common', 'GREEN') + ' проверяет только common.js',
+    color('|  ', 'WHITE') + color('gulp jshint', 'YELLOW') + color(' запускает jshint', 'WHITE'),
+    color('|', 'WHITE'),
+    color('|- с ключом ', 'WHITE') + color('--common', 'GREEN')
+    + color(' проверяет только common.js', 'WHITE'),
     ''
   ].join('\n'));
 });

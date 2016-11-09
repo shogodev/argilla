@@ -29,7 +29,7 @@
 // Containers
 
 .group, .nofloat {
-  @include clearfix;
+  clearfix();
 }
 
 .no-overflow {
@@ -62,8 +62,8 @@
   margin-bottom: 7px;
 }
 
-@for $i from 0 through 10 {
-  .m#{$i * 5} {
+for $i in (0..20) {
+  .m{$i * 5} {
     margin-bottom: 5px * $i;
   }
 }

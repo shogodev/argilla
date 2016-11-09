@@ -139,20 +139,20 @@
   // Menus
   // -----
 
-  (function() { // Чтобы потом с тачем не запариваться
+  (function() {
     var $menus = $('.js-menu');
 
     if (IS_DESKTOP) {
       $menus.on('mouseenter.js-menu', 'li', function() {
-        var self = $(this);
-        clearTimeout(self.data('hoverTimeout'));
-        self.addClass('is-hovered');
+        var $this = $(this);
+        clearTimeout($this.data('hoverTimeout'));
+        $this.addClass('is-hovered');
       });
 
       $menus.on('mouseleave.js-menu', 'li', function() {
-        var self = $(this);
-        self.data('hoverTimeout', setTimeout(function() {
-          self.removeClass('is-hovered');
+        var $this = $(this);
+        $this.data('hoverTimeout', setTimeout(function() {
+          $this.removeClass('is-hovered');
         }, 200));
       });
     }
@@ -164,15 +164,15 @@
         var $anchor = $(this);
         var $parent = $anchor.parent();
 
-        var isWithDropdown = $parent.hasClass('with-dropdown');
-        var isOnHover = $parent.hasClass('is-hovered');
+        var hasDropdown = $parent.hasClass('has-dropdown');
+        var isHovered = $parent.hasClass('is-hovered');
 
         $parent.siblings().removeClass('is-hovered');
 
-        if (!isWithDropdown) {
+        if (!hasDropdown) {
           location.href = $anchor.attr('href');
         } else {
-          if (isOnHover) {
+          if (isHovered) {
             location.href = $anchor.attr('href');
           } else {
             $parent.addClass('is-hovered');
@@ -189,10 +189,10 @@
   $('.js-tabs .tabs-nav li a').click(function(e) {
     e.preventDefault();
 
-    var $self = $(this);
-    var $panel = $( $self.attr('href') );
+    var $this = $(this);
+    var $panel = $( $this.attr('href') );
 
-    $self.closest('li').addClass('active').siblings().removeClass('active');
+    $this.closest('li').addClass('active').siblings().removeClass('active');
     $panel.closest('.tabs').find('.tabs-panel').hide();
     $panel.fadeIn();
   });
@@ -211,9 +211,9 @@
   // --------
 
   $('.js-slideshow').each(function() {
-    var $self = $(this);
+    var $this = $(this);
 
-    var tos = $self.tosrus({
+    var tos = $this.tosrus({
       effect: 'slide',
       slides: {
         visible: 1

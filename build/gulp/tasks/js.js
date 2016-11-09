@@ -1,3 +1,6 @@
+// es6 polyfill
+require('babel-polyfill');
+
 var gulp = require('gulp');
 var plumber = require('gulp-plumber');
 var gulpif = require('gulp-if');

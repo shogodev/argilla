@@ -2,7 +2,7 @@
 /*   -=========== Typography ===========-   */
 
 html {
-  font: #{$root-font-size}/#{$line-height} $font-family;
+  font: $root-font-size / $line-height $font-family;
   font-weight: $light;
 
   @media only screen and (max-width: $mobile-width) {
@@ -114,15 +114,23 @@ a.nova, .nova a {
 
 // Sizes
 
-@for $i from 11 through 36 {
-  .s#{$i} {
-    font-size: #{1px / $root-font-size * $i}rem;
+for $i in (10..40) {
+  .s{$i} {
+    font-size: remove-unit(1 / $root-font-size) * $i * 1rem;
     line-height: $line-height;
   }
 }
 
 
 // Font weight
+
+.thin, .tt {
+  font-weight: $thin;
+}
+
+.light, .ll {
+  font-weight: $light;
+}
 
 .normal, .nn {
   font-weight: normal;
@@ -132,8 +140,8 @@ a.nova, .nova a {
   font-weight: bold;
 }
 
-.lighter, .ll {
-  font-weight: lighter;
+.medium, .mm {
+  font-weight: $medium;
 }
 
 
@@ -202,7 +210,7 @@ a.nova, .nova a {
 // Text container
 
 .text-container {
-  @include clearfix;
+  clearfix();
 
   .h1, .h2, .h3,
   .h4, p, ul, ol, hr {
@@ -258,7 +266,9 @@ hr {
   padding: 0 0 42.5%;
 
   > iframe {
-    @include size(100%);
-    @include position(absolute, 0 null null 0);
+    width: 100%;
+    height: 100%;
+    position: absolute;
+    left: 0; top: 0;
   }
 }

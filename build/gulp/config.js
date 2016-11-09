@@ -27,28 +27,34 @@ module.exports = {
     compact: false
   },
 
-  sass: {
-    src: rootPath + 'i/style/**/*.scss',
-    dest: rootPath + 'i/style/css/',
-    tempDir: sassTempDir,
+  css: {
+    src: [
+      rootPath + 'i/style/**/*.styl',
+      '!' + rootPath + 'i/style/**/_*.styl'
+    ],
+    dest: rootPath + 'i/style/css/'
 
-    options: {
-      style: argv.debug ? 'expanded' : 'compressed',
-      lineNumbers: argv.debug,
-      cacheLocation: rootPath + 'build/tmp/.sass-cache',
-      container: sassTempDir
-      // sourcemap: true
-    }
+    // options: {
+    //   style: argv.debug ? 'expanded' : 'compressed',
+    //   lineNumbers: argv.debug,
+    //   cacheLocation: rootPath + 'build/tmp/.sass-cache',
+    //   container: sassTempDir
+    //   // sourcemap: true
+    // }
   },
 
-  imagemin: {
-    src: rootPath + 'i/',
-    dest: rootPath + 'i/'
-  },
+  // imagemin: {
+  //   src: rootPath + 'i/',
+  //   dest: rootPath + 'i/'
+  // },
 
   autoprefixer: {
     browsers: ['last 5 versions'],
     cascade: false
+  },
+
+  assets: {
+    basePath: rootPath
   },
 
   base64: {

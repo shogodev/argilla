@@ -35,7 +35,7 @@ textarea {
 }
 
 .form-row {
-  @include clearfix;
+  clearfix();
 
   + .form-row {
     .one-column-form & {
@@ -75,7 +75,8 @@ textarea {
     color: $white;
 
     .two-columns-form & {
-      @include position(absolute, null null 0 0);
+      position: absolute
+      left: 0; bottom: 0;
       transform: translateY(100%);
       width: 100%;
     }
