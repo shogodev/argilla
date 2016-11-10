@@ -5,5 +5,5 @@ gulp.task('watch', function() {
   gulp.start('js', 'css');
 
   gulp.watch(config.js.src, ['js']);
-  gulp.watch(config.css.src, ['css']);
+  gulp.watch(config.css.watchSrc, ['css']);
 });

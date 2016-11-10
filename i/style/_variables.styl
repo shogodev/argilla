@@ -36,8 +36,19 @@ $footer-height = 200px;
 
 // Media queries
 
-$small-mobile-width = 480px;
-$mobile-width = 800px;
-$tablet-width = 1024px;
-$small-notebook-width = 1200px;
-$notebook-width = 1400px;
+$small-mobile-breakpoint = 480px;
+$landscape-tablet-breakpoint = 1024px;
+$portrait-tablet-breakpoint = 768px;
+$small-notebook-breakpoint = 1200px;
+$notebook-breakpoint = 1400px;
+
+$small-mobile = 'only screen and (max-width: $small-mobile-breakpoint)';
+$mobile = 'only screen and (max-width: $portrait-tablet-breakpoint - 1px)';
+$not-mobile = 'only screen and (min-width: $portrait-tablet-breakpoint)';
+$tablet = 'only screen and (max-width: $landscape-tablet-breakpoint) and (min-width: $portrait-tablet-breakpoint-breakpoint)';
+$landscape-tablet = 'only screen and (max-device-width: $landscape-tablet-breakpoint) and (min-device-width: $portrait-tablet-breakpoint-breakpoint) and (orientation: landscape)';
+$portrait-tablet = 'only screen and (max-device-width: $landscape-tablet-breakpoint) and (min-device-width: $portrait-tablet-breakpoint-breakpoint) and (orientation: portrait)';
+$small-notebook = 'only screen and (max-width: $small-notebook-breakpoint) and (min-width: $landscape-tablet-breakpoint + 1px)';
+$notebook = 'only screen and (max-width: $notebook-breakpoint) and (min-width: $landscape-tablet-breakpoint + 1px)';
+$desktop = 'only screen and (min-width: $landscape-tablet-breakpoint + 1px)';
+$handheld = 'only screen and (max-width: $landscape-tablet-breakpoint)';

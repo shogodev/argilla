@@ -97,26 +97,26 @@ for $i in (0..20) {
 
 // Devices display
 
-@media only screen and (max-width: $tablet-width) {
+@media $handheld {
   .only-desktop {
     display: none;
   }
 }
 
-@media only screen and (min-width: $mobile-width + 1px) {
+@media $not-mobile {
   .only-mobile {
     display: none;
   }
 }
 
-@media only screen and (min-width: $tablet-width + 1px) { // mobile + tablet
-  .not-desktop {
+@media $desktop {
+  .not-desktop { // mobile + tablet
     display: none;
   }
 }
 
-@media only screen and (max-width: $mobile-width) { // desktop + tablet
-  .not-mobile {
+@media $mobile {
+  .not-mobile { // desktop + tablet
     display: none;
   }
 }

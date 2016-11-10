@@ -32,6 +32,7 @@ module.exports = {
       rootPath + 'i/style/**/*.styl',
       '!' + rootPath + 'i/style/**/_*.styl'
     ],
+    watchSrc: rootPath + 'i/style/**/*.styl',
     dest: rootPath + 'i/style/css/'
 
     // options: {
