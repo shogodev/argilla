@@ -3,7 +3,7 @@
   // Const
   // -----
   window.SMALL_MOBILE_WIDTH = 480;
-  window.MOBILE_WIDTH = 800;
+  window.MOBILE_WIDTH = 767;
   window.TABLET_WIDTH = 1024;
   window.SMALL_NOTEBOOK_WIDTH = 1200;
   window.NOTEBOOK_WIDTH = 1400;
