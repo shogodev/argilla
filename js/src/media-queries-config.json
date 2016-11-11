@@ -1,0 +1,9 @@
+{
+  "smallMobile": 480,
+  "tablet": {
+    "landscape": 1024,
+    "portrait": 768
+  },
+  "smallNotebook": 1200,
+  "notebook": 1400
+}
