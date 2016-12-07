@@ -96,6 +96,7 @@ class RequestRedirectComponent extends FRedirectComponent
 
     $this->criteria = new CDbCriteria();
     $this->criteria->compare('visible', 1);
+    $this->criteria->order = 'LENGTH(base) DESC, id';
     parent::init();
 
     if( $this->attachHandlers )
