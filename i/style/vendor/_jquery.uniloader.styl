@@ -1,0 +1,49 @@
+#uniloader-mouse {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1001;
+  background: url(/i/ajax/ajax.gif) no-repeat 0 0;
+  background-size: contain;
+  width: 32px;
+  height: 32px;
+}
+
+#uniloader-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  z-index: 1000;
+  overflow-x: auto;
+  overflow-y: scroll;
+  background: rgba(0, 0, 0, .5);
+  width: 100%;
+  height: 100%;
+  opacity: 0;
+}
+
+#uniloader-overlay-content {
+  display: none;
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: 1001;
+  text-align: center;
+}
+#uniloader-overlay-content .uniloader-overlay-content-text {
+  background: url(/i/ajax/loader.gif) no-repeat 50% 100%;
+  width: 300px;
+  height: 27px;
+  padding: 0 0 19px 0;
+  font: normal 12px/100% Arial;
+  color: #FFFFFF;
+}
+#uniloader-overlay-content .uniloader-overlay-content-text:before {
+  content: "Loading. Please wait...";
+}
+
+.uniloader-overlay-html {
+  overflow: hidden !important;
+}

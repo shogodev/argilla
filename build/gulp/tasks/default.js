@@ -24,3 +24,7 @@ gulp.task('default', function () {
     ''
   ].join('\n'));
 });
+
+gulp.on('task_not_found', function() {
+  gulp.start('default');
+});

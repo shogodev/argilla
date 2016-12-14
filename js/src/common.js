@@ -5,10 +5,11 @@
 
   var mediaQueries = [
     //=require media-queries-config.json
-  ][0]
+  ][0];
 
   window.SMALL_MOBILE_WIDTH = mediaQueries.smallMobile;
-  window.MOBILE_WIDTH = mediaQueries.tablet.portrait - 1;
+  window.MOBILE_WIDTH = mediaQueries.mobile;
+  window.PORTRAIT_TABLET_WIDTH = mediaQueries.tablet.portrait;
   window.TABLET_WIDTH = mediaQueries.tablet.landscape;
   window.SMALL_NOTEBOOK_WIDTH = mediaQueries.smallNotebook;
   window.NOTEBOOK_WIDTH = mediaQueries.notebook;
@@ -60,7 +61,7 @@
     return ( WINDOW_WIDTH > TABLET_WIDTH && WINDOW_WIDTH <= SMALL_NOTEBOOK_WIDTH );
   };
   window.IS_TABLET_WIDTH = function() {
-    return ( WINDOW_WIDTH > MOBILE_WIDTH && WINDOW_WIDTH <= TABLET_WIDTH );
+    return ( WINDOW_WIDTH >= PORTRAIT_TABLET_WIDTH && WINDOW_WIDTH <= TABLET_WIDTH );
   };
   window.IS_MOBILE_WIDTH = function() {
     return WINDOW_WIDTH <= MOBILE_WIDTH;
@@ -101,18 +102,18 @@
   // open popup
   $DOCUMENT.on('click.overlay-open', '.js-overlay', function(e) {
     e.preventDefault();
-    $.overlayLoader(true, $($(this).attr('href')));
+
+    var $popup = $(this).attr('href');
+
+    $.overlayLoader(true, {
+      node: $popup,
+      hideSelector: '.js-popup-close'
+    });
   });
 
   // autofocus
   $DOCUMENT.on('overlayLoaderShow', function(e, $node) {
     $node.find('.js-autofocus-inp').focus();
-  });
-
-  // close popup
-  $DOCUMENT.on('click.overlay-close', '.js-popup-close', function(e) {
-    e.preventDefault();
-    $.overlayLoader(false, $(this).closest('.js-popup'));
   });
 
 
@@ -122,9 +123,39 @@
   // init selectric
   $DOCUMENT.on('initSelectric yiiListViewUpdated', function() {
     $('select').selectric({
-      disableOnMobile: true
+      disableOnMobile: false,
+      nativeOnMobile: true
     });
   }).trigger('initSelectric');
+
+
+  // Checkboxes
+  // ----------
+
+  $('.checkbox input').on('change initCheckboxes', function() {
+    var $inp = $(this),
+        $label = $inp.closest('.checkbox');
+
+    if ( $inp.prop('checked') ) {
+      $label.addClass('checked');
+    } else {
+      $label.removeClass('checked');
+    }
+  }).trigger('initCheckboxes');
+
+
+  // Radio buttons
+  // ----------
+
+  $('.radio input').on('change initRadio', function() {
+    var $inp = $(this),
+        $group = $('[name="' + $inp.attr('name') + '"]'),
+        $labels = $group.closest('.radio'),
+        $selectedItem = $labels.find('input').filter(':checked').closest('.radio');
+
+    $labels.removeClass('checked');
+    $selectedItem.addClass('checked');
+  }).trigger('initRadio');
 
 
   // Scroll to

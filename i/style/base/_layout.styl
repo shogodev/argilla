@@ -94,29 +94,33 @@ for $i in (0..20) {
   display: block;
 }
 
+.hidden {
+  display: none !important;
+}
+
 
 // Devices display
 
 @media $handheld {
   .only-desktop {
-    display: none;
+    display: none !important;
   }
 }
 
 @media $not-mobile {
   .only-mobile {
-    display: none;
+    display: none !important;
   }
 }
 
 @media $desktop {
   .not-desktop { // mobile + tablet
-    display: none;
+    display: none !important;
   }
 }
 
 @media $mobile {
   .not-mobile { // desktop + tablet
-    display: none;
+    display: none !important;
   }
 }

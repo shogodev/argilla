@@ -9,6 +9,30 @@
   user-select: none;
 }
 
+// use box-shadow instead of border to preserve button line-height
+bordered-btn($border, $color) {
+  box-shadow: inset 0 0 0 $border $color;
+}
+
+.black-bordered-btn {
+  color: $black;
+  bordered-btn(1px, $black);
+
+  &:hover {
+    color: $black;
+  }
+}
+
+.black-btn {
+  background: $black;
+  color: $black;
+
+  &:hover {
+    color: $black;
+  }
+}
+
+
 // Sizes
 
 .wide-btn {

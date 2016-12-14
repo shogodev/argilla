@@ -1,17 +1,20 @@
-(function($) {
+(function (factory) {
+    if (typeof define === 'function' && define.amd) {
+        // AMD. Register as an anonymous module.
+        define(['jquery'], factory);
+    } else if (typeof exports === 'object') {
+        // Node/CommonJS
+        factory(require('jquery'));
+    } else {
+        // Browser globals
+        factory(jQuery);
+    }
+}(function ($) {
 
-function getPasteEvent() {
-    var el = document.createElement('input'),
-        name = 'onpaste';
-    el.setAttribute(name, '');
-    return (typeof el[name] === 'function')?'paste':'input';
-}
-
-var pasteEventName = getPasteEvent() + ".mask",
-	ua = navigator.userAgent,
+var ua = navigator.userAgent,
 	iPhone = /iphone/i.test(ua),
 	chrome = /chrome/i.test(ua),
-	android=/android/i.test(ua),
+	android = /android/i.test(ua),
 	caretTimeoutId;
 
 $.mask = {
@@ -31,7 +34,7 @@ $.fn.extend({
 	caret: function(begin, end) {
 		var range;
 
-		if (this.length === 0 || this.is(":hidden")) {
+		if (this.length === 0 || this.is(":hidden") || this.get(0) !== document.activeElement) {
 			return;
 		}
 
@@ -69,12 +72,16 @@ $.fn.extend({
 			tests,
 			partialPosition,
 			firstNonMaskPos,
-			len;
+            lastRequiredNonMaskPos,
+            len,
+            oldVal;
 
 		if (!mask && this.length > 0) {
 			input = $(this[0]);
-			return input.data($.mask.dataName)();
+            var fn = input.data($.mask.dataName)
+			return fn?fn():undefined;
 		}
+
 		settings = $.extend({
 			autoclear: $.mask.autoclear,
 			placeholder: $.mask.placeholder, // Load default placeholder
@@ -87,6 +94,8 @@ $.fn.extend({
 		partialPosition = len = mask.length;
 		firstNonMaskPos = null;
 
+		mask = String(mask);
+
 		$.each(mask.split(""), function(i, c) {
 			if (c == '?') {
 				len--;
@@ -96,6 +105,9 @@ $.fn.extend({
 				if (firstNonMaskPos === null) {
 					firstNonMaskPos = tests.length - 1;
 				}
+                if(i < partialPosition){
+                    lastRequiredNonMaskPos = tests.length - 1;
+                }
 			} else {
 				tests.push(null);
 			}
@@ -104,14 +116,33 @@ $.fn.extend({
 		return this.trigger("unmask").each(function() {
 			var input = $(this),
 				buffer = $.map(
-				mask.split(""),
-				function(c, i) {
-					if (c != '?') {
-						return defs[c] ? settings.placeholder : c;
-					}
-				}),
+    				mask.split(""),
+    				function(c, i) {
+    					if (c != '?') {
+    						return defs[c] ? getPlaceholder(i) : c;
+    					}
+    				}),
 				defaultBuffer = buffer.join(''),
 				focusText = input.val();
+
+            function tryFireCompleted(){
+                if (!settings.completed) {
+                    return;
+                }
+
+                for (var i = firstNonMaskPos; i <= lastRequiredNonMaskPos; i++) {
+                    if (tests[i] && buffer[i] === getPlaceholder(i)) {
+                        return;
+                    }
+                }
+                settings.completed.call(input);
+            }
+
+            function getPlaceholder(i){
+                if(i < settings.placeholder.length)
+                    return settings.placeholder.charAt(i);
+                return settings.placeholder.charAt(0);
+            }
 
 			function seekNext(pos) {
 				while (++pos < len && !tests[pos]);
@@ -135,7 +166,7 @@ $.fn.extend({
 					if (tests[i]) {
 						if (j < len && tests[i].test(buffer[j])) {
 							buffer[i] = buffer[j];
-							buffer[j] = settings.placeholder;
+							buffer[j] = getPlaceholder(j);
 						} else {
 							break;
 						}
@@ -153,7 +184,7 @@ $.fn.extend({
 					j,
 					t;
 
-				for (i = pos, c = settings.placeholder; i < len; i++) {
+				for (i = pos, c = getPlaceholder(pos); i < len; i++) {
 					if (tests[i]) {
 						j = seekNext(i);
 						t = buffer[i];
@@ -167,19 +198,58 @@ $.fn.extend({
 				}
 			}
 
-      function blurEvent(e) {
-          checkVal();
+			function androidInputEvent(e) {
+				var curVal = input.val();
+				var pos = input.caret();
+				if (oldVal && oldVal.length && oldVal.length > curVal.length ) {
+					// a deletion or backspace happened
+					checkVal(true);
+					while (pos.begin > 0 && !tests[pos.begin-1])
+						pos.begin--;
+					if (pos.begin === 0)
+					{
+						while (pos.begin < firstNonMaskPos && !tests[pos.begin])
+							pos.begin++;
+					}
+					input.caret(pos.begin,pos.begin);
+				} else {
+					var pos2 = checkVal(true);
+					var lastEnteredValue = curVal.charAt(pos.begin);
+					if (pos.begin < len){
+						if(!tests[pos.begin]){
+							pos.begin++;
+							if(tests[pos.begin].test(lastEnteredValue)){
+								pos.begin++;
+							}
+						}else{
+							if(tests[pos.begin].test(lastEnteredValue)){
+								pos.begin++;
+							}
+						}
+					}
+					input.caret(pos.begin,pos.begin);
+				}
+				tryFireCompleted();
+			}
 
-          if (input.val() != focusText)
-            input.change();
-      }
+
+			function blurEvent(e) {
+                checkVal();
+
+                if (input.val() != focusText)
+                    input.change();
+            }
 
 			function keydownEvent(e) {
-				var k = e.which,
+                if (input.prop("readonly")){
+                    return;
+                }
+
+				var k = e.which || e.keyCode,
 					pos,
 					begin,
 					end;
-
+                    oldVal = input.val();
 				//backspace, delete, and escape get special treatment
 				if (k === 8 || k === 46 || (iPhone && k === 127)) {
 					pos = input.caret();
@@ -204,28 +274,15 @@ $.fn.extend({
 			}
 
 			function keypressEvent(e) {
-				var k = e.which,
+                if (input.prop("readonly")){
+                    return;
+                }
+
+				var k = e.which || e.keyCode,
 					pos = input.caret(),
 					p,
 					c,
 					next;
-
-                    if (k == 0) {
-                        // unable to detect key pressed. Grab it from pos and adjust
-                        // this is a failsafe for mobile chrome
-                        // which can't detect keypress events
-                        // reliably
-                        if (pos.begin >= len) {
-                            input.val(input.val().substr(0, len));
-                            e.preventDefault();
-                            return false;
-                        }
-                        if (pos.begin == pos.end) {
-                            k = input.val().charCodeAt(pos.begin - 1);
-                            pos.begin--;
-                            pos.end--;
-                        }
-                    }
 
 				if (e.ctrlKey || e.altKey || e.metaKey || k < 32) {//Ignore
 					return;
@@ -255,10 +312,9 @@ $.fn.extend({
 							}else{
 								input.caret(next);
 							}
-
-							if (settings.completed && next >= len) {
-								settings.completed.call(input);
-							}
+                            if(pos.begin <= lastRequiredNonMaskPos){
+		                         tryFireCompleted();
+                             }
 						}
 					}
 					e.preventDefault();
@@ -269,7 +325,7 @@ $.fn.extend({
 				var i;
 				for (i = start; i < end && i < len; i++) {
 					if (tests[i]) {
-						buffer[i] = settings.placeholder;
+						buffer[i] = getPlaceholder(i);
 					}
 				}
 			}
@@ -286,7 +342,7 @@ $.fn.extend({
 
 				for (i = 0, pos = 0; i < len; i++) {
 					if (tests[i]) {
-						buffer[i] = settings.placeholder;
+						buffer[i] = getPlaceholder(i);
 						while (pos++ < test.length) {
 							c = test.charAt(pos - 1);
 							if (tests[i].test(c)) {
@@ -296,11 +352,16 @@ $.fn.extend({
 							}
 						}
 						if (pos > test.length) {
+							clearBuffer(i + 1, len);
 							break;
 						}
-					} else if (buffer[i] === test.charAt(pos) && i !== partialPosition) {
-						pos++;
-						lastMatch = i;
+					} else {
+                        if (buffer[i] === test.charAt(pos)) {
+                            pos++;
+                        }
+                        if( i < partialPosition){
+                            lastMatch = i;
+                        }
 					}
 				}
 				if (allow) {
@@ -325,18 +386,22 @@ $.fn.extend({
 
 			input.data($.mask.dataName,function(){
 				return $.map(buffer, function(c, i) {
-					return tests[i]&&c!=settings.placeholder ? c : null;
+					return tests[i]&&c!=getPlaceholder(i) ? c : null;
 				}).join('');
 			});
 
-			if (!input.attr("readonly"))
-				input
+
+			input
 				.one("unmask", function() {
 					input
 						.off(".mask")
 						.removeData($.mask.dataName);
 				})
 				.on("focus.mask", function() {
+                    if (input.prop("readonly")){
+                        return;
+                    }
+
 					clearTimeout(caretTimeoutId);
 					var pos;
 
@@ -345,6 +410,9 @@ $.fn.extend({
 					pos = checkVal();
 
 					caretTimeoutId = setTimeout(function(){
+                        if(input.get(0) !== document.activeElement){
+                            return;
+                        }
 						writeBuffer();
 						if (pos == mask.replace("?","").length) {
 							input.caret(0, pos);
@@ -356,19 +424,25 @@ $.fn.extend({
 				.on("blur.mask", blurEvent)
 				.on("keydown.mask", keydownEvent)
 				.on("keypress.mask", keypressEvent)
-				.on(pasteEventName, function() {
+				.on("input.mask paste.mask", function() {
+                    if (input.prop("readonly")){
+                        return;
+                    }
+
 					setTimeout(function() {
 						var pos=checkVal(true);
 						input.caret(pos);
-						if (settings.completed && pos == input.val().length)
-							settings.completed.call(input);
+                        tryFireCompleted();
 					}, 0);
 				});
-                if (chrome && android) {
-                    input.on("keyup.mask", keypressEvent);
+                if (chrome && android)
+                {
+                    input
+                        .off('input.mask')
+                        .on('input.mask', androidInputEvent);
                 }
 				checkVal(); //Perform initial check for existing values
 		});
 	}
 });
-})(jQuery);
+}));

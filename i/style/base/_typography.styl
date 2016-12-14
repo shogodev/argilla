@@ -212,12 +212,8 @@ for $i in (10..40) {
 .text-container {
   clearfix();
 
-  .h1, .h2, .h3,
-  .h4, p, ul, ol, hr {
-    + .h1, + .h2, + .h3,
-    + .h4, + p, + ul, + ol + hr {
-      margin-top: 1em;
-    }
+  * + *:not(.no-margin) {
+    margin-top: 1em;
   }
 
   ol {
