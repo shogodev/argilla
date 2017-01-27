@@ -7,12 +7,9 @@
 
   <?php echo CHtml::linkTag("canonical", null, Yii::app()->controller->getCanonicalUrl());?>
 
-  <!--[if lt IE 9]>
-    <script src="js/html5msie/html5shiv-printshiv.js"></script>
-    <script src="js/html5msie/respond.js"></script>
-  <![endif]-->
-
   <?php echo CHtml::linkTag("stylesheet", null, Yii::app()->assetManager->publish(GlobalConfig::instance()->rootPath.'/i/style').'/css/st.css');?>
+
+  <?php Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->publish("js/common.js"), CClientScript::POS_END); ?>
 
   <script>
     (function() { "use strict";

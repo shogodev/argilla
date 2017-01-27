@@ -12,14 +12,16 @@ module.exports = {
 
   js: {
     dest: rootPath + 'js',
-    src: [
+    src: argv['vendor'] ? [
       rootPath + 'js/src/vendor/jquery.js',
       rootPath + 'js/src/vendor/jquery-ui.js',
-      rootPath + 'js/src/vendor/jqury_plugins/*.js',
+      rootPath + 'js/src/vendor/hammer.js',
+      rootPath + 'js/src/vendor/jquery_plugins/*.js',
       rootPath + 'js/src/vendor/jquery_ui_widgets/*.js',
-      rootPath + 'js/src/vendor/**/*.js',
+      rootPath + 'js/src/vendor/**/*.js'
+    ] : [
       rootPath + 'js/src/common.js'
-    ]
+    ],
   },
 
   babel: {
@@ -34,20 +36,7 @@ module.exports = {
     ],
     watchSrc: rootPath + 'i/style/**/*.styl',
     dest: rootPath + 'i/style/css/'
-
-    // options: {
-    //   style: argv.debug ? 'expanded' : 'compressed',
-    //   lineNumbers: argv.debug,
-    //   cacheLocation: rootPath + 'build/tmp/.sass-cache',
-    //   container: sassTempDir
-    //   // sourcemap: true
-    // }
   },
-
-  // imagemin: {
-  //   src: rootPath + 'i/',
-  //   dest: rootPath + 'i/'
-  // },
 
   autoprefixer: {
     browsers: ['last 5 versions'],

@@ -27,7 +27,7 @@ abstract class ScriptAbstractCreator
    *
    * @var array of strings
    */
-  public static $scripts = array('packed.js', 'compiled.js');
+  public static $scripts = array('vendor.js', 'common.js');
 
   /**
    * Возвращает имя скрипта

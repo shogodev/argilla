@@ -8,7 +8,7 @@
  */
 class CompiledScriptCreator extends ScriptAbstractCreator
 {
-  public $script = 'compiled.js';
+  public $script = 'common.js';
 
   public function update()
   {

@@ -15,15 +15,13 @@ var babel = require('gulp-babel');
 var config = require('../config');
 
 gulp.task('js', function() {
-  del(config.js.dest + '/*.*', { force : true });
-
   return gulp.src(config.js.src)
     .pipe(plumber())
     .pipe(maps.init())
     .pipe(include())
-    .pipe(babel(config.babel))
+    .pipe(gulpif(!argv['vendor'], babel(config.babel)))
     .pipe(gulpif(!argv.debug, uglify()))
-    .pipe(concat('compiled.js'))
+    .pipe(gulpif(argv['vendor'], concat('vendor.js')))
     .pipe(maps.write('.'))
     .pipe(gulp.dest(config.js.dest));
 });

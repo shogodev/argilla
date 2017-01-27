@@ -14,6 +14,8 @@ gulp.task('default', function () {
     color('|', 'WHITE'),
     color('|- для команд выше применим ключ ', 'WHITE') + color('--debug', 'GREEN')
     + color(' для сборки без минификации', 'WHITE'),
+    color('|- для js применим ключ ', 'WHITE') + color('--vendor', 'GREEN')
+    + color(' для сборки вендорных скриптов', 'WHITE'),
     '',
     color('   ДОПОЛНИТЕЛЬНО:', 'WHITE'),
     '',
