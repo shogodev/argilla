@@ -9,8 +9,6 @@
 
   <?php echo CHtml::linkTag("stylesheet", null, Yii::app()->assetManager->publish(GlobalConfig::instance()->rootPath.'/i/style').'/css/st.css');?>
 
-  <?php Yii::app()->clientScript->registerScriptFile(Yii::app()->assetManager->publish("js/common.js"), CClientScript::POS_END); ?>
-
   <script>
     (function() { "use strict";
       window.IS_MOBILE = navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i) != null;

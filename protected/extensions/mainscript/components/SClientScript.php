@@ -49,7 +49,6 @@ class SClientScript extends CClientScript
   /**
    * Происходит очистка уже загруженных скриптов,
    * для того, чтобы в нужном порядке загрузить список скриптов
-   *
    * По порядку идут:
    *  1) файлы скриптов из ядра Yii
    *  2) основной скрипт
@@ -68,13 +67,15 @@ class SClientScript extends CClientScript
 
   private function prepareMainScript()
   {
-    $path = Yii::app()->mainscript->getModel()->getScript(true);
-    $url  = Yii::app()->assetManager->publish($path, true);
+    foreach(Yii::app()->mainscript->getModel()->getScriptList() as $path)
+    {
+      $url = Yii::app()->assetManager->publish($path, true);
 
-    $this->registerScriptFile($url);
+      $this->registerScriptFile($url);
 
-    if( file_exists($sourceMap = $path.'.map') )
-      Yii::app()->assetManager->publish($sourceMap, true);
+      if( file_exists($sourceMap = $path.'.map') )
+        Yii::app()->assetManager->publish($sourceMap, true);
+    }
   }
 
   private function prepareCoreScripts()
@@ -88,9 +89,9 @@ class SClientScript extends CClientScript
    */
   private function restoreScripts($totalScripts)
   {
-    foreach( $totalScripts as $position => $scriptList )
+    foreach($totalScripts as $position => $scriptList)
     {
-      foreach( $scriptList as $script )
+      foreach($scriptList as $script)
       {
         $this->registerScriptFile($script, $position);
       }

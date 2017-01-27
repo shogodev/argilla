@@ -9,24 +9,25 @@
  */
 class PackedScriptCreator extends ScriptAbstractCreator
 {
-  public $script = 'packed.js';
-
   /**
    * Создание запакованного скрипта, собираемого из файлов ScriptsFileFinder::$files
    */
   public function create()
   {
-    $packed = fopen($this->getScript(true), 'a');
-
-    foreach( ScriptsFileFinder::getInstance()->getFiles() as $file )
+    foreach($this->getScriptList() as $script)
     {
-      fwrite($packed, file_get_contents($file));
-      fwrite($packed, "\n");
+      $packed = fopen($script, 'a');
+
+      foreach( ScriptsFileFinder::getInstance()->getFiles() as $file )
+      {
+        fwrite($packed, file_get_contents($file));
+        fwrite($packed, "\n");
+      }
+
+      fclose($packed);
+
+      chmod($script, 0664);
     }
-
-    fclose($packed);
-
-    chmod($this->getScript(true), 0664);
   }
 
   /**
@@ -34,9 +35,10 @@ class PackedScriptCreator extends ScriptAbstractCreator
    */
   public function delete()
   {
-    $packedFile  = $this->getScript(true);
-
-    if( file_exists($packedFile) )
-      unlink($packedFile);
+    foreach($this->getScriptList() as $packedFile)
+    {
+      if( file_exists($packedFile) )
+        unlink($packedFile);
+    }
   }
 }

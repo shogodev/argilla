@@ -25,26 +25,42 @@ class ScriptsFactory
     {
       case 'backend':
         $this->model = new PackedScriptCreator();
+        $this->model->addScript('packed.js');
         break;
       case 'frontend':
       default:
 
         if( $this->useGulp )
+        {
           $this->model = new DummyScriptCreator();
+          $this->model->addScript('vendor.js');
+          $this->model->addScript('common.js');
+        }
         else if( $this->debug )
+        {
           $this->model = new PackedScriptCreator();
+          $this->model->addScript('packed.js');
+        }
         else
         {
           $this->model = new CompiledScriptCreator();
+          $this->model->addScript('compiled.js');
 
           // Если не существует скопилированного файла, то сохраняем работоспособность сайта и отдаём запакованный файл
-          if( !file_exists($this->model->getScript(true)) )
+          if( !$this->model->scripsExists() )
+          {
             $this->model = new PackedScriptCreator();
+            $this->model->addScript('packed.js');
+          }
         }
+
         break;
     }
   }
 
+  /**
+   * @return ScriptAbstractCreator
+   */
   public function getModel()
   {
     return $this->model;

@@ -7,8 +7,6 @@
  */
 class DummyScriptCreator extends ScriptAbstractCreator
 {
-  public $script = 'vendor.js';
-
   public function create()
   {
 
@@ -18,4 +16,4 @@ class DummyScriptCreator extends ScriptAbstractCreator
   {
 
   }
-}
+} 

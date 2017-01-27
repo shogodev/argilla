@@ -9,13 +9,6 @@
 abstract class ScriptAbstractCreator
 {
   /**
-   * Имя файла скрипта
-   *
-   * @var string
-   */
-  public $script;
-
-  /**
    * Относительный путь к директории скриптов
    *
    * @var string
@@ -27,33 +20,40 @@ abstract class ScriptAbstractCreator
    *
    * @var array of strings
    */
-  public static $scripts = array('vendor.js', 'common.js');
+  public static $scripts = array('packed.js', 'compiled.js', 'vendor.js', 'common.js');
 
   /**
-   * Возвращает имя скрипта
-   * Если установлено $fullPath в true,
-   * то возвращает полный путь к скрипту
+   * Список имя скриптов
    *
-   * @param boolean $fullPath
-   *
+   * @var array
+   */
+  protected $scriptList;
+
+
+  /**
    * @throws CException
    *
-   * @return string
+   * @return array
    */
-  final public function getScript($fullPath = false)
+  final public function getScriptList()
   {
-    if( empty($this->script) )
-      throw new CException("Имя файла скрипта не может быть пустым");
+    if( !is_array($this->scriptList) )
+      throw new CException("Свойство scriptList дожно быть массивом");
 
-    if( !in_array($this->script, static::$scripts) )
-      throw new CException("Неверное имя или путь скрипта.");
+    if( empty($this->scriptList) )
+      throw new CException("Имя список не может быть пустым");
 
-    if( $fullPath )
-      return $this->getScriptPath();
-    else
-      return $this->script;
+    foreach($this->scriptList as $scriptName)
+    if( !in_array($scriptName, static::$scripts) )
+      throw new CException("Неверное имя или путь скрипта ".$scriptName);
+
+     return $this->getScriptPath();
   }
 
+  public function addScript($script)
+  {
+    $this->scriptList[] = $script;
+  }
 
   /**
    * Обновление файла крипта
@@ -63,7 +63,7 @@ abstract class ScriptAbstractCreator
    */
   public function update()
   {
-    $isUpdated = ScriptHashHelper::getInstance()->isUpdated || !file_exists($this->getScriptPath());
+    $isUpdated = ScriptHashHelper::getInstance()->isUpdated || !$this->scripsExists();
 
     if( $isUpdated )
     {
@@ -75,11 +75,18 @@ abstract class ScriptAbstractCreator
   /**
    * Возвращает полный путь к файлу скриптов
    *
-   * @return string
+   * @return array
    */
   public function getScriptPath()
   {
-    return ScriptsFileFinder::getInstance()->getRoot() . $this->path . $this->script;
+    return array_map(function($scriptName) {
+      return ScriptsFileFinder::getInstance()->getRoot() . $this->path . $scriptName;
+    }, $this->scriptList);
+  }
+
+  public function scripsExists()
+  {
+    return $this->scriptListExist($this->getScriptPath());
   }
 
   /**
@@ -87,7 +94,7 @@ abstract class ScriptAbstractCreator
    *
    * @return array
    */
-  public function scriptsPath()
+  protected function scriptsPath()
   {
     $data = array();
 
@@ -99,6 +106,20 @@ abstract class ScriptAbstractCreator
     return $data;
   }
 
+  protected function scriptListExist(array $scriptList)
+  {
+    foreach($scriptList as $script)
+    {
+      if( !file_exists($script) )
+      {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
   abstract public function create();
+
   abstract protected function delete();
 }

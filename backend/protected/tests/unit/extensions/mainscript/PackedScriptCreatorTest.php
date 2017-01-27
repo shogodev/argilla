@@ -13,58 +13,49 @@ class PackedScriptCreatorTest extends CTestCase
   {
     ScriptsFileFinder::$root = dirname(__FILE__);
     $creator = new PackedScriptCreator();
+    $creator->addScript('packed.js');
 
-    $file = $creator->getScript(true);
-
-    if( file_exists($file) )
-      unlink($file);
-  }
-
-  public function testFileName()
-  {
-    $creator = new PackedScriptCreator();
-
-    $this->assertTrue(in_array($creator->script, ScriptAbstractCreator::$scripts));
+    foreach($creator->getScriptList() as $file)
+    {
+      if( file_exists($file) )
+        unlink($file);
+    }
   }
 
   public function testCreateDelete()
   {
     ScriptsFileFinder::$root = dirname(__FILE__);
     $creator = new PackedScriptCreator();
+    $creator->addScript('packed.js');
 
-    $this->assertFalse(file_exists($creator->getScript(true)));
+    $this->assertFalse($creator->scripsExists());
 
     $creator->create();
 
-    $this->assertTrue(file_exists($creator->getScript(true)));
+    $this->assertTrue($creator->scripsExists());
 
     $creator->delete();
 
-    $this->assertfalse(file_exists($creator->getScript(true)));
-  }
-
-  public function testGetScriptName()
-  {
-    ScriptsFileFinder::$root = dirname(__FILE__);
-    $creator = new PackedScriptCreator();
-
-    $this->assertNotEquals($creator->getScript(), $creator->getScript(true));
+    $this->assertFalse($creator->scripsExists());
   }
 
   public function testUpdate()
   {
     ScriptsFileFinder::$root = dirname(__FILE__);
     $creator = new PackedScriptCreator();
+    $creator->addScript('packed.js');
 
-    $this->assertFalse(file_exists($creator->getScript(true)));
+    $this->assertFalse($creator->scripsExists());
 
     $creator->update();
-    $this->assertTrue(file_exists($creator->getScript(true)));
+    $this->assertTrue($creator->scripsExists());
   }
 
   public function testScriptsPath()
   {
     $creator = new PackedScriptCreator();
+    $creator->addScript('packed.js');
+    $creator->addScript('compiled.js');
     $paths = array();
 
     foreach( PackedScriptCreator::$scripts as $script )
@@ -72,6 +63,6 @@ class PackedScriptCreatorTest extends CTestCase
       $paths[] = ScriptsFileFinder::$root . $creator->path . $script;
     }
 
-    $this->assertEquals($paths, $creator->scriptsPath());
+    $this->assertEquals($paths, $creator->getScriptList());
   }
 }

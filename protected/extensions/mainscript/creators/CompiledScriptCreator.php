@@ -8,11 +8,9 @@
  */
 class CompiledScriptCreator extends ScriptAbstractCreator
 {
-  public $script = 'common.js';
-
   public function update()
   {
-    if( file_exists($this->getScript(true)) )
+    if( $this->scripsExists() )
       return null;
     else
       Yii::log("Создание скопмилированного файла происходит только из консоли.");

@@ -19,11 +19,11 @@ class SAssetManager extends CAssetManager
    * @param int $level
    * @param boolean $forceCopy
    *
-   * @return url string
+   * @return string
    */
   public function publish($path, $hashByName = false, $level = -1, $forceCopy = null)
   {
-    if( in_array($path, Yii::app()->mainscript->getModel()->scriptsPath()) )
+    if( in_array($path, Yii::app()->mainscript->getModel()->getScriptList()) )
       Yii::app()->mainscript->getModel()->update();
 
     return parent::publish($path, $hashByName, $level, $forceCopy);

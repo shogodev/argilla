@@ -24,7 +24,7 @@ class ScriptFactoryTest extends CTestCase
     $factory->mode = 'frontend';
     $factory->init();
 
-    if( file_exists($factory->getModel()->getScript(true)) )
+    if( $factory->getModel()->scripsExists())
       $this->assertInstanceOf('CompiledScriptCreator', $factory->getModel());
     else
       $this->assertInstanceOf('PackedScriptCreator', $factory->getModel());
