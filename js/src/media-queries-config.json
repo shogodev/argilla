@@ -1,10 +1,15 @@
 {
-  "smallMobile": 480,
-  "mobile": 800,
+  "mobile": {
+    "landscape": 800,
+    "portrait": 700,
+    "small": 480
+  },
   "tablet": {
     "landscape": 1024,
     "portrait": 768
   },
-  "smallNotebook": 1200,
-  "notebook": 1400
+  "notebook": {
+    "small": 1200,
+    "normal": 1400
+  }
 }

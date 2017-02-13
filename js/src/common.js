@@ -7,8 +7,9 @@
     //=require media-queries-config.json
   ][0];
 
-  window.SMALL_MOBILE_WIDTH = mediaQueries.smallMobile;
-  window.MOBILE_WIDTH = mediaQueries.mobile;
+  window.SMALL_MOBILE_WIDTH = mediaQueries.mobile.small;
+  window.MOBILE_WIDTH = mediaQueries.mobile.portrait;
+  window.LANDSCAPE_MOBILE_WIDTH = mediaQueries.mobile.landscape;
   window.PORTRAIT_TABLET_WIDTH = mediaQueries.tablet.portrait;
   window.TABLET_WIDTH = mediaQueries.tablet.landscape;
   window.SMALL_NOTEBOOK_WIDTH = mediaQueries.smallNotebook;
@@ -65,6 +66,9 @@
   };
   window.IS_MOBILE_WIDTH = function() {
     return WINDOW_WIDTH <= MOBILE_WIDTH;
+  };
+  window.IS_LANDSCAPE_MOBILE_WIDTH = function() {
+    return WINDOW_WIDTH <= LANDSCAPE_MOBILE_WIDTH;
   };
   window.IS_SMALL_MOBILE_WIDTH = function() {
     return WINDOW_WIDTH <= SMALL_MOBILE_WIDTH;

@@ -37,16 +37,20 @@ $footer-height = 200px;
 // Media queries
 $media-vars = json("../../js/src/media-queries-config.json", { hash: true });
 
-$small-mobile-breakpoint = unit($media-vars.smallMobile, 'px');
-$mobile-breakpoint = unit($media-vars.mobile, 'px');
+$small-mobile-breakpoint = unit($media-vars.mobile.small, 'px');
+$mobile-breakpoint = unit($media-vars.mobile.portrait, 'px');
+$landscape-mobile-breakpoint = unit($media-vars.mobile.landscape, 'px');
 $landscape-tablet-breakpoint = unit($media-vars.tablet.landscape, 'px');
 $portrait-tablet-breakpoint = unit($media-vars.tablet.portrait, 'px');
-$small-notebook-breakpoint = unit($media-vars.smallNotebook, 'px');
-$notebook-breakpoint = unit($media-vars.notebook, 'px');
+$small-notebook-breakpoint = unit($media-vars.notebook.small, 'px');
+$notebook-breakpoint = unit($media-vars.notebook.normal, 'px');
 
 $small-mobile = "only screen and (max-width: $small-mobile-breakpoint)";
+$not-small-mobile = "only screen and (min-width: $small-mobile-breakpoint + 1px)";
 $mobile = "only screen and (max-width: $mobile-breakpoint)";
 $not-mobile = "only screen and (min-width: $mobile-breakpoint + 1px)";
+$landscape-mobile = "only screen and (max-width: $landscape-mobile-breakpoint)";
+$not-landscape-mobile = "only screen and (min-width: $landscape-mobile-breakpoint + 1px)";
 $tablet = "only screen and (max-width: $landscape-tablet-breakpoint) and (min-width: $portrait-tablet-breakpoint)";
 $landscape-tablet = "only screen and (max-device-width: $landscape-tablet-breakpoint) and (min-device-width: $portrait-tablet-breakpoint) and (orientation: landscape)";
 $portrait-tablet = "only screen and (max-device-width: $landscape-tablet-breakpoint) and (min-device-width: $portrait-tablet-breakpoint) and (orientation: portrait)";
@@ -58,5 +62,7 @@ $handheld = "only screen and (max-width: $landscape-tablet-breakpoint)";
 // *
 // mobiles and portrait tablets counts as $mobile
 // desktops and landscape tablets counts as $not-mobile
+// *
+// landscape-mobile includes both portrait and landscape
 // *
 // to separate mobile and tablet viewports from desktops use $handheld and $desktop
