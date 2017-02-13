@@ -12,8 +12,8 @@
   window.LANDSCAPE_MOBILE_WIDTH = mediaQueries.mobile.landscape;
   window.PORTRAIT_TABLET_WIDTH = mediaQueries.tablet.portrait;
   window.TABLET_WIDTH = mediaQueries.tablet.landscape;
-  window.SMALL_NOTEBOOK_WIDTH = mediaQueries.smallNotebook;
-  window.NOTEBOOK_WIDTH = mediaQueries.notebook;
+  window.SMALL_NOTEBOOK_WIDTH = mediaQueries.notebook.small;
+  window.NOTEBOOK_WIDTH = mediaQueries.notebook.normal;
 
   window.HEADER_HEIGHT = $('.header').height();
 
