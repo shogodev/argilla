@@ -176,7 +176,9 @@
 
       if (isModal) {
         $overlay.on('click.uniloader', function () {
-          $.overlayLoader();
+          if ( $(e.target).attr('id') == 'uniloader-overlay' ) {
+            $.overlayLoader();
+          }
         });
 
         $(document.body).on('keypress.uniloader', function (e) {
@@ -185,9 +187,7 @@
           }
         });
 
-        $node.on('click', function (e) {
-          e.stopPropagation();
-        }).find(opts.hideSelector).on('click.uniloader', function (e) {
+        $node.find(opts.hideSelector).on('click.uniloader', function (e) {
           e.preventDefault();
           $.overlayLoader();
         });
