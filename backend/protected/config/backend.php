@@ -80,6 +80,7 @@ return array_merge_recursive(array(
 
     'clientScript' => array(
       'class' => 'ext.mainscript.components.SClientScript',
+      'coreScriptPosition' => 0
     ),
 
     'assetManager' => array(
