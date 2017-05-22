@@ -104,8 +104,10 @@ a.nova, .nova a {
   }
 }
 
-.is-desktop {
-  a[href^="tel:"] {
+a[href^="tel:"] {
+  text-decoration: none;
+
+  .is-desktop & {
     cursor: text;
     pointer-events: none;
   }

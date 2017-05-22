@@ -137,6 +137,11 @@
     }
   };
 
+  $.isMouseLoaderActive = function() {
+    var $node = $(document.body).find('#uniloader-mouse:visible');
+    return $node.length > 0;
+  };
+
   // Overlay loader
   $.overlayLoader = function (state, options) {
     var $overlay = $('#uniloader-overlay'),
@@ -175,7 +180,7 @@
       opts.onStart();
 
       if (isModal) {
-        $overlay.on('click.uniloader', function () {
+        $overlay.on('click.uniloader', function (e) {
           if ( $(e.target).attr('id') == 'uniloader-overlay' ) {
             $.overlayLoader();
           }

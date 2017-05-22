@@ -15,14 +15,22 @@
   float: none;
 }
 
-.l-main {
-  float: left;
-  width: 49%;
+@media $not-small-mobile {
+  .l-main {
+    float: left;
+    width: 49%;
+  }
+
+  .r-main {
+    float: right;
+    width: 49%;
+  }
 }
 
-.r-main {
-  float: right;
-  width: 49%;
+@media $small-mobile {
+  .l-main + .r-main {
+    margin-top: 10px;
+  }
 }
 
 
@@ -36,6 +44,14 @@
   overflow: hidden;
 }
 
+.flex-group {
+  display: flex;
+
+  &.justify {
+    justify-content: space-between;
+  }
+}
+
 .wrapper {
   box-sizing: border-box;
 
@@ -46,8 +62,8 @@
   }
 
   @media only screen and (max-width: $wrapper-width + 19px) {
-    padding-left: 10px;
-    padding-right: 10px;
+    margin-left: 10px;
+    margin-right: 10px;
   }
 }
 

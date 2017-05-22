@@ -58,11 +58,15 @@ $small-notebook = "only screen and (max-width: $small-notebook-breakpoint) and (
 $notebook = "only screen and (max-width: $notebook-breakpoint) and (min-width: $landscape-tablet-breakpoint + 1px)";
 $desktop = "only screen and (min-width: $landscape-tablet-breakpoint + 1px)";
 $handheld = "only screen and (max-width: $landscape-tablet-breakpoint)";
+$small-handheld = "only screen and (max-width: $portrait-tablet-breakpoint)";
+$not-small-handheld = "only screen and (min-width: $portrait-tablet-breakpoint + 1px)";
 
 // *
 // mobiles and portrait tablets counts as $mobile
 // desktops and landscape tablets counts as $not-mobile
 // *
-// landscape-mobile includes both portrait and landscape
+// $landscape-mobile includes both portrait and landscape
+// *
+// $small-handheld includes both mobile and portrait tablets
 // *
 // to separate mobile and tablet viewports from desktops use $handheld and $desktop

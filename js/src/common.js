@@ -100,6 +100,84 @@
     });
   }
 
+
+  // Spinner
+  // -------
+
+  $DOCUMENT.on('mousedown.js-spinner', '.js-spinner-down, .js-spinner-up', function() {
+    var $spinnerControl = $(this),
+        $input = $spinnerControl.siblings('.inp'),
+        value = parseInt( $input.val(), 10 ),
+        step = $input.data('step') ? $input.data('step') : 1,
+        mayBeZero = $input.data('zero') ? $input.data('zero') : false,
+        incTimeout, incInterval, decTimeout, decInterval;
+
+    $spinnerControl
+      .on('mouseup.js-spinner', clearAll)
+      .on('mouseleave.js-spinner', $spinnerControl, clearAll);
+
+    if ( $spinnerControl.hasClass('js-spinner-down') ) {
+      decVal(); decTimeout = setTimeout(function() {
+        decInterval = setInterval(decVal, 70);
+      }, 300);
+    }
+
+    if ( $spinnerControl.hasClass('js-spinner-up') ) {
+      incVal(); incTimeout = setTimeout(function() {
+        incInterval = setInterval(incVal, 70);
+      }, 300);
+    }
+
+    function incVal() {
+      if ( $.isMouseLoaderActive() ) return;
+
+      $input.val(value + step).change();
+    }
+
+    function decVal() {
+      if ( $.isMouseLoaderActive() ) return;
+
+      if ( mayBeZero ) {
+        if ( value >= step ) {
+          $input.val(value - step).change();
+        }
+      } else {
+        if ( value > step ) {
+          $input.val(value - step).change();
+        }
+      }
+    }
+
+    function clearAll() {
+      clearTimeout(decTimeout); clearInterval(decInterval);
+      clearTimeout(incTimeout); clearInterval(incInterval);
+    }
+  });
+
+  $DOCUMENT.on('keydown', '.js-spinner .inp', function(e) {
+    var $input = $(this);
+
+    if ( e.keyCode == 46 || e.keyCode == 8 || e.keyCode == 9 || e.keyCode == 27 ||
+      (e.keyCode == 65 && e.ctrlKey === true) ||
+      (e.keyCode >= 35 && e.keyCode <= 39)) {
+      return;
+    } else {
+      if ( (e.keyCode < 48 || e.keyCode > 57) && (e.keyCode < 96 || e.keyCode > 105 ) ) {
+        e.preventDefault();
+      }
+    }
+  });
+
+  $DOCUMENT.on('keyup paste', '.js-spinner .inp', function(e) {
+    var $input = $(this),
+        mayBeZero = $input.data('zero') ? $input.data('zero') : false;
+
+    if ( !mayBeZero && $input.val() == 0 ) {
+      $input.val(1);
+    }
+  });
+
+
   // Overlay loader
   // --------------
 
