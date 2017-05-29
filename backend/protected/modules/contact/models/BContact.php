@@ -20,6 +20,7 @@
  * @property integer $visible
  *
  * @property BContactGroup[] $contactGroups
+ * @property BContactTextBlock[] $textblocks
  */
 class BContact extends BActiveRecord
 {
