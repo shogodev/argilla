@@ -61,16 +61,16 @@ class BModificationBehavior extends SActiveRecordBehavior
     {
       $this->owner->detachEventHandler('onAfterSave', array(Yii::app()->controller, 'saveProductAssignment'));
 
-      $model = BProductAssignment::model();
-
-      $assignments = array();
-      foreach($model->getFields() as $field)
-      {
-        $attribute = $field->name;
-        $assignments[$attribute] = $this->getParentModel()->{$attribute};
+      if( $this->owner->isNewRecord ) {
+        $this->owner->getEventHandlers('onAfterSave')->insertAt(1, array($this, 'saveModificationAssignment'));
       }
+    }
+  }
 
-      $model->saveAssignments($this->owner, $assignments);
+  public function afterSave($event)
+  {
+    foreach($this->getModifications() as $modification) {
+      $modification->saveModificationAssignment();
     }
   }
 
@@ -138,6 +138,20 @@ class BModificationBehavior extends SActiveRecordBehavior
     $this->owner->getMetaData()->addRelation('parentModel', array(
       BActiveRecord::HAS_ONE, 'BProduct', array('id' => 'parent'),
     ));
+  }
+
+  protected function saveModificationAssignment()
+  {
+    $model = BProductAssignment::model();
+
+    $assignments = array();
+    foreach($model->getFields() as $field)
+    {
+      $attribute = $field->name;
+      $assignments[$attribute] = $this->getParentModel()->{$attribute};
+    }
+
+    $model->saveAssignments($this->owner, $assignments);
   }
 
   protected function onAfterRenderTableRow(CEvent $event)
