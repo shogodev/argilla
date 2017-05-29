@@ -14,6 +14,14 @@ class BContactController extends BController
 
   public $position = 1;
 
+  public function actionUpdate($id)
+  {
+    $scriptUrl = Yii::app()->assetManager->publish(GlobalConfig::instance()->backendPath . '/../js/src/for_modules');
+    Yii::app()->clientScript->registerScriptFile($scriptUrl . '/contact/form.js', CClientScript::POS_END);
+
+    parent::actionUpdate($id);
+  }
+
   /**
    * Сохранение сортировки
    */
