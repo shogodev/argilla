@@ -261,12 +261,20 @@ hr {
 
 .video {
   position: relative;
-  padding: 0 0 42.5%;
+  padding-bottom: (9 / 21) * 100%; // 21:9 aspect ratio
 
   > iframe {
     width: 100%;
     height: 100%;
     position: absolute;
     left: 0; top: 0;
+  }
+
+  &.ar-16by9 {
+    padding-bottom: (9 / 16) * 100%; // 16:9 aspect ratio
+  }
+
+  &.ar-4by3 {
+    padding-bottom: (3 / 4) * 100%; // 4:3 aspect ratio
   }
 }

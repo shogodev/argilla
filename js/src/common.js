@@ -3,17 +3,17 @@
   // Const
   // -----
 
-  var mediaQueries = [
+  var media_queries = [
     //=require media-queries-config.json
   ][0];
 
-  window.SMALL_MOBILE_WIDTH = mediaQueries.mobile.small;
-  window.MOBILE_WIDTH = mediaQueries.mobile.portrait;
-  window.LANDSCAPE_MOBILE_WIDTH = mediaQueries.mobile.landscape;
-  window.PORTRAIT_TABLET_WIDTH = mediaQueries.tablet.portrait;
-  window.TABLET_WIDTH = mediaQueries.tablet.landscape;
-  window.SMALL_NOTEBOOK_WIDTH = mediaQueries.notebook.small;
-  window.NOTEBOOK_WIDTH = mediaQueries.notebook.normal;
+  window.SMALL_MOBILE_WIDTH = media_queries.mobile.small;
+  window.MOBILE_WIDTH = media_queries.mobile.portrait;
+  window.LANDSCAPE_MOBILE_WIDTH = media_queries.mobile.landscape;
+  window.PORTRAIT_TABLET_WIDTH = media_queries.tablet.portrait;
+  window.TABLET_WIDTH = media_queries.tablet.landscape;
+  window.SMALL_NOTEBOOK_WIDTH = media_queries.notebook.small;
+  window.NOTEBOOK_WIDTH = media_queries.notebook.normal;
 
   window.HEADER_HEIGHT = $('.header').height();
 
@@ -47,30 +47,30 @@
 
   window.WINDOW_WIDTH = window.innerWidth || $WINDOW.width();
   window.WINDOW_HEIGHT = $WINDOW.height();
-  $WINDOW.resize(function() {
+  $WINDOW.resize(() => {
     WINDOW_WIDTH = window.innerWidth || $WINDOW.width();
     WINDOW_HEIGHT = $WINDOW.height();
   });
 
-  window.IS_DESKTOP_WIDTH = function() {
+  window.IS_DESKTOP_WIDTH = () => {
     return WINDOW_WIDTH > NOTEBOOK_WIDTH;
   };
-  window.IS_NOTEBOOK_WIDTH = function() {
+  window.IS_NOTEBOOK_WIDTH = () => {
     return ( WINDOW_WIDTH > SMALL_NOTEBOOK_WIDTH && WINDOW_WIDTH <= NOTEBOOK_WIDTH );
   };
-  window.IS_SMALL_NOTEBOOK_WIDTH = function() {
+  window.IS_SMALL_NOTEBOOK_WIDTH = () => {
     return ( WINDOW_WIDTH > TABLET_WIDTH && WINDOW_WIDTH <= SMALL_NOTEBOOK_WIDTH );
   };
-  window.IS_TABLET_WIDTH = function() {
+  window.IS_TABLET_WIDTH = () => {
     return ( WINDOW_WIDTH >= PORTRAIT_TABLET_WIDTH && WINDOW_WIDTH <= TABLET_WIDTH );
   };
-  window.IS_MOBILE_WIDTH = function() {
+  window.IS_MOBILE_WIDTH = () => {
     return WINDOW_WIDTH <= MOBILE_WIDTH;
   };
-  window.IS_LANDSCAPE_MOBILE_WIDTH = function() {
+  window.IS_LANDSCAPE_MOBILE_WIDTH = () => {
     return WINDOW_WIDTH <= LANDSCAPE_MOBILE_WIDTH;
   };
-  window.IS_SMALL_MOBILE_WIDTH = function() {
+  window.IS_SMALL_MOBILE_WIDTH = () => {
     return WINDOW_WIDTH <= SMALL_MOBILE_WIDTH;
   };
   window.IS_TOUCH_DEVICE = 'ontouchstart' in document;
@@ -79,13 +79,13 @@
   // Masked input
   // ------------
 
+  // Phone
+  $('input[type="tel"]').mask('+7 (999) 999-99-99', {
+    autoclear: false
+  });
+
   if (IS_DESKTOP) {
     $('input[type="date"]').attr('type', 'text');
-
-    // Phone
-    $('input[type="tel"]').mask('+7 (999) 999-99-99', {
-      autoclear: false
-    });
 
     // Date
     $('.js-date-mask').mask('99/99/9999', {
@@ -105,26 +105,26 @@
   // -------
 
   $DOCUMENT.on('mousedown.js-spinner', '.js-spinner-down, .js-spinner-up', function() {
-    var $spinnerControl = $(this),
-        $input = $spinnerControl.siblings('.inp'),
+    var $spinner_control = $(this),
+        $input = $spinner_control.siblings('.inp'),
         value = parseInt( $input.val(), 10 ),
         step = $input.data('step') ? $input.data('step') : 1,
-        mayBeZero = $input.data('zero') ? $input.data('zero') : false,
-        incTimeout, incInterval, decTimeout, decInterval;
+        may_be_zero = $input.data('zero') ? $input.data('zero') : false,
+        inc_timeout, inc_interval, dec_timeout, dec_interval;
 
-    $spinnerControl
+    $spinner_control
       .on('mouseup.js-spinner', clearAll)
-      .on('mouseleave.js-spinner', $spinnerControl, clearAll);
+      .on('mouseleave.js-spinner', $spinner_control, clearAll);
 
-    if ( $spinnerControl.hasClass('js-spinner-down') ) {
-      decVal(); decTimeout = setTimeout(function() {
-        decInterval = setInterval(decVal, 70);
+    if ( $spinner_control.hasClass('js-spinner-down') ) {
+      decVal(); dec_timeout = setTimeout(() => {
+        dec_interval = setInterval(decVal, 70);
       }, 300);
     }
 
-    if ( $spinnerControl.hasClass('js-spinner-up') ) {
-      incVal(); incTimeout = setTimeout(function() {
-        incInterval = setInterval(incVal, 70);
+    if ( $spinner_control.hasClass('js-spinner-up') ) {
+      incVal(); inc_timeout = setTimeout(() => {
+        inc_interval = setInterval(incVal, 70);
       }, 300);
     }
 
@@ -137,7 +137,7 @@
     function decVal() {
       if ( $.isMouseLoaderActive() ) return;
 
-      if ( mayBeZero ) {
+      if ( may_be_zero ) {
         if ( value >= step ) {
           $input.val(value - step).change();
         }
@@ -149,8 +149,8 @@
     }
 
     function clearAll() {
-      clearTimeout(decTimeout); clearInterval(decInterval);
-      clearTimeout(incTimeout); clearInterval(incInterval);
+      clearTimeout(dec_timeout); clearInterval(dec_interval);
+      clearTimeout(inc_timeout); clearInterval(inc_interval);
     }
   });
 
@@ -170,9 +170,9 @@
 
   $DOCUMENT.on('keyup paste', '.js-spinner .inp', function(e) {
     var $input = $(this),
-        mayBeZero = $input.data('zero') ? $input.data('zero') : false;
+        may_be_zero = $input.data('zero') ? $input.data('zero') : false;
 
-    if ( !mayBeZero && $input.val() == 0 ) {
+    if ( !may_be_zero && $input.val() == 0 ) {
       $input.val(1);
     }
   });
@@ -194,7 +194,7 @@
   });
 
   // autofocus
-  $DOCUMENT.on('overlayLoaderShow', function(e, $node) {
+  $DOCUMENT.on('overlayLoaderShow', (e, $node) => {
     $node.find('.js-autofocus-inp').focus();
   });
 
@@ -203,7 +203,7 @@
   // ---------
 
   // init selectric
-  $DOCUMENT.on('initSelectric yiiListViewUpdated', function() {
+  $DOCUMENT.on('initSelectric yiiListViewUpdated', () => {
     $('select').selectric({
       disableOnMobile: false,
       nativeOnMobile: true
@@ -233,10 +233,10 @@
     var $inp = $(this),
         $group = $('[name="' + $inp.attr('name') + '"]'),
         $labels = $group.closest('.radio'),
-        $selectedItem = $labels.find('input').filter(':checked').closest('.radio');
+        $selected_item = $labels.find('input').filter(':checked').closest('.radio');
 
     $labels.removeClass('checked');
-    $selectedItem.addClass('checked');
+    $selected_item.addClass('checked');
   }).trigger('initRadio');
 
 
@@ -247,11 +247,11 @@
     e.preventDefault();
 
     var $lnk = $(this);
-    var $elemToScroll = $($lnk.attr('href'));
+    var $elem_to_scroll = $($lnk.attr('href'));
     var speed = $lnk.data('speed') || 150;
     var offset = $lnk.data('offset') || 0;
 
-    $WINDOW.scrollTo($elemToScroll, {duration: speed, offset: offset});
+    $WINDOW.scrollTo($elem_to_scroll, {duration: speed, offset: offset});
   });
 
 
@@ -283,15 +283,15 @@
         var $anchor = $(this);
         var $parent = $anchor.parent();
 
-        var hasDropdown = $parent.hasClass('has-dropdown');
-        var isHovered = $parent.hasClass('is-hovered');
+        var has_dropdown = $parent.hasClass('has-dropdown');
+        var is_hovered = $parent.hasClass('is-hovered');
 
         $parent.siblings().removeClass('is-hovered');
 
-        if (!hasDropdown) {
+        if (!has_dropdown) {
           location.href = $anchor.attr('href');
         } else {
-          if (isHovered) {
+          if (is_hovered) {
             location.href = $anchor.attr('href');
           } else {
             $parent.addClass('is-hovered');
@@ -353,19 +353,19 @@
   // ----------------
 
   if ( !IS_MOBILE_WIDTH() ) {
-    var goTopBtn = $('<div class="go-top-btn"></div>');
-    goTopBtn.click(function() {
+    var $go_top_btn = $('<div class="go-top-btn"></div>');
+    $go_top_btn.click(() => {
       $WINDOW.scrollTo(0, 200);
     });
-    $WINDOW.scroll(function() {
-      var scrollTop = $WINDOW.scrollTop();
-      if ( scrollTop > 0 ) {
-        goTopBtn.addClass('visible');
+    $WINDOW.scroll(() => {
+      var scroll_top = $WINDOW.scrollTop();
+      if ( scroll_top > 0 ) {
+        $go_top_btn.addClass('visible');
       } else {
-        goTopBtn.removeClass('visible');
+        $go_top_btn.removeClass('visible');
       }
     });
-    $BODY.append( goTopBtn );
+    $BODY.append( $go_top_btn );
   }
 
 })();
