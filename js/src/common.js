@@ -3,17 +3,17 @@
   // Const
   // -----
 
-  var media_queries = [
+  const MEDIA_QUERIES = [
     //=require media-queries-config.json
   ][0];
 
-  window.SMALL_MOBILE_WIDTH = media_queries.mobile.small;
-  window.MOBILE_WIDTH = media_queries.mobile.portrait;
-  window.LANDSCAPE_MOBILE_WIDTH = media_queries.mobile.landscape;
-  window.PORTRAIT_TABLET_WIDTH = media_queries.tablet.portrait;
-  window.TABLET_WIDTH = media_queries.tablet.landscape;
-  window.SMALL_NOTEBOOK_WIDTH = media_queries.notebook.small;
-  window.NOTEBOOK_WIDTH = media_queries.notebook.normal;
+  window.SMALL_MOBILE_WIDTH = MEDIA_QUERIES.mobile.small;
+  window.MOBILE_WIDTH = MEDIA_QUERIES.mobile.portrait;
+  window.LANDSCAPE_MOBILE_WIDTH = MEDIA_QUERIES.mobile.landscape;
+  window.PORTRAIT_TABLET_WIDTH = MEDIA_QUERIES.tablet.portrait;
+  window.TABLET_WIDTH = MEDIA_QUERIES.tablet.landscape;
+  window.SMALL_NOTEBOOK_WIDTH = MEDIA_QUERIES.notebook.small;
+  window.NOTEBOOK_WIDTH = MEDIA_QUERIES.notebook.normal;
 
   window.HEADER_HEIGHT = $('.header').height();
 
@@ -105,12 +105,12 @@
   // -------
 
   $DOCUMENT.on('mousedown.js-spinner', '.js-spinner-down, .js-spinner-up', function() {
-    var $spinner_control = $(this),
-        $input = $spinner_control.siblings('.inp'),
-        value = parseInt( $input.val(), 10 ),
-        step = $input.data('step') ? $input.data('step') : 1,
-        may_be_zero = $input.data('zero') ? $input.data('zero') : false,
-        inc_timeout, inc_interval, dec_timeout, dec_interval;
+    const $spinner_control = $(this);
+    const $input = $spinner_control.siblings('.inp');
+    const value = parseInt( $input.val(), 10 );
+    const step = $input.data('step') ? $input.data('step') : 1;
+    const may_be_zero = $input.data('zero') ? $input.data('zero') : false;
+    let inc_timeout, inc_interval, dec_timeout, dec_interval;
 
     $spinner_control
       .on('mouseup.js-spinner', clearAll)
@@ -155,7 +155,7 @@
   });
 
   $DOCUMENT.on('keydown', '.js-spinner .inp', function(e) {
-    var $input = $(this);
+    const $input = $(this);
 
     if ( e.keyCode == 46 || e.keyCode == 8 || e.keyCode == 9 || e.keyCode == 27 ||
       (e.keyCode == 65 && e.ctrlKey === true) ||
@@ -169,8 +169,8 @@
   });
 
   $DOCUMENT.on('keyup paste', '.js-spinner .inp', function(e) {
-    var $input = $(this),
-        may_be_zero = $input.data('zero') ? $input.data('zero') : false;
+    const $input = $(this);
+    const may_be_zero = $input.data('zero') ? $input.data('zero') : false;
 
     if ( !may_be_zero && $input.val() == 0 ) {
       $input.val(1);
@@ -185,7 +185,7 @@
   $DOCUMENT.on('click.overlay-open', '.js-overlay', function(e) {
     e.preventDefault();
 
-    var $popup = $(this).attr('href');
+    const $popup = $(this).attr('href');
 
     $.overlayLoader(true, {
       node: $popup,
@@ -215,8 +215,8 @@
   // ----------
 
   $('.checkbox input').on('change initCheckboxes', function() {
-    var $inp = $(this),
-        $label = $inp.closest('.checkbox');
+    const $inp = $(this);
+    const $label = $inp.closest('.checkbox');
 
     if ( $inp.prop('checked') ) {
       $label.addClass('checked');
@@ -230,10 +230,10 @@
   // ----------
 
   $('.radio input').on('change initRadio', function() {
-    var $inp = $(this),
-        $group = $('[name="' + $inp.attr('name') + '"]'),
-        $labels = $group.closest('.radio'),
-        $selected_item = $labels.find('input').filter(':checked').closest('.radio');
+    const $inp = $(this);
+    const $group = $('[name="' + $inp.attr('name') + '"]');
+    const $labels = $group.closest('.radio');
+    const $selected_item = $labels.find('input').filter(':checked').closest('.radio');
 
     $labels.removeClass('checked');
     $selected_item.addClass('checked');
@@ -246,10 +246,10 @@
   $DOCUMENT.on('click.scroll-to', '.js-scroll-to', function(e) {
     e.preventDefault();
 
-    var $lnk = $(this);
-    var $elem_to_scroll = $($lnk.attr('href'));
-    var speed = $lnk.data('speed') || 150;
-    var offset = $lnk.data('offset') || 0;
+    const $lnk = $(this);
+    const $elem_to_scroll = $($lnk.attr('href'));
+    const speed = $lnk.data('speed') || 150;
+    const offset = $lnk.data('offset') || 0;
 
     $WINDOW.scrollTo($elem_to_scroll, {duration: speed, offset: offset});
   });
@@ -259,17 +259,17 @@
   // -----
 
   (function() {
-    var $menus = $('.js-menu');
+    const $menus = $('.js-menu');
 
     if (IS_DESKTOP) {
       $menus.on('mouseenter.js-menu', 'li', function() {
-        var $this = $(this);
+        const $this = $(this);
         clearTimeout($this.data('hoverTimeout'));
         $this.addClass('is-hovered');
       });
 
       $menus.on('mouseleave.js-menu', 'li', function() {
-        var $this = $(this);
+        const $this = $(this);
         $this.data('hoverTimeout', setTimeout(function() {
           $this.removeClass('is-hovered');
         }, 200));
@@ -280,11 +280,10 @@
       $menus.on('click.js-m-menu', 'a', function(e) {
         e.preventDefault();
 
-        var $anchor = $(this);
-        var $parent = $anchor.parent();
-
-        var has_dropdown = $parent.hasClass('has-dropdown');
-        var is_hovered = $parent.hasClass('is-hovered');
+        const $anchor = $(this);
+        const $parent = $anchor.parent();
+        const has_dropdown = $parent.hasClass('has-dropdown');
+        const is_hovered = $parent.hasClass('is-hovered');
 
         $parent.siblings().removeClass('is-hovered');
 
@@ -308,8 +307,8 @@
   $('.js-tabs .tabs-nav li a').click(function(e) {
     e.preventDefault();
 
-    var $this = $(this);
-    var $panel = $( $this.attr('href') );
+    const $this = $(this);
+    const $panel = $( $this.attr('href') );
 
     $this.closest('li').addClass('active').siblings().removeClass('active');
     $panel.closest('.tabs').find('.tabs-panel').hide();
@@ -330,9 +329,9 @@
   // --------
 
   $('.js-slideshow').each(function() {
-    var $this = $(this);
+    const $this = $(this);
 
-    var tos = $this.tosrus({
+    const tos = $this.tosrus({
       effect: 'slide',
       slides: {
         visible: 1
@@ -353,18 +352,21 @@
   // ----------------
 
   if ( !IS_MOBILE_WIDTH() ) {
-    var $go_top_btn = $('<div class="go-top-btn"></div>');
+    const $go_top_btn = $('<div class="go-top-btn"></div>');
+
     $go_top_btn.click(() => {
       $WINDOW.scrollTo(0, 200);
     });
+
     $WINDOW.scroll(() => {
-      var scroll_top = $WINDOW.scrollTop();
+      const scroll_top = $WINDOW.scrollTop();
       if ( scroll_top > 0 ) {
         $go_top_btn.addClass('visible');
       } else {
         $go_top_btn.removeClass('visible');
       }
     });
+
     $BODY.append( $go_top_btn );
   }
 
