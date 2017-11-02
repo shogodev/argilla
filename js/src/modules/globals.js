@@ -3,7 +3,7 @@ import MEDIA_QUERIES from '../media-queries-config.json';
 // Const
 // -----
 
-export const IS_MOBILE = navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i) != null;
+export const IS_MOBILE = navigator.userAgent.match(/(iPad)|(iPhone)|(iPod)|(android)|(webOS)/i) !== null;
 export const IS_DESKTOP = !IS_MOBILE;
 export const IS_IOS = (navigator.userAgent.match(/(iPad|iPhone|iPod)/g) ? true : false);
 export const IS_IE = navigator.appVersion.indexOf("MSIE") !== -1 || navigator.userAgent.match(/Trident.*rv[ :]*11\./);
