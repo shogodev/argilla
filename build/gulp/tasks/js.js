@@ -9,8 +9,7 @@ var uglify = require('gulp-uglify');
 var maps = require('gulp-sourcemaps');
 var argv = require('yargs').argv;
 var del = require('del');
-var include = require('gulp-include');
-var babel = require('gulp-babel');
+var browserify = require('gulp-browserify');
 
 var config = require('../config');
 
@@ -18,8 +17,7 @@ gulp.task('js', function() {
   return gulp.src(config.js.src)
     .pipe(plumber())
     .pipe(maps.init())
-    .pipe(include())
-    .pipe(gulpif(!argv['vendor'], babel(config.babel)))
+    .pipe(gulpif(!argv['vendor'], browserify({ transform: ['babelify'] })))
     .pipe(gulpif(!argv.debug, uglify()))
     .pipe(gulpif(argv['vendor'], concat('vendor.js')))
     .pipe(maps.write('.'))

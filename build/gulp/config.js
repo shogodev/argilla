@@ -5,8 +5,6 @@ var path = require('path');
 var rootPath = path.join(__dirname, '../../');
 var sassTempDir = '~sasstemp_' + new Date().getTime();
 
-var es2015 = require('babel-preset-es2015-nostrict');
-
 module.exports = {
   rootPath: rootPath,
 
@@ -22,11 +20,17 @@ module.exports = {
     ] : [
       rootPath + 'js/src/common.js'
     ],
-  },
-
-  babel: {
-    presets: [es2015],
-    compact: false
+    watchSrc: argv['vendor'] ? [
+      rootPath + 'js/src/vendor/jquery.js',
+      rootPath + 'js/src/vendor/jquery-ui.js',
+      rootPath + 'js/src/vendor/hammer.js',
+      rootPath + 'js/src/vendor/jquery_plugins/*.js',
+      rootPath + 'js/src/vendor/jquery_ui_widgets/*.js',
+      rootPath + 'js/src/vendor/**/*.js'
+    ] : [
+      rootPath + 'js/src/common.js',
+      rootPath + 'js/src/modules/*.js'
+    ],
   },
 
   css: {

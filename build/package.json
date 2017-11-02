@@ -14,9 +14,6 @@
     "gulp-if": "~1.2.5",
     "gulp-base64": "~0.1.2",
     "gulp-plumber": "~1.1.0",
-    "gulp-include": "~2.3.1",
-    "gulp-babel": "~6.1.2",
-    "babel-preset-es2015-nostrict": "~6.6.2",
     "gulp-postcss": "~6.2.0",
     "autoprefixer": "~6.5.1",
     "gulp-color": "0.0.1",
@@ -24,6 +21,8 @@
     "babel-polyfill": "~6.16.0",
     "gulp-sourcemaps": "~1.9.0",
     "postcss-assets": "~4.1.0",
-    "gulp-stylus": "~2.6.0"
+    "gulp-stylus": "~2.6.0",
+    "babelify": "~6.2.0",
+    "gulp-browserify": "~0.5.1"
   }
 }
