@@ -9,7 +9,7 @@ export const IS_IOS = (navigator.userAgent.match(/(iPad|iPhone|iPod)/g) ? true :
 export const IS_IE = navigator.appVersion.indexOf("MSIE") !== -1 || navigator.userAgent.match(/Trident.*rv[ :]*11\./);
 export const IS_TOUCH_DEVICE = 'ontouchstart' in document;
 
-let HTML = document.documentElement;
+const HTML = document.documentElement;
 
 HTML.classList.remove('no-js');
 
@@ -45,16 +45,14 @@ export const $BODY = $(document.body);
 export const TOSRUS_DEFAULTS = {
   buttons: {
     next: true,
-    prev: true
+    prev: true,
   },
-
   keys: {
     prev: 37,
     next: 39,
-    close: 27
+    close: 27,
   },
-
   wrapper: {
-    onClick: 'close'
-  }
+    onClick: 'close',
+  },
 };

@@ -6,7 +6,7 @@ import { $DOCUMENT } from './globals';
 $DOCUMENT.on('initSelectric yiiListViewUpdated', () => {
   $('select').selectric({
     disableOnMobile: false,
-    nativeOnMobile: true
+    nativeOnMobile: true,
   });
 }).trigger('initSelectric');
 
@@ -18,7 +18,7 @@ $('.checkbox input').on('change initCheckboxes', function() {
   const $inp = $(this);
   const $label = $inp.closest('.checkbox');
 
-  if ( $inp.prop('checked') ) {
+  if ($inp.prop('checked')) {
     $label.addClass('checked');
   } else {
     $label.removeClass('checked');

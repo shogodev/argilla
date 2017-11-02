@@ -4,15 +4,15 @@ $('.js-slideshow').each(function() {
   const tos = $this.tosrus({
     effect: 'slide',
     slides: {
-      visible: 1
+      visible: 1,
     },
     autoplay: {
       play: true,
-      timeout: 7500
+      timeout: 7500,
     },
     infinite: true,
     pagination: {
-      add: true
-    }
+      add: true,
+    },
   });
 });
