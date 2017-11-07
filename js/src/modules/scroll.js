@@ -15,6 +15,7 @@ $DOCUMENT.on('click.scroll-to', '.js-scroll-to', function(e) {
   $WINDOW.scrollTo($elem_to_scroll, { duration: speed, offset: offset });
 });
 
+
 // Scrolling to top
 // ----------------
 

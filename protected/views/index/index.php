@@ -20,5 +20,6 @@
     <?php echo $this->textBlockRegister('Текст на главной')?>
   </div>
   <div class="hr1 m20"></div>
-
 </div>
+
+<?php // $this->renderPartial('/_instagram')?>

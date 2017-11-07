@@ -101,4 +101,7 @@ return array(
   // captcha
   'captchaImg' => array('index/captcha', 'pattern' => '<model:\w+>/captcha/v/<code:\w+>'),
   'captchaRef' => array('index/captcha', 'pattern' => '<model:\w+>/captcha/<refresh:refresh>/<code:\w+>'),
+
+  // json api
+  'settings' => array('api/settings', 'pattern' => 'api/settings/<param:\w+>'),
 );

@@ -1,0 +1,61 @@
+
+/*   -=========== Instagram widget ===========-   */
+
+.instawidget-container {
+  overflow: hidden;
+}
+
+.instawidget-wrapper {
+  position: relative;
+}
+
+.instawidget {
+  position: relative;
+  white-space: nowrap;
+  font-size: 0;
+  left: 0;
+  transition: left .3s ease;
+}
+
+.instawidget-page {
+  display: inline-block;
+  vertical-align: top;
+  width: 100%;
+  white-space: normal;
+  opacity: .25;
+
+  &.is-active {
+    opacity: 1;
+  }
+
+  img {
+    width: 25%;
+
+    @media $small-mobile {
+      width: 50%;
+    }
+  }
+}
+
+.instawidget-prev,
+.instawidget-next {
+  display: block;
+  width: 50px; height: 50px;
+  position: absolute;
+  top: 50%;
+  transform: translateY(-50%);
+
+  &.is-disabled {
+    display: none;
+  }
+}
+
+.instawidget-prev {
+  right: 100%;
+  background: $black;
+}
+
+.instawidget-next {
+  left: 100%;
+  background: $black;
+}
