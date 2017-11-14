@@ -18,5 +18,4 @@ import './modules/rotators.js';
 //     default: 12,
 //     mobile: 4,
 //   },
-//   pageWidth: $('.wrapper').width(),
 // });

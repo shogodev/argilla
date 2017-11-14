@@ -23,7 +23,6 @@
  *     default: 12,
  *     mobile: 4,
  *   },
- *   pageWidth: $('.wrapper').width(),
  * });
  *
  */
@@ -32,21 +31,27 @@ import { $WINDOW } from './globals';
 import { IS_SMALL_MOBILE_WIDTH, status } from './helpers';
 
 export default class InstagramWidget {
-  constructor(widget_options) {
+  constructor({
+    widgetClass = 'js-instawidget',
+    pageClass = 'js-instawidget-page',
+    nextPageTriggerClass = 'js-instawidget-next',
+    prevPageTriggerClass = 'js-instawidget-prev',
+    limit = { default: 12, mobile: 12 },
+  } = {}) {
     this.SETTINGS_URL = '/api/settings/instagram';
     this.STARTUP_TIMEOUT = 1000;
 
-    const default_widget_options = {
-      widgetClass: 'js-instawidget',
-      pageClass: 'js-instawidget-page',
-      nextPageTriggerClass: 'js-instawidget-next',
-      prevPageTriggerClass: 'js-instawidget-prev',
-      pageWidth: '100vw', // that default shouldn't work, need to fix sometime
-    };
-
-    Object.assign(this, default_widget_options, widget_options);
+    Object.assign(this, {
+      widgetClass,
+      pageClass,
+      nextPageTriggerClass,
+      prevPageTriggerClass,
+      limit,
+    });
 
     this.$widget = $('.' + this.widgetClass);
+
+    this.pageWidth = this.$widget.find(`.${this.pageClass}`).width();
 
     this.options = {
       get: 'user',
