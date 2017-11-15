@@ -49,7 +49,7 @@ export default class InstagramWidget {
       limit,
     });
 
-    this.$widget = $('.' + this.widgetClass);
+    this.$widget = $(`.${this.widgetClass}`);
 
     this.pageWidth = this.$widget.find(`.${this.pageClass}`).width();
 
@@ -102,8 +102,8 @@ export default class InstagramWidget {
   }
 
   bindClickNext() {
-    const $next_page_trigger = $('.' + this.nextPageTriggerClass);
-    const $prev_page_trigger = $('.' + this.prevPageTriggerClass);
+    const $next_page_trigger = $(`.${this.nextPageTriggerClass}`);
+    const $prev_page_trigger = $(`.${this.prevPageTriggerClass}`);
 
     $next_page_trigger.click((e) => {
       e.preventDefault();
@@ -127,8 +127,8 @@ export default class InstagramWidget {
   }
 
   bindClickPrev() {
-    const $next_page_trigger = $('.' + this.nextPageTriggerClass);
-    const $prev_page_trigger = $('.' + this.prevPageTriggerClass);
+    const $next_page_trigger = $(`.${this.nextPageTriggerClass}`);
+    const $prev_page_trigger = $(`.${this.prevPageTriggerClass}`);
 
     $prev_page_trigger.click((e) => {
       e.preventDefault();
