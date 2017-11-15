@@ -69,7 +69,7 @@ export default class InstagramWidget {
       .then(status)
       .then((params) => params.json())
       .catch((error) => {
-        console.warn('An error occupied when trying to get instagram parameters. Please check params object at the backend.');
+        console.warn('An error occurred when trying to get instagram parameters. Please check params object at the backend.');
         return Promise.reject()
       });
   }
