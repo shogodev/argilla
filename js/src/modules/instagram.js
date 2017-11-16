@@ -108,10 +108,10 @@ export default class InstagramWidget {
     $next_page_trigger.click((e) => {
       e.preventDefault();
 
-      this.feed.next();
-
       let $active_page = this.$widget.find(`.${this.pageClass}.is-active`);
       let current_position = parseInt(this.$widget.css('left'), 10);
+
+      this.feed.next();
 
       if ($active_page.next().length) {
         $active_page = $active_page.removeClass('is-active').next().addClass('is-active');
