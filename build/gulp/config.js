@@ -11,7 +11,7 @@ var vendorScripts = [
   rootPath + 'js/src/vendor/hammer.js',
   rootPath + 'js/src/vendor/jquery_plugins/*.js',
   rootPath + 'js/src/vendor/jquery_ui_widgets/*.js',
-  rootPath + 'js/src/vendor/**/*.js'
+  rootPath + 'js/src/vendor/**/*.js',
 ]
 
 module.exports = {
@@ -20,37 +20,37 @@ module.exports = {
   js: {
     dest: rootPath + 'js',
     src: argv['vendor'] ? vendorScripts : [
-      rootPath + 'js/src/common.js'
+      rootPath + 'js/src/*.js',
     ],
     watchSrc: argv['vendor'] ? vendorScripts : [
-      rootPath + 'js/src/common.js',
-      rootPath + 'js/src/modules/*.js'
+      rootPath + 'js/src/*.js',
+      rootPath + 'js/src/modules/**/*.js',
     ],
   },
 
   css: {
     src: [
       rootPath + 'i/style/**/*.styl',
-      '!' + rootPath + 'i/style/**/_*.styl'
+      '!' + rootPath + 'i/style/**/_*.styl',
     ],
     watchSrc: rootPath + 'i/style/**/*.styl',
-    dest: rootPath + 'i/style/css/'
+    dest: rootPath + 'i/style/css/',
   },
 
   autoprefixer: {
     browsers: ['last 5 versions'],
-    cascade: false
+    cascade: false,
   },
 
   assets: {
-    basePath: rootPath
+    basePath: rootPath,
   },
 
   base64: {
     options: {
       baseDir: '..',
       extensions: ['png', 'jpg'],
-      maxImageSize: 32 * 1024
-    }
-  }
+      maxImageSize: 32 * 1024,
+    },
+  },
 };
