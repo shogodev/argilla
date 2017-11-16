@@ -109,8 +109,10 @@ export default class InstagramWidget {
       e.preventDefault();
 
       this.feed.next();
-      var $active_page = this.$widget.find(`.${this.pageClass}.is-active`);
-      var current_position = parseInt(this.$widget.css('left'), 10);
+
+      let $active_page = this.$widget.find(`.${this.pageClass}.is-active`);
+      let current_position = parseInt(this.$widget.css('left'), 10);
+
       if ($active_page.next().length) {
         $active_page = $active_page.removeClass('is-active').next().addClass('is-active');
         this.$widget.css('left', current_position - this.pageWidth );
@@ -133,8 +135,9 @@ export default class InstagramWidget {
     $prev_page_trigger.click((e) => {
       e.preventDefault();
 
-      var $active_page = this.$widget.find(`.${this.pageClass}.is-active`);
-      var current_position = parseInt(this.$widget.css('left'), 10);
+      let $active_page = this.$widget.find(`.${this.pageClass}.is-active`);
+      let current_position = parseInt(this.$widget.css('left'), 10);
+
       if ($active_page.prev().length) {
         $active_page = $active_page.removeClass('is-active').prev().addClass('is-active');
         this.$widget.css('left', current_position + this.pageWidth);
