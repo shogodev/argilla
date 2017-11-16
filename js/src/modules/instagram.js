@@ -82,19 +82,19 @@ export default class InstagramWidget {
       this.feed = new Instafeed(this.options);
       this.feed.run();
       setTimeout(() => this.feed.next(), this.STARTUP_TIMEOUT);
-      this.bindClickNext();
-      this.bindClickPrev();
-      this.bindWindowResize();
+      this
+        .bindClickNext()
+        .bindClickPrev()
+        .bindWindowResize();
     }).catch(() => null);
   }
 
   nextPageCallback() {
     const pics_limit = this.options.limit - 1;
     const $first_page = this.$widget.find(`.${this.pageClass}:first`);
-    const page_classes = $first_page[0].className.replace(' is-active', '')
+    const page_classes = $first_page[0].className.replace(' is-active', '');
     const $new_page = $(`<div class="${page_classes}"></div>`);
-    const $new_pics = $first_page.find(`a:gt(${pics_limit})`)
-      .detach();
+    const $new_pics = $first_page.find(`a:gt(${pics_limit})`).detach();
     $new_page.append($new_pics);
     if ($new_page.find('a').length) {
       this.$widget.append($new_page);
@@ -126,6 +126,8 @@ export default class InstagramWidget {
         $next_page_trigger.addClass('is-disabled');
       }
     });
+
+    return this;
   }
 
   bindClickPrev() {
@@ -149,6 +151,8 @@ export default class InstagramWidget {
         $next_page_trigger.removeClass('is-disabled');
       }
     });
+
+    return this;
   }
 
   bindWindowResize() {
@@ -159,5 +163,7 @@ export default class InstagramWidget {
         this.options.limit = this.limit.default;
       }
     });
+
+    return this;
   }
 }
