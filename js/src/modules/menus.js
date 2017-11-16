@@ -5,15 +5,15 @@ const $menus = $('.js-menu');
 if (IS_DESKTOP) {
   $menus.on('mouseenter.js-menu', 'li', function() {
     const $this = $(this);
+
     clearTimeout($this.data('hoverTimeout'));
     $this.addClass('is-hovered');
   });
 
   $menus.on('mouseleave.js-menu', 'li', function() {
     const $this = $(this);
-    $this.data('hoverTimeout', setTimeout(function() {
-      $this.removeClass('is-hovered');
-    }, 200));
+
+    $this.data('hoverTimeout', setTimeout(() => { $this.removeClass('is-hovered'); }, 200));
   });
 }
 

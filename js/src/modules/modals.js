@@ -9,6 +9,7 @@ $DOCUMENT.on('click.overlay-open', '.js-overlay', function(e) {
   $.overlayLoader(true, {
     node: $popup,
     hideSelector: '.js-popup-close',
+    fixedElements: '.js-fixed-element',
   });
 });
 
