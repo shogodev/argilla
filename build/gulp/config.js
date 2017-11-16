@@ -12,7 +12,7 @@ var vendorScripts = [
   rootPath + 'js/src/vendor/jquery_plugins/*.js',
   rootPath + 'js/src/vendor/jquery_ui_widgets/*.js',
   rootPath + 'js/src/vendor/**/*.js',
-]
+];
 
 module.exports = {
   rootPath: rootPath,
