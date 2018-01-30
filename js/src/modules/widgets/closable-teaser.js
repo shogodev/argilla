@@ -16,7 +16,7 @@
  *
  */
 
-import StorageDateChecker from './storage-date-checker';
+import StorageDateChecker from './shared/storage-date-checker';
 
 export default class ClosableTeaser extends StorageDateChecker {
   constructor(options) {

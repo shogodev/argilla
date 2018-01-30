@@ -8,7 +8,7 @@ $DOCUMENT.on('click.overlay-open', '.js-overlay', function(e) {
 
   $.overlayLoader(true, {
     node: $popup,
-    hideSelector: '.js-popup-close',
+    hideSelector: '.js-close-popup',
     fixedElements: '.js-fixed-element',
   });
 });

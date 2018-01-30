@@ -3,7 +3,6 @@ var argv = require('yargs').argv;
 var path = require('path');
 
 var rootPath = path.join(__dirname, '../../');
-var sassTempDir = '~sasstemp_' + new Date().getTime();
 
 var vendorScripts = [
   rootPath + 'js/src/vendor/jquery.js',

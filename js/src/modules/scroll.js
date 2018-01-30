@@ -29,9 +29,9 @@ if (!IS_MOBILE_WIDTH()) {
   $WINDOW.scroll(() => {
     const scroll_top = $WINDOW.scrollTop();
     if (scroll_top > 0) {
-      $go_top_btn.addClass('visible');
+      $go_top_btn.addClass('is-visible');
     } else {
-      $go_top_btn.removeClass('visible');
+      $go_top_btn.removeClass('is-visible');
     }
   });
 

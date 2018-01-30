@@ -27,8 +27,8 @@
  *
  */
 
-import { $WINDOW } from './globals';
-import { IS_SMALL_MOBILE_WIDTH, status } from './helpers';
+import { $WINDOW } from '../globals';
+import { IS_SMALL_MOBILE_WIDTH, status } from '../helpers';
 
 export default class InstagramWidget {
   constructor({

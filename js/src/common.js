@@ -1,14 +1,14 @@
-import './modules/modals.js';
-import './modules/forms.js';
-import './modules/masks.js';
-import './modules/spinner.js';
-import './modules/scroll.js';
-import './modules/menus.js';
-import './modules/tabs.js';
-import './modules/galleries.js';
-import './modules/rotators.js';
-// import InstagramWidget from './modules/instagram';
-// import ClosableTeaser from './modules/closable-teaser';
+import './modules/modals';
+import './modules/forms';
+import './modules/masks';
+import './modules/spinner';
+import './modules/scroll';
+import './modules/menus';
+import './modules/tabs';
+import './modules/galleries';
+import './modules/rotators';
+// import InstagramWidget from './modules/widgets/instagram';
+// import ClosableTeaser from './modules/widgets/closable-teaser';
 
 
 // Init instagram widget

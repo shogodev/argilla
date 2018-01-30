@@ -1,4 +1,4 @@
-import TOSRUS_DEFAULTS from './globals';
+import { TOSRUS_DEFAULTS } from './globals';
 
 // init tosrus static gallery
 $('.js-gallery').each(function() {
